@@ -5,7 +5,7 @@ import starlight from '@astrojs/starlight';
 // https://astro.build/config
 export default defineConfig({
 	site: "https://mdsreq-fga-unb.github.io",
-	base: "/req-2025.2-t01-ppbm",
+	base: "/req-2025.2-t01-ppbm/",
 	outDir: "./build",
 	integrations: [
 		starlight({
