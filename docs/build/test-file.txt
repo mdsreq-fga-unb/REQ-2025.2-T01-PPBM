@@ -1,0 +1,1 @@
+Este é um arquivo de teste para verificar se o GitHub Pages está servindo arquivos corretamente.
