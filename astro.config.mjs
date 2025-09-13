@@ -8,26 +8,41 @@ export default defineConfig({
 	base: "/REQ-2025.2-T01-PPBM",
 	integrations: [
 		starlight({
-			title: "My Docs",
+			title: "PPBM - 2025.2",
 			social: [
 				{
 					icon: "github",
 					label: "GitHub",
-					href: "https://github.com/withastro/starlight",
+					href: "https://github.com/mdsreq-fga-unb/REQ-2025.2-T01-PPBM",
 				},
 			],
 			sidebar: [
 				{
-					label: "Guides",
+					label: "Home",
 					items: [
-						// Each item here is one entry in the navigation menu.
-						{ label: "Example Guide", slug: "guides/example" },
+						{
+							label: "Home",
+							slug: "home",
+						},
 					],
 				},
 				{
-					label: "Reference",
-					autogenerate: { directory: "reference" },
-				},
+					label: "Unidades",
+					items: [
+						{
+							label: "Unidade 1 - Introdução",
+							slug: "unidade-1",
+						},
+						{
+							label: "Unidade 2 - Planejamento e Análise",
+							slug: "unidade-2",
+						},
+						{
+							label: "Unidade 3 - Design e Arquitetura",
+							slug: "unidade-3",
+						},
+					],
+				}
 			],
 		}),
 	],
