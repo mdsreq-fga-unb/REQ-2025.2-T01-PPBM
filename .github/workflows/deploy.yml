@@ -49,6 +49,7 @@ jobs:
       - name: Copy build files to root
         run: |
           cp -r docs/build/* .
+          touch .nojekyll
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
