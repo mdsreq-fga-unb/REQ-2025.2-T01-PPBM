@@ -1,5 +1,5 @@
 ---
-title: Home
+title: PPBM
 description: Página inicial do PPBM.
 ---
 
