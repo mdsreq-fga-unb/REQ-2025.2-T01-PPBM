@@ -21,16 +21,20 @@ export default defineConfig({
 			],
 			sidebar: [
 				{
-					label: "Sobre",
+					label: "Início",
 					items: [
 						{
-							label: "PPBM",
-							slug: "sobre",
+							label: "Sobre o Projeto",
+							slug: "home/sobre",
 						},
+						{
+							label: "Equipe",
+							slug: "home/equipe",
+						}
 					],
 				},
 				{
-					label: "Visão Produto e Projeto",
+					label: "Visão do Produto e Projeto",
 					items: [
 						{
 							label: "Cenário Atual do Cliente e do Negócio",
