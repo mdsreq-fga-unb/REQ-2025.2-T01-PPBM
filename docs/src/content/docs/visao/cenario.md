@@ -27,4 +27,11 @@ Esta seção descreve o cenário atual do cliente e o contexto de negócio que m
 
 ## Justificativa do Projeto
 
-Por que este projeto é necessário e como ele se alinha com os objetivos de negócio do cliente.
+Por que este projeto é necessário e como ele se alinha com os objetivos de negócio do 
+cliente.
+
+## Histórico de Versão
+
+| Data | Versão | Descrição | Autor(es) | Revisor(es) |
+|------|--------|-----------|-----------|-------------|
+| 15/09/2025 | 1.0 | A definir. | A definir | (a definir) |

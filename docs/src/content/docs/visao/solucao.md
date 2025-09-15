@@ -46,3 +46,9 @@ Esta seção apresenta a solução proposta para atender às necessidades identi
 - Considerações de performance
 - Capacidade de crescimento
 - Manutenibilidade
+
+## Histórico de Versão
+
+| Data | Versão | Descrição | Autor(es) | Revisor(es) |
+|------|--------|-----------|-----------|-------------|
+| 15/09/2025 | 1.0 | A definir. | A definir | (a definir) |

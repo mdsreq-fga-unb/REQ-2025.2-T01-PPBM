@@ -78,3 +78,9 @@ Esta seção apresenta os conceitos fundamentais de engenharia de software aplic
 - **Velocity**: Velocidade da equipe
 - **Lead Time**: Tempo de entrega
 - **Cycle Time**: Tempo de desenvolvimento
+
+## Histórico de Versão
+
+| Data | Versão | Descrição | Autor(es) | Revisor(es) |
+|------|--------|-----------|-----------|-------------|
+| 15/09/2025 | 1.0 | A definir. | A definir | (a definir) |

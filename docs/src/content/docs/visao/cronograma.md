@@ -65,3 +65,9 @@ Esta seção apresenta o cronograma detalhado do projeto PPBM com todas as entre
 - Equipe alocada
 - Ferramentas e tecnologias
 - Infraestrutura
+
+## Histórico de Versão
+
+| Data | Versão | Descrição | Autor(es) | Revisor(es) |
+|------|--------|-----------|-----------|-------------|
+| 15/09/2025 | 1.0 | A definir. | A definir | (a definir) |
