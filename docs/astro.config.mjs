@@ -4,6 +4,7 @@ import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import starlightThemeBlack from "starlight-theme-black";
 
+
 // https://astro.build/config
 export default defineConfig({
 	site: "https://mdsreq-fga-unb.github.io",

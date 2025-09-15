@@ -1,9 +1,9 @@
 ---
-title: 5 - Interação entre Equipe e Cliente
-description: Estratégias e processos de interação entre a equipe de desenvolvimento e o cliente.
+title: Interação entre Equipe e Cliente
+description: Estratégias e processos de interação entre a equipe e o cliente.
 ---
 
-## 5.1 Composição da Equipe
+## Composição da Equipe
 
 | Papel                   | Descrição                                                                                                                                                                            | Responsável     | Participantes                                   |
 |-------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------|-------------------------------------------------|
@@ -14,9 +14,9 @@ description: Estratégias e processos de interação entre a equipe de desenvolv
 | Analista de QA          | Cria pipelines de integração e entrega contínua, desenvolve testes automatizados e realiza testes funcionais para assegurar a qualidade do produto.                                  | Mariana Ribeiro | Lucas Branco, Philipe Morais                    |
 | UX/UI Designer          | Responsável por projetar a experiência e a interface de produtos digitais, com o objetivo de unir funcionalidade e estética para que o produto seja útil, fácil de usar e agradável. | Philipe Morais  | Vitor Marconi, Lucas Oliveira                   |
 
-## 5.2 Comunicação
+## Comunicação
 
-### 5.2.1 Ferramentas Utilizadas
+### Ferramentas Utilizadas
 
 - **WhatsApp**: Comunicações rápidas e diárias entre os membros
 da equipe e também com o cliente, sempre que necessário.
@@ -27,7 +27,7 @@ encontros de validação com o cliente.
 - **GitHub Projects (Kanban)**: Ferramenta usada para o acompanhamento visual
 das tarefas da equipe durante o desenvolvimento.
 
-### 5.2.2 Tipos e Frequência das Reuniões
+### Tipos e Frequência das Reuniões
 
 - Daily Scrum (Diário): Reuniões de no máximo 15 minutos, para alinhar tarefas do dia, identificar obstáculos e ajustar prioridades com toda a equipe.
 
@@ -39,13 +39,13 @@ das tarefas da equipe durante o desenvolvimento.
 
 - Sprint Retrospective: Imediato a Sprint Review, a equipe se reune para refletir sobre práticas, discutir melhorias e propor ações.
 
-## 5.3 Frequência de Contato com o Cliente
+## Frequência de Contato com o Cliente
 
 - Sprint Review: Previstas para ocorrer a cada 2 semanas, onde o cliente participa para revisar as entregas, fornecer feedbacks e alinhas prioridades futuras. Essa será a principal interação formal com o cliente.
 
 - Comunicação pelo WhatsApp: Em situações de dúvidas rápidas ou discussões informais ao longo do projeto, será utilizada essa ferramenta pela sua praticidade e acessibilidade.
 
-## 5.4 Processo de Validação
+## Processo de Validação
 
 - Definition of Ready (DoR): A equipe só inicia o desenvolvimento quando as histórias estiverem claras, critérios de aceitação definidos e documentação adequada. Isso evita retrabalho e garante entendimento compartilhado, prática comum e recomendada para preparar o backlog antes da sprint.
 
