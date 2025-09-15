@@ -2,7 +2,7 @@
 
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
-import starlightThemeRapide from "starlight-theme-rapide";
+import starlightThemeBlack from "starlight-theme-black";
 
 // https://astro.build/config
 export default defineConfig({
@@ -10,8 +10,22 @@ export default defineConfig({
 	base: "/REQ-2025.2-T01-PPBM",
 	integrations: [
 		starlight({
-			plugins: [starlightThemeRapide()],
-			title: "FireForce - Projeto PPBM",
+			plugins: [
+				starlightThemeBlack({
+					navLinks: [
+						{
+							label: "Documentação",
+							link: "/home/sobre",
+						},
+						{
+							label: "Github",
+							link: "https://github.com/mdsreq-fga-unb/REQ-2025.2-T01-PPBM",
+						},
+					],
+					footerText: "FireForce© 2025 - Todos os direitos reservados.",
+				}),
+			],
+			title: "FireForce - PPBM",
 			social: [
 				{
 					icon: "github",
@@ -30,7 +44,7 @@ export default defineConfig({
 						{
 							label: "Equipe",
 							slug: "home/equipe",
-						}
+						},
 					],
 				},
 				{
