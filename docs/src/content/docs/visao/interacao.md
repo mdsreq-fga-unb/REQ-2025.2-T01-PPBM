@@ -29,37 +29,32 @@ das tarefas da equipe durante o desenvolvimento.
 
 ### 5.2.2 Tipos e Frequência das Reuniões
 
-<!-- ### Reuniões Regulares
-- **Daily Standups**: Atualizações diárias
-- **Sprint Planning**: Planejamento de sprints
-- **Sprint Review**: Demonstração de funcionalidades
-- **Retrospectivas**: Melhoria contínua
+- Daily Scrum (Diário): Reuniões de no máximo 15 minutos, para alinhar tarefas do dia, identificar obstáculos e ajustar prioridades com toda a equipe.
 
-### Ferramentas de Comunicação
-- Plataforma de comunicação (Slack, Teams, etc.)
-- Sistema de gestão de projetos (Jira, Trello, etc.)
-- Repositório de código (GitHub, GitLab, etc.) -->
+- Backlog Refinement (Refinamento do Backlog): Reunião periódica que acontece antes da Sprint Planning, servindo para priorizar, detalhar e revisar itens do backlog, facilitando as próximas sprints.
+
+- Sprint Planning (A cada 2 semanas): Acontece no ínicio de cada sprint, com duração de aproximadamente 2 horas ou mais para definir entregas, prioridades e distribuir tarefas. 
+
+- Sprint Review (A cada 2 semanas): Ao final de cada sprint a equipe se reune junto com o cliente para apresentar resultados, coletar feedbacks e ajustar escopo do projeto.
+
+- Sprint Retrospective: Imediato a Sprint Review, a equipe se reune para refletir sobre práticas, discutir melhorias e propor ações.
 
 ## 5.3 Frequência de Contato com o Cliente
 
-<!-- ### Coleta de Feedback
-- Sessões de feedback regulares
-- Testes de usabilidade
-- Questionários e pesquisas
+- Sprint Review: Previstas para ocorrer a cada 2 semanas, onde o cliente participa para revisar as entregas, fornecer feedbacks e alinhas prioridades futuras. Essa será a principal interação formal com o cliente.
 
-### Incorporação de Mudanças
-- Processo de mudança de requisitos
-- Priorização de features
-- Gestão de expectativas -->
+- Comunicação pelo WhatsApp: Em situações de dúvidas rápidas ou discussões informais ao longo do projeto, será utilizada essa ferramenta pela sua praticidade e acessibilidade.
 
 ## 5.4 Processo de Validação
 
-<!-- ### Relatórios de Progresso
-- Status semanal
-- Métricas de performance
-- Indicadores de qualidade
+- Definition of Ready (DoR): A equipe só inicia o desenvolvimento quando as histórias estiverem claras, critérios de aceitação definidos e documentação adequada. Isso evita retrabalho e garante entendimento compartilhado, prática comum e recomendada para preparar o backlog antes da sprint.
 
-### Demonstrações
-- Demo sessions regulares
-- Protótipos interativos
-- Versões de teste -->
+- Definition of Done (DoD): Serve para assegurar que uma funcionalidade só seja considerada concluída após passar por testes (unitários, integração), validações internas e estar alinhada com os critérios de aceitação. É um padrão para manter qualidade e previsibilidade no incremento de produto entregue.
+
+- Teste de Aceitação pelo Cliente: É realizado principalmente na Sprint Review, quando o cliente valida o produto entregue com base nos critérios definidos. Além disso, nos refinamentos de negócios, há entregas rápidas e prototipagens a serem validadas com o cliente durante a sprint, promovendo feedbacks ainda mais ágeis e contínuos.
+
+## Histórico de Versão
+
+| Data | Versão | Descrição | Autor(es) | Revisor(es) |
+|------|--------|-----------|-----------|-------------|
+| 15/09/2025 | 1.0 | Criação inicial do documento de interação. | Philipe Morais | (a definir) |
