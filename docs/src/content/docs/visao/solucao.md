@@ -1,5 +1,5 @@
 ---
-title: 2 - Solução Proposta
+title: Solução Proposta
 description: Descrição detalhada da solução proposta para o projeto PPBM.
 ---
 

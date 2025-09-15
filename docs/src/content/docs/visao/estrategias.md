@@ -1,5 +1,5 @@
 ---
-title: 3 - Estratégias de Engenharia de Software
+title: Estratégias de Engenharia de Software
 description: Estratégias e metodologias de engenharia de software aplicadas no projeto PPBM.
 ---
 

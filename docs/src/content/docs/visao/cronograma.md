@@ -1,5 +1,5 @@
 ---
-title: 4 - Cronograma e Entregas
+title: Cronograma e Entregas
 description: Cronograma detalhado do projeto PPBM com marcos e entregas planejadas.
 ---
 

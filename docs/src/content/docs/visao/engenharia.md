@@ -1,5 +1,5 @@
 ---
-title: 3 - Engenharia de Software
+title: Engenharia de Software
 description: Conceitos e práticas de engenharia de software aplicadas no projeto PPBM.
 ---
 
