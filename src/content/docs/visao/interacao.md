@@ -18,11 +18,14 @@ description: Estratégias e processos de interação entre a equipe de desenvolv
 
 ### 5.2.1 Ferramentas Utilizadas
 
-<!-- - **Product Owner**: Representante do cliente
-- **Scrum Master**: Facilitador do processo
-- **Desenvolvedores**: Implementação técnica
-- **Designers**: Interface e experiência do usuário
-- **QA**: Testes e qualidade -->
+- **WhatsApp**: Comunicações rápidas e diárias entre os membros
+da equipe e também com o cliente, sempre que necessário.
+
+- **Google Meet**: Reuniões mais formais de sprint e também para os
+encontros de validação com o cliente.
+
+- **GitHub Projects (Kanban)**: Ferramenta usada para o acompanhamento visual
+das tarefas da equipe durante o desenvolvimento.
 
 ### 5.2.2 Tipos e Frequência das Reuniões
 

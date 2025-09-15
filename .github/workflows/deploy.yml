@@ -30,18 +30,16 @@ jobs:
           version: latest
       - name: Install dependencies
         run: |
-          cd docs
           pnpm install
       - name: Build
         run: |
-          cd docs
           pnpm run build
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/build
+          path: /build
 
   deploy:
     needs: build
