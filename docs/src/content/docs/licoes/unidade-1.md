@@ -22,7 +22,7 @@ description: Durante o desenvolvimento inicial do projeto, várias lições impo
 
   - **Desafio**: Gerenciar eficientemente a disponibilidade dos membros da equipe para garantir a realização das reuniões de alinhamento e o cumprimento dos prazos de entrega,
   considerando as diferentes agendas e responsabilidades individuais.
-  - **Como está sendo superado?**: Implementamos um sistema de Heat-map, que é baseado em um calendário compartilhado com horários váriaveis para as reuniões, mas que atende a todos de acordo com a disponibilidade com a disciplina.
+  - **Como foi superado?**: Implementamos um sistema de Heat-map, que é baseado em um calendário compartilhado com horários váriaveis para as reuniões, mas que atende a todos de acordo com a disponibilidade com a disciplina.
 
   ### Capacitação Técnica da Equipe frente a Novas Tecnologias
   
