@@ -22,6 +22,9 @@ Além disso, o sistema não dispõe de registro estruturado de informações mé
 
 Por fim, identificou-se a inexistência de um espaço dedicado ao acompanhamento específico de crianças neurodivergentes, o que restringe a personalização e a adequação do apoio oferecido a esse público.
 
+![Diagrama de Ishikawa](./imagens/diagrama_ishikawa.png)
+<b>Figura 1: Diagrama de Ishikawa (Fishbone) com os principais desafios do projeto.</b>
+
 ## Desafios do Projeto
 
 O desenvolvimento do sistema de gestão de presença enfrenta um conjunto de desafios que refletem tanto as limitações do contexto quanto as necessidades específicas do Programa do CBMDF. Esses desafios não se restringem apenas à implementação técnica, mas abrangem também aspectos de engajamento e sustentabilidade do projeto.
