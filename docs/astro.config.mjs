@@ -60,6 +60,7 @@ export default defineConfig({
 							label: "Interação entre Equipe e Cliente",
 							slug: "visao/interacao",
 						},
+
 					],
 				},
 				{
@@ -71,6 +72,15 @@ export default defineConfig({
 						},
 					],
 				},
+				{
+					label: "Entregas",
+					items: [
+						{
+							label: "Unidade 1",
+							slug: "entregas/unidade-1",
+						},
+					],
+				}
 			],
 		}),
 	],
