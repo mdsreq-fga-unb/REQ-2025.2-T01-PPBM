@@ -40,7 +40,7 @@ Com base nas características do projeto e nos desafios enfrentados pelo Program
 
 ## Histórico de Versão
 
-| Data       | Versão | Descrição                                                                    | Autor(es)      | Revisor(es) |
-| ---------- | ------ | ---------------------------------------------------------------------------- | -------------- | ----------- |
-| 15/09/2025 | 1.0    | Criação inicial do documento de estratégias.                                 | Julia Patricio | Todos       |
-| 01/09/2025 | 1.1    | Atualização da estratégia de XP para ScrumXP e ajuste do quadro comparativo. | Equipe         | Todos       |
+| Data       | Versão | Descrição                                                                    | Autor(es)      | Revisor(es)    |
+| ---------- | ------ | ---------------------------------------------------------------------------- | -------------- | -------------- |
+| 15/09/2025 | 1.0    | Criação inicial do documento de estratégias.                                 | Julia Patricio | Todos          |
+| 15/09/2025 | 1.1    | Atualização da estratégia de XP para ScrumXP e ajuste do quadro comparativo. | Julia Patricio | Vitor Trancoso |
