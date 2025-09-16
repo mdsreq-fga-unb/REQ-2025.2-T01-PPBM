@@ -16,7 +16,7 @@ description: Estratégias e processos de interação entre a equipe e o cliente.
 
 ## Comunicação
 
-### Ferramentas Utilizadas
+### Ferramentas de Comunicação
 
 - **WhatsApp**: Comunicações rápidas e diárias entre os membros
 da equipe e também com o cliente, sempre que necessário.
@@ -27,19 +27,19 @@ encontros de validação com o cliente.
 - **GitHub Projects (Kanban)**: Ferramenta usada para o acompanhamento visual
 das tarefas da equipe durante o desenvolvimento.
 
-### Tipos e Frequência das Reuniões
+### Métodos e Frequência das Reuniões
 
 - Daily Scrum (Diário): Reuniões de no máximo 15 minutos, para alinhar tarefas do dia, identificar obstáculos e ajustar prioridades com toda a equipe.
 
 - Backlog Refinement (Refinamento do Backlog): Reunião periódica que acontece antes da Sprint Planning, servindo para priorizar, detalhar e revisar itens do backlog, facilitando as próximas sprints.
 
-- Sprint Planning (A cada 2 semanas): Acontece no ínicio de cada sprint, com duração de aproximadamente 2 horas ou mais para definir entregas, prioridades e distribuir tarefas. 
+- Sprint Planning (A cada 2 semanas): Acontece no ínicio de cada sprint, com duração de aproximadamente 2 horas ou mais para definir entregas, prioridades e distribuir tarefas.
 
 - Sprint Review (A cada 2 semanas): Ao final de cada sprint a equipe se reune junto com o cliente para apresentar resultados, coletar feedbacks e ajustar escopo do projeto.
 
 - Sprint Retrospective: Imediato a Sprint Review, a equipe se reune para refletir sobre práticas, discutir melhorias e propor ações.
 
-## Frequência de Contato com o Cliente
+## Frequência de Intrações com o Cliente
 
 - Sprint Review: Previstas para ocorrer a cada 2 semanas, onde o cliente participa para revisar as entregas, fornecer feedbacks e alinhas prioridades futuras. Essa será a principal interação formal com o cliente.
 
