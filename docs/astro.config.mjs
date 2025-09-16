@@ -56,10 +56,6 @@ export default defineConfig({
 							label: "Interação entre Equipe e Cliente",
 							slug: "visao/interacao",
 						},
-						{
-							label: "Referências Bibliográficas",
-							slug: "visao/referencias",
-						},
 					],
 				},
 				{
