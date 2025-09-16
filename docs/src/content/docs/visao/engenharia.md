@@ -3,8 +3,6 @@ title: Engenharia de Software
 description: Conceitos e práticas de engenharia de software aplicadas no projeto PPBM.
 ---
 
-# Engenharia de Software
-
 ## Conceitos Fundamentais
 
 Esta seção apresenta os conceitos fundamentais de engenharia de software aplicados no projeto PPBM.
@@ -81,6 +79,6 @@ Esta seção apresenta os conceitos fundamentais de engenharia de software aplic
 
 ## Histórico de Versão
 
-| Data | Versão | Descrição | Autor(es) | Revisor(es) |
-|------|--------|-----------|-----------|-------------|
-| 15/09/2025 | 1.0 | A definir. | A definir | (a definir) |
+| Data       | Versão | Descrição  | Autor(es) | Revisor(es) |
+| ---------- | ------ | ---------- | --------- | ----------- |
+| 15/09/2025 | 1.0    | A definir. | A definir | (a definir) |

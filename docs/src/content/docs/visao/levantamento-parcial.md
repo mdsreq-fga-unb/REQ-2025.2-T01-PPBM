@@ -1,4 +1,7 @@
-# Levantamento Parcial de Requisitos
+---
+title: Levantamento Parcial de Requisitos
+description: Levantamento inicial de requisitos funcionais do sistema de gestão de atividades do Programa Bombeiro Mirim.
+---
 
 A equipe realizou um levantamento parcial de requisitos funcionais de software com o objetivo de compreender melhor o escopo do sistema e fundamentar a elaboração do cronograma do projeto. Este levantamento inicial permite uma visão mais clara das funcionalidades necessárias e auxilia no planejamento das atividades de desenvolvimento.
 

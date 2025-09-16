@@ -3,8 +3,6 @@ title: Cronograma e Entregas
 description: Cronograma detalhado do projeto PPBM com marcos e entregas planejadas.
 ---
 
-# 📅 Cronograma e Entregas
-
 O cronograma abaixo apresenta a distribuição das atividades do projeto ao longo das sprints, com os objetivos principais, entregas esperadas e os momentos de validação com o cliente.
 
 ---
@@ -97,6 +95,6 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 
 **Validação:** Cliente valida e homologa o MVP
 
-| Data | Versão | Descrição | Autor(es) | Revisor(es) |
-|------|--------|-----------|-----------|-------------|
-| 15/09/2025 | 1.0 | Criação inicial do documento de cronograma. | Mariana Gonzaga | Todos |
+| Data       | Versão | Descrição                                   | Autor(es)       | Revisor(es) |
+| ---------- | ------ | ------------------------------------------- | --------------- | ----------- |
+| 15/09/2025 | 1.0    | Criação inicial do documento de cronograma. | Mariana Gonzaga | Todos       |
