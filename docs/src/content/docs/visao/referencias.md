@@ -17,4 +17,4 @@ description: Estratégias e processos de interação entre a equipe de desenvolv
 
 | Data | Versão | Descrição | Autor(es) | Revisor(es) |
 |------|--------|-----------|-----------|-------------|
-| 15/09/2025 | 1.0 | Criação inicial do documento de referências. | Philipe Morais | (a definir) |
+| 15/09/2025 | 1.0 | Criação inicial do documento de referências. | Philipe Morais | Todos |

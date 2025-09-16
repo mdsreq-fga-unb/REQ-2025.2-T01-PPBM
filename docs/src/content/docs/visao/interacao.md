@@ -57,4 +57,4 @@ das tarefas da equipe durante o desenvolvimento.
 
 | Data | Versão | Descrição | Autor(es) | Revisor(es) |
 |------|--------|-----------|-----------|-------------|
-| 15/09/2025 | 1.0 | Criação inicial do documento de interação. | Philipe Morais | (a definir) |
+| 15/09/2025 | 1.0 | Criação inicial do documento de interação. | Philipe Morais | Todos |

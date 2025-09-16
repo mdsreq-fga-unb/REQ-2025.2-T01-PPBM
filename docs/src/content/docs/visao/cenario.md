@@ -23,7 +23,7 @@ Além disso, o sistema não dispõe de registro estruturado de informações mé
 Por fim, identificou-se a inexistência de um espaço dedicado ao acompanhamento específico de crianças neurodivergentes, o que restringe a personalização e a adequação do apoio oferecido a esse público.
 
 ![Diagrama de Ishikawa](./imagens/diagrama_ishikawa.png)
-<b>Figura 1: Diagrama de Ishikawa (Fishbone) com os principais desafios do projeto.</b>
+<b>Figura 1:</b> Diagrama de Ishikawa (Fishbone) com os principais desafios do projeto.
 
 ## Desafios do Projeto
 
@@ -47,3 +47,7 @@ O público-alvo do sistema são os gestores e professores das 12 unidades do PBM
 - Faixa etária de 35 a 50 anos.
 
 Os usuários finais indiretos são os pais ou responsáveis, que poderão acessar informações de presença, justificativas, relatórios e comunicação com a equipe. Já os beneficiários diretos são as crianças e adolescentes (7 a 14 anos) que participam do programa, conhecidos como <b>Brigadinos ou Brigadinas</b>.
+
+| Data | Versão | Descrição | Autor(es) | Revisor(es) |
+|------|--------|-----------|-----------|-------------|
+| 15/09/2025 | 1.0 | Criação inicial do documento de cenário. | Lucas Branco | Todos |
