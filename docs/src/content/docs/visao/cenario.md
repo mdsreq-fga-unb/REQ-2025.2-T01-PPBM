@@ -1,6 +1,5 @@
 ---
 title: Cenário Atual do Cliente e do Negócio
-description: Análise do cenário atual do cliente e contexto de negócio do projeto PPBM.
 ---
 
 ## Contexto do Cliente
