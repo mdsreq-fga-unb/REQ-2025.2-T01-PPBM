@@ -49,6 +49,10 @@ export default defineConfig({
 							slug: "visao/estrategias",
 						},
 						{
+							label: "Levantamento Parcial de Requisitos",
+							slug: "visao/levantamento-parcial",
+						},
+						{
 							label: "Cronograma e Entregas",
 							slug: "visao/cronograma",
 						},
