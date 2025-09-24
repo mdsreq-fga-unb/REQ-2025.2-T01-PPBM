@@ -1,6 +1,6 @@
 import "dotenv/config";
-import Fastify from "fastify";
 import fastifyCors from "@fastify/cors";
+import Fastify from "fastify";
 
 import { auth } from "./lib/auth";
 
@@ -35,6 +35,7 @@ fastify.route({
 			});
 			const response = await auth.handler(req);
 			reply.status(response.status);
+			// biome-ignore lint/suspicious/useIterableCallbackReturn: ignore
 			response.headers.forEach((value, key) => reply.header(key, value));
 			reply.send(response.body ? await response.text() : null);
 		} catch (error) {
@@ -48,13 +49,13 @@ fastify.route({
 });
 
 fastify.get("/", async () => {
-	return "OK";
+	return "Hello, welcome to the Fastify server!";
 });
 
-fastify.listen({ port: 3000 }, (err) => {
+fastify.listen({ port: 3000, host: "0.0.0.0" }, (err) => {
 	if (err) {
 		fastify.log.error(err);
 		process.exit(1);
 	}
-	console.log("Server running on port 3000");
+	console.log("Server running on http://localhost:3000");
 });
