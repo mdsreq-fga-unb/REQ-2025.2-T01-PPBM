@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:22-alpine
 
 # Habilita o Corepack para usar pnpm conforme packageManager do monorepo
 RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
@@ -15,5 +15,3 @@ RUN pnpm install --frozen-lockfile
 
 # Por padrão, os serviços irão sobrescrever o comando via docker-compose
 CMD ["node", "-e", "console.log('Base dev image ready')"]
-
-

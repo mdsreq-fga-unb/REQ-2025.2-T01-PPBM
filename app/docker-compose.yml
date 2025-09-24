@@ -5,7 +5,7 @@ services:
     image: postgres:16-alpine
     container_name: ppbm-postgres
     env_file:
-      - ./app/apps/server/.env
+      - ./apps/server/.env
     environment:
       POSTGRES_DB: backend
       POSTGRES_USER: postgres
@@ -26,7 +26,7 @@ services:
       dockerfile: apps/server/Dockerfile.dev
     container_name: ppbm-server
     env_file:
-      - ./app/apps/server/.env
+      - ./apps/server/.env
     environment:
       NODE_ENV: development
     ports:
@@ -35,11 +35,10 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./:/app
-      - node_modules_root:/app/node_modules
-      - node_modules_server:/app/apps/server/node_modules
-      - prisma_server:/app/apps/server/prisma/generated
-    command: ["pnpm", "turbo", "-F", "server", "dev"]
+      - ./apps/server/src:/app/apps/server/src
+      - ./apps/server/prisma:/app/apps/server/prisma
+    working_dir: /app
+    command: ["pnpm", "exec", "tsx", "watch", "apps/server/src/index.ts"]
 
   client:
     build:
@@ -47,22 +46,18 @@ services:
       dockerfile: apps/client/Dockerfile.dev
     container_name: ppbm-client
     env_file:
-      - ./app/apps/client/.env
+      - ./apps/client/.env
     ports:
       - "4321:4321"
     depends_on:
       - server
     volumes:
-      - ./:/app
-      - node_modules_root:/app/node_modules
-      - node_modules_client:/app/apps/client/node_modules
-    command: ["pnpm", "turbo", "-F", "client", "dev", "--", "--host", "0.0.0.0"]
+      - ./apps/client/src:/app/apps/client/src
+      - ./apps/client/public:/app/apps/client/public
+    working_dir: /app/apps/client
+    command: ["pnpm", "exec", "astro", "dev", "--host", "0.0.0.0"]
 
 volumes:
   db_data:
-  node_modules_root:
-  node_modules_server:
-  node_modules_client:
-  prisma_server:
 
 

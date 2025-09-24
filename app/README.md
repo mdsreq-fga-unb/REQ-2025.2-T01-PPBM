@@ -35,19 +35,8 @@ The API is running at [http://localhost:3000](http://localhost:3000) and client 
 ## Project Structure
 
 ```
-backend/
+app/
 ├── apps/
     └── client/      # Frontend (Astro)
 │   └── server/      # Backend API (Fastify)
 ```
-
-## Available Scripts
-
-- `pnpm dev`: Start all applications in development mode
-- `pnpm build`: Build all applications
-- `pnpm dev:client`: Start only the web application
-- `pnpm dev:server`: Start only the server
-- `pnpm check-types`: Check TypeScript types across all apps
-- `pnpm db:push`: Push schema changes to database
-- `pnpm db:studio`: Open database studio UI
-- `pnpm check`: Run Biome formatting and linting
