@@ -6,18 +6,24 @@ WORKDIR /app
 
 # Copia manifestos para cache de dependências
 COPY ../../package.json ../../pnpm-lock.yaml ../../pnpm-workspace.yaml ../../turbo.json ./
-COPY package.json ./apps/server/package.json
 
-RUN pnpm install --frozen-lockfile
+# Criar estrutura de diretórios do monorepo
+RUN mkdir -p apps/server apps/client
+
+# Copia package.json files para manter a estrutura do workspace
+COPY package.json ./apps/server/package.json
+COPY ../../apps/client/package.json ./apps/client/package.json
+
+RUN pnpm install --no-frozen-lockfile --shamefully-hoist
+
+# Generate Prisma client from the server workspace
+RUN pnpm --filter server prisma generate
 
 # Copia o restante do código do servidor
 COPY . ./apps/server
 
-WORKDIR /app/apps/server
-
+# Keep working directory at root for turbo commands
 EXPOSE 3000
 
-# Hot reload usando tsx watch
-CMD ["pnpm", "dev"]
-
-
+# Hot reload usando turbo dev (será sobrescrito pelo docker-compose)
+CMD ["pnpm", "turbo", "-F", "server", "dev"]
