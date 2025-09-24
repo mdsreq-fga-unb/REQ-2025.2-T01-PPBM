@@ -22,7 +22,7 @@ services:
 
   server:
     build:
-      context: .
+      context: ./apps/server
       dockerfile: apps/server/Dockerfile.dev
     container_name: ppbm-server
     env_file:
@@ -42,7 +42,7 @@ services:
 
   client:
     build:
-      context: .
+      context: ./apps/client
       dockerfile: apps/client/Dockerfile.dev
     container_name: ppbm-client
     env_file:
