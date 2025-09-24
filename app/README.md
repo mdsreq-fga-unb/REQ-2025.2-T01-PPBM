@@ -1,6 +1,4 @@
-# backend
-
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines Fastify, and more.
+# PPBM
 
 ## Features
 
@@ -40,12 +38,7 @@ Then, run the development server:
 pnpm dev
 ```
 
-The API is running at [http://localhost:3000](http://localhost:3000).
-
-
-
-
-
+The API is running at [http://localhost:3000](http://localhost:3000) and client is running at [http://localhost:4321](http://localhost:4321)
 
 
 ## Project Structure
@@ -53,6 +46,7 @@ The API is running at [http://localhost:3000](http://localhost:3000).
 ```
 backend/
 ├── apps/
+    └── client/      # Frontend (Astro)
 │   └── server/      # Backend API (Fastify)
 ```
 
@@ -60,7 +54,7 @@ backend/
 
 - `pnpm dev`: Start all applications in development mode
 - `pnpm build`: Build all applications
-- `pnpm dev:web`: Start only the web application
+- `pnpm dev:client`: Start only the web application
 - `pnpm dev:server`: Start only the server
 - `pnpm check-types`: Check TypeScript types across all apps
 - `pnpm db:push`: Push schema changes to database
