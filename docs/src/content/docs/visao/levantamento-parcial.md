@@ -119,3 +119,31 @@ Critérios de aceite: validação de formato e tamanho; preview de imagens; comp
 **RF-025 – Filtros & busca**
 Busca por nome, CPF, turma, unidade, status de justificativa e período.
 Critérios de aceite: busca em tempo real; filtros combináveis; resultados ordenados por relevância; histórico de buscas recentes.
+
+## Requisitos Não Funcionais (RNF)
+
+### Módulo: Desempenho & Escalabilidade
+
+**RNF-001 – Tempo de resposta**
+O sistema deve responder a consultas e operações críticas em até 5 segundos em condições normais de uso.
+Critérios de aceite: medições automatizadas em consultas de presença e histórico; máximo de 5% das operações acima de 2s; relatórios gerados em até 10s.
+
+### Módulo: Segurança & Privacidade
+
+**RNF-002 – Proteção de dados pessoais**
+O sistema deve atender à LGPD, garantindo consentimento para coleta de dados sensíveis e direito de exclusão mediante solicitação.
+Critérios de aceite: registro de consentimento armazenado; logs de exclusão segura; relatórios de conformidade disponíveis.
+
+**RNF-003 – Criptografia**
+Todos os dados sensíveis devem ser armazenados com criptografia AES-256 e transmitidos via HTTPS/TLS 1.2 ou superior.
+Critérios de aceite: inspeção de rede sem tráfego em texto puro; auditoria de banco confirmando uso de criptografia.
+
+### Módulo: Manutenibilidade & Evolutividade
+
+**RNF-004 – Documentação técnica**
+O sistema deve manter documentação atualizada de APIs, banco de dados e arquitetura.
+Critérios de aceite: repositório de documentação acessível à equipe; atualização obrigatória a cada release.
+
+**RNF-005 – Testabilidade**
+O sistema deve permitir criação de testes automatizados cobrindo no mínimo 70% das funcionalidades críticas.
+Critérios de aceite: pipeline de integração contínua com relatórios de cobertura; falha no build caso a cobertura fique abaixo do limite.
