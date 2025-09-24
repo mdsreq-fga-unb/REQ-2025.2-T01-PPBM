@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "app",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -12,8 +12,7 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "check-types": "turbo check-types",
-    "dev:native": "turbo -F native dev",
-    "dev:web": "turbo -F web dev",
+    "dev:client": "turbo -F client dev",
     "dev:server": "turbo -F server dev",
     "db:push": "turbo -F server db:push",
     "db:studio": "turbo -F server db:studio",

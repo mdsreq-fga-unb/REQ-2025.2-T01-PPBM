@@ -1,0 +1,23 @@
+FROM node:22-alpine
+
+RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
+
+WORKDIR /app
+
+# Copia manifestos para cache de dependências
+COPY ../../package.json ../../pnpm-lock.yaml ../../pnpm-workspace.yaml ../../turbo.json ./
+COPY package.json ./apps/server/package.json
+
+RUN pnpm install --frozen-lockfile
+
+# Copia o restante do código do servidor
+COPY . ./apps/server
+
+WORKDIR /app/apps/server
+
+EXPOSE 3000
+
+# Hot reload usando tsx watch
+CMD ["pnpm", "dev"]
+
+

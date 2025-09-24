@@ -1,0 +1,68 @@
+name: ppbm-dev
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ppbm-postgres
+    env_file:
+      - ./app/apps/server/.env
+    environment:
+      POSTGRES_DB: backend
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile.dev
+    container_name: ppbm-server
+    env_file:
+      - ./app/apps/server/.env
+    environment:
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./:/app
+      - node_modules_root:/app/node_modules
+      - node_modules_server:/app/apps/server/node_modules
+      - prisma_server:/app/apps/server/prisma/generated
+    command: ["pnpm", "turbo", "-F", "server", "dev"]
+
+  client:
+    build:
+      context: .
+      dockerfile: apps/client/Dockerfile.dev
+    container_name: ppbm-client
+    env_file:
+      - ./app/apps/client/.env
+    ports:
+      - "4321:4321"
+    depends_on:
+      - server
+    volumes:
+      - ./:/app
+      - node_modules_root:/app/node_modules
+      - node_modules_client:/app/apps/client/node_modules
+    command: ["pnpm", "turbo", "-F", "client", "dev", "--", "--host", "0.0.0.0"]
+
+volumes:
+  db_data:
+  node_modules_root:
+  node_modules_server:
+  node_modules_client:
+  prisma_server:
+
+

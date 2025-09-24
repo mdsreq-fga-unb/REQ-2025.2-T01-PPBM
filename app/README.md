@@ -12,34 +12,25 @@
 - **Husky** - Git hooks for code quality
 - **Turborepo** - Optimized monorepo build system
 
-## Getting Started
 
-First, install the dependencies:
+## Getting Started with Docker
+
+To upload the complete environment (Postgres, API and Client) with hot reload:
 
 ```bash
-pnpm install
-```
-## Database Setup
-
-This project uses PostgreSQL with Prisma.
-
-1. Make sure you have a PostgreSQL database set up.
-2. Update your `apps/server/.env` file with your PostgreSQL connection details.
-
-3. Generate the Prisma client and push the schema:
-```bash
-pnpm db:push
+docker compose -f docker-compose.dev.yml up --build
 ```
 
-
-Then, run the development server:
-
+Useful commands:
 ```bash
-pnpm dev
+# Apply Prisma schema (run once with services live)
+docker compose -f docker-compose.dev.yml exec server pnpm -C apps/server db:push
+
+# Open Prisma Studio
+docker compose -f docker-compose.dev.yml exec server pnpm -C apps/server db:studio
 ```
 
 The API is running at [http://localhost:3000](http://localhost:3000) and client is running at [http://localhost:4321](http://localhost:4321)
-
 
 ## Project Structure
 
