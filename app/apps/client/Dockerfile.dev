@@ -6,17 +6,25 @@ WORKDIR /app
 
 # Copia manifestos para cache de dependências
 COPY ../../package.json ../../pnpm-lock.yaml ../../pnpm-workspace.yaml ../../turbo.json ./
-COPY package.json ./apps/client/package.json
 
-RUN pnpm install --frozen-lockfile
+# Criar estrutura de diretórios do monorepo
+RUN mkdir -p apps/server apps/client
+
+# Copia package.json files para manter a estrutura do workspace
+COPY package.json ./apps/client/package.json
+COPY ../../apps/server/package.json ./apps/server/package.json
+
+RUN pnpm install --no-frozen-lockfile --shamefully-hoist
+
+# Install the specific rollup binary for Alpine Linux (musl)
+RUN pnpm add @rollup/rollup-linux-x64-musl --ignore-scripts --ignore-workspace-root-check || \
+    npm install @rollup/rollup-linux-x64-musl --no-scripts --prefix /tmp && \
+    cp -r /tmp/node_modules/@rollup /app/node_modules/ || true
 
 # Copia o restante do código do client
 COPY . ./apps/client
 
-WORKDIR /app/apps/client
-
+# Keep working directory at root for turbo commands
 EXPOSE 4321
 
-CMD ["pnpm", "dev", "--", "--host", "0.0.0.0"]
-
-
+CMD ["pnpm", "turbo", "-F", "client", "dev", "--", "--host", "0.0.0.0"]
