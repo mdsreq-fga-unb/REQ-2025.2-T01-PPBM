@@ -6,10 +6,6 @@ services:
     container_name: ppbm-postgres
     env_file:
       - ./apps/server/.env
-    environment:
-      POSTGRES_DB: backend
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
     volumes:
@@ -47,6 +43,8 @@ services:
     container_name: ppbm-client
     env_file:
       - ./apps/client/.env
+    environment:
+      PUBLIC_CLIENT_ENV: development
     ports:
       - "4321:4321"
     depends_on:
