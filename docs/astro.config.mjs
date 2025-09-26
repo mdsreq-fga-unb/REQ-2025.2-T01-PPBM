@@ -49,7 +49,7 @@ export default defineConfig({
 							slug: "visao/estrategias",
 						},
 						{
-							label: "Levantamento Parcial de Requisitos",
+							label: "Requisitos",
 							slug: "visao/levantamento-parcial",
 						},
 						{
