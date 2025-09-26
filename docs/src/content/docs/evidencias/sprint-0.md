@@ -4,7 +4,7 @@ description: Evidências da sprint 0.
 ---
 
 
-# 1° Reunião com o cliente
+# 1° Reunião de alinhamento com o cliente
 
 <div style="display: flex; justify-content: center; align-items: center; padding: 20px 0;">
   <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; width: 100%; max-width: 800px;">
@@ -19,6 +19,6 @@ description: Evidências da sprint 0.
 | --------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | **Elicitação e Descoberta** | Entrevista, Brainstorming, Análise documental                         | Levantamento de requisitos **a nível de usuário → intermediário → específico**; primeiros RFs/RNFs |
 | **Análise de contexto**     | Análise documental, Análise de stakeholders                           | Declaração do problema; Visão de Produto                                                           |
-| **Representação**           | User Story Mapping (USM), Casos de Uso (rascunho inicial)             | Fluxo do usuário inicial                                                                           |
+| **Representação**           | User Story (US)             | Fluxo do usuário inicial                                                                           |
 | **Organização**             | Início da definição de DoR e DoD; definição das tasks para elicitação | Critérios iniciais de entrada/saída das user stories e planejamento da elicitação                  |
 
