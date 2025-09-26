@@ -93,8 +93,12 @@ export default defineConfig({
 					label: "Evidências",
 					items: [
 						{
-							label: "Unidade 1",
-							slug: "evidencias/unidade-1",
+							label: "Sprint 0",
+							slug: "evidencias/sprint-0",
+						},
+						{
+							label: "Sprint 1",
+							slug: "evidencias/sprint-1",
 						},
 					],
 				}
