@@ -1,10 +1,9 @@
 ---
-title: Levantamento Parcial de Requisitos
+title: Requisitos
 ---
 
-# Levantamento Parcial de Requisitos
 
-A equipe realizou um levantamento parcial de requisitos funcionais de software com o objetivo de compreender melhor o escopo do sistema e fundamentar a elaboração do cronograma do projeto. Este levantamento inicial permite uma visão mais clara das funcionalidades necessárias e auxilia no planejamento das atividades de desenvolvimento.
+A equipe realizou o refinamento de requisitos funcionais e não funcionais de software com o objetivo de compreender melhor o escopo do sistema e fundamentar a elaboração do cronograma do projeto. Este refinamento permite uma visão mais clara das funcionalidades necessárias e auxilia no planejamento das atividades de desenvolvimento.
 
 ---
 

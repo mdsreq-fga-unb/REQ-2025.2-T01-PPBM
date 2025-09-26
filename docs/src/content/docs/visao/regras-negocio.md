@@ -1,8 +1,7 @@
 ---
-title: Regras de Negócio
+title: Regras de Negócio (RB)
 ---
 
-# Regras de Negócio (RB)
 
 Este documento apresenta as Regras de Negócio (RB) do sistema FireForce - PPBM. As regras de negócio definem as políticas, restrições e comportamentos específicos que o sistema deve seguir para atender aos requisitos organizacionais e operacionais do Programa Bombeiro Mirim.
 
