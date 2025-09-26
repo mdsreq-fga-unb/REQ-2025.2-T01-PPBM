@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bombeiro Mirim — Prototipo 4</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    html, body { scroll-behavior: smooth; }
+
+    @media print {
+      body { background: #fff !important; }
+      #app, #header, #sidebar { display: none !important; }
+      #print-area { display: block !important; }
+    }
+    #print-area { display: none; }
+
+    .soft-shadow { box-shadow: 0 10px 30px rgba(0,0,0,.08), 0 6px 10px rgba(0,0,0,.06); }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-white via-slate-50 to-slate-100 text-slate-900">
+  <div id="app" class="min-h-screen">
+    <!-- Header -->
+    <header id="header" class="sticky top-0 z-30 backdrop-blur bg-white/80 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-4">
+        <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-[#E11D48]/10 text-[#E11D48] soft-shadow">
+          <!-- Insígnia -->
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="drop-shadow">
+            <path d="M12 2l3 3 4 1-1 4 2 3-2 3 1 4-4 1-3 3-3-3-4-1 1-4-2-3 2-3-1-4 4-1 3-3z" fill="currentColor" opacity=".15"/>
+            <path d="M12 6a6 6 0 016 6v6H6v-6a6 6 0 016-6z" stroke="currentColor" stroke-width="1.5" opacity=".6"/>
+            <circle cx="12" cy="13" r="2.2" fill="currentColor" opacity=".6"/>
+          </svg>
+        </div>
+        <div class="flex-1">
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">Programa Bombeiro Mirim</h1>
+          <p class="text-slate-500 text-sm">Gestão centralizada de crianças, presença, fichas médicas e comunicação</p>
+        </div>
+        <div class="hidden md:flex items-center gap-2">
+          <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs border border-slate-200">Versão Protótipo</span>
+          <span class="px-3 py-1 rounded-full bg-[#E11D48]/10 text-[#BE123C] text-xs border border-[#E11D48]/20">Dados locais</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-[280px,1fr] gap-6">
+      <!-- Sidebar -->
+      <aside id="sidebar" class="lg:sticky lg:top-20 self-start">
+        <nav class="bg-white rounded-2xl p-3 soft-shadow border border-slate-200">
+          <ul class="space-y-2">
+            <li><button data-section="cadastro" class="nav-btn w-full text-left px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition flex items-center gap-2">
+              <span class="text-lg">👶</span><span>Cadastro</span>
+            </button></li>
+            <li><button data-section="presencas" class="nav-btn w-full text-left px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition flex items-center gap-2">
+              <span class="text-lg">🗓️</span><span>Presenças</span>
+            </button></li>
+            <li><button data-section="historico" class="nav-btn w-full text-left px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition flex items-center gap-2">
+              <span class="text-lg">📜</span><span>Histórico</span>
+            </button></li>
+            <li><button data-section="relatorios" class="nav-btn w-full text-left px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition flex items-center gap-2">
+              <span class="text-lg">📊</span><span>Relatórios</span>
+            </button></li>
+            <li><button data-section="comunicacao" class="nav-btn w-full text-left px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition flex items-center gap-2">
+              <span class="text-lg">💬</span><span>Comunicação</span>
+            </button></li>
+            <li><button data-section="graficos" class="nav-btn w-full text-left px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition flex items-center gap-2">
+              <span class="text-lg">📈</span><span>Gráficos</span>
+            </button></li>
+          </ul>
+        </nav>
+
+        <div class="mt-4 text-slate-600 text-xs bg-white rounded-xl p-3 border border-[#E11D48]/20">
+          Limitação: por segurança, este protótipo não coleta números de documentos (ex.: CPF). Use um ID interno.
+        </div>
+      </aside>
+
+      <!-- Main Sections -->
+      <main class="space-y-6">
+        <!-- Cadastro -->
+        <section id="cadastro" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold">Cadastro de Crianças</h2>
+            <div class="flex gap-2">
+              <button id="btnNovo" class="px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white transition">Novo cadastro</button>
+              <button id="btnSalvar" class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition">Salvar</button>
+            </div>
+          </div>
+
+          <form id="formCadastro" class="grid md:grid-cols-2 gap-4" autocomplete="off">
+            <input type="hidden" id="childId" />
+            <div>
+              <label class="block text-sm font-medium mb-1">Nome completo</label>
+              <input id="nome" required class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="Ex.: Ana Pereira" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Data de nascimento</label>
+              <input id="nascimento" type="date" required class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Responsável principal</label>
+              <input id="responsavel" required class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="Nome do responsável principal" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Contato principal</label>
+              <input id="contato" required class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="(xx) xxxxx-xxxx" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Escola</label>
+              <input id="escola" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="Nome da escola" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">ID interno (gerado automaticamente)</label>
+              <input id="idInterno" disabled class="w-full px-4 py-2 rounded-lg border border-slate-200 bg-slate-50" placeholder="Será gerado ao salvar" />
+            </div>
+
+            <div class="md:col-span-2 border-t pt-4 border-slate-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-semibold">Responsáveis adicionais</h3>
+                <button type="button" id="btnAddResponsavel" class="px-3 py-1 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white text-sm transition">+ Adicionar</button>
+              </div>
+              <div id="responsaveisAdicionais" class="space-y-3"></div>
+            </div>
+
+            <div class="md:col-span-2 border-t pt-4 border-slate-200">
+              <div class="flex items-center gap-3">
+                <input id="neuro" type="checkbox" class="w-5 h-5 accent-[#E11D48]" />
+                <label for="neuro" class="font-medium">Cadastro diferenciado (neurodivergente)</label>
+              </div>
+              <div id="neuroExtra" class="mt-3 grid md:grid-cols-2 gap-4 hidden">
+                <div>
+                  <label class="block text-sm font-medium mb-1">Acompanhamento de desenvolvimento</label>
+                  <textarea id="neuroObs" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="Observações, metas, estratégias de apoio"></textarea>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1">Profissionais envolvidos</label>
+                  <textarea id="neuroProf" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="Psicopedagogo, fono, terapeuta, etc."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="md:col-span-2 border-t pt-4 border-slate-200">
+              <h3 class="font-semibold mb-2">Ficha médica</h3>
+              <div class="grid md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1">Asma</label>
+                  <select id="asma" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]">
+                    <option value="não">Não</option>
+                    <option value="leve">Leve</option>
+                    <option value="moderada">Moderada</option>
+                    <option value="grave">Grave</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1">Alergias</label>
+                  <input id="alergias" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="Ex.: poeira, lactose..." />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1">Observações médicas</label>
+                  <input id="medObs" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="Medicamentos, recomendações" />
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <div class="mt-6">
+            <h3 class="font-semibold mb-2">Crianças cadastradas</h3>
+            <div class="flex items-center gap-3 mb-3">
+              <input id="busca" class="w-full md:w-1/2 px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="Buscar por nome ou responsável..." />
+              <button id="btnExportCriancas" class="px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white transition">Exportar CSV</button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full border border-slate-200 rounded-xl overflow-hidden">
+                <thead class="bg-slate-50">
+                  <tr class="text-left text-sm">
+                    <th class="p-3">Nome</th>
+                    <th class="p-3">Nascimento</th>
+                    <th class="p-3">Responsável</th>
+                    <th class="p-3">Contato</th>
+                    <th class="p-3">Escola</th>
+                    <th class="p-3">Neuro</th>
+                    <th class="p-3">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="listaCriancas" class="text-sm"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Presenças -->
+        <section id="presencas" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200">
+          <div class="flex flex-col md:flex-row md:items-end gap-3 mb-4">
+            <div class="flex-1">
+              <h2 class="text-xl font-semibold">Registro de Presenças</h2>
+              <p class="text-slate-500 text-sm">Marque presença, falta ou falta justificada por data</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Data</label>
+              <input id="dataPresenca" type="date" class="px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" />
+            </div>
+            <button id="btnSalvarPresencas" class="px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white transition">Salvar registro</button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full border border-slate-200 rounded-xl overflow-hidden">
+              <thead class="bg-slate-50">
+                <tr class="text-left text-sm">
+                  <th class="p-3">Criança</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3">Justificativa (se houver)</th>
+                  <th class="p-3">Advertência</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaPresencas" class="text-sm"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Histórico -->
+        <section id="historico" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200">
+          <div class="flex items-end gap-3 mb-4">
+            <div class="flex-1">
+              <h2 class="text-xl font-semibold">Histórico de Faltas</h2>
+              <p class="text-slate-500 text-sm">Consulta rápida por criança</p>
+            </div>
+            <div class="flex-1">
+              <label class="block text-sm font-medium mb-1">Criança</label>
+              <select id="histAluno" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"></select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Tipo</label>
+              <select id="histTipo" class="px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]">
+                <option value="todas">Todas</option>
+                <option value="falta">Faltas</option>
+                <option value="justificada">Faltas justificadas</option>
+              </select>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full border border-slate-200 rounded-xl overflow-hidden">
+              <thead class="bg-slate-50">
+                <tr class="text-left text-sm">
+                  <th class="p-3">Data</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3">Justificativa</th>
+                </tr>
+              </thead>
+              <tbody id="histTabela" class="text-sm"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Relatórios -->
+        <section id="relatorios" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-xl font-semibold">Relatórios</h2>
+              <p class="text-slate-500 text-sm">Gere e exporte informações</p>
+            </div>
+            <div class="flex gap-2">
+              <button id="btnGerarRelatorio" class="px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white transition">Gerar</button>
+              <button id="btnExportCSV" class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition">Exportar CSV</button>
+              <button id="btnExportPDF" class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition">Exportar PDF</button>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-4 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Período inicial</label>
+              <input id="relInicio" type="date" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Período final</label>
+              <input id="relFim" type="date" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Criança (opcional)</label>
+              <select id="relAluno" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"></select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Somente faltas?</label>
+              <select id="relSomenteFaltas" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]">
+                <option value="nao">Não</option>
+                <option value="sim">Sim</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="relatorioConteudo" class="overflow-x-auto">
+            <table class="w-full border border-slate-200 rounded-xl overflow-hidden">
+              <thead class="bg-slate-50">
+                <tr class="text-left text-sm">
+                  <th class="p-3">Data</th>
+                  <th class="p-3">Criança</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3">Justificativa</th>
+                </tr>
+              </thead>
+              <tbody id="relTabela" class="text-sm"></tbody>
+            </table>
+          </div>
+
+          <p class="mt-3 text-xs text-slate-500">
+            Dica: o botão Exportar PDF usa a impressão do navegador (Salvar como PDF).
+          </p>
+        </section>
+
+        <!-- Comunicação -->
+        <section id="comunicacao" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-xl font-semibold">Comunicação — Equipe e Responsáveis</h2>
+              <p class="text-slate-500 text-sm">Mensagens por criança (amostra local)</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="text-sm">Perfil</label>
+              <select id="perfilChat" class="px-3 py-2 rounded-lg border border-slate-300">
+                <option value="equipe">Equipe</option>
+                <option value="responsavel">Responsável</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-[280px,1fr] gap-4">
+            <div class="border rounded-xl p-3 border-slate-200">
+              <label class="block text-sm font-medium mb-2">Selecionar criança</label>
+              <div id="listaChat" class="space-y-2 max-h-80 overflow-auto"></div>
+            </div>
+            <div class="border rounded-xl flex flex-col h-[420px] border-slate-200">
+              <div id="chatCabecalho" class="px-4 py-3 border-b border-slate-200 font-medium">Selecione uma criança</div>
+              <div id="chatMensagens" class="flex-1 px-4 py-3 overflow-auto space-y-2 bg-slate-50"></div>
+              <form id="chatForm" class="p-3 border-t border-slate-200 flex gap-2">
+                <input id="chatTexto" placeholder="Escreva uma mensagem..." class="flex-1 px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" />
+                <button class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition">Enviar</button>
+              </form>
+            </div>
+          </div>
+          <p class="mt-3 text-xs text-slate-500">Aviso: este chat é apenas demonstrativo e guarda mensagens no seu navegador.</p>
+        </section>
+
+        <!-- Gráficos -->
+        <section id="graficos" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200">
+          <div class="flex flex-col sm:flex-row sm:items-end gap-3 mb-4">
+            <div class="flex-1">
+              <h2 class="text-xl font-semibold">Análise Gráfica</h2>
+              <p class="text-slate-500 text-sm">Frequência e faltas por criança</p>
+            </div>
+            <div class="flex items-end gap-3">
+              <div>
+                <label class="block text-sm font-medium mb-1">Período inicial</label>
+                <input id="gIni" type="date" class="px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">Período final</label>
+                <input id="gFim" type="date" class="px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" />
+              </div>
+              <button id="btnAtualizarGrafico" class="px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white transition">Atualizar</button>
+            </div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-6">
+            <div class="border rounded-2xl p-4 border-slate-200">
+              <h3 class="font-semibold mb-2">Presenças x Faltas (barras empilhadas)</h3>
+              <canvas id="graficoBarras" height="220"></canvas>
+            </div>
+            <div class="border rounded-2xl p-4 border-slate-200">
+              <h3 class="font-semibold mb-2">Taxa de presença (%)</h3>
+              <canvas id="graficoLinha" height="220"></canvas>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Área dedicada para impressão em PDF -->
+  <div id="print-area" class="p-6">
+    <h2 class="text-2xl font-bold mb-4">Relatório — Programa Bombeiro Mirim</h2>
+    <div id="print-content"></div>
+  </div>
+
+  <script>
+    // Utilidades e armazenamento
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => document.querySelectorAll(sel);
+
+    const LS_KEYS = {
+      criancas: 'bm_criancas',
+      presencas: 'bm_presencas',
+      mensagens: 'bm_mensagens'
+    };
+
+    const state = {
+      criancas: [],
+      presencas: [],
+      mensagens: [], // {childId, de: 'equipe'|'responsavel', texto, ts}
+      selecionadaChat: null,
+    };
+
+    function uid() {
+      return 'C' + Math.random().toString(36).slice(2, 9).toUpperCase();
+    }
+
+    function salvarLS() {
+      localStorage.setItem(LS_KEYS.criancas, JSON.stringify(state.criancas));
+      localStorage.setItem(LS_KEYS.presencas, JSON.stringify(state.presencas));
+      localStorage.setItem(LS_KEYS.mensagens, JSON.stringify(state.mensagens));
+    }
+
+    function carregarLS() {
+      try {
+        state.criancas = JSON.parse(localStorage.getItem(LS_KEYS.criancas) || '[]');
+        state.presencas = JSON.parse(localStorage.getItem(LS_KEYS.presencas) || '[]');
+        state.mensagens = JSON.parse(localStorage.getItem(LS_KEYS.mensagens) || '[]');
+      } catch(e) {
+        state.criancas = []; state.presencas = []; state.mensagens = [];
+      }
+      // Dados de exemplo mínimos
+      if (state.criancas.length === 0) {
+        const a = { id: uid(), nome: 'Ana Pereira', nascimento: '2013-05-12', responsavel: 'Marcos Pereira', contato: '(11) 99999-1111', escola: 'EMEF Vila Rosa', neuro: false, neuroObs: '', neuroProf: '', ficha: {asma:'leve', alergias:'poeira', obs:''}};
+        const b = { id: uid(), nome: 'Bruno Silva', nascimento: '2012-11-02', responsavel: 'Paula Silva', contato: '(11) 98888-2222', escola: 'EMEF Centro', neuro: true, neuroObs: 'Plano semanal com reforço visual', neuroProf: 'Psicopedagogo', ficha: {asma:'não', alergias:'', obs:'Atenção com barulhos altos'}};
+        state.criancas = [a,b];
+        const hoje = new Date();
+        const d = (offset)=>{ const x = new Date(hoje); x.setDate(x.getDate()-offset); return x.toISOString().slice(0,10); };
+        state.presencas = [
+          {id: 'P1', childId: a.id, data: d(3), status: 'presente', justificativa:''},
+          {id: 'P2', childId: a.id, data: d(2), status: 'falta', justificativa:''},
+          {id: 'P3', childId: a.id, data: d(1), status: 'falta justificada', justificativa:'Consulta médica'},
+          {id: 'P4', childId: b.id, data: d(3), status: 'presente', justificativa:''},
+          {id: 'P5', childId: b.id, data: d(2), status: 'presente', justificativa:''},
+          {id: 'P6', childId: b.id, data: d(1), status: 'falta', justificativa:''},
+        ];
+        state.mensagens = [
+          {childId: a.id, de:'equipe', texto:'Bem-vinda ao programa! 🧯', ts: Date.now()-86400000},
+          {childId: a.id, de:'responsavel', texto:'Obrigada! 👍', ts: Date.now()-86300000},
+        ];
+        salvarLS();
+      }
+    }
+
+    // Navegação simples entre seções
+    function setupNav() {
+      const sections = ['cadastro','presencas','historico','relatorios','comunicacao','graficos'];
+      function show(id) {
+        sections.forEach(s => {
+          const el = document.getElementById(s);
+          el.classList.toggle('hidden', s !== id);
+        });
+        // estado ativo no menu com vermelho
+        $$('.nav-btn').forEach(b=>b.classList.remove('bg-[#E11D48]','text-white'));
+        const active = [...$$('.nav-btn')].find(b=>b.dataset.section===id);
+        if (active) active.classList.add('bg-[#E11D48]','text-white');
+        // ações ao entrar
+        if (id==='presencas') renderPresencasTable();
+        if (id==='historico') { preencherSelects(); atualizarHistorico(); }
+        if (id==='relatorios') preencherSelects();
+        if (id==='comunicacao') { renderListaChat(); renderChat(); }
+        if (id==='graficos') { atualizarGraficos(); }
+      }
+      $$('.nav-btn').forEach(btn=>btn.addEventListener('click', ()=>show(btn.dataset.section)));
+      show('cadastro');
+    }
+
+    // CADASTRO
+    function limparCadastro() {
+      $('#childId').value = '';
+      $('#nome').value = '';
+      $('#nascimento').value = '';
+      $('#responsavel').value = '';
+      $('#contato').value = '';
+      $('#escola').value = '';
+      $('#idInterno').value = '';
+      $('#neuro').checked = false;
+      $('#neuroObs').value = '';
+      $('#neuroProf').value = '';
+      $('#asma').value = 'não';
+      $('#alergias').value = '';
+      $('#medObs').value = '';
+      $('#neuroExtra').classList.add('hidden');
+      $('#responsaveisAdicionais').innerHTML = '';
+    }
+
+    function preencherCadastro(ch) {
+      $('#childId').value = ch.id;
+      $('#nome').value = ch.nome || '';
+      $('#nascimento').value = ch.nascimento || '';
+      $('#responsavel').value = ch.responsavel || '';
+      $('#contato').value = ch.contato || '';
+      $('#escola').value = ch.escola || '';
+      $('#idInterno').value = ch.id || '';
+      $('#neuro').checked = !!ch.neuro;
+      $('#neuroExtra').classList.toggle('hidden', !ch.neuro);
+      $('#neuroObs').value = ch.neuroObs || '';
+      $('#neuroProf').value = ch.neuroProf || '';
+      $('#asma').value = (ch.ficha?.asma) || 'não';
+      $('#alergias').value = (ch.ficha?.alergias) || '';
+      $('#medObs').value = (ch.ficha?.obs) || '';
+      
+      // Preenche responsáveis adicionais
+      const container = $('#responsaveisAdicionais');
+      container.innerHTML = '';
+      if (ch.responsaveisAdicionais && ch.responsaveisAdicionais.length > 0) {
+        ch.responsaveisAdicionais.forEach(resp => {
+          $('#btnAddResponsavel').click();
+          const lastDiv = container.lastElementChild;
+          lastDiv.querySelector('.resp-add-nome').value = resp.nome;
+          lastDiv.querySelector('.resp-add-contato').value = resp.contato;
+        });
+      }
+    }
+
+    function renderListaCriancas(filtro='') {
+      const tbody = $('#listaCriancas');
+      const termo = filtro.trim().toLowerCase();
+      const lista = state.criancas
+        .filter(c => !termo || [c.nome, c.responsavel].some(x => (x||'').toLowerCase().includes(termo)))
+        .sort((a,b)=>a.nome.localeCompare(b.nome));
+      tbody.innerHTML = '';
+      for (const c of lista) {
+        const tr = document.createElement('tr');
+        tr.className = 'border-t';
+        tr.innerHTML = `
+          <td class="p-3">${c.nome}</td>
+          <td class="p-3">${c.nascimento || ''}</td>
+          <td class="p-3">${c.responsavel || ''}</td>
+          <td class="p-3">${c.contato || ''}</td>
+          <td class="p-3">${c.escola || ''}</td>
+          <td class="p-3">
+            <span class="px-2 py-1 rounded-full text-xs ${c.neuro
+              ? 'bg-[#E11D48]/10 text-[#BE123C] border border-[#E11D48]/20'
+              : 'bg-slate-50 text-slate-700 border border-slate-200'}">
+              ${c.neuro?'Sim':'Não'}
+            </span>
+          </td>
+          <td class="p-3">
+            <div class="flex gap-2">
+              <button data-id="${c.id}" class="btn-editar px-3 py-1 rounded-md bg-slate-900 hover:bg-slate-800 text-white text-xs">Editar</button>
+              <button data-id="${c.id}" class="btn-remover px-3 py-1 rounded-md bg-[#E11D48] hover:bg-[#BE123C] text-white text-xs">Remover</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      $$('.btn-editar').forEach(b=>b.addEventListener('click', ()=>{
+        const c = state.criancas.find(x=>x.id===b.dataset.id);
+        if (c) {
+          preencherCadastro(c);
+          window.scrollTo({top:0, behavior:'smooth'});
+        }
+      }));
+
+      $$('.btn-remover').forEach(b=>b.addEventListener('click', ()=>{
+        const id = b.dataset.id;
+        const c = state.criancas.find(x=>x.id===id);
+        if (!c) return;
+        if (!confirm(`Remover ${c.nome}? Os registros de presença e mensagens serão mantidos.`)) return;
+        state.criancas = state.criancas.filter(x=>x.id!==id);
+        salvarLS();
+        renderListaCriancas($('#busca').value);
+        renderPresencasTable();
+        preencherSelects();
+        renderListaChat();
+        if (state.selecionadaChat===id) { state.selecionadaChat=null; renderChat(); }
+        atualizarGraficos();
+      }));
+    }
+
+    function setupCadastro() {
+      $('#neuro').addEventListener('change', (e)=>$('#neuroExtra').classList.toggle('hidden', !e.target.checked));
+      $('#btnNovo').addEventListener('click', (e)=>{ e.preventDefault(); limparCadastro(); });
+      
+      // Responsáveis adicionais
+      $('#btnAddResponsavel').addEventListener('click', (e)=>{
+        e.preventDefault();
+        const container = $('#responsaveisAdicionais');
+        const index = container.children.length;
+        const div = document.createElement('div');
+        div.className = 'grid md:grid-cols-3 gap-3 items-end';
+        div.innerHTML = `
+          <div>
+            <label class="block text-sm font-medium mb-1">Nome do responsável</label>
+            <input class="resp-add-nome w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="Nome completo" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Contato</label>
+            <input class="resp-add-contato w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="(xx) xxxxx-xxxx" />
+          </div>
+          <div>
+            <button type="button" class="btn-remove-resp px-3 py-2 rounded-lg bg-rose-500 hover:bg-rose-600 text-white text-sm transition">Remover</button>
+          </div>
+        `;
+        container.appendChild(div);
+        
+        div.querySelector('.btn-remove-resp').addEventListener('click', ()=>{
+          container.removeChild(div);
+        });
+      });
+      $('#btnSalvar').addEventListener('click', (e)=>{
+        e.preventDefault();
+        const id = $('#childId').value || uid();
+        
+        // Coleta responsáveis adicionais
+        const responsaveisAdicionais = [];
+        const nomes = $$('.resp-add-nome');
+        const contatos = $$('.resp-add-contato');
+        for (let i = 0; i < nomes.length; i++) {
+          const nome = nomes[i].value.trim();
+          const contato = contatos[i].value.trim();
+          if (nome && contato) {
+            responsaveisAdicionais.push({ nome, contato });
+          }
+        }
+        
+        const payload = {
+          id,
+          nome: $('#nome').value.trim(),
+          nascimento: $('#nascimento').value,
+          responsavel: $('#responsavel').value.trim(),
+          contato: $('#contato').value.trim(),
+          responsaveisAdicionais,
+          escola: $('#escola').value.trim(),
+          neuro: $('#neuro').checked,
+          neuroObs: $('#neuroObs').value.trim(),
+          neuroProf: $('#neuroProf').value.trim(),
+          ficha: {
+            asma: $('#asma').value,
+            alergias: $('#alergias').value.trim(),
+            obs: $('#medObs').value.trim()
+          }
+        };
+        if (!payload.nome || !payload.nascimento || !payload.responsavel || !payload.contato) {
+          alert('Preencha os campos obrigatórios.');
+          return;
+        }
+        const idx = state.criancas.findIndex(x=>x.id===id);
+        if (idx>=0) state.criancas[idx] = payload; else state.criancas.push(payload);
+        salvarLS();
+        $('#idInterno').value = id;
+        renderListaCriancas($('#busca').value);
+        preencherSelects();
+        renderListaChat();
+        alert('Cadastro salvo com sucesso!');
+      });
+
+      $('#busca').addEventListener('input', (e)=>renderListaCriancas(e.target.value));
+      $('#btnExportCriancas').addEventListener('click', ()=>{
+        const rows = [
+          ['ID','Nome','Nascimento','Responsável','Contato','Escola','Neuro','Asma','Alergias','Obs Médicas']
+        ];
+        for (const c of state.criancas) {
+          rows.push([c.id,c.nome,c.nascimento,c.responsavel,c.contato,c.escola,c.neuro?'Sim':'Não',c.ficha?.asma||'',c.ficha?.alergias||'',c.ficha?.obs||'']);
+        }
+        downloadCSV('criancas.csv', rows);
+      });
+    }
+
+    // PRESENÇAS
+    function renderPresencasTable() {
+      const tbody = $('#tabelaPresencas');
+      const data = $('#dataPresenca').value || new Date().toISOString().slice(0,10);
+      $('#dataPresenca').value = data;
+      tbody.innerHTML = '';
+      const criancas = [...state.criancas].sort((a,b)=>a.nome.localeCompare(b.nome));
+      for (const c of criancas) {
+        const registro = state.presencas.find(p=>p.childId===c.id && p.data===data) || {status:'presente', justificativa:''};
+        const tr = document.createElement('tr');
+        tr.className = 'border-t align-top';
+        tr.innerHTML = `
+          <td class="p-3">${c.nome}</td>
+          <td class="p-3">
+            <select data-id="${c.id}" class="sel-presenca px-3 py-2 rounded-lg border border-slate-300">
+              <option value="presente" ${registro.status==='presente'?'selected':''}>Presente</option>
+              <option value="falta" ${registro.status==='falta'?'selected':''}>Falta</option>
+              <option value="falta justificada" ${registro.status==='falta justificada'?'selected':''}>Falta justificada</option>
+            </select>
+          </td>
+          <td class="p-3">
+            <input data-id="${c.id}" value="${registro.justificativa || ''}" class="inp-just px-3 py-2 rounded-lg border border-slate-300 w-full" placeholder="Escreva a justificativa se necessário"/>
+          </td>
+          <td class="p-3">
+            <input data-id="${c.id}" value="${registro.advertencia || ''}" class="inp-adv px-3 py-2 rounded-lg border border-slate-300 w-full" placeholder="Descreva o problema causado pelo aluno"/>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    function setupPresencas() {
+      $('#dataPresenca').addEventListener('change', renderPresencasTable);
+      $('#btnSalvarPresencas').addEventListener('click', (e)=>{
+        e.preventDefault();
+        const data = $('#dataPresenca').value;
+        const sels = $$('.sel-presenca');
+        const justs = $$('.inp-just');
+        const advs = $$('.inp-adv');
+        const mapJust = {};
+        const mapAdv = {};
+        justs.forEach(j=>mapJust[j.dataset.id]=j.value.trim());
+        advs.forEach(a=>mapAdv[a.dataset.id]=a.value.trim());
+        // Atualiza seletivamente
+        sels.forEach(sel=>{
+          const childId = sel.dataset.id;
+          const status = sel.value;
+          const justificativa = mapJust[childId] || '';
+          const advertencia = mapAdv[childId] || '';
+          let reg = state.presencas.find(p=>p.childId===childId && p.data===data);
+          if (!reg) {
+            reg = { id: 'P'+Math.random().toString(36).slice(2,8), childId, data, status, justificativa, advertencia };
+            state.presencas.push(reg);
+          } else {
+            reg.status = status;
+            reg.justificativa = justificativa;
+            reg.advertencia = advertencia;
+          }
+        });
+        salvarLS();
+        alert('Registro de presenças salvo!');
+        atualizarGraficos();
+      });
+    }
+
+    // HISTÓRICO
+    function preencherSelects() {
+      const sel1 = $('#histAluno');
+      const sel2 = $('#relAluno');
+      const make = () => {
+        const opts = ['<option value="">Todos</option>'].concat(state.criancas.sort((a,b)=>a.nome.localeCompare(b.nome)).map(c=>`<option value="${c.id}">${c.nome}</option>`)).join('');
+        return opts;
+      };
+      if (sel1) sel1.innerHTML = state.criancas.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+      if (sel2) sel2.innerHTML = make();
+    }
+
+    function atualizarHistorico() {
+      const id = $('#histAluno').value;
+      const tipo = $('#histTipo').value;
+      const tbody = $('#histTabela');
+      if (!id) { tbody.innerHTML = ''; return; }
+      let regs = state.presencas.filter(p=>p.childId===id);
+      if (tipo==='falta') regs = regs.filter(p=>p.status==='falta');
+      if (tipo==='justificada') regs = regs.filter(p=>p.status==='falta justificada');
+      regs.sort((a,b)=>a.data.localeCompare(b.data));
+      tbody.innerHTML = regs.map(r=>`
+        <tr class="border-t">
+          <td class="p-3">${r.data}</td>
+          <td class="p-3">
+            <span class="px-2 py-1 rounded-full text-xs
+              ${r.status==='presente' ? 'bg-[#E11D48]/10 text-[#BE123C] border border-[#E11D48]/20' :
+                r.status==='falta justificada' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                'bg-rose-50 text-rose-700 border border-rose-200'}">
+              ${r.status}
+            </span>
+          </td>
+          <td class="p-3">${r.justificativa || '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function setupHistorico() {
+      $('#histAluno').addEventListener('change', atualizarHistorico);
+      $('#histTipo').addEventListener('change', atualizarHistorico);
+    }
+
+    // RELATÓRIOS
+    function gerarRelatorio() {
+      const ini = $('#relInicio').value || '0000-01-01';
+      const fim = $('#relFim').value || '9999-12-31';
+      const aluno = $('#relAluno').value;
+      const somente = $('#relSomenteFaltas').value === 'sim';
+      let regs = state.presencas.filter(p=>p.data>=ini && p.data<=fim);
+      if (aluno) regs = regs.filter(p=>p.childId===aluno);
+      if (somente) regs = regs.filter(p=>p.status!=='presente');
+      regs.sort((a,b)=>a.data.localeCompare(b.data) || a.childId.localeCompare(b.childId));
+      const tbody = $('#relTabela');
+      tbody.innerHTML = regs.map(r=>{
+        const c = state.criancas.find(x=>x.id===r.childId);
+        return `
+          <tr class="border-t">
+            <td class="p-3">${r.data}</td>
+            <td class="p-3">${c?c.nome:'-'}</td>
+            <td class="p-3">${r.status}</td>
+            <td class="p-3">${r.justificativa || '-'}</td>
+          </tr>
+        `;
+      }).join('');
+      return regs;
+    }
+
+    function setupRelatorios() {
+      $('#btnGerarRelatorio').addEventListener('click', (e)=>{ e.preventDefault(); gerarRelatorio(); });
+      $('#btnExportCSV').addEventListener('click', (e)=>{
+        e.preventDefault();
+        const regs = gerarRelatorio();
+        const rows = [['Data','Criança','Status','Justificativa']];
+        for (const r of regs) {
+          const c = state.criancas.find(x=>x.id===r.childId);
+          rows.push([r.data, c?c.nome:'', r.status, r.justificativa||'']);
+        }
+        downloadCSV('relatorio_presencas.csv', rows);
+      });
+      $('#btnExportPDF').addEventListener('click', (e)=>{
+        e.preventDefault();
+        const regs = gerarRelatorio();
+        const container = $('#print-content');
+        const header = `
+          <div style="margin-bottom:8px;font-size:14px">
+            Período: ${( $('#relInicio').value || 'Todos')} — ${( $('#relFim').value || 'Todos')}
+            ${$('#relAluno').value ? ' | Criança: '+(state.criancas.find(c=>c.id===$('#relAluno').value)?.nome || '') : ''}
+            ${$('#relSomenteFaltas').value==='sim' ? ' | Somente faltas' : ''}
+          </div>
+        `;
+        const table = `
+          <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead>
+              <tr>
+                <th style="text-align:left;border:1px solid #ddd;padding:6px">Data</th>
+                <th style="text-align:left;border:1px solid #ddd;padding:6px">Criança</th>
+                <th style="text-align:left;border:1px solid #ddd;padding:6px">Status</th>
+                <th style="text-align:left;border:1px solid #ddd;padding:6px">Justificativa</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${regs.map(r=>{
+                const c = state.criancas.find(x=>x.id===r.childId);
+                return `<tr>
+                  <td style="border:1px solid #ddd;padding:6px">${r.data}</td>
+                  <td style="border:1px solid #ddd;padding:6px">${c?c.nome:''}</td>
+                  <td style="border:1px solid #ddd;padding:6px">${r.status}</td>
+                  <td style="border:1px solid #ddd;padding:6px">${r.justificativa || '-'}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        `;
+        container.innerHTML = header + table;
+        setTimeout(()=>window.print(), 50);
+      });
+    }
+
+    function downloadCSV(filename, rows) {
+      const csv = rows.map(r => r.map(val=>{
+        const v = (val ?? '').toString().replace(/"/g,'""');
+        return `"${v}"`;
+      }).join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a); URL.revokeObjectURL(url);
+    }
+
+    // COMUNICAÇÃO
+    function renderListaChat() {
+      const box = $('#listaChat');
+      box.innerHTML = '';
+      const lista = [...state.criancas].sort((a,b)=>a.nome.localeCompare(b.nome));
+      for (const c of lista) {
+        const btn = document.createElement('button');
+        btn.className = 'w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100 border border-slate-200';
+        btn.textContent = c.nome;
+        btn.addEventListener('click', ()=>{
+          state.selecionadaChat = c.id;
+          renderChat();
+        });
+        box.appendChild(btn);
+      }
+    }
+
+    function renderChat() {
+      const cab = $('#chatCabecalho');
+      const area = $('#chatMensagens');
+      const child = state.criancas.find(c=>c.id===state.selecionadaChat);
+      if (!child) {
+        cab.textContent = 'Selecione uma criança';
+        area.innerHTML = '';
+        return;
+      }
+      cab.textContent = child.nome;
+      const mensagens = state.mensagens
+        .filter(m=>m.childId===child.id)
+        .sort((a,b)=>a.ts - b.ts);
+      area.innerHTML = '';
+      for (const m of mensagens) {
+        const wrap = document.createElement('div');
+        const isEquipe = m.de === 'equipe';
+        wrap.className = `flex ${isEquipe ? 'justify-end' : 'justify-start'}`;
+        const bubble = document.createElement('div');
+        bubble.className = `max-w-[75%] px-3 py-2 rounded-2xl ${isEquipe?'bg-[#E11D48] text-white':'bg-white border border-slate-200 text-slate-900'} `;
+        const hora = new Date(m.ts).toLocaleString();
+        bubble.innerHTML = `<div class="text-sm">${m.texto}</div><div class="text-[10px] opacity-70 mt-1">${isEquipe?'Equipe':'Responsável'} • ${hora}</div>`;
+        wrap.appendChild(bubble);
+        area.appendChild(wrap);
+      }
+      area.scrollTop = area.scrollHeight;
+    }
+
+    function setupChat() {
+      $('#chatForm').addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const child = state.criancas.find(c=>c.id===state.selecionadaChat);
+        if (!child) { alert('Selecione uma criança para enviar mensagem.'); return; }
+        const texto = $('#chatTexto').value.trim();
+        if (!texto) return;
+        state.mensagens.push({childId: child.id, de: $('#perfilChat').value, texto, ts: Date.now()});
+        $('#chatTexto').value = '';
+        salvarLS();
+        renderChat();
+      });
+    }
+
+    // GRÁFICOS (Canvas)
+    function atualizarGraficos() {
+      desenharBarras();
+      desenharLinha();
+    }
+
+    function filtrarPresencasPeriodo() {
+      const ini = $('#gIni').value || '0000-01-01';
+      const fim = $('#gFim').value || '9999-12-31';
+      return state.presencas.filter(p=>p.data>=ini && p.data<=fim);
+    }
+
+    function desenharBarras() {
+      const canvas = $('#graficoBarras');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width = canvas.clientWidth * window.devicePixelRatio;
+      const H = canvas.height = canvas.clientHeight * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      ctx.clearRect(0,0,W,H);
+
+      const dados = filtrarPresencasPeriodo();
+      const nomes = [...state.criancas].sort((a,b)=>a.nome.localeCompare(b.nome));
+      const series = nomes.map(c=>{
+        const regs = dados.filter(p=>p.childId===c.id);
+        const pres = regs.filter(r=>r.status==='presente').length;
+        const fj = regs.filter(r=>r.status==='falta justificada').length;
+        const f = regs.filter(r=>r.status==='falta').length;
+        const total = pres+fj+f || 1;
+        return {nome:c.nome, presente:pres, fj, falta:f, total};
+      });
+
+      const pad = {l: 50, r: 20, t: 20, b: 60};
+      const cw = canvas.clientWidth - pad.l - pad.r;
+      const ch = canvas.clientHeight - pad.t - pad.b;
+      const barW = Math.max(24, Math.min(60, cw / Math.max(1, series.length) * 0.6));
+      const gap = (cw - series.length*barW) / Math.max(1, series.length-1 || 1);
+      const maxTotal = Math.max(1, ...series.map(s=>s.total));
+
+      // Eixos
+      const x0 = pad.l, y0 = pad.t, yBase = pad.t + ch;
+      ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, yBase); ctx.lineTo(x0+cw, yBase); ctx.stroke();
+
+      // Grid e labels Y
+      ctx.fillStyle = '#64748b'; ctx.font = '12px system-ui, -apple-system, Segoe UI, Roboto';
+      const steps = 4;
+      for (let i=0;i<=steps;i++){
+        const v = Math.round(maxTotal * i/steps);
+        const y = yBase - (ch * i/steps);
+        ctx.fillText(v.toString(), x0-28, y+4);
+        ctx.strokeStyle = i===0 ? '#e2e8f0' : '#f1f5f9';
+        ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x0+cw, y); ctx.stroke();
+      }
+
+      // Barras empilhadas (verde #018053 para presença)
+      let x = x0;
+      series.forEach((s)=>{
+        const hPres = s.total ? ch * (s.presente / maxTotal) : 0;
+        const hFj = s.total ? ch * (s.fj / maxTotal) : 0;
+        const hF = s.total ? ch * (s.falta / maxTotal) : 0;
+        let y = yBase;
+
+        function drawSeg(h, color){
+          ctx.fillStyle = color;
+          ctx.fillRect(x, y - h, barW, h);
+          y -= h;
+        }
+        drawSeg(hPres, '#E11D48');   // presença
+        drawSeg(hFj, '#f59e0b');     // justificada
+        drawSeg(hF,  '#f43f5e');     // falta (vermelho suave e reduzido)
+
+        // Label X
+        ctx.save();
+        ctx.fillStyle = '#0f172a';
+        ctx.translate(x + barW/2, yBase + 14);
+        ctx.rotate(-Math.PI/8);
+        const label = s.nome.length>12 ? s.nome.slice(0,12)+'…' : s.nome;
+        ctx.fillText(label, -ctx.measureText(label).width/2, 0);
+        ctx.restore();
+
+        x += barW + gap;
+      });
+
+      // Legenda
+      const legend = [
+        ['Presente', '#E11D48'],
+        ['Falta justificada', '#f59e0b'],
+        ['Falta', '#f43f5e'],
+      ];
+      let lx = x0 + 6, ly = y0 + 6;
+      legend.forEach(([name,color])=>{
+        ctx.fillStyle = color; ctx.fillRect(lx,ly,12,12);
+        ctx.fillStyle = '#334155'; ctx.fillText(name, lx+18, ly+11);
+        lx += 160;
+      });
+    }
+
+    function desenharLinha() {
+      const canvas = $('#graficoLinha');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width = canvas.clientWidth * window.devicePixelRatio;
+      const H = canvas.height = canvas.clientHeight * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      ctx.clearRect(0,0,W,H);
+
+      // Taxa de presença
+      const dados = filtrarPresencasPeriodo();
+      const nomes = [...state.criancas].sort((a,b)=>a.nome.localeCompare(b.nome));
+      const pontos = nomes.map(c=>{
+        const regs = dados.filter(p=>p.childId===c.id);
+        const tot = regs.length || 1;
+        const pres = regs.filter(r=>r.status==='presente').length;
+        const taxa = Math.round((pres / tot) * 100);
+        return {nome:c.nome, taxa};
+      });
+
+      const pad = {l: 50, r: 20, t: 20, b: 60};
+      const cw = canvas.clientWidth - pad.l - pad.r;
+      const ch = canvas.clientHeight - pad.t - pad.b;
+      const x0 = pad.l, y0 = pad.t, yBase = pad.t + ch;
+
+      // Eixo
+      ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, yBase); ctx.lineTo(x0+cw, yBase); ctx.stroke();
+
+      // Grid e labels Y (0-100)
+      ctx.fillStyle = '#64748b'; ctx.font = '12px system-ui, -apple-system, Segoe UI, Roboto';
+      for (let i=0;i<=5;i++){
+        const val = i*20;
+        const y = yBase - (ch * val/100);
+        ctx.fillText(val+'%', x0-36, y+4);
+        ctx.strokeStyle = i===0 ? '#e2e8f0' : '#f1f5f9';
+        ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x0+cw, y); ctx.stroke();
+      }
+
+      if (pontos.length === 0) return;
+
+      const step = cw / Math.max(1, pontos.length-1);
+      // Linha e pontos (vermelho principal)
+      ctx.strokeStyle = '#E11D48';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      pontos.forEach((p, i)=>{
+        const x = x0 + i*step;
+        const y = yBase - (ch * p.taxa/100);
+        if (i===0) ctx.moveTo(x,y);
+        else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+
+      pontos.forEach((p, i)=>{
+        const x = x0 + i*step;
+        const y = yBase - (ch * p.taxa/100);
+        ctx.fillStyle = '#E11D48'; ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
+        ctx.save();
+        ctx.fillStyle = '#0f172a';
+        ctx.translate(x, yBase + 14);
+        ctx.rotate(-Math.PI/8);
+        const label = p.nome.length>12 ? p.nome.slice(0,12)+'…' : p.nome;
+        ctx.fillText(label, -ctx.measureText(label).width/2, 0);
+        ctx.restore();
+      });
+    }
+
+    function setupGraficos() {
+      window.addEventListener('resize', atualizarGraficos);
+      $('#btnAtualizarGrafico').addEventListener('click', (e)=>{ e.preventDefault(); atualizarGraficos(); });
+    }
+
+    // Inicialização
+    function init() {
+      carregarLS();
+      setupNav();
+      setupCadastro();
+      renderListaCriancas('');
+      setupPresencas();
+      setupHistorico();
+      setupRelatorios();
+      setupChat();
+      setupGraficos();
+      preencherSelects();
+      renderPresencasTable();
+      atualizarHistorico();
+      atualizarGraficos();
+      // Impede navegação por submits
+      $$('form').forEach(f=>f.addEventListener('submit', e=>e.preventDefault()));
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'984e209316cd2ec5',t:'MTc1ODg0MTExNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
