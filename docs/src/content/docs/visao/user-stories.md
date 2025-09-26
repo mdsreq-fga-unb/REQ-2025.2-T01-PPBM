@@ -1,3 +1,7 @@
+---
+title: User Stories
+---
+
 # User Stories (US)
 
 Este documento apresenta as User Stories (Histórias de Usuário) do sistema FireForce - PPBM, organizadas por módulos funcionais. As User Stories descrevem os requisitos do sistema na perspectiva do usuário, facilitando o entendimento das necessidades e expectativas de cada tipo de usuário.
