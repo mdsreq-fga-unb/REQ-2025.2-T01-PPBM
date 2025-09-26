@@ -53,6 +53,14 @@ export default defineConfig({
 							slug: "visao/levantamento-parcial",
 						},
 						{
+							label: "Regras de Negócio",
+							slug: "visao/regras-negocio",
+						},
+						{
+							label: "User Stories",
+							slug: "visao/user-stories",
+						},
+						{
 							label: "Cronograma e Entregas",
 							slug: "visao/cronograma",
 						},
@@ -78,6 +86,15 @@ export default defineConfig({
 						{
 							label: "Unidade 1",
 							slug: "entregas/unidade-1",
+						},
+					],
+				},
+				{
+					label: "Evidências",
+					items: [
+						{
+							label: "Unidade 1",
+							slug: "evidencias/unidade-1",
 						},
 					],
 				}
