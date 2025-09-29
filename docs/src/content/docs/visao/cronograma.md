@@ -101,6 +101,9 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 
 **Validação:** Cliente valida e homologa o MVP
 
+## Histórico de Versão
+
 | Data       | Versão | Descrição                                   | Autor(es)       | Revisor(es) |
 | ---------- | ------ | ------------------------------------------- | --------------- | ----------- |
 | 15/09/2025 | 1.0    | Criação inicial do documento de cronograma. | Mariana Gonzaga | Todos       |
+| 15/09/2025 | 1.1    | Ajuste de datas nas Sprints. | Philipe Morais | Todos       |
