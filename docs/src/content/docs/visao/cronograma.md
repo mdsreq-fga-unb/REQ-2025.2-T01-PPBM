@@ -7,10 +7,13 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 
 ---
 
-## 🟢 Sprint 0 (31/08 – 14/09)
+## Sprint 0 (31/08 – 14/09)
+
+![Encerrada](https://img.shields.io/badge/Status-Encerrada-blue)
+
 **Objetivo:** Preparação e alinhamento inicial  
 **Entregas:**
-- Sprint Planning inicial: levantamento de dores/demandas e validação da necessidade do software  
+- Sprint Planning inicial: levantamento de dores/demandas e validação da necessidade do software
 - Formação da equipe Scrum XP e definição de papéis  
 - Definição das tecnologias (SvelteKit, Express, Supabase, Astro.build, Docker)  
 - Setup do ambiente de desenvolvimento e GitPages  
@@ -20,22 +23,25 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 
 ---
 
-## 🟢 Sprint 1 (14/09 – 28/09)
+## Sprint 1 (14/09 – 29/09)
+
+![Em Progresso](https://img.shields.io/badge/Status-Em%20Progresso-green) 
+
 **Objetivo:** Estruturação e primeira iteração  
 **Entregas:**
-- Estudo das stacks definidas  
-- Mapeamento de módulos (contexto, restrições, features, dependências, fluxos)  
-- Sprint Review com confirmação dos módulos/comportamentos  
-- Protótipo inicial em Figma  
-- Definição de DoR e DoD; primeiras user stories  
+- Estudo das stacks definidas
+- Mapeamento de módulos (contexto, restrições, features, dependências, fluxos)
+- Protótipo inicial navegável
+- Definição de DoR e DoD
+- Identificação das primeiras User Stories
 - Setup de Pair Programming e TDD  
-- Elicitação de requisitos  
+- Elicitação de Requisitos  
 
 **Validação:** Revisão dos módulos e validação do protótipo inicial  
 
 ---
 
-## 🟢 Sprint 2 (28/09 – 12/10)
+## Sprint 2 (01/10 – 13/10)
 **Objetivo:** Primeira entrega funcional  
 **Entregas:**
 - Cadastro de crianças (dados + ficha médica)  
@@ -49,7 +55,7 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 
 ---
 
-## 🟢 Sprint 3 (12/10 – 26/10)
+## Sprint 3 (15/10 – 27/10)
 **Objetivo:** Segunda entrega funcional  
 **Entregas:**
 - Relatórios de frequência (Excel/PDF)  
@@ -60,7 +66,7 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 
 ---
 
-## 🟢 Sprint 4 (26/10 – 09/11)
+## Sprint 4 (29/10 – 10/11)
 **Objetivo:** Inclusão e acessibilidade  
 **Entregas:**
 - Acompanhamento de crianças neurodivergentes  
@@ -72,7 +78,7 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 
 ---
 
-## 🟢 Sprint 5 (09/11 – 23/11)
+## Sprint 5 (12/11 – 24/11)
 **Objetivo:** Integração completa e testes E2E  
 **Entregas:**
 - Integração de todos os módulos  
@@ -83,7 +89,7 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 
 ---
 
-## 🟢 Sprint 6 (23/11 – 04/12)
+## Sprint 6 (26/11 – 01/12)
 **Objetivo:** Entrega final do MVP  
 **Entregas:**
 - Correções finais e otimização  
