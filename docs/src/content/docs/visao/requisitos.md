@@ -2,6 +2,7 @@
 title: Requisitos
 ---
 
+---
 
 A equipe realizou o refinamento de requisitos funcionais e não funcionais de software com o objetivo de compreender melhor o escopo do sistema e fundamentar a elaboração do cronograma do projeto. Este refinamento permite uma visão mais clara das funcionalidades necessárias e auxilia no planejamento das atividades de desenvolvimento.
 
@@ -13,7 +14,7 @@ A equipe realizou o refinamento de requisitos funcionais e não funcionais de so
 
 **RF-001 – Cadastrar criança**
 Permitir cadastro com: nome, data de nascimento, CPF, responsável(éis), contatos, escola/unidade, cidade.
-**Critérios de aceite:**
+Critérios de aceite:
 
 * campos obrigatórios validados;
 * prevenção de duplicidade por CPF;
@@ -24,166 +25,217 @@ Permitir cadastro com: nome, data de nascimento, CPF, responsável(éis), contat
 
 **RF-002 – Gerenciar responsáveis**
 Editar/remover responsáveis, com vínculo a uma criança e múltiplos contatos.
-**Critérios de aceite:**
+Critérios de aceite:
 
 * validação de dados de contato;
 * possibilidade de múltiplos responsáveis;
 * histórico de alterações mantido.
 
-**RF-003 – Ficha médica**
+**RF-003 – Registrar ficha médica**
 Registrar e manter observações médicas (asma, alergias, restrições, medicações e contatos de emergência).
-**Critérios de aceite:**
+Critérios de aceite:
 
 * alerta visual quando houver condição crítica cadastrada;
 * campos obrigatórios para condições críticas;
 * possibilidade de anexar documentos médicos;
 * atualização de informações médicas com data/hora.
 
-**RF-004 – Perfil neurodivergente**
+**RF-004 – Diferenciar perfil neurodivergente**
 Diferenciar cadastro para crianças neurodivergentes (campos de acompanhamento, adaptações e observações pedagógicas).
-**Critérios de aceite:**
+Critérios de aceite:
 
 * identificação clara do perfil neurodivergente importando o documento de comprovante;
 * campos específicos para acompanhamento pedagógico;
 * relatórios diferenciados para este perfil;
 * alertas para educadores sobre adaptações necessárias.
 
+**RF-005 – Cadastrar informações complementares do aluno**
+Permitir o registro de informações adicionais como:
+
+* nome de guerra;
+* tipo sanguíneo;
+* graduação (soldado até 9 anos; de 10 anos a cabo; a cada 11 anos, 3º sargento; sargento).
+  Critérios de aceite:
+* campos obrigatórios validados;
+* regras automáticas de atribuição de graduação conforme idade;
+* possibilidade de atualização e histórico de alterações.
+
 ---
 
 ### Módulo: Presença & Justificativas
 
-**RF-005 – Registro de presença**
+**RF-006 – Registrar presença**
 Lançar presença, falta e atraso por turma/sessão.
-**Critérios de aceite:**
+Critérios de aceite:
 
 * seleção obrigatória de turma/sessão;
 * validação de data/hora do lançamento;
 * confirmação antes do salvamento.
 
-**RF-006 – Justificar falta**
+**RF-007 – Justificar falta**
 Permitir justificar faltas com motivo, anexo (opcional) e status (pendente/aprovada/recusada).
-**Critérios de aceite:**
+Critérios de aceite:
 
 * registrar autor, data/hora e trilha de auditoria;
 * motivo obrigatório para justificativa;
 * anexos limitados a formatos específicos (PDF, JPG, PNG);
 * notificação automática para responsáveis.
 
-**RF-007 – Edição/retificação de lançamento**
+**RF-008 – Editar lançamento de presença**
 Corrigir registros de presença/falta com histórico de alterações.
-**Critérios de aceite:**
+Critérios de aceite:
 
 * histórico completo de alterações mantido;
 * autorização necessária para alterações;
 * notificação de alterações para responsáveis;
 * confirmação de alteração.
 
-**RF-024 – Suporte a anexos**
+**RF-009 – Suportar anexos**
 Permitir anexar comprovantes (PDF/JPG/PNG) em justificativas e comunicações.
-**Critérios de aceite:**
+Critérios de aceite:
 
 * validação de formato e tamanho;
 * preview de imagens;
 * compressão automática;
 * armazenamento seguro de arquivos.
 
+**RF-010 – Definir política de justificativa de faltas**
+Permitir que faltas justificadas sejam registradas como "falta justificada", não anulando a ausência, mas impactando indicadores de forma diferenciada.
+Critérios de aceite:
+
+* exibir no histórico como "falta justificada";
+* contabilizar separadamente das faltas comuns;
+* manter rastreabilidade no relatório individual.
+
+**RF-011 – Conceder autonomia docente para justificativas**
+Permitir que o professor aprove ou rejeite justificativas de falta de forma autônoma.
+Critérios de aceite:
+
+* interface para docentes validarem justificativas;
+* registro de decisão (aprovada/recusada) com data/hora;
+* notificação ao responsável sobre a decisão.
+
+**RF-012 – Definir motivos e documentos aceitos para justificativa**
+Permitir parametrização dos motivos justificáveis (ex.: atestado médico, participação em atividades desportivas) e exigência de documentos obrigatórios.
+Critérios de aceite:
+
+* cadastro de lista de motivos aceitos;
+* exigência de anexos em casos definidos (ex.: atestado médico);
+* validação de anexos quanto a formato e obrigatoriedade.
+
+**RF-013 – Limitar número de alunos por turma (pelotão)**
+Permitir configuração de limite de 30 alunos por turma (pelotão).
+Critérios de aceite:
+
+* impedir cadastro acima do limite configurado;
+* exibir alerta ao gestor quando turma atingir lotação máxima;
+* permitir exceções apenas com autorização administrativa.
+
 ---
 
 ### Módulo: Relatórios & Análises
 
-**RF-008 – Consulta rápida por aluno**
+**RF-014 – Consultar aluno**
 Filtrar histórico de presenças/faltas por aluno, período e unidade.
-**Critérios de aceite:**
+Critérios de aceite:
 
 * busca por nome ou CPF;
 * filtros por período configurável;
 * resultados ordenados cronologicamente;
 * possibilidade de exportar resultados da consulta.
 
-**RF-009 – Relatório individual de frequência**
+**RF-015 – Gerar relatório individual de frequência**
 Gerar relatório por aluno (período selecionável) com taxas de presença, faltas justificadas e não justificadas.
-**Critérios de aceite:**
+Critérios de aceite:
 
 * seleção obrigatória de período;
 * cálculo automático de percentuais;
 * inclusão de gráficos visuais.
 
-**RF-010 – Relatórios por turma/unidade**
+**RF-016 – Consolidar relatórios por turma/unidade**
 Consolidar frequência por turma, unidade e cidade, com comparativos por período.
-**Critérios de aceite:**
+Critérios de aceite:
 
 * agrupamento por turma/unidade;
 * comparação entre períodos;
 * possibilidade de drill-down para detalhes.
 
-**RF-011 – Exportação**
+**RF-017 – Exportar relatórios**
 Exportar relatórios em PDF e Excel (CSV/XLSX).
-**Critérios de aceite:**
+Critérios de aceite:
 
 * formatação adequada para cada formato;
 * preservação de dados e gráficos;
 * nome de arquivo com data/hora;
 * validação de tamanho de arquivo.
 
-**RF-012 – Dashboards de frequência**
+**RF-018 – Exibir dashboards de frequência**
 Exibir indicadores e gráficos (taxa média de presença, alertas de recorrência).
-**Critérios de aceite:**
+Critérios de aceite:
 
 * atualização em tempo real;
 * gráficos interativos;
 * alertas visuais para situações críticas;
 * possibilidade de personalizar visualizações.
 
-**RF-013 – Histórico do aluno**
+**RF-019 – Exibir histórico do aluno**
 Exibir linha do tempo com presenças, faltas, justificativas, atendimentos, advertências e comunicações relacionadas.
-**Critérios de aceite:**
+Critérios de aceite:
 
 * ordenação cronológica dos eventos;
 * filtros por período e tipo de evento;
 * visualização clara e intuitiva;
 * possibilidade de exportar histórico.
 
+**RF-020 – Exportar relatórios oficiais padronizados**
+Permitir exportação de relatórios em modelos definidos pelo CBMDF (incluindo logotipo e identidade oficial).
+Critérios de aceite:
+
+* conformidade com modelo fornecido pelo cliente;
+* exportação em PDF fiel ao modelo;
+* integração de dados do sistema com campos do relatório.
+
 ---
 
 ### Módulo: Comunicação
 
-**RF-016 – Advertência**
+**RF-021 – Registrar advertência**
 Campo para anotações de comportamentos negativos.
 
-**RF-015 – Notificações**
-Bot de notificações ou botão de redirecionamento de notificações (WhatsApp) sobre faltas, justificativas, advertência.
-**Critérios de aceite:**
+**RF-022 – Enviar notificações**
+Bot de notificações ou botão de redirecionamento de notificações (WhatsApp, e-mail, plataforma própria).
+Critérios de aceite:
 
 * configuração de preferências de notificação;
 * templates personalizáveis;
 * confirmação de entrega;
 * possibilidade de cancelar notificações.
-  **Obs.:** bot WhatsApp depende de viabilidade/custo.
+  Obs.: integração com Gmail e orçamento para SMS/push a definir.
 
 ---
 
 ### Módulo: Acesso & Perfis
 
-**RF-017 – Autenticação e perfis**
+**RF-023 – Autenticar usuários e perfis**
 Acesso com autenticação e papéis: Administrador, Gestor de Unidade, Docente, Responsável.
-**Critérios de aceite:**
+Critérios de aceite:
 
 * login seguro com validação;
 * recuperação de senha;
 * sessão com timeout configurável;
 * primeiro acesso com alteração obrigatória de senha.
 
-**RF-018 – Controle de permissões**
+**RF-024 – Controlar permissões de acesso**
 Restringir operações por papel (ex.: responsável não edita presenças; docente registra e justifica; gestor aprova justificativas).
-**Critérios de aceite:**
+Critérios de aceite:
 
 * matriz de permissões clara;
 * validação de acesso em cada operação;
 * logs de tentativas de acesso negado.
 
-**RF-019 – Multiunidade**
+**RF-025 – Operar multiunidade**
 Operar dados segregados por 12 cidades/unidades, com visão consolidada para administradores.
-**Critérios de aceite:**
+Critérios de aceite:
 
 * isolamento completo de dados por unidade;
 * visão consolidada apenas para administradores;
@@ -194,31 +246,69 @@ Operar dados segregados por 12 cidades/unidades, com visão consolidada para adm
 
 ### Módulo: Operação & Processo
 
-**RF-020 – Auditoria**
+**RF-026 – Registrar auditoria**
 Registrar trilhas de auditoria (quem fez, o quê, quando, antes/depois) para operações sensíveis.
-**Critérios de aceite:**
+Critérios de aceite:
 
 * registro automático de todas as operações críticas;
 * dados imutáveis de auditoria;
 * relatórios de auditoria exportáveis;
 * retenção de logs por período configurável.
 
-**RF-022 – Catálogo de turmas e sessões**
+**RF-027 – Cadastrar turmas e sessões**
 Cadastrar turmas, dias/horários, lotação e instrutores.
-**Critérios de aceite:**
+Critérios de aceite:
 
 * validação de conflitos de horários;
-* controle de lotação máxima;
+* controle de lotação máxima (30 alunos por turma);
 * vinculação obrigatória de instrutor.
 
-**RF-025 – Filtros & busca**
+**RF-028 – Implementar filtros e busca**
 Busca por nome, CPF, turma, unidade, status de justificativa e período.
-**Critérios de aceite:**
+Critérios de aceite:
 
 * busca em tempo real;
 * filtros combináveis;
 * resultados ordenados por relevância;
 * histórico de buscas recentes.
+
+---
+
+### Módulo: Acompanhamento Neurodivergente
+
+**RF-029 – Registrar plano de acompanhamento neurodivergente**
+Permitir o registro de plano de intervenção pedagógica e acompanhamento periódico com responsáveis.
+Critérios de aceite:
+
+* cadastro de campos específicos para plano de intervenção;
+* periodicidade mínima de acompanhamento a cada 2 meses;
+* registro de relatórios orais/documentais dos responsáveis;
+* geração de histórico acessível a docentes e gestores.
+
+---
+
+### Módulo: Gestão de Conteúdo
+
+**RF-030 – Cadastrar conteúdos institucionais**
+Permitir o cadastro de conteúdos textuais e documentais, como:
+
+* regras de vestimenta;
+* normas disciplinares;
+* legislação aplicável;
+* comunicados oficiais.
+  Critérios de aceite:
+* editor de texto com formatação básica;
+* suporte a anexos (PDF, DOCX, imagens);
+* categorização dos conteúdos;
+* controle de versões.
+
+**RF-031 – Exibir conteúdos institucionais para usuários**
+Disponibilizar os conteúdos cadastrados em área dedicada do sistema.
+Critérios de aceite:
+
+* acesso restrito por perfil (apenas gestores podem editar, todos podem visualizar);
+* visualização clara em desktop e mobile;
+* busca por título, categoria ou palavra-chave.
 
 ---
 

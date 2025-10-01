@@ -50,7 +50,7 @@ export default defineConfig({
 						},
 						{
 							label: "Requisitos",
-							slug: "visao/levantamento-parcial",
+							slug: "visao/requisitos",
 						},
 						{
 							label: "Regras de Negócio",
