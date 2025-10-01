@@ -68,6 +68,10 @@ export default defineConfig({
 							label: "Interação entre Equipe e Cliente",
 							slug: "visao/interacao",
 						},
+						{
+							label: "Objetivos e Características",
+							slug: "visao/objetivos"
+						},
 
 					],
 				},
