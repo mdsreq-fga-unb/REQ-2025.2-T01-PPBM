@@ -77,3 +77,9 @@ description: Reunião realizada via Google Meet de 21:00h às 22:30h.
   - Por enquanto Processo: Scrum/RAD
   - Reuniões semanais fixas da equipe
   - Documento em construção (ToDo mapeado)
+
+## Histórico de Versão
+
+| Data       | Versão | Descrição                              | Autor(es)      | Revisor(es)    |
+| ---------- | ------ | -------------------------------------- | -------------- | -------------- |
+| 30/09/2025 | 1.0    | Criação inicial da página de atas. | Philipe Morais | Todos |
