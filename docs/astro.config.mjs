@@ -72,7 +72,6 @@ export default defineConfig({
 							label: "Objetivos e Características",
 							slug: "visao/objetivos"
 						},
-
 					],
 				},
 				{
@@ -105,7 +104,24 @@ export default defineConfig({
 							slug: "evidencias/sprint-1",
 						},
 					],
-				}
+				},
+				{
+					label: "Atas de Reunião",
+					items: [
+						{
+							label: "01/09/2025",
+							slug: "atas/ata1",
+						},
+						{
+							label: "11/09/2025",
+							slug: "atas/ata2",
+						},
+						{
+							label: "24/09/2025",
+							slug: "atas/ata3",
+						},
+					],
+				},
 			],
 		}),
 	],
