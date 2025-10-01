@@ -1,7 +1,6 @@
 ---
 title: Objetivos e Características
 description: Detalhamento dos objetivos do projeto e sua relação com as funcionalidades planejadas.
-sidebar:
 ---
 
 ## Objetivos Específicos e Características do Produto
