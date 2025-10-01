@@ -13,6 +13,7 @@ A equipe realizou o refinamento de requisitos funcionais e não funcionais de so
 ### Módulo: Cadastro & Dados do Aluno
 
 **RF-001 – Cadastrar criança**
+
 Permitir cadastro com: nome, data de nascimento, CPF, responsável(éis), contatos, escola/unidade, cidade.
 Critérios de aceite:
 
@@ -24,6 +25,7 @@ Critérios de aceite:
 * pelo menos um responsável obrigatório por criança.
 
 **RF-002 – Gerenciar responsáveis**
+
 Editar/remover responsáveis, com vínculo a uma criança e múltiplos contatos.
 Critérios de aceite:
 
@@ -32,6 +34,7 @@ Critérios de aceite:
 * histórico de alterações mantido.
 
 **RF-003 – Registrar ficha médica**
+
 Registrar e manter observações médicas (asma, alergias, restrições, medicações e contatos de emergência).
 Critérios de aceite:
 
@@ -41,6 +44,7 @@ Critérios de aceite:
 * atualização de informações médicas com data/hora.
 
 **RF-004 – Diferenciar perfil neurodivergente**
+
 Diferenciar cadastro para crianças neurodivergentes (campos de acompanhamento, adaptações e observações pedagógicas).
 Critérios de aceite:
 
@@ -50,6 +54,7 @@ Critérios de aceite:
 * alertas para educadores sobre adaptações necessárias.
 
 **RF-005 – Cadastrar informações complementares do aluno**
+
 Permitir o registro de informações adicionais como:
 
 * nome de guerra;
@@ -65,6 +70,7 @@ Permitir o registro de informações adicionais como:
 ### Módulo: Presença & Justificativas
 
 **RF-006 – Registrar presença**
+
 Lançar presença, falta e atraso por turma/sessão.
 Critérios de aceite:
 
@@ -73,6 +79,7 @@ Critérios de aceite:
 * confirmação antes do salvamento.
 
 **RF-007 – Justificar falta**
+
 Permitir justificar faltas com motivo, anexo (opcional) e status (pendente/aprovada/recusada).
 Critérios de aceite:
 
@@ -82,6 +89,7 @@ Critérios de aceite:
 * notificação automática para responsáveis.
 
 **RF-008 – Editar lançamento de presença**
+
 Corrigir registros de presença/falta com histórico de alterações.
 Critérios de aceite:
 
@@ -91,6 +99,7 @@ Critérios de aceite:
 * confirmação de alteração.
 
 **RF-009 – Suportar anexos**
+
 Permitir anexar comprovantes (PDF/JPG/PNG) em justificativas e comunicações.
 Critérios de aceite:
 
@@ -100,6 +109,7 @@ Critérios de aceite:
 * armazenamento seguro de arquivos.
 
 **RF-010 – Definir política de justificativa de faltas**
+
 Permitir que faltas justificadas sejam registradas como "falta justificada", não anulando a ausência, mas impactando indicadores de forma diferenciada.
 Critérios de aceite:
 
@@ -108,6 +118,7 @@ Critérios de aceite:
 * manter rastreabilidade no relatório individual.
 
 **RF-011 – Conceder autonomia docente para justificativas**
+
 Permitir que o professor aprove ou rejeite justificativas de falta de forma autônoma.
 Critérios de aceite:
 
@@ -116,6 +127,7 @@ Critérios de aceite:
 * notificação ao responsável sobre a decisão.
 
 **RF-012 – Definir motivos e documentos aceitos para justificativa**
+
 Permitir parametrização dos motivos justificáveis (ex.: atestado médico, participação em atividades desportivas) e exigência de documentos obrigatórios.
 Critérios de aceite:
 
@@ -124,6 +136,7 @@ Critérios de aceite:
 * validação de anexos quanto a formato e obrigatoriedade.
 
 **RF-013 – Limitar número de alunos por turma (pelotão)**
+
 Permitir configuração de limite de 30 alunos por turma (pelotão).
 Critérios de aceite:
 
@@ -136,6 +149,7 @@ Critérios de aceite:
 ### Módulo: Relatórios & Análises
 
 **RF-014 – Consultar aluno**
+
 Filtrar histórico de presenças/faltas por aluno, período e unidade.
 Critérios de aceite:
 
@@ -145,6 +159,7 @@ Critérios de aceite:
 * possibilidade de exportar resultados da consulta.
 
 **RF-015 – Gerar relatório individual de frequência**
+
 Gerar relatório por aluno (período selecionável) com taxas de presença, faltas justificadas e não justificadas.
 Critérios de aceite:
 
@@ -153,6 +168,7 @@ Critérios de aceite:
 * inclusão de gráficos visuais.
 
 **RF-016 – Consolidar relatórios por turma/unidade**
+
 Consolidar frequência por turma, unidade e cidade, com comparativos por período.
 Critérios de aceite:
 
@@ -161,6 +177,7 @@ Critérios de aceite:
 * possibilidade de drill-down para detalhes.
 
 **RF-017 – Exportar relatórios**
+
 Exportar relatórios em PDF e Excel (CSV/XLSX).
 Critérios de aceite:
 
@@ -170,6 +187,7 @@ Critérios de aceite:
 * validação de tamanho de arquivo.
 
 **RF-018 – Exibir dashboards de frequência**
+
 Exibir indicadores e gráficos (taxa média de presença, alertas de recorrência).
 Critérios de aceite:
 
@@ -179,6 +197,7 @@ Critérios de aceite:
 * possibilidade de personalizar visualizações.
 
 **RF-019 – Exibir histórico do aluno**
+
 Exibir linha do tempo com presenças, faltas, justificativas, atendimentos, advertências e comunicações relacionadas.
 Critérios de aceite:
 
@@ -188,6 +207,7 @@ Critérios de aceite:
 * possibilidade de exportar histórico.
 
 **RF-020 – Exportar relatórios oficiais padronizados**
+
 Permitir exportação de relatórios em modelos definidos pelo CBMDF (incluindo logotipo e identidade oficial).
 Critérios de aceite:
 
@@ -200,9 +220,11 @@ Critérios de aceite:
 ### Módulo: Comunicação
 
 **RF-021 – Registrar advertência**
+
 Campo para anotações de comportamentos negativos.
 
 **RF-022 – Enviar notificações**
+
 Bot de notificações ou botão de redirecionamento de notificações (WhatsApp, e-mail, plataforma própria).
 Critérios de aceite:
 
@@ -217,6 +239,7 @@ Critérios de aceite:
 ### Módulo: Acesso & Perfis
 
 **RF-023 – Autenticar usuários e perfis**
+
 Acesso com autenticação e papéis: Administrador, Gestor de Unidade, Docente, Responsável.
 Critérios de aceite:
 
@@ -226,6 +249,7 @@ Critérios de aceite:
 * primeiro acesso com alteração obrigatória de senha.
 
 **RF-024 – Controlar permissões de acesso**
+
 Restringir operações por papel (ex.: responsável não edita presenças; docente registra e justifica; gestor aprova justificativas).
 Critérios de aceite:
 
@@ -234,6 +258,7 @@ Critérios de aceite:
 * logs de tentativas de acesso negado.
 
 **RF-025 – Operar multiunidade**
+
 Operar dados segregados por 12 cidades/unidades, com visão consolidada para administradores.
 Critérios de aceite:
 
@@ -247,6 +272,7 @@ Critérios de aceite:
 ### Módulo: Operação & Processo
 
 **RF-026 – Registrar auditoria**
+
 Registrar trilhas de auditoria (quem fez, o quê, quando, antes/depois) para operações sensíveis.
 Critérios de aceite:
 
@@ -256,6 +282,7 @@ Critérios de aceite:
 * retenção de logs por período configurável.
 
 **RF-027 – Cadastrar turmas e sessões**
+
 Cadastrar turmas, dias/horários, lotação e instrutores.
 Critérios de aceite:
 
@@ -264,6 +291,7 @@ Critérios de aceite:
 * vinculação obrigatória de instrutor.
 
 **RF-028 – Implementar filtros e busca**
+
 Busca por nome, CPF, turma, unidade, status de justificativa e período.
 Critérios de aceite:
 
@@ -277,6 +305,7 @@ Critérios de aceite:
 ### Módulo: Acompanhamento Neurodivergente
 
 **RF-029 – Registrar plano de acompanhamento neurodivergente**
+
 Permitir o registro de plano de intervenção pedagógica e acompanhamento periódico com responsáveis.
 Critérios de aceite:
 
@@ -290,6 +319,7 @@ Critérios de aceite:
 ### Módulo: Gestão de Conteúdo
 
 **RF-030 – Cadastrar conteúdos institucionais**
+
 Permitir o cadastro de conteúdos textuais e documentais, como:
 
 * regras de vestimenta;
@@ -303,6 +333,7 @@ Permitir o cadastro de conteúdos textuais e documentais, como:
 * controle de versões.
 
 **RF-031 – Exibir conteúdos institucionais para usuários**
+
 Disponibilizar os conteúdos cadastrados em área dedicada do sistema.
 Critérios de aceite:
 
@@ -317,6 +348,7 @@ Critérios de aceite:
 ### Módulo: Desempenho & Escalabilidade
 
 **RNF-001 – Tempo de resposta**
+
 O sistema deve responder a consultas e operações críticas em até 5 segundos em condições normais de uso.
 **Critérios de aceite:**
 
@@ -325,9 +357,11 @@ O sistema deve responder a consultas e operações críticas em até 5 segundos 
 * relatórios gerados em até 10s.
 
 **RNF-004 – Tempo de resposta**
+
 95% das páginas < 2s; exportações até 10s para 5k registros.
 
 **RNF-005 – Carga**
+
 Suportar uso concorrente das 12 unidades (≥150 usuários simultâneos no pico do registro de presença).
 
 ---
@@ -335,6 +369,7 @@ Suportar uso concorrente das 12 unidades (≥150 usuários simultâneos no pico 
 ### Módulo: Segurança & Privacidade
 
 **RNF-002 – Proteção de dados pessoais**
+
 O sistema deve atender à LGPD, garantindo consentimento para coleta de dados sensíveis e direito de exclusão mediante solicitação.
 **Critérios de aceite:**
 
@@ -343,6 +378,7 @@ O sistema deve atender à LGPD, garantindo consentimento para coleta de dados se
 * relatórios de conformidade disponíveis.
 
 **RNF-003 – Criptografia**
+
 Todos os dados devem ser transmitidos via HTTPS/TLS 1.2 ou superior.
 **Critérios de aceite:**
 
@@ -354,6 +390,7 @@ Todos os dados devem ser transmitidos via HTTPS/TLS 1.2 ou superior.
 ### Módulo: Manutenibilidade & Evolutividade
 
 **RNF-004 – Documentação técnica**
+
 O sistema deve manter documentação atualizada de APIs, banco de dados e arquitetura.
 **Critérios de aceite:**
 
@@ -361,6 +398,7 @@ O sistema deve manter documentação atualizada de APIs, banco de dados e arquit
 * atualização obrigatória a cada release.
 
 **RNF-005 – Testabilidade**
+
 O sistema deve permitir criação de testes automatizados cobrindo no mínimo 70% das funcionalidades críticas.
 **Critérios de aceite:**
 
@@ -368,12 +406,15 @@ O sistema deve permitir criação de testes automatizados cobrindo no mínimo 70
 * falha no build caso a cobertura fique abaixo do limite.
 
 **RNF-014 – Padrões de código**
+
 TypeScript com lint/prettier, testes unitários (TDD) e cobertura-alvo ≥70% no MVP.
 
 **RNF-015 – CI/CD**
+
 Pipeline automatizado (build, testes, análise estática, deploy).
 
 **RNF-016 – Observabilidade**
+
 Monitoramento com métricas, logs estruturados e alertas.
 
 ---
@@ -381,9 +422,11 @@ Monitoramento com métricas, logs estruturados e alertas.
 ### Módulo: Qualidade & Usabilidade
 
 **RNF-001 – Usabilidade**
+
 Interface simples, navegação com voltar/avançar consistente e fluxos de 1–3 cliques para ações frequentes (lançar presença, justificar falta).
 
 **RNF-003 – Idioma & Terminologia**
+
 Português (Brasil) com terminologia do PBM (brigadinos/brigadinas).
 
 ---
@@ -391,6 +434,7 @@ Português (Brasil) com terminologia do PBM (brigadinos/brigadinas).
 ### Módulo: Confiabilidade & Disponibilidade
 
 **RNF-011 – Disponibilidade**
+
 Alvo de 99,5% mensal para o MVP.
 
 ---
@@ -398,12 +442,15 @@ Alvo de 99,5% mensal para o MVP.
 ### Módulo: Portabilidade & Tecnologia
 
 **RNF-017 – Contêineres**
+
 Empacotado em Docker para front, back e banco.
 
 **RNF-018 – Stack**
+
 Back-end TypeScript + Express; Front-end Astro; Banco Supabase/PostgreSQL.
 
 **RNF-019 – Compatibilidade de navegação**
+
 Suporte a Chrome/Edge/Firefox atuais e Safari atual -1 versão.
 
 ---
@@ -411,6 +458,7 @@ Suporte a Chrome/Edge/Firefox atuais e Safari atual -1 versão.
 ### Módulo: Dados & Relatórios
 
 **RNF-020 – Exportação fiel**
+
 PDFs com identidade visual do PBM; CSV/XLSX com separador padrão e codificação UTF-8.
 
 
