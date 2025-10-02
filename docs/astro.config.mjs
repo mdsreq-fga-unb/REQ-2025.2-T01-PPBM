@@ -70,7 +70,7 @@ export default defineConfig({
 						},
 						{
 							label: "Objetivos e Características",
-							slug: "visao/objetivos"
+							slug: "visao/objetivos",
 						},
 					],
 				},
@@ -119,6 +119,10 @@ export default defineConfig({
 						{
 							label: "24/09/2025",
 							slug: "atas/ata3",
+						},
+						{
+							label: "01/10/2025",
+							slug: "atas/ata4",
 						},
 					],
 				},
