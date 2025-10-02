@@ -53,22 +53,35 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 
 **Objetivo:** Primeira entrega funcional - Módulo de Cadastro e Acesso
 **Entregas:**
-- **Módulo: Cadastro & Dados do Aluno**
-  - Cadastro completo de crianças (dados pessoais, responsáveis, escola/unidade)
-  - Registro de ficha médica com observações e condições críticas
-  - Cadastro de perfil neurodivergente com adaptações pedagógicas
-  - Informações complementares (nome de guerra, tipo sanguíneo, graduação)
 - **Módulo: Acesso & Perfis (parte inicial)**
-  - Sistema de autenticação básico com perfis (Administrador, Gestor, Docente, Responsável)
-  - Controle de permissões por papel
-  - Operação multiunidade com dados segregados
+  - US-017 – Autenticação e perfis.
+  - US-018 – Controle de permissões.
+- **Módulo: Cadastro & Dados do Aluno**
+  - US-001 – Cadastrar criança.
+  - US-002 – Gerenciar responsáveis.
+  - US-003 – Registrar ficha médica.
+  - US-004 – Diferenciar perfil neurodivergente.
+  - US-005 – Cadastrar informações complementares do aluno
+  - US-006 – Exportar documentos de comprovante
 - **Módulo: Operação & Processo (parte inicial)**
-  - Sistema básico de auditoria para operações de cadastro
-  - Filtros básicos para consulta de alunos cadastrados
-- Refinamento do Product Backlog com tarefas específicas por módulo
-- Kanban atualizado com tarefas por módulo
+  - US-029 – Cadastrar turmas e sessões.
+- **Organização e Atualização**
+  - Refinamento de requistos e US de acordo com a Sprint review.
+  - Atualizar o backlog do Kanban com refinamento dos requisitos e US.
+  - Priorização de acordo utilizando a técnica MosCow.
+  - Atulização o cronograma de acordo com a priorização do backlog.
+  - Criar a sessão de evidências no pages.
+  - Criar a sessão de atas de reunião no pages.
+  - Subir e linkar as atas de reunião com as evidências.
+  - Redesign do prototipo de acordo com o refinamento de requisitos e US.
+  - Atulizar o documento de visão de acordo com as entregas da Unidade 02.
+      - Requisitos de software e suas subcaracterísticas.
+      - DoR e DoD.
+      - Backlog do produto e suas subcaracterísticas.
+      - MVP.
 
-**Validação:** Demonstração de cadastro completo e validação do fluxo de autenticação  
+**Validação:** Demonstração de cadastro completo e validação do fluxo de autenticação.
+
 
 ---
 
@@ -81,7 +94,6 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
   - Política diferenciada para faltas justificadas vs não justificadas
   - Autonomia docente para aprovar/rejeitar justificativas
   - Controle de lotação por turma (30 alunos máximo)
-  - Cadastro de turmas, sessões e horários
   - Sistema de auditoria para alterações de presença
 - **Módulo: Operação & Processo (parte 2)**
   - Sistema de auditoria para operações de presença e justificativas

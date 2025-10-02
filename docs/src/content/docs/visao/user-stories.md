@@ -28,39 +28,43 @@ Como gestor ou docente, quero cadastrar perfis neurodivergentes com campos espec
 
 Como gestor ou docente, quero registrar dados complementares (nome de guerra, tipo sanguíneo, graduação) para manter um perfil mais completo dos alunos.
 
+**US-006 – Exportar documentos de comprovante**
+
+Como gestor ou docente, quero exportar documentos de comprovante (laudos médicos, documentos de identificação neurodivergente) para download ou impressão, para manter registros físicos quando necessário.
+
 ---
 
 ## Módulo: Presença & Justificativas
 
-**US-006 – Registrar presença de aluno**
+**US-007 – Registrar presença de aluno**
 
 Como docente, quero registrar presença, falta ou atraso dos alunos para manter o controle da frequência escolar.
 
-**US-007 – Justificar falta de aluno**
+**US-008 – Justificar falta de aluno**
 
 Como responsável, quero justificar a ausência de meu filho(a) anexando documentos, para que a escola registre corretamente o motivo da falta.
 
-**US-008 – Editar lançamento de presença**
+**US-009 – Editar lançamento de presença**
 
 Como gestor, quero corrigir lançamentos de presença com histórico de alterações para manter a integridade dos dados.
 
-**US-009 – Anexar comprovantes**
+**US-010 – Anexar comprovantes**
 
 Como responsável ou docente, quero anexar documentos em justificativas e comunicações para validar informações e registrar evidências.
 
-**US-010 – Definir política de justificativa de faltas**
+**US-011 – Definir política de justificativa de faltas**
 
 Como gestor, quero configurar como faltas justificadas impactam os relatórios para manter coerência nas análises.
 
-**US-011 – Conceder autonomia docente para justificativas**
+**US-012 – Conceder autonomia docente para justificativas**
 
 Como docente, quero aprovar ou rejeitar justificativas de faltas para atuar diretamente no processo.
 
-**US-012 – Definir motivos e exigências para justificativas**
+**US-013 – Definir motivos e exigências para justificativas**
 
 Como administrador, quero configurar motivos válidos de ausência e exigência de documentos comprobatórios para padronizar o processo de justificativa.
 
-**US-013 – Limitar número de alunos por turma**
+**US-014 – Limitar número de alunos por turma**
 
 Como gestor, quero limitar a 30 alunos por turma para garantir acompanhamento pedagógico adequado.
 
@@ -68,31 +72,31 @@ Como gestor, quero limitar a 30 alunos por turma para garantir acompanhamento pe
 
 ## Módulo: Relatórios & Análises
 
-**US-014 – Consultar aluno**
+**US-015 – Consultar aluno**
 
 Como gestor ou docente, quero consultar rapidamente o histórico de frequência de um aluno para acompanhar seu desempenho escolar.
 
-**US-015 – Gerar relatório individual de frequência**
+**US-016 – Gerar relatório individual de frequência**
 
 Como responsável ou gestor, quero gerar relatórios individuais de frequência para acompanhar taxas de presença e faltas justificadas.
 
-**US-016 – Consolidar relatórios por turma/unidade**
+**US-017 – Consolidar relatórios por turma/unidade**
 
 Como gestor, quero consolidar relatórios de frequência por turma ou unidade para analisar tendências coletivas.
 
-**US-017 – Exportar relatórios**
+**US-018 – Exportar relatórios**
 
 Como gestor, quero exportar relatórios em PDF ou Excel para compartilhar e arquivar os dados da frequência.
 
-**US-018 – Exibir dashboards de frequência**
+**US-019 – Exibir dashboards de frequência**
 
 Como administrador, quero visualizar dashboards com indicadores e alertas para monitorar a frequência em tempo real.
 
-**US-019 – Exibir histórico do aluno**
+**US-020 – Exibir histórico do aluno**
 
 Como responsável ou gestor, quero acessar a linha do tempo de eventos de um aluno para acompanhar seu histórico completo.
 
-**US-020 – Exportar relatórios oficiais padronizados**
+**US-021 – Exportar relatórios oficiais padronizados**
 
 Como gestor, quero exportar relatórios em modelos exigidos pelo CBMDF para garantir conformidade institucional.
 
@@ -100,15 +104,15 @@ Como gestor, quero exportar relatórios em modelos exigidos pelo CBMDF para gara
 
 ## Módulo: Comunicação
 
-**US-021 – Registrar advertência**
+**US-022 – Registrar advertência**
 
 Como docente ou gestor, quero registrar advertências de comportamento para acompanhar a disciplina dos alunos.
 
-**US-022 – Enviar notificações**
+**US-023 – Enviar notificações**
 
 Como responsável, quero receber notificações de faltas, justificativas e advertências para estar atualizado sobre a situação escolar do meu filho(a).
 
-**US-023 – Configurar preferências de notificação**
+**US-024 – Configurar preferências de notificação**
 
 Como usuário, quero configurar os canais e preferências de notificação para receber mensagens da escola de forma adequada.
 
@@ -116,15 +120,15 @@ Como usuário, quero configurar os canais e preferências de notificação para 
 
 ## Módulo: Acesso & Perfis
 
-**US-024 – Autenticar usuários e perfis**
+**US-025 – Autenticar usuários e perfis**
 
 Como usuário do sistema, quero acessar com login e senha de acordo com meu perfil para realizar somente as operações que me são permitidas.
 
-**US-025 – Controlar permissões de acesso**
+**US-026 – Controlar permissões de acesso**
 
 Como administrador, quero definir permissões de acordo com cada papel para garantir segurança e acesso adequado às funcionalidades.
 
-**US-026 – Operar multiunidade**
+**US-027 – Operar multiunidade**
 
 Como administrador, quero gerenciar múltiplas unidades de ensino com dados segregados e visão consolidada para manter a organização do sistema.
 
@@ -132,15 +136,15 @@ Como administrador, quero gerenciar múltiplas unidades de ensino com dados segr
 
 ## Módulo: Operação & Processo
 
-**US-027 – Registrar auditoria de operações**
+**US-028 – Registrar auditoria de operações**
 
 Como administrador, quero registrar trilhas de auditoria para rastrear quem fez cada alteração no sistema.
 
-**US-028 – Cadastrar turmas e sessões**
+**US-029 – Cadastrar turmas e sessões**
 
 Como gestor, quero cadastrar turmas, horários e instrutores para organizar a oferta de aulas.
 
-**US-029 – Implementar filtros e busca avançada**
+**US-030 – Implementar filtros e busca avançada**
 
 Como usuário do sistema, quero aplicar filtros e buscas avançadas para encontrar rapidamente informações relevantes.
 
@@ -148,7 +152,7 @@ Como usuário do sistema, quero aplicar filtros e buscas avançadas para encontr
 
 ## Módulo: Acompanhamento Neurodivergente
 
-**US-030 – Registrar plano de acompanhamento pedagógico**
+**US-031 – Registrar plano de acompanhamento pedagógico**
 
 Como gestor ou docente, quero registrar e revisar periodicamente planos de intervenção pedagógica para alunos neurodivergentes, garantindo apoio contínuo.
 
@@ -156,11 +160,11 @@ Como gestor ou docente, quero registrar e revisar periodicamente planos de inter
 
 ## Módulo: Gestão de Conteúdo
 
-**US-031 – Cadastrar conteúdos institucionais**
+**US-032 – Cadastrar conteúdos institucionais**
 
 Como gestor, quero cadastrar documentos e textos institucionais (normas, regras, comunicados) para manter os usuários informados.
 
-**US-032 – Exibir conteúdos institucionais para usuários**
+**US-033 – Exibir conteúdos institucionais para usuários**
 
 Como responsável, quero acessar conteúdos institucionais publicados para me manter atualizado sobre as regras e normas do PBM.
 
