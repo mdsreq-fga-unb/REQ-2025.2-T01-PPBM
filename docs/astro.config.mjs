@@ -72,6 +72,10 @@ export default defineConfig({
 							label: "Objetivos e Características",
 							slug: "visao/objetivos",
 						},
+						{
+							label: "Backlog do Produto",
+							slug: "visao/backlog",
+						}
 					],
 				},
 				{
