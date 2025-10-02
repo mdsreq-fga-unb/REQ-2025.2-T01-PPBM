@@ -1,5 +1,5 @@
 ---
-title: Ata de Reunião - 01/10/2025
+title: Ata de Reunião - Sprint Planning - 01/10/2025
 description: Reunião realizada via Google Meet de 22:00h às 22:25h.
 ---
 
