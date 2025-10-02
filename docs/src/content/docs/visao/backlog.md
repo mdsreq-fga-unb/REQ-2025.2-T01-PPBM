@@ -12,12 +12,17 @@ sempre que necessário, durante o desenvolvimento do produto da FireForce.
 
 Nesta seção, foi realizada a priorização dos itens do backlog utilizando a técnica MoSCoW, que classifica as
 funcionalidades em quatro categorias principais:
+
 **• Must have:** Funcionalidades essenciais para o funcionamento do produto, que devem ser entregues
 obrigatoriamente.
+
 **• Should have:** Funcionalidades importantes, mas que podem ser entregues após as essenciais.
+
 **• Could have:** Funcionalidades desejáveis, que agregam valor, mas não são prioritárias no escopo inicial.
+
 **• Won't have:** Funcionalidades que não serão incluídas no momento, podendo ser consideradas para
 versões futuras.
+
 O objetivo da priorização foi garantir que o desenvolvimento foque nas funcionalidades mais críticas, alinhando
 o produto às necessidades de negócio e aos recursos disponíveis. A tabela detalha a classificação de cada item do
 backlog, promovendo clareza e organização para as próximas etapas do projeto.
@@ -61,19 +66,19 @@ Essa priorização e definição foi realizada em conjunto com a FireForce.
 |                 | US-033  | Exibir conteúdos institucionais                     | X   |
 | **Won’t Have**  | -       | Nenhum requisito explicitamente fora do escopo      |     |
 
-| Prioridade      | Código       | Descrição               | MVP |
-|-----------------|--------------|-------------------------|-----|
-| **Must Have**   | US-RNF-001   | Tempo de resposta       | X   |
-|                 | US-RNF-002   | Proteção de dados       | X   |
-|                 | US-RNF-003   | Criptografia            | X   |
-|                 | US-RNF-004   | Documentação técnica    |     |
-|                 | US-RNF-005   | Testabilidade           | X   |
-|                 | US-RNF-006   | Disponibilidade         | X   |
-|                 | US-RNF-007   | Padrões de código       |     |
-|                 | US-RNF-010   | Contêineres             | X   |
-|                 | US-RNF-011   | Stack                   |     |
-|                 | US-RNF-012   | Compatibilidade         | X   |
-| **Should Have** | US-RNF-009   | Observabilidade         |     |
-|                 | US-RNF-013   | Exportação fiel         | X   |
-| **Could Have**  | US-RNF-008   | CI/CD                   |     |
-| **Won’t Have**  | -            | Nenhum requisito fora   |     |
+| Prioridade      | Código       | Descrição                                           | MVP |
+|-----------------|--------------|-----------------------------------------------------|-----|
+| **Must Have**   | US-RNF-001   | Tempo de resposta                                   | X   |
+|                 | US-RNF-002   | Proteção de dados pessoais (LGPD)                  | X   |
+|                 | US-RNF-003   | Criptografia de dados                               | X   |
+|                 | US-RNF-004   | Documentação técnica atualizada                     |     |
+|                 | US-RNF-005   | Testabilidade e testes automatizados                | X   |
+|                 | US-RNF-006   | Disponibilidade do sistema (99,5%)                 | X   |
+|                 | US-RNF-007   | Padrões de código e qualidade                       |     |
+|                 | US-RNF-010   | Contêineres Docker                                  | X   |
+|                 | US-RNF-011   | Stack tecnológica (TypeScript, Express, Astro)     |     |
+|                 | US-RNF-012   | Compatibilidade de navegadores                      | X   |
+| **Should Have** | US-RNF-009   | Observabilidade e monitoramento                     |     |
+|                 | US-RNF-013   | Exportação fiel de relatórios                       | X   |
+| **Could Have**  | US-RNF-008   | CI/CD e pipeline automatizado                       |     |
+| **Won't Have**  | -            | Nenhum requisito explicitamente fora do escopo      |     |
