@@ -42,6 +42,10 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 - Implementação do quadro Kanban para acompanhamento de tarefas por módulo
 - Refinamento de requisitos funcionais e não funcionais
 - Criação de User Stories detalhadas por módulo
+- **Requisitos Não Funcionais (RNF)**
+  - US-RNF-011 – Stack (TypeScript, Express, Astro, Supabase/PostgreSQL)
+  - US-RNF-007 – Padrões de código
+  - US-RNF-004 – Documentação técnica
 
 **Validação:** Revisão dos módulos e validação do protótipo inicial  
 
@@ -65,6 +69,13 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
   - US-006 – Exportar documentos de comprovante
 - **Módulo: Operação & Processo (parte inicial)**
   - US-029 – Cadastrar turmas e sessões.
+- **Requisitos Não Funcionais (RNF)**
+  - US-RNF-002 – Proteção de dados pessoais (LGPD)
+  - US-RNF-003 – Criptografia
+  - US-RNF-005 – Testabilidade
+- **Regras de Negócio (RB)**
+  - US-RB-003 – Alertas para condições médicas críticas
+  - US-RB-004 – Privacidade de dados por tutela
 - **Organização e Atualização**
   - Refinamento de requistos e US de acordo com a Sprint review.
   - Atualizar o backlog do Kanban com refinamento dos requisitos e US.
@@ -89,18 +100,24 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 **Objetivo:** Segunda entrega funcional - Módulo de Presença e Justificativas
 **Entregas:**
 - **Módulo: Presença & Justificativas**
-  - Registro completo de presença, falta e atraso por turma/sessão
-  - Sistema de justificativas com motivos e anexos obrigatórios
-  - Política diferenciada para faltas justificadas vs não justificadas
-  - Autonomia docente para aprovar/rejeitar justificativas
-  - Controle de lotação por turma (30 alunos máximo)
-  - Sistema de auditoria para alterações de presença
+  - US-007 – Registrar presença de aluno
+  - US-008 – Justificar falta de aluno
+  - US-009 – Editar lançamento de presença
+  - US-010 – Anexar comprovantes
+  - US-011 – Definir política de justificativa de faltas
+  - US-012 – Conceder autonomia docente para justificativas
+  - US-013 – Definir motivos e exigências para justificativas
+  - US-014 – Limitar número de alunos por turma
 - **Módulo: Operação & Processo (parte 2)**
-  - Sistema de auditoria para operações de presença e justificativas
-  - Filtros básicos para consulta de presenças por período e turma
-- Testes unitários com TDD para o módulo de presença
-- Refinamento das User Stories relacionadas ao módulo
-- Kanban atualizado com tarefas do módulo de presença
+  - US-029 – Cadastrar turmas e sessões
+- **Módulo: Acesso & Perfis (parte 2)**
+  - US-026 – Controlar permissões de acesso
+- **Requisitos Não Funcionais (RNF)**
+  - US-RNF-001 – Tempo de resposta (5 segundos)
+  - US-RNF-010 – Contêineres Docker
+- **Regras de Negócio (RB)**
+  - US-RB-001 – Contabilização separada de faltas justificadas
+  - US-RB-002 – Aprovação centralizada de justificativas
 
 **Validação:** Demonstração completa do sistema de presença e justificativas  
 
@@ -110,25 +127,26 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 **Objetivo:** Terceira entrega funcional - Módulos de Relatórios e Comunicação
 **Entregas:**
 - **Módulo: Relatórios & Análises**
-  - Consultas avançadas por aluno, período e unidade
-  - Relatórios individuais de frequência com gráficos visuais
-  - Relatórios consolidados por turma/unidade com comparativos
-  - Exportação em PDF e Excel (CSV/XLSX) com formatação adequada
-  - Dashboards com indicadores em tempo real e alertas visuais
-  - Histórico completo do aluno em linha do tempo
-  - Relatórios oficiais padronizados com identidade do CBMDF
+  - US-015 – Consultar aluno
+  - US-016 – Gerar relatório individual de frequência
+  - US-020 – Exibir histórico do aluno
 - **Módulo: Comunicação**
-  - Sistema de notificações completo (WhatsApp, e-mail, plataforma)
-  - Registro de advertências e comunicações oficiais
-  - Templates personalizáveis para notificações
-  - Área dedicada para conteúdos institucionais
+  - US-022 – Registrar advertência
 - **Módulo: Operação & Processo (parte 3)**
-  - Busca avançada e filtros combináveis para relatórios
-  - Sistema de auditoria para operações de relatórios e comunicação
-  - Filtros em tempo real para dashboards e consultas
+  - US-028 – Registrar auditoria de operações
+  - US-030 – Implementar filtros e busca avançada
+- **Módulo: Acompanhamento Neurodivergente**
+  - US-031 – Registrar plano de acompanhamento pedagógico
+- **Módulo: Gestão de Conteúdo**
+  - US-032 – Cadastrar conteúdos institucionais
+  - US-033 – Exibir conteúdos institucionais para usuários
+- **Requisitos Não Funcionais (RNF)**
+  - US-RNF-006 – Disponibilidade (99,5%)
+  - US-RNF-012 – Compatibilidade de navegação
+  - US-RNF-013 – Exportação fiel
+- **Regras de Negócio (RB)**
+  - US-RB-005 – Registro de comunicação oficial
 - Testes unitários com TDD para módulos de relatórios e comunicação
-- Refinamento das User Stories relacionadas aos módulos
-- Kanban atualizado com tarefas dos módulos de relatórios e comunicação
 
 **Validação:** Demonstração completa dos sistemas de relatórios e comunicação  
 
@@ -137,23 +155,24 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 ## Sprint 5 (12/11 – 24/11)
 **Objetivo:** Quarta entrega funcional - Módulos Complementares e Integração
 **Entregas:**
-- **Módulo: Acompanhamento Neurodivergente**
-  - Plano de acompanhamento pedagógico completo
-  - Registro de relatórios orais/documentais dos responsáveis
-  - Histórico acessível para docentes e gestores
-- **Módulo: Gestão de Conteúdo**
-  - Cadastro e exibição de conteúdos institucionais
-  - Editor de texto com formatação e anexos
-  - Controle de versões e categorização
-- **Módulo: Operação & Processo (finalização)**
-  - Integração completa de filtros e busca em todos os módulos
-  - Sistema completo de auditoria para todas as operações sensíveis
-  - Busca avançada integrada e filtros combináveis otimizados
-  - Histórico de buscas recentes e filtros salvos
+- **Módulo: Relatórios & Análises (finalização)**
+  - US-017 – Consolidar relatórios por turma/unidade
+  - US-018 – Exportar relatórios
+  - US-019 – Exibir dashboards de frequência
+  - US-021 – Exportar relatórios oficiais padronizados
+- **Módulo: Comunicação (finalização)**
+  - US-023 – Enviar notificações
+  - US-024 – Configurar preferências de notificação
 - **Módulo: Acesso & Perfis (finalização)**
+  - US-025 – Autenticar usuários e perfis
+  - US-027 – Operar multiunidade
   - Controle completo de permissões por papel
   - Recuperação de senha e configurações de segurança
   - Primeiro acesso com alteração obrigatória de senha
+
+- **Requisitos Não Funcionais (RNF)**
+  - US-RNF-009 – Observabilidade
+  - US-RNF-008 – CI/CD
 - Integração completa de todos os módulos
 - Testes ponta a ponta (E2E) para validação da integração
 - Ajustes a partir de feedbacks anteriores
@@ -183,3 +202,4 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 | 15/09/2025 | 1.0    | Criação inicial do documento de cronograma. | Mariana Gonzaga | Todos       |
 | 15/09/2025 | 1.1    | Ajuste de datas nas Sprints. | Philipe Morais | Todos       |
 | 01/10/2025 | 1.2    | Reorganização do cronograma baseada na priorização de módulos funcionais (Cadastro e Acesso → Sprint 2, Presença → Sprint 3, Relatórios e Comunicação → Sprint 4, Módulos complementares → Sprint 5). Adição de atividades de organização de backlog e Kanban. | Todos | Vitor Marconi |
+| 15/01/2025 | 1.3    | Adição de User Stories específicas nas Sprints 2, 3, 4 e 5. Distribuição lógica dos Requisitos Não Funcionais (RNF-001 a RNF-007, RNF-009 a RNF-012) e Regras de Negócio (RB-001 a RB-005) ao longo das sprints. Inclusão das User Stories faltantes na Sprint 5 para completar o cronograma. | Vitor Marconi | Todos |
