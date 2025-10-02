@@ -56,7 +56,7 @@ Como responsável ou docente, quero anexar documentos em justificativas e comuni
 
 Como gestor, quero configurar como faltas justificadas impactam os relatórios para manter coerência nas análises.
 
-**US-012 – Conceder autonomia docente para justificativas**
+**US-012 – Conceder autonomia ao docente para justificativas**
 
 Como docente, quero aprovar ou rejeitar justificativas de faltas para atuar diretamente no processo.
 
@@ -192,35 +192,35 @@ Como desenvolvedor, quero acessar documentação técnica atualizada para manter
 
 Como desenvolvedor, quero implementar testes automatizados para garantir qualidade e segurança nas entregas.
 
-**US-RNF-011 – Disponibilidade**
+**US-RNF-006 – Disponibilidade**
 
 Como usuário, quero que o sistema esteja disponível 99,5% do tempo para não prejudicar meu trabalho.
 
-**US-RNF-014 – Padrões de código**
+**US-RNF-007 – Padrões de código**
 
 Como desenvolvedor, quero seguir padrões de código para manter legibilidade e qualidade no projeto.
 
-**US-RNF-015 – CI/CD**
+**US-RNF-008 – CI/CD**
 
 Como desenvolvedor, quero um pipeline automatizado para integrar e entregar código continuamente com qualidade.
 
-**US-RNF-016 – Observabilidade**
+**US-RNF-009 – Observabilidade**
 
 Como administrador, quero monitorar métricas e logs para identificar problemas em tempo real.
 
-**US-RNF-017 – Contêineres**
+**US-RNF-010 – Contêineres**
 
 Como desenvolvedor, quero usar contêineres Docker para facilitar o deploy e a portabilidade.
 
-**US-RNF-018 – Stack**
+**US-RNF-011 – Stack**
 
 Como desenvolvedor, quero utilizar TypeScript, Express, Astro e Supabase/PostgreSQL para manter consistência tecnológica.
 
-**US-RNF-019 – Compatibilidade de navegação**
+**US-RNF-012 – Compatibilidade de navegação**
 
 Como usuário, quero acessar o sistema nos principais navegadores para não ter restrições de uso.
 
-**US-RNF-020 – Exportação fiel**
+**US-RNF-013 – Exportação fiel**
 
 Como gestor, quero que os relatórios exportados mantenham identidade visual e padronização para uso oficial.
 
