@@ -24,6 +24,21 @@ Responsáveis visualizam apenas dados da(s) criança(s) sob sua tutela.
 **RB-005**
 Comunicação oficial deve permanecer registrada no sistema (não apagar, apenas arquivar).
 
+**RB-006**
+Sistema deve permitir parametrização dos motivos justificáveis e exigência de documentos obrigatórios.
+
+**RB-007**
+Limite de 30 alunos por turma (pelotão) deve ser configurável e respeitado.
+
+**RB-008**
+Sistema deve restringir operações por papel de usuário conforme matriz de permissões.
+
+**RB-009**
+Sistema deve operar com dados segregados por unidade, mantendo isolamento completo.
+
+**RB-010**
+Sistema deve registrar trilhas de auditoria para todas as operações sensíveis.
+
 ---
 
 ## Detalhamento das Regras
@@ -71,3 +86,52 @@ Comunicação oficial deve permanecer registrada no sistema (não apagar, apenas
 - Histórico de comunicações deve ser mantido por período definido
 - Arquivo deve preservar integridade e autenticidade das mensagens
 - Busca em comunicações arquivadas deve ser possível
+
+### RB-006 - Motivos e Documentos para Justificativa
+**Descrição:** Sistema deve permitir parametrização dos motivos justificáveis e exigência de documentos obrigatórios.
+
+**Aplicação:**
+- Cadastro de lista de motivos aceitos
+- Exigência de anexos em casos definidos (ex.: atestado médico)
+- Validação de anexos quanto a formato e obrigatoriedade
+- Configuração flexível de políticas por unidade
+
+### RB-007 - Limite de Alunos por Turma
+**Descrição:** Limite de 30 alunos por turma (pelotão) deve ser configurável e respeitado.
+
+**Aplicação:**
+- Impedir cadastro acima do limite configurado
+- Exibir alerta ao gestor quando turma atingir lotação máxima
+- Permitir exceções apenas com autorização administrativa
+- Configuração flexível do limite por unidade
+
+### RB-008 - Controle de Permissões de Acesso
+**Descrição:** Sistema deve restringir operações por papel de usuário conforme matriz de permissões.
+
+**Aplicação:**
+- Responsável não edita presenças
+- Docente registra e justifica presenças
+- Gestor aprova justificativas
+- Matriz de permissões clara e validada
+- Logs de tentativas de acesso negado
+- Validação de acesso em cada operação
+
+### RB-009 - Operação Multiunidade
+**Descrição:** Sistema deve operar com dados segregados por unidade, mantendo isolamento completo.
+
+**Aplicação:**
+- Isolamento completo de dados por unidade
+- Visão consolidada apenas para administradores
+- Possibilidade de transferir alunos entre unidades
+- Relatórios consolidados por região
+- Operação em 12 cidades/unidades
+
+### RB-010 - Registro de Auditoria
+**Descrição:** Sistema deve registrar trilhas de auditoria para todas as operações sensíveis.
+
+**Aplicação:**
+- Registro automático de todas as operações críticas
+- Trilhas de auditoria com informações: quem fez, o quê, quando, antes/depois
+- Dados imutáveis de auditoria
+- Relatórios de auditoria exportáveis
+- Retenção de logs por período configurável
