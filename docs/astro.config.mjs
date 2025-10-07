@@ -49,18 +49,6 @@ export default defineConfig({
 							slug: "visao/estrategias",
 						},
 						{
-							label: "Requisitos",
-							slug: "visao/requisitos",
-						},
-						{
-							label: "Regras de Negócio",
-							slug: "visao/regras-negocio",
-						},
-						{
-							label: "User Stories",
-							slug: "visao/user-stories",
-						},
-						{
 							label: "Cronograma e Entregas",
 							slug: "visao/cronograma",
 						},
@@ -69,8 +57,8 @@ export default defineConfig({
 							slug: "visao/interacao",
 						},
 						{
-							label: "Objetivos e Características",
-							slug: "visao/objetivos",
+							label: "Requisitos",
+							slug: "visao/requisitos",
 						},
 						{
 							label: "Backlog do Produto",
