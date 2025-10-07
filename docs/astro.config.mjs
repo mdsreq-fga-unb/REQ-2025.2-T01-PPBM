@@ -57,7 +57,7 @@ export default defineConfig({
 							slug: "visao/interacao",
 						},
 						{
-							label: "Requisitos",
+							label: "Requisitos de Software",
 							slug: "visao/requisitos",
 						},
 						{
