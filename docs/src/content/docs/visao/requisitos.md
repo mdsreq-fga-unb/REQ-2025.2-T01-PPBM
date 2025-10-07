@@ -10,466 +10,157 @@ A equipe realizou o refinamento de requisitos funcionais e não funcionais de so
 
 ## Requisitos Funcionais (RF)
 
-### Módulo: Cadastro & Dados do Aluno
+### Objetivo Específico 1 – Gestão e Controle da Frequência
 
-**RF-001 – Cadastrar criança**
+**RF-001 – Gerenciar Aluno**  
+Permitir cadastro, edição, remoção e exclusão de nome, data de nascimento, CPF, responsável(éis), contatos, escola/unidade, cidade.
 
-Permitir cadastro com: nome, data de nascimento, CPF, responsável(éis), contatos, escola/unidade, cidade.
-Critérios de aceite:
+**RF-002 – Gerenciar responsáveis**  
+Editar/remover responsáveis, com vínculo a uma Aluno e múltiplos contatos.
 
-* campos obrigatórios validados;
-* prevenção de duplicidade por CPF;
-* validação de formato de CPF;
-* idade entre 7 e 14 anos;
-* confirmação de dados antes do salvamento;
-* pelo menos um responsável obrigatório por criança.
-
-**RF-002 – Gerenciar responsáveis**
-
-Editar/remover responsáveis, com vínculo a uma criança e múltiplos contatos.
-Critérios de aceite:
-
-* validação de dados de contato;
-* possibilidade de múltiplos responsáveis;
-* histórico de alterações mantido.
-
-**RF-003 – Registrar ficha médica**
-
-Registrar e manter observações médicas (asma, alergias, restrições, medicações e contatos de emergência).
-Critérios de aceite:
-
-* alerta visual quando houver condição crítica cadastrada;
-* campos obrigatórios para condições críticas;
-* possibilidade de anexar documentos médicos;
-* atualização de informações médicas com data/hora.
-
-**RF-004 – Diferenciar perfil neurodivergente**
-
-Diferenciar cadastro para crianças neurodivergentes (campos de acompanhamento, adaptações e observações pedagógicas).
-Critérios de aceite:
-
-* identificação clara do perfil neurodivergente importando o documento de comprovante;
-* campos específicos para acompanhamento pedagógico;
-* relatórios diferenciados para este perfil;
-* alertas para educadores sobre adaptações necessárias.
-
-**RF-005 – Cadastrar informações complementares do aluno**
-
-Permitir o registro de informações adicionais como:
-
-* nome de guerra;
-* tipo sanguíneo;
-* graduação (soldado até 9 anos; de 10 anos a cabo; a cada 11 anos, 3º sargento; sargento).
-  Critérios de aceite:
-* campos obrigatórios validados;
-* regras automáticas de atribuição de graduação conforme idade;
-* possibilidade de atualização e histórico de alterações.
-
-**RF-006 – Exportar documentos de comprovante**
-
+**RF-003 – Exportar documentos de comprovante**  
 Permitir a exportação de documentos de comprovante importados (como laudos médicos, documentos de identificação neurodivergente, etc.) para download ou impressão.
-Critérios de aceite:
 
-* visualização clara dos documentos disponíveis para exportação;
-* formatos de exportação: PDF original, PNG/JPG (para imagens);
-* controle de acesso baseado no perfil do usuário;
-* registro de auditoria para cada exportação realizada;
-* marca d'água de confidencialidade nos documentos exportados.
+**RF-004 – Gerenciar lançamento de presença**  
+Registros de presença/falta com histórico de alterações.
 
----
-
-### Módulo: Presença & Justificativas
-
-**RF-007 – Registrar presença**
-
-Lançar presença, falta e atraso por turma/sessão.
-Critérios de aceite:
-
-* seleção obrigatória de turma/sessão;
-* validação de data/hora do lançamento;
-* confirmação antes do salvamento.
-
-**RF-008 – Justificar falta**
-
-Permitir justificar faltas com motivo, anexo (opcional) e status (pendente/aprovada/recusada).
-Critérios de aceite:
-
-* registrar autor, data/hora e trilha de auditoria;
-* motivo obrigatório para justificativa;
-* anexos limitados a formatos específicos (PDF, JPG, PNG);
-* notificação automática para responsáveis.
-
-**RF-009 – Editar lançamento de presença**
-
-Corrigir registros de presença/falta com histórico de alterações.
-Critérios de aceite:
-
-* histórico completo de alterações mantido;
-* autorização necessária para alterações;
-* notificação de alterações para responsáveis;
-* confirmação de alteração.
-
-**RF-010 – Suportar anexos**
-
-Permitir anexar comprovantes (PDF/JPG/PNG) em justificativas e comunicações.
-Critérios de aceite:
-
-* validação de formato e tamanho;
-* preview de imagens;
-* compressão automática;
-* armazenamento seguro de arquivos.
-
-**RF-011 – Definir política de justificativa de faltas**
-
-Permitir que faltas justificadas sejam registradas como "falta justificada", não anulando a ausência, mas impactando indicadores de forma diferenciada.
-Critérios de aceite:
-
-* exibir no histórico como "falta justificada";
-* contabilizar separadamente das faltas comuns;
-* manter rastreabilidade no relatório individual.
-
-**RF-012 – Conceder autonomia docente para justificativas**
-
-Permitir que o professor aprove ou rejeite justificativas de falta de forma autônoma.
-Critérios de aceite:
-
-* interface para docentes validarem justificativas;
-* registro de decisão (aprovada/recusada) com data/hora;
-* notificação ao responsável sobre a decisão.
-
-**RF-013 – Definir motivos e documentos aceitos para justificativa**
-
-Permitir parametrização dos motivos justificáveis (ex.: atestado médico, participação em atividades desportivas) e exigência de documentos obrigatórios.
-Critérios de aceite:
-
-* cadastro de lista de motivos aceitos;
-* exigência de anexos em casos definidos (ex.: atestado médico);
-* validação de anexos quanto a formato e obrigatoriedade.
-
-**RF-014 – Limitar número de alunos por turma (pelotão)**
-
-Permitir configuração de limite de 30 alunos por turma (pelotão).
-Critérios de aceite:
-
-* impedir cadastro acima do limite configurado;
-* exibir alerta ao gestor quando turma atingir lotação máxima;
-* permitir exceções apenas com autorização administrativa.
-
----
-
-### Módulo: Relatórios & Análises
-
-**RF-015 – Consultar aluno**
-
+**RF-005 – Consultar aluno**  
 Filtrar histórico de presenças/faltas por aluno, período e unidade.
-Critérios de aceite:
 
-* busca por nome ou CPF;
-* filtros por período configurável;
-* resultados ordenados cronologicamente;
-* possibilidade de exportar resultados da consulta.
-
-**RF-016 – Gerar relatório individual de frequência**
-
+**RF-006 – Gerar relatório individual de frequência**  
 Gerar relatório por aluno (período selecionável) com taxas de presença, faltas justificadas e não justificadas.
-Critérios de aceite:
 
-* seleção obrigatória de período;
-* cálculo automático de percentuais;
-* inclusão de gráficos visuais.
+**RF-007 – Exportar relatórios internos**  
+Permitir exportação de relatórios gerados pela plataforma para uso interno da equipe em formatos PDF e Excel (CSV/XLSX).
 
-**RF-017 – Consolidar relatórios por turma/unidade**
-
-Consolidar frequência por turma, unidade e cidade, com comparativos por período.
-Critérios de aceite:
-
-* agrupamento por turma/unidade;
-* comparação entre períodos;
-* possibilidade de drill-down para detalhes.
-
-**RF-018 – Exportar relatórios**
-
-Exportar relatórios em PDF e Excel (CSV/XLSX).
-Critérios de aceite:
-
-* formatação adequada para cada formato;
-* preservação de dados e gráficos;
-* nome de arquivo com data/hora;
-* validação de tamanho de arquivo.
-
-**RF-019 – Exibir dashboards de frequência**
-
+**RF-008 – Exibir dashboards de frequência**  
 Exibir indicadores e gráficos (taxa média de presença, alertas de recorrência).
-Critérios de aceite:
 
-* atualização em tempo real;
-* gráficos interativos;
-* alertas visuais para situações críticas;
-* possibilidade de personalizar visualizações.
-
-**RF-020 – Exibir histórico do aluno**
-
+**RF-009 – Exibir histórico do aluno**  
 Exibir linha do tempo com presenças, faltas, justificativas, atendimentos, advertências e comunicações relacionadas.
-Critérios de aceite:
 
-* ordenação cronológica dos eventos;
-* filtros por período e tipo de evento;
-* visualização clara e intuitiva;
-* possibilidade de exportar histórico.
+**RF-010 – Exportar relatórios oficiais padronizados administrativos**  
+Permitir exportação de relatórios em modelos definidos pelo CBMDF voltado para a parte administrativa.
 
-**RF-021 – Exportar relatórios oficiais padronizados**
+### Objetivo Específico 2 – Monitoramento de Comportamento e Alertas
 
-Permitir exportação de relatórios em modelos definidos pelo CBMDF (incluindo logotipo e identidade oficial).
-Critérios de aceite:
+**RF-011 – Registrar advertência para os alunos**  
+Campo para anotações de comportamentos negativos de alunos.
 
-* conformidade com modelo fornecido pelo cliente;
-* exportação em PDF fiel ao modelo;
-* integração de dados do sistema com campos do relatório.
+**RF-012 – Enviar notificações para os responsáveis**  
+Bot de notificações de comunicados de faltas e advertências ou botão de redirecionamento de notificações (WhatsApp, e-mail, plataforma própria).
 
----
+### Objetivo Específico 3 – Gestão de Usuários, Docentes e Turmas
 
-### Módulo: Comunicação
-
-**RF-022 – Registrar advertência**
-
-Campo para anotações de comportamentos negativos.
-
-**RF-023 – Enviar notificações**
-
-Bot de notificações ou botão de redirecionamento de notificações (WhatsApp, e-mail, plataforma própria).
-Critérios de aceite:
-
-* configuração de preferências de notificação;
-* templates personalizáveis;
-* confirmação de entrega;
-* possibilidade de cancelar notificações.
-  Obs.: integração com Gmail e orçamento para SMS/push a definir.
-
----
-
-### Módulo: Acesso & Perfis
-
-**RF-024 – Autenticar usuários e perfis**
-
+**RF-013 – Autenticar usuários e perfis**  
 Acesso com autenticação e papéis: Administrador, Gestor de Unidade, Docente, Responsável.
-Critérios de aceite:
 
-* login seguro com validação;
-* recuperação de senha;
-* sessão com timeout configurável;
-* primeiro acesso com alteração obrigatória de senha.
+**RF-014 – Cadastrar os docentes**  
+Permitir cadastro com: nome, data de nascimento, CPF, escola/unidade, cidade.
 
-**RF-025 – Controlar permissões de acesso**
+**RF-015 – Cadastrar turmas e sessões**  
+Cadastrar turmas, dias/horários e lotação.
 
-Restringir operações por papel (ex.: responsável não edita presenças; docente registra e justifica; gestor aprova justificativas).
-Critérios de aceite:
+**RF-016 – Consultar turma**  
+Busca dentro da turma por nome de alunos, CPF, unidade, status de justificativa, taxa de presença e período.
 
-* matriz de permissões clara;
-* validação de acesso em cada operação;
-* logs de tentativas de acesso negado.
+### Objetivo Específico 4 – Acompanhamento Individualizado do Aluno
 
-**RF-026 – Operar multiunidade**
+**RF-017 – Registrar plano de acompanhamento neurodivergente**  
+Permitir o registro de plano de acompanhamento pedagógica e acompanhamento periódico com responsáveis.
 
-Operar dados segregados por 12 cidades/unidades, com visão consolidada para administradores.
-Critérios de aceite:
+**RF-018 – Registro de relatórios dos responsáveis**  
+Permitir registro e importação de relatórios gerados na sessão de acompanhamento.
 
-* isolamento completo de dados por unidade;
-* visão consolidada apenas para administradores;
-* possibilidade de transferir alunos entre unidades;
-* relatórios consolidados por região.
+**RF-019 – Geração de histórico acessível a docentes e gestores**  
+Geração de histórico de relatórios de acompanhamento acessível a docentes e gestores e exportação de relatórios.
 
----
+### Objetivo Específico 5 – Gestão de Conteúdos Institucionais
 
-### Módulo: Operação & Processo
+**RF-020 – Cadastrar conteúdos institucionais**  
+Permitir o cadastro de conteúdos textuais e documentais, como regras de vestimenta, normas disciplinares, legislação aplicável e comunicados oficiais.
 
-**RF-027 – Registrar auditoria**
 
-Registrar trilhas de auditoria (quem fez, o quê, quando, antes/depois) para operações sensíveis.
-Critérios de aceite:
 
-* registro automático de todas as operações críticas;
-* dados imutáveis de auditoria;
-* relatórios de auditoria exportáveis;
-* retenção de logs por período configurável.
-
-**RF-028 – Cadastrar turmas e sessões**
-
-Cadastrar turmas, dias/horários, lotação e instrutores.
-Critérios de aceite:
-
-* validação de conflitos de horários;
-* controle de lotação máxima (30 alunos por turma);
-* vinculação obrigatória de instrutor.
-
-**RF-029 – Implementar filtros e busca**
-
-Busca por nome, CPF, turma, unidade, status de justificativa e período.
-Critérios de aceite:
-
-* busca em tempo real;
-* filtros combináveis;
-* resultados ordenados por relevância;
-* histórico de buscas recentes.
-
----
-
-### Módulo: Acompanhamento Neurodivergente
-
-**RF-030 – Registrar plano de acompanhamento neurodivergente**
-
-Permitir o registro de plano de intervenção pedagógica e acompanhamento periódico com responsáveis.
-Critérios de aceite:
-
-* cadastro de campos específicos para plano de intervenção;
-* periodicidade mínima de acompanhamento a cada 2 meses;
-* registro de relatórios orais/documentais dos responsáveis;
-* geração de histórico acessível a docentes e gestores.
-
----
-
-### Módulo: Gestão de Conteúdo
-
-**RF-031 – Cadastrar conteúdos institucionais**
-
-Permitir o cadastro de conteúdos textuais e documentais, como:
-
-* regras de vestimenta;
-* normas disciplinares;
-* legislação aplicável;
-* comunicados oficiais.
-  Critérios de aceite:
-* editor de texto com formatação básica;
-* suporte a anexos (PDF, DOCX, imagens);
-* categorização dos conteúdos;
-* controle de versões.
-
-**RF-032 – Exibir conteúdos institucionais para usuários**
-
-Disponibilizar os conteúdos cadastrados em área dedicada do sistema.
-Critérios de aceite:
-
-* acesso restrito por perfil (apenas gestores podem editar, todos podem visualizar);
-* visualização clara em desktop e mobile;
-* busca por título, categoria ou palavra-chave.
 
 ---
 
 ## Requisitos Não Funcionais (RNF)
 
-### Módulo: Desempenho & Escalabilidade
+### Usability (Usabilidade)
 
-**RNF-001 – Tempo de resposta**
+**RNF-001 – Intuitividade**
+A interface deve ser simples e intuitiva, permitindo realizar ações frequentes (lançar presença, justificar falta) em até 5 interações por tela.
 
-O sistema deve responder a consultas e operações críticas em até 5 segundos em condições normais de uso.
-**Critérios de aceite:**
+**RNF-002 – Idioma & Terminologia**  
+O sistema deve estar em Português (Brasil) com terminologia adequada ao PBM (brigadinos/brigadinas).
 
-* medições automatizadas em consultas de presença e histórico;
-* máximo de 5% das operações acima de 2s;
-* relatórios gerados em até 10s.
+**RNF-003 – Navegabilidade de Conteúdos Institucionais**  
+Os conteúdos institucionais devem estar disponíveis em área dedicada, com navegação intuitiva, filtros por título, categoria ou palavra-chave e acesso restrito por perfil.
 
-**RNF-004 – Tempo de resposta**
 
-95% das páginas < 2s; exportações até 10s para 5k registros.
 
-**RNF-005 – Carga**
+### Reliability (Confiabilidade)
 
-Suportar uso concorrente das 12 unidades (≥150 usuários simultâneos no pico do registro de presença).
+**RNF-004 – Disponibilidade**  
+O sistema deve atingir 99,5% de disponibilidade mensal para o MVP.
 
----
+### Performance (Desempenho & Escalabilidade)
 
-### Módulo: Segurança & Privacidade
+**RNF-005 – Tempo de resposta consultas críticas**  
+Consultas e operações críticas devem responder em até 5 segundos em condições normais de uso.
 
-**RNF-002 – Proteção de dados pessoais**
+**RNF-006 – Tempo de resposta páginas e exportações**  
+95% das páginas devem carregar em menos de 2 segundos; exportações de até 5k registros devem completar em até 10 segundos.
 
-O sistema deve atender à LGPD, garantindo consentimento para coleta de dados sensíveis e direito de exclusão mediante solicitação.
-**Critérios de aceite:**
+**RNF-007 – Carga**  
+Suportar uso concorrente das 12 unidades, com pelo menos 150 usuários simultâneos no pico do registro de presença.
 
-* registro de consentimento armazenado;
-* logs de exclusão segura;
-* relatórios de conformidade disponíveis.
 
-**RNF-003 – Criptografia**
 
-Todos os dados devem ser transmitidos via HTTPS/TLS 1.2 ou superior.
-**Critérios de aceite:**
+### Portability (Portabilidade & Tecnologia)
 
-* inspeção de rede sem tráfego em texto puro;
-* auditoria de banco confirmando uso de criptografia.
+**RNF-008 – Contêineres**  
+Empacotamento em Docker para front, back e banco.
 
----
-
-### Módulo: Manutenibilidade & Evolutividade
-
-**RNF-004 – Documentação técnica**
-
-O sistema deve manter documentação atualizada de APIs, banco de dados e arquitetura.
-**Critérios de aceite:**
-
-* repositório de documentação acessível à equipe;
-* atualização obrigatória a cada release.
-
-**RNF-005 – Testabilidade**
-
-O sistema deve permitir criação de testes automatizados cobrindo no mínimo 70% das funcionalidades críticas.
-**Critérios de aceite:**
-
-* pipeline de integração contínua com relatórios de cobertura;
-* falha no build caso a cobertura fique abaixo do limite.
-
-**RNF-014 – Padrões de código**
-
-TypeScript com lint/prettier, testes unitários (TDD) e cobertura-alvo ≥70% no MVP.
-
-**RNF-015 – CI/CD**
-
-Pipeline automatizado (build, testes, análise estática, deploy).
-
-**RNF-016 – Observabilidade**
-
-Monitoramento com métricas, logs estruturados e alertas.
-
----
-
-### Módulo: Qualidade & Usabilidade
-
-**RNF-001 – Usabilidade**
-
-Interface simples, navegação com voltar/avançar consistente e fluxos de 1–3 cliques para ações frequentes (lançar presença, justificar falta).
-
-**RNF-003 – Idioma & Terminologia**
-
-Português (Brasil) com terminologia do PBM (brigadinos/brigadinas).
-
----
-
-### Módulo: Confiabilidade & Disponibilidade
-
-**RNF-011 – Disponibilidade**
-
-Alvo de 99,5% mensal para o MVP.
-
----
-
-### Módulo: Portabilidade & Tecnologia
-
-**RNF-017 – Contêineres**
-
-Empacotado em Docker para front, back e banco.
-
-**RNF-018 – Stack**
-
+**RNF-009 – Stack**  
 Back-end TypeScript + Express; Front-end Astro; Banco Supabase/PostgreSQL.
 
-**RNF-019 – Compatibilidade de navegação**
-
+**RNF-010 – Compatibilidade de navegação**  
 Suporte a Chrome/Edge/Firefox atuais e Safari atual -1 versão.
 
----
-
-### Módulo: Dados & Relatórios
-
-**RNF-020 – Exportação fiel**
-
-PDFs com identidade visual do PBM; CSV/XLSX com separador padrão e codificação UTF-8.
 
 
+### Security (Segurança & Privacidade)
+
+**RNF-011 – Proteção de dados pessoais**  
+O sistema deve atender à LGPD, garantindo consentimento para coleta de dados sensíveis e direito de exclusão mediante solicitação.
+
+**RNF-012 – Criptografia**  
+Todos os dados transmitidos e armazenados devem utilizar criptografia (HTTPS/TLS 1.2+ e hash para senhas).
+
+**RNF-013 – Armazenamento de dados**  
+O sistema deve ser capaz de armazenar informações de usuários, registros de ponto e outros dados relacionados por pelo menos 2 anos.
+
+
+
+### Maintainability (Manutenibilidade & Evolutividade)
+
+**RNF-014 – Testabilidade**  
+O sistema deve permitir criação de testes automatizados cobrindo no mínimo 70% das funcionalidades críticas.
+
+**RNF-015 – Padrões de código**  
+Seguir padrões de código (TypeScript, lint/prettier, TDD) com cobertura mínima de 70% no MVP.
+
+**RNF-016 – CI/CD**  
+Pipeline automatizado para build, testes, análise estática e deploy.
+
+**RNF-017 – Observabilidade**  
+Monitoramento com métricas, logs estruturados e alertas configuráveis.
+
+## Histórico de Versão
+
+| Data | Versão | Descrição | Autor(es) | Revisor(es) |
+|------|--------|-----------|-----------|-------------|
+| 15/09/2025 | 1.0 | Criação inicial do documento de requisito. | Philipe Morais | Todos |
+| 06/10/2025 | 1.1 | Update do documento de requisito. | Lucas Branco e Vitor Marconi | Todos |
