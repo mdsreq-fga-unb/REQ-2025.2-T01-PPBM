@@ -1,3 +1,8 @@
+---
+title: Ata de Reunião - 03/10/2025
+description: Reunião realizada via Google Meet às 15h para ajustar objetivos específicos e integrá-los aos requisitos.
+---
+
 📝 **ATA DE REUNIÃO – FireForce/PPBM**
 
 ⏰  **03/10/2025 ~ 15h**
