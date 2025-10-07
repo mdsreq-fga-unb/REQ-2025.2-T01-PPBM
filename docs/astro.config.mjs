@@ -116,6 +116,10 @@ export default defineConfig({
 							label: "01/10/2025",
 							slug: "atas/ata4",
 						},
+						{
+							label: "03/10/2025",
+							slug: "atas/ata5",
+						},
 					],
 				},
 			],
