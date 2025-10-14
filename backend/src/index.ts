@@ -21,8 +21,10 @@ SupabaseWrapper.init();
 
 const router = express.Router();
 
+import { AlunosController } from './controllers/alunosController';
+
 const controllers: EndpointController[] = [
- 
+    new AlunosController()
 ];
 
 const wsControllers: WebSocketEndpointController[] = [
