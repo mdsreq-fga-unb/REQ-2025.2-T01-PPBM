@@ -61,6 +61,10 @@ export default defineConfig({
 							slug: "visao/requisitos",
 						},
 						{
+							label: "DoR e DoD",
+							slug: "visao/dod",
+						},
+						{
 							label: "Backlog do Produto",
 							slug: "visao/backlog",
 						}
