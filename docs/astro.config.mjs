@@ -91,10 +91,14 @@ export default defineConfig({
             {
                 label: "Entregas",
                 items: [
-                    {
-                        label: "Unidade 1",
-                        slug: "entregas/unidade-1",
-                    },
+                        {
+                            label: "Unidade 1",
+                            slug: "entregas/unidade-1",
+                        },
+                        {
+                            label: "Unidade 2",
+                            slug: "entregas/unidade-2",
+                        },
                 ],
             },
             {
