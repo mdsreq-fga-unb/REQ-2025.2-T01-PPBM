@@ -32,6 +32,21 @@ export class SupabaseWrapper {
         return (data as any).id_user as number;
     }
 
+    static async getAdminByEmail(email: string): Promise<{ id_admin: number; email: string } | null> {
+        const { data, error } = await this.get()
+            .from('admins')
+            .select('id_admin, email')
+            .eq('email', email)
+            .maybeSingle();
+
+        if (error) {
+            console.log(`Error getting admin by email: ${error}`);
+            return null;
+        }
+
+        return data;
+    }
+
     static getUserFromToken(token: string): { email: string; userId: string } | null {
         try {
             // Decode the JWT token (Supabase JWTs are signed but we can decode the payload)

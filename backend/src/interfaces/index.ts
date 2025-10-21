@@ -13,7 +13,7 @@ export enum RequestType {
 export interface EndpointController {
     name: string;
     routes: {
-        [key: string]: Pair<RequestType, (req: Request, res: Response) => Promise<Response | void>>
+        [key: string]: Pair<RequestType, (req: Request, res: Response) => Promise<Response | void>>[]
     };
 }
 

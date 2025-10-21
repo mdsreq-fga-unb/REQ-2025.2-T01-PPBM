@@ -13,6 +13,7 @@ import cors from "cors";
 import logger from './logger';
 import { environment, SUPABASE_URL } from './environment';
 import { EndpointController, RequestType, WebSocketEndpointController } from './interfaces/index';
+import { usuarioController } from './controllers/usuarios';
 
 
 dotenv.config();
@@ -22,7 +23,7 @@ SupabaseWrapper.init();
 const router = express.Router();
 
 const controllers: EndpointController[] = [
- 
+    usuarioController
 ];
 
 const wsControllers: WebSocketEndpointController[] = [
@@ -30,59 +31,64 @@ const wsControllers: WebSocketEndpointController[] = [
 
 controllers.forEach(controller => {
     Object.keys(controller.routes).forEach(route_name => {
-        const route = controller.routes[route_name];
-        const method = route!.key;
-        const callback = route!.value;
+        const routePairs = controller.routes[route_name];
 
-        switch (method) {
-            case RequestType.GET:
-                router.get(`/${controller.name}/${route_name}`, async (req: Request, res: Response) => {
-                    try {
-                        await callback(req, res);
-                    } catch (error) {
-                        res.status(500).json({ error: 'Internal server error' });
-                    }
-                });
-                break;
-            case RequestType.POST:
-                router.post(`/${controller.name}/${route_name}`, async (req: Request, res: Response) => {
-                    try {
-                        await callback(req, res);
-                    } catch (error) {
-                        res.status(500).json({ error: 'Internal server error' });
-                    }
-                });
-                break;
-            case RequestType.PUT:
-                router.put(`/${controller.name}/${route_name}`, async (req: Request, res: Response) => {
-                    try {
-                        await callback(req, res);
-                    } catch (error) {
-                        res.status(500).json({ error: 'Internal server error' });
-                    }
-                });
-                break;
-            case RequestType.PATCH:
-                router.patch(`/${controller.name}/${route_name}`, async (req: Request, res: Response) => {
-                    try {
-                        await callback(req, res);
-                    } catch (error) {
-                        res.status(500).json({ error: 'Internal server error' });
-                    }
-                });
-                break;
-            case RequestType.DELETE:
-                router.delete(`/${controller.name}/${route_name}`, async (req: Request, res: Response) => {
-                    try {
-                        await callback(req, res);
-                    } catch (error) {
-                        res.status(500).json({ error: 'Internal server error' });
-                    }
-                });
-                break;
-            default:
-                break;
-        }
+        if (!routePairs) return;
+
+        routePairs.forEach(routePair => {
+            const method = routePair.key;
+            const callback = routePair.value;
+
+            switch (method) {
+                case RequestType.GET:
+                    router.get(`/${controller.name}/${route_name}`, async (req: Request, res: Response) => {
+                        try {
+                            await callback(req, res);
+                        } catch (error) {
+                            res.status(500).json({ error: 'Internal server error' });
+                        }
+                    });
+                    break;
+                case RequestType.POST:
+                    router.post(`/${controller.name}/${route_name}`, async (req: Request, res: Response) => {
+                        try {
+                            await callback(req, res);
+                        } catch (error) {
+                            res.status(500).json({ error: 'Internal server error' });
+                        }
+                    });
+                    break;
+                case RequestType.PUT:
+                    router.put(`/${controller.name}/${route_name}`, async (req: Request, res: Response) => {
+                        try {
+                            await callback(req, res);
+                        } catch (error) {
+                            res.status(500).json({ error: 'Internal server error' });
+                        }
+                    });
+                    break;
+                case RequestType.PATCH:
+                    router.patch(`/${controller.name}/${route_name}`, async (req: Request, res: Response) => {
+                        try {
+                            await callback(req, res);
+                        } catch (error) {
+                            res.status(500).json({ error: 'Internal server error' });
+                        }
+                    });
+                    break;
+                case RequestType.DELETE:
+                    router.delete(`/${controller.name}/${route_name}`, async (req: Request, res: Response) => {
+                        try {
+                            await callback(req, res);
+                        } catch (error) {
+                            res.status(500).json({ error: 'Internal server error' });
+                        }
+                    });
+                    break;
+                default:
+                    break;
+            }
+        });
     });
 });
 
