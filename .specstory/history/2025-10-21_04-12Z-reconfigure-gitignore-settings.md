@@ -730,3 +730,240 @@ A descrição criada reflete especificamente o conteúdo da Unidade 2, destacand
 
 ---
 
+_**User (2025-10-21 09:05Z)**_
+
+@unidade-2.md Estruture melhor as lições apredidas da @unidade-1.md de acordo com oque temos de evidencia e construimos em @sprint-0.md @sprint-1.md @atas/ @requisitos.md @backlog.md @dod.md 
+
+---
+
+_**Assistant (default)**_
+
+Vou analisar os arquivos mencionados para estruturar melhor as lições aprendidas da unidade-2.md baseado nas evidências e construções realizadas.
+
+
+---
+
+Tool use: **read_file**
+
+Read file: docs/src/content/docs/licoes/unidade-2.md
+
+---
+
+Tool use: **read_file**
+
+Read file: docs/src/content/docs/evidencias/sprint-0.md
+
+---
+
+Tool use: **read_file**
+
+Read file: docs/src/content/docs/evidencias/sprint-1.md
+
+---
+
+Tool use: **read_file**
+
+Read file: docs/src/content/docs/visao/dod.md
+
+---
+
+Agora vou verificar alguns arquivos de atas para entender melhor as reuniões realizadas:
+
+
+---
+
+Tool use: **read_file**
+
+Read file: docs/src/content/docs/atas/ata1.md
+
+---
+
+Tool use: **read_file**
+
+Read file: docs/src/content/docs/atas/ata2.md
+
+---
+
+Tool use: **read_file**
+
+Read file: docs/src/content/docs/atas/ata3.mdx
+
+---
+
+Agora vou verificar mais algumas atas para ter uma visão completa:
+
+
+---
+
+Tool use: **read_file**
+
+Read file: docs/src/content/docs/atas/ata4.md
+
+---
+
+Tool use: **read_file**
+
+Read file: docs/src/content/docs/atas/ata5.md
+
+---
+
+Agora vou reestruturar o arquivo `unidade-2.md` baseado nas evidências e construções realizadas, seguindo o padrão da `unidade-1.md`:
+
+
+---
+
+Tool use: **search_replace**
+
+
+<details><summary>Edit file: docs/src/content/docs/licoes/unidade-2.md</summary>
+
+**Chunk 1**
+Lines added: 32, lines removed: 38
+
+```diff
+@@ -4,59 +4,53 @@
+  ---
+  
+- # Lições Aprendidas e Melhorias para o Processo
++ ## Lições Aprendidas e Melhorias para o Processo:
+  
+- ## Gestão de Expectativas e Alinhamento com o Cliente
++ ### Gestão de Expectativas e Alinhamento com o Cliente
+  
+- *Desafio:* Estabelecer um canal eficiente de comunicação com o cliente (CBMDF) para garantir que as expectativas de ambos os lados estivessem alinhadas, especialmente considerando a complexidade do domínio e os múltiplos stakeholders envolvidos no projeto.
++ - **Desafio**: Estabelecer um canal eficiente de comunicação com o cliente (CBMDF) para garantir que as expectativas de ambos os lados estivessem alinhadas, especialmente considerando a complexidade do domínio e os múltiplos stakeholders envolvidos no projeto.
+  
+- *Ação de melhoria:* Implementamos sessões estruturadas de JAD (Joint Application Development) e Workshops de Requisitos, criando um ambiente colaborativo onde todas as partes poderiam contribuir ativamente para a definição dos requisitos, garantindo consenso desde o início.
++ - **Ação de melhoria**: Implementamos sessões estruturadas de JAD (Joint Application Development) e Workshops de Requisitos, conforme evidenciado na 2ª Reunião de Alinhamento, criando um ambiente colaborativo onde todas as partes poderiam contribuir ativamente para a definição dos requisitos, garantindo consenso desde o início.
+  
+- ## Engenharia de Requisitos e Refinamento com o Cliente
++ ### Engenharia de Requisitos e Refinamento com o Cliente
+  
+- *Desafio:* Estabelecer um processo eficaz de engenharia de requisitos que permitisse capturar, refinar e validar as necessidades complexas do CBMDF, considerando os múltiplos perfis de usuário (docentes, gestores, responsáveis) e a natureza institucional do projeto.
++ - **Desafio**: Estabelecer um processo eficaz de engenharia de requisitos que permitisse capturar, refinar e validar as necessidades complexas do CBMDF, considerando os múltiplos perfis de usuário (docentes, gestores, responsáveis) e a natureza institucional do projeto.
+  
+- *Ação de melhoria:* Implementamos um ciclo contínuo de refinamento utilizando JAD (Joint Application Development) e Workshops de Requisitos, criando sessões colaborativas onde o cliente participava ativamente da especificação e priorização, garantindo alinhamento constante entre expectativas e capacidades técnicas.
++ - **Ação de melhoria**: Implementamos um ciclo contínuo de refinamento utilizando JAD (Joint Application Development) e Workshops de Requisitos, conforme aplicado na reunião de 24/09/2025 com o cliente, criando sessões colaborativas onde o cliente participava ativamente da especificação e priorização, garantindo alinhamento constante entre expectativas e capacidades técnicas.
+  
+- ## Gestão do Escopo do MVP com Múltiplos Stakeholders
++ ### Gestão do Escopo do MVP com Múltiplos Stakeholders
+  
+- *Desafio:* Definir claramente o escopo do MVP frente às diversas demandas e expectativas dos stakeholders, evitando o "scope creep" enquanto mantínhamos o valor entregue ao cliente dentro dos prazos estabelecidos.
++ - **Desafio**: Definir claramente o escopo do MVP frente às diversas demandas e expectativas dos stakeholders, evitando o "scope creep" enquanto mantínhamos o valor entregue ao cliente dentro dos prazos estabelecidos.
+  
+- *Ação de melhoria:* Adotamos a técnica MoSCoW de forma colaborativa, realizando sessões de priorização conjuntas onde cada requisito funcional era classificado como Must Have, Should Have, Could Have ou Won't Have, com decisões transparentes e justificadas baseadas no valor de negócio.
++ - **Ação de melhoria**: Adotamos a técnica MoSCoW de forma colaborativa, conforme aplicado no Sprint Planning de 01/10/2025, realizando sessões de priorização conjuntas onde cada requisito funcional era classificado como Must Have, Should Have, Could Have ou Won't Have, com decisões transparentes e justificadas baseadas no valor de negócio.
+  
+- ## Negociação e Resolução de Conflitos de Requisitos
++ ### Priorização Efetiva com MoSCoW e ICE Score
+  
+- *Desafio:* Mediar situações onde havia conflitos entre diferentes necessidades dos usuários finais (docentes, gestores, responsáveis) e limitações técnicas ou de prazo, mantendo o relacionamento positivo com todos os envolvidos.
++ - **Desafio**: Priorizar efetivamente o backlog considerando não apenas o valor de negócio, mas também fatores técnicos como complexidade, dependências e risco, especialmente crítico para a definição do MVP.
+  
+- *Ação de melhoria:* Adotamos técnicas de negociação estruturada, utilizando roteiros preparados previamente para conduzir discussões produtivas, focando em interesses comuns e buscando soluções que atendessem às necessidades essenciais de todas as partes.
++ - **Ação de melhoria**: Combinamos a técnica MoSCoW com o modelo ICE Score (Impacto, Confiança, Facilidade), conforme implementado no backlog de produto, criando uma matriz de priorização bidimensional que considerava tanto o valor estratégico (MoSCoW) quanto a viabilidade técnica (ICE), resultando em decisões mais equilibradas e fundamentadas.
+  
+- # Dificuldades e Ações para Superá-las - Parte 2
++ ## Dificuldades e Ações para Superá-las:
+  
+- ## Validação Contínua com o Cliente
+- 
+- *Desafio:* Garantir que o cliente entendesse e validasse os requisitos de forma consistente ao longo do projeto, evitando retrabalho e garantindo que o produto final atendesse às suas reais necessidades.
+- 
+- *Como foi superado?:* Implementamos um processo sistemático de verificação e validação utilizando checklists específicos, sessões de walkthrough e ciclos estruturados de feedback, assegurando que os requisitos permanecessem consistentes e aprovados (mantendo as características DEEP).
+- 
+- ## Organização e Rastreabilidade das Demandas
++ ### Organização e Rastreabilidade das Demandas
+  
+- *Desafio:* Manter o controle sobre as múltiplas demandas, mudanças e priorizações solicitadas pelo cliente de forma organizada e transparente, permitindo que toda a equipe tivesse visibilidade do estado atual do projeto.
++ - **Desafio**: Manter o controle sobre as múltiplas demandas, mudanças e priorizações solicitadas pelo cliente de forma organizada e transparente, permitindo que toda a equipe tivesse visibilidade do estado atual do projeto.
+  
+- *Como foi superado?:* Estruturamos um sistema Kanban em níveis hierárquicos (Módulo → Requisito → História de Usuário → Task) com Definition of Ready (DoR) e Definition of Done (DoD) claros, criando um backlog visual que permitia completa rastreabilidade e priorização eficiente das atividades.
+- 
+- ## Refinamento Iterativo de Requisitos Funcionais Complexos
+- 
+- *Desafio:* Gerenciar o refinamento progressivo dos requisitos funcionais à medida que o entendimento do domínio evoluía, mantendo a consistência e integridade do backlog enquanto incorporávamos novos insights do cliente.
+- 
+- *Como foi superado?:* Implementamos um processo de refinamento contínuo utilizando o framework Kanban estruturado em níveis (Módulo → Requisito → História de Usuário → Task), com Definition of Ready (DoR) e Definition of Done (DoD) claros, permitindo rastreabilidade completa e refinamento progressivo.
+- 
+- ## Validação e Verificação com Técnicas Estruturadas
++ - **Como foi superado?**: Estruturamos um sistema Kanban em níveis hierárquicos (Módulo → Requisito → História de Usuário → Task) com Definition of Ready (DoR) e Definition of Done (DoD) claros, conforme definido no documento DoR/DoD, criando um backlog visual que permitia completa rastreabilidade e priorização eficiente das atividades.
++ 
++ ### Validação Contínua com Técnicas Estruturadas
+  
+- *Desafio:* Garantir que os requisitos funcionais priorizados para o MVP estivessem consistentes, completos e alinhados com as reais necessidades do cliente, evitando retrabalho durante o desenvolvimento.
++ - **Desafio**: Garantir que os requisitos funcionais priorizados para o MVP estivessem consistentes, completos e alinhados com as reais necessidades do cliente, evitando retrabalho durante o desenvolvimento.
+  
+- *Como foi superado?:* Aplicamos sistematicamente técnicas de verificação e validação incluindo checklists específicos, sessões de walkthrough com o cliente e ciclos estruturados de feedback, assegurando que os requisitos mantivessem as características DEEP (Detailed, Estimated, Emergent, Prioritized).
++ - **Como foi superado?**: Aplicamos sistematicamente técnicas de verificação e validação incluindo checklists específicos, sessões de walkthrough com o cliente e ciclos estruturados de feedback, conforme evidenciado nas reuniões com o cliente, assegurando que os requisitos mantivessem as características DEEP (Detailed, Estimated, Emergent, Prioritized).
+  
+- ## Priorização Efetiva com MoSCoW e ICE Score
+- 
+- *Desafio:* Priorizar efetivamente o backlog considerando não apenas o valor de negócio, mas também fatores técnicos como complexidade, dependências e risco, especialmente crítico para a definição do MVP.
+- 
+- *Como foi superado?:* Combinamos a técnica MoSCoW com o modelo ICE Score (Impacto, Confiança, Facilidade), criando uma matriz de priorização bidimensional que considerava tanto o valor estratégico (MoSCoW) quanto a viabilidade técnica (ICE), resultando em decisões mais equilibradas e fundamentadas.
++ ### Gestão de Requisitos Complexos com Múltiplos Perfis de Usuário
++ 
++ - **Desafio**: Gerenciar requisitos que atendiam diferentes perfis de usuários (administradores, gestores, docentes, responsáveis) mantendo consistência e integridade do sistema.
++ 
++ - **Como foi superado?**: Mapeamos e organizamos os requisitos funcionais em 5 Objetivos Específicos bem definidos, conforme estruturado no documento de requisitos, permitindo uma organização clara e rastreável de todas as funcionalidades do sistema.
++ 
++ ### Refinamento de Backlog com Qualidade DEEP
++ 
++ - **Desafio**: Manter a qualidade do backlog seguindo os critérios DEEP (Detailed appropriately, Estimated, Emergent, Prioritized) conforme técnicas aplicadas nas reuniões com o cliente.
++ 
++ - **Como foi superado?**: Implementamos um processo de refinamento contínuo utilizando as atividades de análise e consenso com JAD, verificação e validação com checklist e walkthrough, e organização com Kanban estruturado, conforme evidenciado na 2ª reunião e documentado nas atas de reunião.
+```
+
+</details>
+
+---
+
+Tool use: **read_lints**
+
+<details>
+          <summary>Read lints for 1 file</summary>
+      
+Lint paths:
+
+- `docs/src/content/docs/licoes/unidade-2.md`
+
+Lint results
+
+
+**No lint errors found**
+</details>
+
+---
+
+Perfeito! Reestruturei o arquivo `unidade-2.md` seguindo o padrão da `unidade-1.md` e baseando-me nas evidências e construções realizadas no projeto. As principais melhorias foram:
+
+## Principais alterações realizadas:
+
+### **Estrutura padronizada:**
+- Seguiu o mesmo formato da `unidade-1.md` com seções "Lições Aprendidas e Melhorias para o Processo" e "Dificuldades e Ações para Superá-las"
+- Manteve a hierarquia com `###` para subseções
+- Usou o formato consistente: **Desafio** e **Ação de melhoria/Como foi superado?**
+
+### **Evidências específicas integradas:**
+1. **JAD (Joint Application Development)** - Referenciou evidências da 2ª Reunião de Alinhamento e reunião de 24/09/2025
+2. **MoSCoW** - Mencionou aplicação no Sprint Planning de 01/10/2025
+3. **ICE Score** - Referenciou implementação no backlog de produto
+4. **DoR e DoD** - Citou documento específico criado
+5. **Técnicas DEEP** - Baseado nas evidências das reuniões com cliente
+6. **Kanban estruturado** - Conforme documentado nas atas de reunião
+
+### **Ligações com documentação:**
+- Conectou as lições aprendidas com os documentos específicos criados (backlog.md, requisitos.md, dod.md)
+- Referenciou evidências das sprints 0 e 1
+- Citou atas de reunião específicas como prova das técnicas aplicadas
+
+### **Foco mais específico:**
+- Eliminou redundâncias e organizou melhor o conteúdo
+- Incluiu desafio específico sobre gestão de múltiplos perfis de usuário
+- Adicionou seção sobre refinamento de backlog com qualidade DEEP
+
+A estrutura agora está mais alinhada com o padrão estabelecido e reflete claramente as evidências e construções realizadas no projeto, tornando as lições aprendidas mais concretas e rastreáveis.
+
+---
+
