@@ -1,4 +1,9 @@
-# Lições Aprendidas e Melhorias para o Processo - Parte 2
+---
+title: Unidade 2
+description: Durante o desenvolvimento da segunda fase do projeto, novas lições importantes foram aprendidas e melhorias adicionais foram implementadas. Abaixo estão as lições aprendidas focando nas ações de melhoria, desafios enfrentados e como foram superados, especialmente relacionados à gestão de requisitos, alinhamento com cliente e priorização.
+---
+
+# Lições Aprendidas e Melhorias para o Processo
 
 ## Gestão de Expectativas e Alinhamento com o Cliente
 

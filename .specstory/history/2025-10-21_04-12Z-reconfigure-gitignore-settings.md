@@ -646,3 +646,15 @@ A entrada documenta claramente as principais alterações realizadas:
 
 ---
 
+_**User (2025-10-21 09:05Z)**_
+
+@unidade-2.md	padronize o title e a description exem: 
+
+---
+
+_**Assistant (default)**_
+
+
+
+---
+
