@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prototipo Docente — Bombeiro Mirim</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    html, body { scroll-behavior: smooth; }
+
+    @media print {
+      body { background: #fff !important; }
+      #app, #header, #sidebar { display: none !important; }
+      #print-area { display: block !important; }
+    }
+    #print-area { display: none; }
+
+    .soft-shadow { box-shadow: 0 10px 30px rgba(0,0,0,.08), 0 6px 10px rgba(0,0,0,.06); }
+    .modal-overlay { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+    
+    .floating-animation {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-white via-slate-50 to-slate-100 text-slate-900">
+  
+  <!-- Tela de Login -->
+  <div id="loginScreen" class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+      <!-- Logo e Título -->
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-[#E11D48] to-[#BE123C] mb-4 floating-animation soft-shadow">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" class="text-white">
+            <path d="M12 2l3 3 4 1-1 4 2 3-2 3 1 4-4 1-3 3-3-3-4-1 1-4-2-3 2-3-1-4 4-1 3-3z" fill="currentColor" opacity=".2"/>
+            <path d="M12 6a6 6 0 016 6v6H6v-6a6 6 0 016-6z" stroke="currentColor" stroke-width="1.5" opacity=".8"/>
+            <circle cx="12" cy="13" r="2.5" fill="currentColor" opacity=".8"/>
+          </svg>
+        </div>
+        <h1 class="text-3xl font-bold text-slate-900 mb-2">Bombeiro Mirim</h1>
+        <p class="text-slate-600">Sistema de Gestão v8.1</p>
+      </div>
+
+      <!-- Formulário de Login -->
+      <div class="bg-white rounded-3xl p-8 soft-shadow border border-slate-200">
+        <form id="loginForm" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Usuário</label>
+            <input 
+              id="loginUser" 
+              type="text" 
+              required 
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48] focus:border-transparent transition"
+              placeholder="Digite seu usuário"
+              value="prof.silva"
+            />
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Senha</label>
+            <input 
+              id="loginPassword" 
+              type="password" 
+              required 
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48] focus:border-transparent transition"
+              placeholder="Digite sua senha"
+              value="123456"
+            />
+          </div>
+          
+          <div class="flex items-center">
+            <input id="rememberMe" type="checkbox" class="w-4 h-4 accent-[#E11D48]" />
+            <label for="rememberMe" class="ml-2 text-sm text-slate-600">Lembrar de mim</label>
+          </div>
+          
+          <button 
+            type="submit" 
+            class="w-full py-3 px-4 rounded-xl bg-[#E11D48] hover:bg-[#BE123C] text-white font-medium transition transform hover:scale-[1.02] active:scale-[0.98]"
+          >
+            Entrar no Sistema
+          </button>
+        </form>
+        
+        <div class="mt-6 pt-6 border-t border-slate-200">
+          <div class="text-center text-sm text-slate-500">
+            <p>Credenciais de Exemplo:</p>
+            <p class="font-mono bg-slate-100 px-2 py-1 rounded mt-1">prof.silva / 123456</p>
+            <p class="font-mono bg-slate-100 px-2 py-1 rounded mt-1">prof.santos / 123456</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Rodapé -->
+      <div class="text-center mt-8 text-slate-500 text-sm">
+        <p>© 2024 Corpo de Bombeiros - Sistema Docente</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sistema Principal -->
+  <div id="app" class="min-h-screen hidden">
+    <!-- Header -->
+    <header id="header" class="sticky top-0 z-30 backdrop-blur bg-white/80 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-4">
+        <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-[#E11D48]/10 text-[#E11D48] soft-shadow">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="drop-shadow">
+            <path d="M12 2l3 3 4 1-1 4 2 3-2 3 1 4-4 1-3 3-3-3-4-1 1-4-2-3 2-3-1-4 4-1 3-3z" fill="currentColor" opacity=".15"/>
+            <path d="M12 6a6 6 0 016 6v6H6v-6a6 6 0 016-6z" stroke="currentColor" stroke-width="1.5" opacity=".6"/>
+            <circle cx="12" cy="13" r="2.2" fill="currentColor" opacity=".6"/>
+          </svg>
+        </div>
+        <div class="flex-1">
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">Portal do Docente</h1>
+          <p class="text-slate-500 text-sm" id="headerSubtitle">Programa Bombeiro Mirim</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="hidden md:flex items-center gap-2">
+            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs border border-green-200">Sistema Ativo</span>
+            <span class="px-3 py-1 rounded-full bg-[#E11D48]/10 text-[#BE123C] text-xs border border-[#E11D48]/20" id="userInfo">Docente</span>
+          </div>
+          <button id="btnLogout" class="px-3 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-sm transition">
+            Sair
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-[280px,1fr] gap-6">
+      <!-- Sidebar -->
+      <aside id="sidebar" class="lg:sticky lg:top-20 self-start">
+        <nav class="bg-white rounded-2xl p-3 soft-shadow border border-slate-200">
+          <ul class="space-y-2">
+            <li><button data-section="dashboard" class="nav-btn w-full text-left px-4 py-3 rounded-xl bg-[#E11D48] text-white transition flex items-center gap-2">
+              <span class="text-lg">📊</span><span>Dashboard</span>
+            </button></li>
+            <li><button data-section="presencas" class="nav-btn w-full text-left px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition flex items-center gap-2">
+              <span class="text-lg">📅</span><span>Controle de Presenças</span>
+            </button></li>
+            <li><button data-section="turmas" class="nav-btn w-full text-left px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition flex items-center gap-2">
+              <span class="text-lg">👥</span><span>Turmas e Sessões</span>
+            </button></li>
+            <li><button data-section="conteudos" class="nav-btn w-full text-left px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition flex items-center gap-2">
+              <span class="text-lg">📚</span><span>Conteúdos Institucionais</span>
+            </button></li>
+            <li><button data-section="comunicacao" class="nav-btn w-full text-left px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition flex items-center gap-2">
+              <span class="text-lg">💬</span><span>Comunicação</span>
+            </button></li>
+            <li><button data-section="relatorios" class="nav-btn w-full text-left px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition flex items-center gap-2">
+              <span class="text-lg">📋</span><span>Relatórios</span>
+            </button></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Main Sections -->
+      <main class="space-y-6">
+        <!-- Dashboard -->
+        <section id="dashboard" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200">
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold text-slate-900 mb-1">Dashboard do Docente</h2>
+            <p class="text-slate-500">Visão geral das suas atividades</p>
+          </div>
+
+          <!-- Cards de Resumo -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-4 text-white">
+              <div class="text-2xl font-bold" id="totalTurmas">0</div>
+              <div class="text-sm opacity-90">Turmas Ativas</div>
+            </div>
+            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-4 text-white">
+              <div class="text-2xl font-bold" id="totalAlunos">0</div>
+              <div class="text-sm opacity-90">Alunos Matriculados</div>
+            </div>
+            <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-4 text-white">
+              <div class="text-2xl font-bold" id="totalConteudos">0</div>
+              <div class="text-sm opacity-90">Conteúdos Criados</div>
+            </div>
+            <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-4 text-white">
+              <div class="text-2xl font-bold" id="frequenciaMedia">0%</div>
+              <div class="text-sm opacity-90">Frequência Média</div>
+            </div>
+          </div>
+
+          <!-- Atividades Recentes -->
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-slate-50 rounded-xl p-4">
+              <h3 class="font-semibold mb-3">Próximas Aulas</h3>
+              <div id="proximasAulas" class="space-y-2">
+                <!-- Será preenchido dinamicamente -->
+              </div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-4">
+              <h3 class="font-semibold mb-3">Atividades Pendentes</h3>
+              <div id="atividadesPendentes" class="space-y-2">
+                <!-- Será preenchido dinamicamente -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Controle de Presenças -->
+        <section id="presencas" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200 hidden">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-2xl font-bold text-slate-900 mb-1">Controle de Presenças</h2>
+              <p class="text-slate-500">Registre a presença dos alunos</p>
+            </div>
+            <button id="btnSalvarPresencas" class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition">Salvar Presenças</button>
+          </div>
+
+          <!-- Filtros -->
+          <div class="grid md:grid-cols-3 gap-4 mb-6">
+            <div>
+              <label class="block text-sm font-medium mb-1">Data</label>
+              <input id="dataPresenca" type="date" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Turma</label>
+              <select id="turmaPresenca" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]">
+                <option value="">Selecione uma turma</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Sessão</label>
+              <select id="sessaoPresenca" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]">
+                <option value="">Selecione uma sessão</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Lista de Alunos -->
+          <div class="overflow-x-auto">
+            <table class="w-full border border-slate-200 rounded-xl overflow-hidden">
+              <thead class="bg-slate-50">
+                <tr class="text-left text-sm">
+                  <th class="p-4">Aluno</th>
+                  <th class="p-4">Presente</th>
+                  <th class="p-4">Atraso</th>
+                  <th class="p-4">Falta</th>
+                  <th class="p-4">Observações</th>
+                </tr>
+              </thead>
+              <tbody id="listaPresencas" class="text-sm">
+                <!-- Será preenchido dinamicamente -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Turmas e Sessões -->
+        <section id="turmas" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200 hidden">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-2xl font-bold text-slate-900 mb-1">Turmas e Sessões</h2>
+              <p class="text-slate-500">Gerencie turmas, horários e lotação</p>
+            </div>
+            <button id="btnNovaTurma" class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition">Nova Turma</button>
+          </div>
+
+          <!-- Abas -->
+          <div class="flex border-b border-slate-200 mb-6">
+            <button id="tabTurmas" class="tab-btn px-4 py-2 border-b-2 border-[#E11D48] text-[#E11D48] font-medium">Turmas</button>
+            <button id="tabSessoes" class="tab-btn px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700">Sessões</button>
+          </div>
+
+          <!-- Conteúdo das Abas -->
+          <div id="conteudoTurmas" class="tab-content">
+            <div class="grid gap-4" id="listaTurmas">
+              <!-- Será preenchido dinamicamente -->
+            </div>
+          </div>
+
+          <div id="conteudoSessoes" class="tab-content hidden">
+            <div class="mb-4">
+              <button id="btnNovaSessao" class="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white transition">Nova Sessão</button>
+            </div>
+            <div class="grid gap-4" id="listaSessoes">
+              <!-- Será preenchido dinamicamente -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Conteúdos Institucionais -->
+        <section id="conteudos" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200 hidden">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-2xl font-bold text-slate-900 mb-1">Conteúdos Institucionais</h2>
+              <p class="text-slate-500">Gerencie regras, normas e documentos oficiais</p>
+            </div>
+            <button id="btnNovoConteudo" class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition">Novo Conteúdo</button>
+          </div>
+
+          <!-- Filtros -->
+          <div class="flex gap-4 mb-6">
+            <select id="filtroTipoConteudo" class="px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]">
+              <option value="">Todos os tipos</option>
+              <option value="regras">Regras de Vestimenta</option>
+              <option value="normas">Normas Disciplinares</option>
+              <option value="legislacao">Legislação</option>
+              <option value="comunicados">Comunicados Oficiais</option>
+            </select>
+            <input id="buscaConteudo" type="text" placeholder="Buscar conteúdo..." class="flex-1 px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" />
+          </div>
+
+          <!-- Lista de Conteúdos -->
+          <div class="grid gap-4" id="listaConteudos">
+            <!-- Será preenchido dinamicamente -->
+          </div>
+        </section>
+
+        <!-- Comunicação -->
+        <section id="comunicacao" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200 hidden">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-2xl font-bold text-slate-900 mb-1">Comunicação</h2>
+              <p class="text-slate-500">Mensagens e avisos para responsáveis</p>
+            </div>
+            <button id="btnNovaMensagem" class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition">Nova Mensagem</button>
+          </div>
+
+          <!-- Abas de Comunicação -->
+          <div class="flex border-b border-slate-200 mb-6">
+            <button id="tabMensagens" class="tab-btn-com px-4 py-2 border-b-2 border-[#E11D48] text-[#E11D48] font-medium">Mensagens</button>
+            <button id="tabAvisos" class="tab-btn-com px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700">Avisos Gerais</button>
+          </div>
+
+          <!-- Conteúdo das Abas -->
+          <div id="conteudoMensagens" class="tab-content-com">
+            <div class="space-y-4" id="listaMensagens">
+              <!-- Será preenchido dinamicamente -->
+            </div>
+          </div>
+
+          <div id="conteudoAvisos" class="tab-content-com hidden">
+            <div class="mb-4">
+              <button id="btnNovoAviso" class="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white transition">Novo Aviso</button>
+            </div>
+            <div class="space-y-4" id="listaAvisos">
+              <!-- Será preenchido dinamicamente -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Relatórios -->
+        <section id="relatorios" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200 hidden">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-2xl font-bold text-slate-900 mb-1">Relatórios</h2>
+              <p class="text-slate-500">Relatórios de frequência e desempenho</p>
+            </div>
+            <button id="btnGerarRelatorio" class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition">Gerar Relatório</button>
+          </div>
+
+          <!-- Filtros -->
+          <div class="grid md:grid-cols-4 gap-4 mb-6">
+            <div>
+              <label class="block text-sm font-medium mb-1">Tipo de Relatório</label>
+              <select id="tipoRelatorio" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]">
+                <option value="frequencia">Frequência por Turma</option>
+                <option value="individual">Relatório Individual</option>
+                <option value="geral">Relatório Geral</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Turma</label>
+              <select id="turmaRelatorio" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]">
+                <option value="">Todas as turmas</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Data Inicial</label>
+              <input id="dataInicioRel" type="date" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Data Final</label>
+              <input id="dataFimRel" type="date" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" />
+            </div>
+          </div>
+
+          <!-- Área do Relatório -->
+          <div id="areaRelatorio" class="bg-slate-50 rounded-xl p-6">
+            <div class="text-center text-slate-500 py-8">
+              Selecione os filtros e clique em "Gerar Relatório" para visualizar os dados
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal de Turma -->
+  <div id="modalTurma" class="fixed inset-0 z-50 hidden modal-overlay">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-2xl p-6 w-full max-w-2xl soft-shadow">
+        <h3 class="text-lg font-semibold mb-4" id="tituloModalTurma">Nova Turma</h3>
+        <form id="formTurma" class="space-y-4">
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Nome da Turma</label>
+              <input id="nomeTurma" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="Ex: Turma A - Manhã" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Capacidade Máxima</label>
+              <input id="capacidadeTurma" type="number" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="Ex: 25" />
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Horário de Início</label>
+              <input id="horarioInicio" type="time" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Horário de Fim</label>
+              <input id="horarioFim" type="time" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Dias da Semana</label>
+            <div class="flex flex-wrap gap-2">
+              <label class="flex items-center"><input type="checkbox" value="1" class="mr-1 dias-semana"> Segunda</label>
+              <label class="flex items-center"><input type="checkbox" value="2" class="mr-1 dias-semana"> Terça</label>
+              <label class="flex items-center"><input type="checkbox" value="3" class="mr-1 dias-semana"> Quarta</label>
+              <label class="flex items-center"><input type="checkbox" value="4" class="mr-1 dias-semana"> Quinta</label>
+              <label class="flex items-center"><input type="checkbox" value="5" class="mr-1 dias-semana"> Sexta</label>
+              <label class="flex items-center"><input type="checkbox" value="6" class="mr-1 dias-semana"> Sábado</label>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Descrição</label>
+            <textarea id="descricaoTurma" rows="3" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="Descrição da turma..."></textarea>
+          </div>
+          <div class="flex justify-end gap-2">
+            <button type="button" id="btnCancelarTurma" class="px-4 py-2 rounded-lg bg-slate-300 hover:bg-slate-400 text-slate-700 transition">Cancelar</button>
+            <button type="submit" class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Conteúdo -->
+  <div id="modalConteudo" class="fixed inset-0 z-50 hidden modal-overlay">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-2xl p-6 w-full max-w-4xl soft-shadow">
+        <h3 class="text-lg font-semibold mb-4" id="tituloModalConteudo">Novo Conteúdo</h3>
+        <form id="formConteudo" class="space-y-4">
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Título</label>
+              <input id="tituloConteudo" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="Título do conteúdo" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Tipo</label>
+              <select id="tipoConteudo" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]">
+                <option value="regras">Regras de Vestimenta</option>
+                <option value="normas">Normas Disciplinares</option>
+                <option value="legislacao">Legislação</option>
+                <option value="comunicados">Comunicados Oficiais</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Conteúdo</label>
+            <textarea id="textoConteudo" rows="8" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]" placeholder="Digite o conteúdo aqui..."></textarea>
+          </div>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Status</label>
+              <select id="statusConteudo" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]">
+                <option value="ativo">Ativo</option>
+                <option value="inativo">Inativo</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Prioridade</label>
+              <select id="prioridadeConteudo" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]">
+                <option value="normal">Normal</option>
+                <option value="alta">Alta</option>
+                <option value="urgente">Urgente</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex justify-end gap-2">
+            <button type="button" id="btnCancelarConteudo" class="px-4 py-2 rounded-lg bg-slate-300 hover:bg-slate-400 text-slate-700 transition">Cancelar</button>
+            <button type="submit" class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Confirmação -->
+  <div id="modalConfirmacao" class="fixed inset-0 z-50 hidden modal-overlay">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-2xl p-6 w-full max-w-md soft-shadow">
+        <h3 class="text-lg font-semibold mb-4" id="tituloModal">Confirmar ação</h3>
+        <p class="text-slate-600 mb-6" id="mensagemModal">Tem certeza que deseja realizar esta ação?</p>
+        <div class="flex justify-end gap-2">
+          <button id="btnCancelar" class="px-4 py-2 rounded-lg bg-slate-300 hover:bg-slate-400 text-slate-700 transition">Cancelar</button>
+          <button id="btnConfirmar" class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Utilidades
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => document.querySelectorAll(sel);
+
+    // Estado da aplicação
+    const state = {
+      docentes: [],
+      turmas: [],
+      sessoes: [],
+      conteudos: [],
+      mensagens: [],
+      avisos: [],
+      presencas: [],
+      criancas: [],
+      currentUser: null,
+      isLoggedIn: false,
+      editingId: null
+    };
+
+    function uid() {
+      return 'DOC' + Math.random().toString(36).slice(2, 9).toUpperCase();
+    }
+
+    // LOGIN
+    function setupLogin() {
+      $('#loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const user = $('#loginUser').value.trim();
+        const password = $('#loginPassword').value.trim();
+        
+        // Primeiro carregar os dados
+        carregarLS();
+        
+        if (password === '123456') {
+          const docente = state.docentes.find(d => 
+            d.usuario && d.usuario === user
+          );
+          
+          if (docente) {
+            state.isLoggedIn = true;
+            state.currentUser = docente;
+            $('#loginScreen').classList.add('hidden');
+            $('#app').classList.remove('hidden');
+            
+            // Inicializar sistema
+            initSystem();
+          } else {
+            alert('Usuário ou senha incorretos!\n\nVerifique as credenciais disponíveis.');
+          }
+        } else {
+          alert('Usuário ou senha incorretos!\n\nVerifique as credenciais disponíveis.');
+        }
+      });
+      
+      $('#btnLogout').addEventListener('click', () => {
+        mostrarModal('Confirmar logout', 'Deseja realmente sair do sistema?', () => {
+          state.isLoggedIn = false;
+          state.currentUser = null;
+          $('#app').classList.add('hidden');
+          $('#loginScreen').classList.remove('hidden');
+          
+          // Limpar campos de login
+          $('#loginUser').value = 'prof.silva';
+          $('#loginPassword').value = '123456';
+        });
+      });
+    }
+
+    // Armazenamento local
+    function salvarLS() {
+      localStorage.setItem('bm_doc_docentes', JSON.stringify(state.docentes));
+      localStorage.setItem('bm_doc_turmas', JSON.stringify(state.turmas));
+      localStorage.setItem('bm_doc_sessoes', JSON.stringify(state.sessoes));
+      localStorage.setItem('bm_doc_conteudos', JSON.stringify(state.conteudos));
+      localStorage.setItem('bm_doc_mensagens', JSON.stringify(state.mensagens));
+      localStorage.setItem('bm_doc_avisos', JSON.stringify(state.avisos));
+      localStorage.setItem('bm_doc_presencas', JSON.stringify(state.presencas));
+      localStorage.setItem('bm_doc_criancas', JSON.stringify(state.criancas));
+    }
+
+    function carregarLS() {
+      try {
+        state.docentes = JSON.parse(localStorage.getItem('bm_doc_docentes') || '[]');
+        state.turmas = JSON.parse(localStorage.getItem('bm_doc_turmas') || '[]');
+        state.sessoes = JSON.parse(localStorage.getItem('bm_doc_sessoes') || '[]');
+        state.conteudos = JSON.parse(localStorage.getItem('bm_doc_conteudos') || '[]');
+        state.mensagens = JSON.parse(localStorage.getItem('bm_doc_mensagens') || '[]');
+        state.avisos = JSON.parse(localStorage.getItem('bm_doc_avisos') || '[]');
+        state.presencas = JSON.parse(localStorage.getItem('bm_doc_presencas') || '[]');
+        state.criancas = JSON.parse(localStorage.getItem('bm_doc_criancas') || '[]');
+      } catch(e) {
+        state.docentes = [];
+        state.turmas = [];
+        state.sessoes = [];
+        state.conteudos = [];
+        state.mensagens = [];
+        state.avisos = [];
+        state.presencas = [];
+        state.criancas = [];
+      }
+      
+      // Dados de exemplo se vazio
+      if (state.docentes.length === 0) {
+        initDadosExemplo();
+      }
+    }
+
+    function initDadosExemplo() {
+      // Docentes
+      state.docentes = [
+        {
+          id: uid(),
+          nome: 'Prof. Carlos Silva',
+          usuario: 'prof.silva',
+          email: 'carlos.silva@bombeiros.gov.br',
+          especialidade: 'Educação Física',
+          ativo: true
+        },
+        {
+          id: uid(),
+          nome: 'Prof. Ana Santos',
+          usuario: 'prof.santos',
+          email: 'ana.santos@bombeiros.gov.br',
+          especialidade: 'Primeiros Socorros',
+          ativo: true
+        }
+      ];
+
+      // Turmas
+      state.turmas = [
+        {
+          id: uid(),
+          nome: 'Turma A - Manhã',
+          capacidade: 25,
+          horarioInicio: '08:00',
+          horarioFim: '11:00',
+          diasSemana: [1, 3, 5], // Segunda, Quarta, Sexta
+          descricao: 'Turma matutina para crianças de 8 a 12 anos',
+          ativa: true,
+          docenteId: state.docentes[0].id
+        },
+        {
+          id: uid(),
+          nome: 'Turma B - Tarde',
+          capacidade: 20,
+          horarioInicio: '14:00',
+          horarioFim: '17:00',
+          diasSemana: [2, 4, 6], // Terça, Quinta, Sábado
+          descricao: 'Turma vespertina para crianças de 8 a 12 anos',
+          ativa: true,
+          docenteId: state.docentes[1].id
+        }
+      ];
+
+      // Conteúdos
+      state.conteudos = [
+        {
+          id: uid(),
+          titulo: 'Uniforme Oficial do Programa',
+          tipo: 'regras',
+          conteudo: 'O uniforme oficial consiste em: camiseta vermelha com logotipo, calça ou bermuda azul marinho, tênis fechado preferencialmente preto ou branco. É obrigatório o uso completo durante todas as atividades.',
+          status: 'ativo',
+          prioridade: 'alta',
+          dataCreated: new Date().toISOString(),
+          autorId: state.docentes[0].id
+        },
+        {
+          id: uid(),
+          titulo: 'Código de Conduta e Disciplina',
+          tipo: 'normas',
+          conteudo: 'Todos os participantes devem manter comportamento respeitoso, seguir as instruções dos instrutores, não usar linguagem inadequada e zelar pelo patrimônio público. O descumprimento pode resultar em advertência ou suspensão.',
+          status: 'ativo',
+          prioridade: 'alta',
+          dataCreated: new Date().toISOString(),
+          autorId: state.docentes[0].id
+        }
+      ];
+
+      // Crianças de exemplo
+      state.criancas = [
+        {
+          id: uid(),
+          nome: 'João Silva Santos',
+          nascimento: '2013-03-15',
+          turmaId: state.turmas[0].id,
+          responsavel: 'Maria Santos',
+          contato: '(11) 99999-0001'
+        },
+        {
+          id: uid(),
+          nome: 'Ana Costa Lima',
+          nascimento: '2012-07-22',
+          turmaId: state.turmas[0].id,
+          responsavel: 'Pedro Lima',
+          contato: '(11) 99999-0002'
+        },
+        {
+          id: uid(),
+          nome: 'Carlos Pereira',
+          nascimento: '2013-11-08',
+          turmaId: state.turmas[1].id,
+          responsavel: 'Lucia Pereira',
+          contato: '(11) 99999-0003'
+        }
+      ];
+
+      salvarLS();
+    }
+
+    // Navegação
+    function setupNav() {
+      const sections = ['dashboard', 'presencas', 'turmas', 'conteudos', 'comunicacao', 'relatorios'];
+      
+      function show(id) {
+        sections.forEach(s => {
+          const el = document.getElementById(s);
+          if (el) el.classList.toggle('hidden', s !== id);
+        });
+        
+        $$('.nav-btn').forEach(b => {
+          b.classList.remove('bg-[#E11D48]', 'text-white');
+          b.classList.add('text-slate-700');
+        });
+        const active = [...$$('.nav-btn')].find(b => b.dataset.section === id);
+        if (active) {
+          active.classList.add('bg-[#E11D48]', 'text-white');
+          active.classList.remove('text-slate-700');
+        }
+        
+        // Ações ao entrar na seção
+        switch(id) {
+          case 'dashboard':
+            renderDashboard();
+            break;
+          case 'presencas':
+            renderPresencas();
+            break;
+          case 'turmas':
+            setupTurmasTab();
+            renderTurmas();
+            break;
+          case 'conteudos':
+            renderConteudos();
+            break;
+          case 'comunicacao':
+            setupComunicacaoTab();
+            renderComunicacao();
+            break;
+          case 'relatorios':
+            renderRelatorios();
+            break;
+        }
+      }
+      
+      $$('.nav-btn').forEach(btn => btn.addEventListener('click', () => show(btn.dataset.section)));
+      show('dashboard'); // Dashboard como tela inicial
+    }
+
+    // DASHBOARD
+    function renderDashboard() {
+      // Atualizar cards
+      $('#totalTurmas').textContent = state.turmas.filter(t => t.ativa).length;
+      $('#totalAlunos').textContent = state.criancas.length;
+      $('#totalConteudos').textContent = state.conteudos.filter(c => c.status === 'ativo').length;
+      
+      // Calcular frequência média (simulado)
+      const frequenciaMedia = Math.round(Math.random() * 20 + 80); // 80-100%
+      $('#frequenciaMedia').textContent = `${frequenciaMedia}%`;
+
+      // Próximas aulas
+      const proximasAulas = $('#proximasAulas');
+      proximasAulas.innerHTML = '';
+      
+      const hoje = new Date();
+      const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+      
+      state.turmas.filter(t => t.ativa).slice(0, 3).forEach(turma => {
+        const div = document.createElement('div');
+        div.className = 'flex justify-between items-center p-2 bg-white rounded border';
+        div.innerHTML = `
+          <div>
+            <div class="font-medium">${turma.nome}</div>
+            <div class="text-sm text-slate-500">${turma.horarioInicio} - ${turma.horarioFim}</div>
+          </div>
+          <div class="text-sm text-slate-600">
+            ${turma.diasSemana.map(d => diasSemana[d]).join(', ')}
+          </div>
+        `;
+        proximasAulas.appendChild(div);
+      });
+
+      // Atividades pendentes
+      const atividadesPendentes = $('#atividadesPendentes');
+      atividadesPendentes.innerHTML = `
+        <div class="flex justify-between items-center p-2 bg-white rounded border">
+          <div>
+            <div class="font-medium">Registrar presenças</div>
+            <div class="text-sm text-slate-500">Turma A - Manhã</div>
+          </div>
+          <span class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs">Pendente</span>
+        </div>
+        <div class="flex justify-between items-center p-2 bg-white rounded border">
+          <div>
+            <div class="font-medium">Atualizar conteúdo</div>
+            <div class="text-sm text-slate-500">Normas disciplinares</div>
+          </div>
+          <span class="px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs">Em andamento</span>
+        </div>
+      `;
+    }
+
+    // TURMAS
+    function setupTurmas() {
+      $('#btnNovaTurma').addEventListener('click', () => {
+        state.editingId = null;
+        $('#tituloModalTurma').textContent = 'Nova Turma';
+        limparFormTurma();
+        $('#modalTurma').classList.remove('hidden');
+      });
+
+      $('#btnCancelarTurma').addEventListener('click', () => {
+        $('#modalTurma').classList.add('hidden');
+      });
+
+      $('#formTurma').addEventListener('submit', (e) => {
+        e.preventDefault();
+        salvarTurma();
+      });
+    }
+
+    function setupTurmasTab() {
+      const tabs = ['tabTurmas', 'tabSessoes'];
+      const contents = ['conteudoTurmas', 'conteudoSessoes'];
+      
+      tabs.forEach((tabId, index) => {
+        $(`#${tabId}`).addEventListener('click', () => {
+          // Atualizar abas
+          tabs.forEach(t => {
+            const tab = $(`#${t}`);
+            tab.classList.remove('border-[#E11D48]', 'text-[#E11D48]');
+            tab.classList.add('border-transparent', 'text-slate-500');
+          });
+          
+          $(`#${tabId}`).classList.remove('border-transparent', 'text-slate-500');
+          $(`#${tabId}`).classList.add('border-[#E11D48]', 'text-[#E11D48]');
+          
+          // Mostrar conteúdo
+          contents.forEach((contentId, i) => {
+            $(`#${contentId}`).classList.toggle('hidden', i !== index);
+          });
+
+          if (index === 0) renderTurmas();
+          else renderSessoes();
+        });
+      });
+    }
+
+    function renderTurmas() {
+      const container = $('#listaTurmas');
+      container.innerHTML = '';
+
+      if (state.turmas.length === 0) {
+        container.innerHTML = '<div class="text-center text-slate-500 py-8">Nenhuma turma cadastrada</div>';
+        return;
+      }
+
+      state.turmas.forEach(turma => {
+        const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+        const diasTexto = turma.diasSemana.map(d => diasSemana[d]).join(', ');
+        const alunosMatriculados = state.criancas.filter(c => c.turmaId === turma.id).length;
+
+        const div = document.createElement('div');
+        div.className = 'bg-slate-50 rounded-xl p-4 border border-slate-200';
+        div.innerHTML = `
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <h3 class="font-semibold text-lg">${turma.nome}</h3>
+              <p class="text-slate-600 text-sm">${turma.descricao}</p>
+            </div>
+            <div class="flex gap-2">
+              <span class="px-2 py-1 rounded-full text-xs ${turma.ativa ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                ${turma.ativa ? 'Ativa' : 'Inativa'}
+              </span>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <span class="font-medium">Horário:</span> ${turma.horarioInicio} - ${turma.horarioFim}
+            </div>
+            <div>
+              <span class="font-medium">Dias:</span> ${diasTexto}
+            </div>
+            <div>
+              <span class="font-medium">Capacidade:</span> ${alunosMatriculados}/${turma.capacidade} alunos
+            </div>
+            <div>
+              <span class="font-medium">Ocupação:</span> ${Math.round((alunosMatriculados/turma.capacidade)*100)}%
+            </div>
+          </div>
+          <div class="flex justify-end gap-2 mt-4">
+            <button onclick="editarTurma('${turma.id}')" class="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm transition">Editar</button>
+            <button onclick="excluirTurma('${turma.id}')" class="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-sm transition">Excluir</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderSessoes() {
+      const container = $('#listaSessoes');
+      container.innerHTML = '<div class="text-center text-slate-500 py-8">Funcionalidade de sessões em desenvolvimento</div>';
+    }
+
+    function limparFormTurma() {
+      $('#nomeTurma').value = '';
+      $('#capacidadeTurma').value = '';
+      $('#horarioInicio').value = '';
+      $('#horarioFim').value = '';
+      $('#descricaoTurma').value = '';
+      $$('.dias-semana').forEach(cb => cb.checked = false);
+    }
+
+    function salvarTurma() {
+      const nome = $('#nomeTurma').value.trim();
+      const capacidade = parseInt($('#capacidadeTurma').value);
+      const horarioInicio = $('#horarioInicio').value;
+      const horarioFim = $('#horarioFim').value;
+      const descricao = $('#descricaoTurma').value.trim();
+      const diasSemana = [...$$('.dias-semana:checked')].map(cb => parseInt(cb.value));
+
+      if (!nome || !capacidade || !horarioInicio || !horarioFim || diasSemana.length === 0) {
+        alert('Preencha todos os campos obrigatórios');
+        return;
+      }
+
+      const turma = {
+        id: state.editingId || uid(),
+        nome,
+        capacidade,
+        horarioInicio,
+        horarioFim,
+        diasSemana,
+        descricao,
+        ativa: true,
+        docenteId: state.currentUser.id
+      };
+
+      if (state.editingId) {
+        const index = state.turmas.findIndex(t => t.id === state.editingId);
+        state.turmas[index] = turma;
+      } else {
+        state.turmas.push(turma);
+      }
+
+      salvarLS();
+      $('#modalTurma').classList.add('hidden');
+      renderTurmas();
+    }
+
+    window.editarTurma = (id) => {
+      const turma = state.turmas.find(t => t.id === id);
+      if (!turma) return;
+
+      state.editingId = id;
+      $('#tituloModalTurma').textContent = 'Editar Turma';
+      $('#nomeTurma').value = turma.nome;
+      $('#capacidadeTurma').value = turma.capacidade;
+      $('#horarioInicio').value = turma.horarioInicio;
+      $('#horarioFim').value = turma.horarioFim;
+      $('#descricaoTurma').value = turma.descricao;
+      
+      $$('.dias-semana').forEach(cb => {
+        cb.checked = turma.diasSemana.includes(parseInt(cb.value));
+      });
+
+      $('#modalTurma').classList.remove('hidden');
+    };
+
+    window.excluirTurma = (id) => {
+      mostrarModal('Excluir Turma', 'Tem certeza que deseja excluir esta turma?', () => {
+        state.turmas = state.turmas.filter(t => t.id !== id);
+        salvarLS();
+        renderTurmas();
+      });
+    };
+
+    // CONTEÚDOS
+    function setupConteudos() {
+      $('#btnNovoConteudo').addEventListener('click', () => {
+        state.editingId = null;
+        $('#tituloModalConteudo').textContent = 'Novo Conteúdo';
+        limparFormConteudo();
+        $('#modalConteudo').classList.remove('hidden');
+      });
+
+      $('#btnCancelarConteudo').addEventListener('click', () => {
+        $('#modalConteudo').classList.add('hidden');
+      });
+
+      $('#formConteudo').addEventListener('submit', (e) => {
+        e.preventDefault();
+        salvarConteudo();
+      });
+
+      $('#filtroTipoConteudo').addEventListener('change', renderConteudos);
+      $('#buscaConteudo').addEventListener('input', renderConteudos);
+    }
+
+    function renderConteudos() {
+      const container = $('#listaConteudos');
+      const filtroTipo = $('#filtroTipoConteudo').value;
+      const busca = $('#buscaConteudo').value.toLowerCase();
+
+      let conteudosFiltrados = state.conteudos;
+
+      if (filtroTipo) {
+        conteudosFiltrados = conteudosFiltrados.filter(c => c.tipo === filtroTipo);
+      }
+
+      if (busca) {
+        conteudosFiltrados = conteudosFiltrados.filter(c => 
+          c.titulo.toLowerCase().includes(busca) || 
+          c.conteudo.toLowerCase().includes(busca)
+        );
+      }
+
+      container.innerHTML = '';
+
+      if (conteudosFiltrados.length === 0) {
+        container.innerHTML = '<div class="text-center text-slate-500 py-8">Nenhum conteúdo encontrado</div>';
+        return;
+      }
+
+      conteudosFiltrados.forEach(conteudo => {
+        const tipoLabels = {
+          'regras': 'Regras de Vestimenta',
+          'normas': 'Normas Disciplinares',
+          'legislacao': 'Legislação',
+          'comunicados': 'Comunicados Oficiais'
+        };
+
+        const tipoColors = {
+          'regras': 'bg-blue-100 text-blue-700',
+          'normas': 'bg-yellow-100 text-yellow-700',
+          'legislacao': 'bg-purple-100 text-purple-700',
+          'comunicados': 'bg-green-100 text-green-700'
+        };
+
+        const prioridadeColors = {
+          'normal': 'bg-slate-100 text-slate-700',
+          'alta': 'bg-orange-100 text-orange-700',
+          'urgente': 'bg-red-100 text-red-700'
+        };
+
+        const data = new Date(conteudo.dataCreated).toLocaleDateString('pt-BR');
+
+        const div = document.createElement('div');
+        div.className = 'bg-slate-50 rounded-xl p-4 border border-slate-200';
+        div.innerHTML = `
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex-1">
+              <h3 class="font-semibold text-lg mb-1">${conteudo.titulo}</h3>
+              <div class="flex gap-2 mb-2">
+                <span class="px-2 py-1 rounded-full text-xs ${tipoColors[conteudo.tipo]}">
+                  ${tipoLabels[conteudo.tipo]}
+                </span>
+                <span class="px-2 py-1 rounded-full text-xs ${prioridadeColors[conteudo.prioridade]}">
+                  ${conteudo.prioridade}
+                </span>
+                <span class="px-2 py-1 rounded-full text-xs ${conteudo.status === 'ativo' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                  ${conteudo.status}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="text-sm text-slate-600 mb-3 line-clamp-3">
+            ${conteudo.conteudo.substring(0, 200)}${conteudo.conteudo.length > 200 ? '...' : ''}
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-slate-500">Criado em ${data}</span>
+            <div class="flex gap-2">
+              <button onclick="editarConteudo('${conteudo.id}')" class="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm transition">Editar</button>
+              <button onclick="excluirConteudo('${conteudo.id}')" class="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-sm transition">Excluir</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function limparFormConteudo() {
+      $('#tituloConteudo').value = '';
+      $('#tipoConteudo').value = 'regras';
+      $('#textoConteudo').value = '';
+      $('#statusConteudo').value = 'ativo';
+      $('#prioridadeConteudo').value = 'normal';
+    }
+
+    function salvarConteudo() {
+      const titulo = $('#tituloConteudo').value.trim();
+      const tipo = $('#tipoConteudo').value;
+      const texto = $('#textoConteudo').value.trim();
+      const status = $('#statusConteudo').value;
+      const prioridade = $('#prioridadeConteudo').value;
+
+      if (!titulo || !texto) {
+        alert('Preencha o título e o conteúdo');
+        return;
+      }
+
+      const conteudo = {
+        id: state.editingId || uid(),
+        titulo,
+        tipo,
+        conteudo: texto,
+        status,
+        prioridade,
+        dataCreated: state.editingId ? 
+          state.conteudos.find(c => c.id === state.editingId).dataCreated : 
+          new Date().toISOString(),
+        autorId: state.currentUser.id
+      };
+
+      if (state.editingId) {
+        const index = state.conteudos.findIndex(c => c.id === state.editingId);
+        state.conteudos[index] = conteudo;
+      } else {
+        state.conteudos.push(conteudo);
+      }
+
+      salvarLS();
+      $('#modalConteudo').classList.add('hidden');
+      renderConteudos();
+    }
+
+    window.editarConteudo = (id) => {
+      const conteudo = state.conteudos.find(c => c.id === id);
+      if (!conteudo) return;
+
+      state.editingId = id;
+      $('#tituloModalConteudo').textContent = 'Editar Conteúdo';
+      $('#tituloConteudo').value = conteudo.titulo;
+      $('#tipoConteudo').value = conteudo.tipo;
+      $('#textoConteudo').value = conteudo.conteudo;
+      $('#statusConteudo').value = conteudo.status;
+      $('#prioridadeConteudo').value = conteudo.prioridade;
+
+      $('#modalConteudo').classList.remove('hidden');
+    };
+
+    window.excluirConteudo = (id) => {
+      mostrarModal('Excluir Conteúdo', 'Tem certeza que deseja excluir este conteúdo?', () => {
+        state.conteudos = state.conteudos.filter(c => c.id !== id);
+        salvarLS();
+        renderConteudos();
+      });
+    };
+
+    // PRESENÇAS
+    function setupPresencas() {
+      // Definir data atual
+      const hoje = new Date().toISOString().slice(0, 10);
+      $('#dataPresenca').value = hoje;
+
+      $('#dataPresenca').addEventListener('change', renderPresencas);
+      $('#turmaPresenca').addEventListener('change', renderPresencas);
+      $('#btnSalvarPresencas').addEventListener('click', salvarPresencas);
+
+      // Preencher select de turmas
+      const selectTurma = $('#turmaPresenca');
+      selectTurma.innerHTML = '<option value="">Selecione uma turma</option>';
+      state.turmas.filter(t => t.ativa).forEach(turma => {
+        const option = document.createElement('option');
+        option.value = turma.id;
+        option.textContent = turma.nome;
+        selectTurma.appendChild(option);
+      });
+    }
+
+    function renderPresencas() {
+      const data = $('#dataPresenca').value;
+      const turmaId = $('#turmaPresenca').value;
+      
+      const tbody = $('#listaPresencas');
+      tbody.innerHTML = '';
+
+      if (!data || !turmaId) {
+        tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500">Selecione a data e turma</td></tr>';
+        return;
+      }
+
+      const alunosDaTurma = state.criancas.filter(c => c.turmaId === turmaId);
+
+      if (alunosDaTurma.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500">Nenhum aluno matriculado nesta turma</td></tr>';
+        return;
+      }
+
+      alunosDaTurma.forEach(aluno => {
+        // Verificar se já existe presença registrada
+        const presencaExistente = state.presencas.find(p => 
+          p.alunoId === aluno.id && p.data === data
+        );
+
+        const tr = document.createElement('tr');
+        tr.className = 'border-t';
+        tr.innerHTML = `
+          <td class="p-4">${aluno.nome}</td>
+          <td class="p-4">
+            <input type="radio" name="presenca_${aluno.id}" value="presente" ${presencaExistente?.status === 'presente' ? 'checked' : ''} />
+          </td>
+          <td class="p-4">
+            <input type="radio" name="presenca_${aluno.id}" value="atraso" ${presencaExistente?.status === 'atraso' ? 'checked' : ''} />
+          </td>
+          <td class="p-4">
+            <input type="radio" name="presenca_${aluno.id}" value="falta" ${presencaExistente?.status === 'falta' ? 'checked' : ''} />
+          </td>
+          <td class="p-4">
+            <input type="text" id="obs_${aluno.id}" class="w-full px-2 py-1 rounded border border-slate-300 text-sm" 
+                   placeholder="Observações..." value="${presencaExistente?.observacoes || ''}" />
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function salvarPresencas() {
+      const data = $('#dataPresenca').value;
+      const turmaId = $('#turmaPresenca').value;
+
+      if (!data || !turmaId) {
+        alert('Selecione a data e turma');
+        return;
+      }
+
+      const alunosDaTurma = state.criancas.filter(c => c.turmaId === turmaId);
+      let presencasSalvas = 0;
+
+      alunosDaTurma.forEach(aluno => {
+        const statusRadio = document.querySelector(`input[name="presenca_${aluno.id}"]:checked`);
+        const observacoes = $(`#obs_${aluno.id}`).value.trim();
+
+        if (statusRadio) {
+          // Remover presença existente se houver
+          state.presencas = state.presencas.filter(p => 
+            !(p.alunoId === aluno.id && p.data === data)
+          );
+
+          // Adicionar nova presença
+          state.presencas.push({
+            id: uid(),
+            alunoId: aluno.id,
+            turmaId: turmaId,
+            data: data,
+            status: statusRadio.value,
+            observacoes: observacoes,
+            docenteId: state.currentUser.id,
+            timestamp: new Date().toISOString()
+          });
+
+          presencasSalvas++;
+        }
+      });
+
+      if (presencasSalvas > 0) {
+        salvarLS();
+        alert(`${presencasSalvas} presenças salvas com sucesso!`);
+      } else {
+        alert('Nenhuma presença foi marcada');
+      }
+    }
+
+    // COMUNICAÇÃO
+    function setupComunicacao() {
+      setupComunicacaoTab();
+    }
+
+    function setupComunicacaoTab() {
+      const tabs = ['tabMensagens', 'tabAvisos'];
+      const contents = ['conteudoMensagens', 'conteudoAvisos'];
+      
+      tabs.forEach((tabId, index) => {
+        $(`#${tabId}`).addEventListener('click', () => {
+          // Atualizar abas
+          tabs.forEach(t => {
+            const tab = $(`#${t}`);
+            tab.classList.remove('border-[#E11D48]', 'text-[#E11D48]');
+            tab.classList.add('border-transparent', 'text-slate-500');
+          });
+          
+          $(`#${tabId}`).classList.remove('border-transparent', 'text-slate-500');
+          $(`#${tabId}`).classList.add('border-[#E11D48]', 'text-[#E11D48]');
+          
+          // Mostrar conteúdo
+          contents.forEach((contentId, i) => {
+            $(`#${contentId}`).classList.toggle('hidden', i !== index);
+          });
+        });
+      });
+    }
+
+    function renderComunicacao() {
+      renderMensagens();
+      renderAvisos();
+    }
+
+    function renderMensagens() {
+      const container = $('#listaMensagens');
+      container.innerHTML = '<div class="text-center text-slate-500 py-8">Funcionalidade de mensagens em desenvolvimento</div>';
+    }
+
+    function renderAvisos() {
+      const container = $('#listaAvisos');
+      container.innerHTML = '<div class="text-center text-slate-500 py-8">Funcionalidade de avisos em desenvolvimento</div>';
+    }
+
+    // RELATÓRIOS
+    function renderRelatorios() {
+      // Preencher select de turmas
+      const selectTurma = $('#turmaRelatorio');
+      selectTurma.innerHTML = '<option value="">Todas as turmas</option>';
+      state.turmas.filter(t => t.ativa).forEach(turma => {
+        const option = document.createElement('option');
+        option.value = turma.id;
+        option.textContent = turma.nome;
+        selectTurma.appendChild(option);
+      });
+
+      $('#btnGerarRelatorio').addEventListener('click', gerarRelatorio);
+    }
+
+    function gerarRelatorio() {
+      const tipo = $('#tipoRelatorio').value;
+      const turmaId = $('#turmaRelatorio').value;
+      const dataInicio = $('#dataInicioRel').value;
+      const dataFim = $('#dataFimRel').value;
+
+      const area = $('#areaRelatorio');
+      area.innerHTML = '<div class="text-center text-slate-500 py-8">Gerando relatório...</div>';
+
+      setTimeout(() => {
+        area.innerHTML = `
+          <h3 class="font-semibold mb-4">Relatório de ${tipo === 'frequencia' ? 'Frequência' : tipo === 'individual' ? 'Individual' : 'Geral'}</h3>
+          <div class="bg-white rounded-lg p-4 border">
+            <p class="text-slate-600">Relatório gerado com sucesso!</p>
+            <p class="text-sm text-slate-500 mt-2">
+              Período: ${dataInicio || 'Não especificado'} até ${dataFim || 'Não especificado'}
+            </p>
+            <p class="text-sm text-slate-500">
+              Turma: ${turmaId ? state.turmas.find(t => t.id === turmaId)?.nome : 'Todas as turmas'}
+            </p>
+          </div>
+        `;
+      }, 1000);
+    }
+
+    // MODAL
+    function setupModal() {
+      $('#btnCancelar').addEventListener('click', () => {
+        $('#modalConfirmacao').classList.add('hidden');
+        state.currentAction = null;
+      });
+      
+      $('#btnConfirmar').addEventListener('click', () => {
+        if (state.currentAction) {
+          state.currentAction();
+        }
+        $('#modalConfirmacao').classList.add('hidden');
+        state.currentAction = null;
+      });
+    }
+
+    function mostrarModal(titulo, mensagem, acao) {
+      $('#tituloModal').textContent = titulo;
+      $('#mensagemModal').textContent = mensagem;
+      state.currentAction = acao;
+      $('#modalConfirmacao').classList.remove('hidden');
+    }
+
+    // INICIALIZAÇÃO DO SISTEMA
+    function initSystem() {
+      setupNav();
+      setupTurmas();
+      setupConteudos();
+      setupPresencas();
+      setupComunicacao();
+      setupModal();
+      
+      // Atualizar header com info do usuário
+      updateHeader();
+    }
+
+    function updateHeader() {
+      if (state.currentUser) {
+        const headerSubtitle = $('#headerSubtitle');
+        headerSubtitle.textContent = `Bem-vindo(a), ${state.currentUser.nome}`;
+        
+        // Atualizar botão de usuário
+        const userInfo = $('#userInfo');
+        if (userInfo) {
+          userInfo.textContent = `${state.currentUser.nome.split(' ')[1]}`;
+        }
+      }
+    }
+
+    // Iniciar aplicação
+    document.addEventListener('DOMContentLoaded', () => {
+      // Carregar dados primeiro
+      carregarLS();
+      setupLogin();
+    });
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'991cc2d826b99a86',t:'MTc2MTAwNzgyOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
