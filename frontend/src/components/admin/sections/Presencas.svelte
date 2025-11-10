@@ -11,12 +11,17 @@
 	}
 </script>
 
-	<section id="presencas" class="w-full max-w-4xl bg-white p-6 rounded-3xl shadow-lg border border-slate-200 mx-auto transition-all duration-300">
-	<h2 class="text-2xl font-bold text-slate-900 mb-2">Controle de Presenças</h2>
-	<p class="text-slate-500 mb-6">Registre presença, falta ou atraso por turma</p>
+	<section id="presencas" class="w-full h-full bg-white p-6 rounded-3xl shadow-lg border border-slate-200 mx-auto transition-all duration-300">
+	<!-- Layout de duas colunas -->
+	<div class="flex flex-col lg:flex-row gap-6 mb-6">
+		<!-- Coluna esquerda: Título e descrição -->
+		<div class="flex flex-col justify-center lg:w-1/3">
+			<h2 class="text-2xl font-bold text-slate-900 mb-2">Controle de Presenças</h2>
+			<p class="text-slate-500">Registre presença, falta ou atraso por turma</p>
+		</div>
 
-	<!-- Formulário -->
-	<div class="flex flex-col md:flex-row gap-4 md:items-end mb-6">
+		<!-- Coluna direita: Formulário -->
+		<div class="flex flex-col md:flex-row gap-4 md:items-end lg:w-2/3">
 		<div class="flex flex-col w-full md:w-1/3">
 			<label for="turma" class="text-slate-600 mb-1 font-medium">Turma</label>
 			<select
@@ -41,12 +46,13 @@
 			/>
 		</div>
 
-		<button
-			on:click={handleSalvarPresencas}
-			class="bg-[#E11D48] hover:bg-[#BE123C] text-white font-semibold px-5 py-3 rounded-xl transition-colors duration-200 w-full md:w-auto"
-		>
-			Salvar Presenças
-		</button>
+			<button
+				on:click={handleSalvarPresencas}
+				class="bg-[#E11D48] hover:bg-[#BE123C] text-white font-semibold px-5 py-3 rounded-xl transition-colors duration-200 w-full md:w-auto"
+			>
+				Salvar Presenças
+			</button>
+		</div>
 	</div>
 
 	<!-- Cards de status -->

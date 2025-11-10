@@ -1,0 +1,58 @@
+/**
+ * Design System Tokens - CSS Custom Properties
+ * Importar este arquivo no global.css ou no layout principal
+ */
+
+:root {
+  /* Border Radius Tokens */
+  --radius-none: 0;
+  --radius-xs: 2px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Spacing Tokens */
+  --spacing-none: 0;
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 2.5rem;
+  --spacing-3xl: 3rem;
+  --spacing-4xl: 4rem;
+  --spacing-5xl: 5rem;
+  --spacing-6xl: 6rem;
+
+  /* Font Size Tokens */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-md: 1.125rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.25em;
+  --font-size-2xl: 1.563em;
+  --font-size-3xl: 1.953em;
+  --font-size-4xl: 2.441em;
+  --font-size-5xl: 3.052em;
+
+  /* Line Height Tokens */
+  --line-height-none: 1;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.7;
+  --line-height-loose: 2;
+
+  /* Font Weight Tokens */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Font Family Tokens */
+  --font-family-sans: "Atkinson", sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+

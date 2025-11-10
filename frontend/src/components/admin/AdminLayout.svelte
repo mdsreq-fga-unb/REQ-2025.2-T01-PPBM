@@ -25,11 +25,11 @@
 <div class="min-h-screen bg-gradient-to-br from-white via-slate-50 to-slate-100 text-slate-900">
 	<AdminHeader />
 
-	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-[280px,1fr] gap-6">
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-[16px] grid grid-cols-1 lg:grid-cols-[280px,1fr] gap-6">
 		<AdminSidebar />
 
 		<!-- Main Sections -->
-		<main class="space-y-6">
+		<main class="w-full h-full">
 			{#if currentSection === 'presencas'}
 				<Presencas />
 			{:else if currentSection === 'cadastro'}

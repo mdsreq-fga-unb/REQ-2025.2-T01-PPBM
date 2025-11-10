@@ -43,12 +43,11 @@
 		<div class="flex items-center gap-3">
 			<div class="hidden md:flex items-center gap-2">
 				<span
-					class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs border border-green-200"
-				>
+				class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm border border-green-200">
 					Sistema Ativo
 				</span>
 				<span
-					class="px-3 py-1 rounded-full bg-[#E11D48]/10 text-[#BE123C] text-xs border border-[#E11D48]/20"
+					class="px-3 py-1 rounded-full bg-[#E11D48]/10 text-[#BE123C] text-sm border border-[#E11D48]/20"
 				>
 					Usuário: {currentUser?.name || 'Admin'}
 				</span>

@@ -4,6 +4,8 @@
   License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
  */
 
+@import './design-system/tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -51,7 +53,6 @@ main {
 	width: 720px;
 	max-width: calc(100% - 2em);
 	margin: auto;
-	padding: 3em 1em;
 }
 h1,
 h2,
