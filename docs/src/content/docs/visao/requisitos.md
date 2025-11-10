@@ -107,7 +107,7 @@ O sistema deve atingir 99,5% de disponibilidade mensal para o MVP, calculado pel
 ### Performance (Desempenho & Escalabilidade)
 
 **RNF-005 – Tempo de resposta consultas críticas**  
-Consultas e operações críticas devem responder em até 5 segundos em condições normais de uso.
+As seguintes operações críticas devem responder em até 5 segundos sob condições normais: Busca de conteúdos institucionais; Login e autenticação de usuário; Carregamento da página inicial; Geração de relatórios simples. Condições normais são definidas como: até 100 usuários simultâneos, conexão de internet mínima de 5 Mbps, servidor com uso de CPU abaixo de 70%. O tempo de resposta será medido do momento da requisição até a renderização completa dos dados na interface, monitorado através de ferramentas de APM (Application Performance Monitoring).
 
 **RNF-006 – Tempo de resposta páginas e exportações**  
 95% das páginas devem carregar em menos de 2 segundos; exportações de até 5k registros devem completar em até 10 segundos.
