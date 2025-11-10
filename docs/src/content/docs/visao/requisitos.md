@@ -102,7 +102,7 @@ Os conteúdos institucionais devem estar disponíveis em área dedicada do siste
 ### Reliability (Confiabilidade)
 
 **RNF-004 – Disponibilidade**  
-O sistema deve atingir 99,5% de disponibilidade mensal para o MVP.
+O sistema deve atingir 99,5% de disponibilidade mensal para o MVP, calculado pela fórmula: Disponibilidade (%) = (Tempo Total - Tempo de Inatividade) / Tempo Total × 100. Isso permite até 3,6 horas de downtime por mês. Para garantir este requisito: Implementar monitoramento contínuo com alertas automáticos; Realizar backups diários automatizados; Definir procedimentos de recuperação de desastres com RTO (Recovery Time Objective) de 2 horas; Manter logs de disponibilidade acessíveis para auditoria.
 
 ### Performance (Desempenho & Escalabilidade)
 
