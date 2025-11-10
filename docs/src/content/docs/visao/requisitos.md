@@ -80,9 +80,6 @@ Geração de histórico de relatórios de acompanhamento acessível a docentes e
 **RF-020 – Cadastrar conteúdos institucionais**  
 Permitir o cadastro de conteúdos textuais e documentais, como regras de vestimenta, normas disciplinares, legislação aplicável e comunicados oficiais.
 
-
-
-
 ---
 
 ## Requisitos Não Funcionais (RNF)
@@ -98,7 +95,6 @@ O sistema deve estar em Português (Brasil) com terminologia adequada ao PBM (br
 **RNF-003 – Navegabilidade de Conteúdos Institucionais**  
 Os conteúdos institucionais devem estar disponíveis em área dedicada do sistema, com as seguintes características verificáveis: Filtros funcionais por título, categoria e palavra-chave com retorno de resultados em até 2 segundos; Estrutura de navegação com no máximo 3 níveis de profundidade; Acesso controlado por perfil de usuário conforme matriz de permissões; 90% dos usuários devem conseguir localizar um conteúdo específico em até 3 cliques, medido através de testes de usabilidade com pelo menos 05 usuários.
 
-
 ### Reliability (Confiabilidade)
 
 **RNF-004 – Disponibilidade**  
@@ -113,9 +109,7 @@ As seguintes operações críticas devem responder em até 5 segundos sob condi�
 95% das páginas devem carregar em menos de 2 segundos; exportações de até 5k registros devem completar em até 10 segundos.
 
 **RNF-007 – Carga**  
-Suportar uso concorrente das 12 unidades, com pelo menos 150 usuários simultâneos no pico do registro de presença.
-
-
+Suportar uso concorrente das 12 unidades, com pelo menos 150 usuários simultâneos no pico do registro de pres
 
 ### Portability (Portabilidade & Tecnologia)
 
@@ -128,8 +122,6 @@ Back-end TypeScript + Express; Front-end Astro; Banco Supabase/PostgreSQL.
 **RNF-010 – Compatibilidade de navegação**  
 Suporte a Chrome/Edge/Firefox atuais e Safari atual -1 versão.
 
-
-
 ### Security (Segurança & Privacidade)
 
 **RNF-011 – Proteção de dados pessoais**  
@@ -140,8 +132,6 @@ Todos os dados transmitidos e armazenados devem utilizar criptografia (HTTPS/TLS
 
 **RNF-013 – Armazenamento de dados**  
 O sistema deve ser capaz de armazenar informações de usuários, registros de ponto e outros dados relacionados por pelo menos 2 anos.
-
-
 
 ### Maintainability (Manutenibilidade & Evolutividade)
 
@@ -155,7 +145,7 @@ Seguir padrões de código (TypeScript, lint/prettier, TDD) com cobertura mínim
 Pipeline automatizado para build, testes, análise estática e deploy.
 
 **RNF-017 – Observabilidade**  
-Monitoramento com métricas, logs estruturados e alertas configuráveis.
+O sistema deve implementar observabilidade completa com: Métricas: tempo de resposta por endpoint, taxa de erro, uso de CPU e memória, número de requisições por minuto, disponibilidade do sistema; Logs estruturados: formato JSON contendo timestamp, nível de severidade (INFO, WARNING, ERROR, CRITICAL), ID da requisição, usuário, ação realizada e mensagem descritiva, armazenados por no mínimo 90 dias; Alertas configuráveis: notificações automáticas via email/SMS quando disponibilidade cair abaixo de 99%, tempo de resposta exceder 8 segundos, taxa de erro ultrapassar 5%, ou uso de recursos exceder 85%.
 
 ## Histórico de Versão
 
