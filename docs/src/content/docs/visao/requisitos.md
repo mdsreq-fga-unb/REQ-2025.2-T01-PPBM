@@ -36,6 +36,18 @@ Permitir exportação de relatórios gerados pela plataforma para uso interno da
 **RF-008 – Exibir dashboards de frequência**  
 Exibir indicadores e gráficos (taxa média de presença, alertas de recorrência).
 
+**RF-008.1 – Exibir taxa média de presença**
+Calcular e exibir a taxa média de presença por período selecionável (dia, semana, mês, ano).​
+
+**RF-008.2 – Exibir gráficos de frequência**
+Gerar gráficos visuais de frequência permitindo análise temporal e comparativa.​
+
+**RF-008.3 – Exibir alertas de recorrência**
+Mostrar indicadores automáticos de padrões de ausência recorrente ou baixa frequência.​
+
+**RF-008.4 – Filtrar dashboards por unidade/período**
+Permitir filtros personalizados nos dashboards (por unidade, posto, turma, data).
+
 **RF-009 – Exibir histórico do aluno**  
 Exibir linha do tempo com presenças, faltas, justificativas, atendimentos, advertências e comunicações relacionadas.
 
