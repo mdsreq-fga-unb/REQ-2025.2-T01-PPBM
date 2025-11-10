@@ -51,8 +51,16 @@ Permitir filtros personalizados nos dashboards (por unidade, posto, turma, data)
 **RF-009 – Exibir histórico do aluno**  
 Exibir linha do tempo com presenças, faltas, justificativas, atendimentos, advertências e comunicações relacionadas.
 
-**RF-010 – Exportar relatórios oficiais padronizados administrativos**  
-Permitir exportação de relatórios em modelos definidos pelo CBMDF voltado para a parte administrativa.
+**RF-010 – Exportar relatórios administrativos padronizados do CBMDF**
+O sistema deve permitir a exportação dos seguintes relatórios em formato PDF/Excel, conforme padrões do CBMDF:​
+
+● Relatório Mensal de Frequência por Unidade - Consolidação mensal de todas as marcações de ponto
+
+● Relatório de Ausências e Justificativas - Lista de ausências com status de justificativas
+
+● Relatório de Efetivo Presente - Snapshot diário do efetivo disponível
+
+● Relatório de Ocorrências Disciplinares - Registro de faltas não justificadas e advertências
 
 ### Objetivo Específico 2 – Monitoramento de Comportamento e Alertas
 
