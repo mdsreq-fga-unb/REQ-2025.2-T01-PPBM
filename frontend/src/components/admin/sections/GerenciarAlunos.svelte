@@ -38,7 +38,7 @@
 			<label class="block text-sm font-medium mb-1">Buscar aluno</label>
 			<input
 				bind:value={buscaGerenciar}
-				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 				placeholder="Nome, CPF ou responsável..."
 			/>
 		</div>
@@ -46,7 +46,7 @@
 			<label class="block text-sm font-medium mb-1">Filtrar por turma</label>
 			<select
 				bind:value={filtroTurmaGerenciar}
-				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 			>
 				<option value="">Todas as turmas</option>
 				<option value="turma-a">Turma A - Manhã</option>
@@ -58,7 +58,7 @@
 			<label class="block text-sm font-medium mb-1">Status especial</label>
 			<select
 				bind:value={filtroStatus}
-				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 			>
 				<option value="">Todos</option>
 				<option value="medico">Com alerta médico</option>

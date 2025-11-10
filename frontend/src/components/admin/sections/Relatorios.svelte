@@ -25,7 +25,7 @@
 			</button>
 			<button
 				on:click={handleExportarRelatorio}
-				class="px-4 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white transition"
+				class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition"
 			>
 				Exportar
 			</button>
@@ -37,7 +37,7 @@
 			<label class="block text-sm font-medium mb-1">Tipo de relatório</label>
 			<select
 				bind:value={tipoRelatorio}
-				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 			>
 				<option value="presencas">Presenças por período</option>
 				<option value="individual">Relatório individual</option>
@@ -50,7 +50,7 @@
 			<input
 				bind:value={dataInicio}
 				type="date"
-				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 			/>
 		</div>
 		<div>
@@ -58,14 +58,14 @@
 			<input
 				bind:value={dataFim}
 				type="date"
-				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 			/>
 		</div>
 		<div>
 			<label class="block text-sm font-medium mb-1">Turma</label>
 			<select
 				bind:value={relTurma}
-				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 			>
 				<option value="">Todas</option>
 				<option value="turma-a">Turma A - Manhã</option>

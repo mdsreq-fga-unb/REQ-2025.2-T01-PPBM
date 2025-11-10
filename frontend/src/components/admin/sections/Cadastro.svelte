@@ -63,7 +63,7 @@
 			</button>
 			<button
 				on:click={handleSalvar}
-				class="px-4 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white transition"
+				class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition"
 			>
 				Salvar
 			</button>
@@ -75,14 +75,14 @@
 
 		<!-- Dados Básicos -->
 		<div class="md:col-span-2 border-b pb-4 mb-4">
-			<h3 class="font-semibold mb-3 text-primary">Dados Básicos</h3>
+			<h3 class="font-semibold mb-3 text-[#E11D48]">Dados Básicos</h3>
 			<div class="grid md:grid-cols-3 gap-4">
 				<div>
 					<label class="block text-sm font-medium mb-1">Nome completo *</label>
 					<input
 						bind:value={nome}
 						required
-						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 						placeholder="Ex.: Ana Pereira"
 					/>
 				</div>
@@ -91,7 +91,7 @@
 					<input
 						bind:value={cpf}
 						required
-						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 						placeholder="000.000.000-00"
 						maxlength="14"
 					/>
@@ -103,7 +103,7 @@
 						bind:value={nascimento}
 						type="date"
 						required
-						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 					/>
 					<div class="text-red-500 text-xs mt-1 hidden">Criança deve ter entre 7 e 14 anos</div>
 				</div>
@@ -111,7 +111,7 @@
 					<label class="block text-sm font-medium mb-1">Escola</label>
 					<input
 						bind:value={escola}
-						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 						placeholder="Nome da escola"
 					/>
 				</div>
@@ -120,7 +120,7 @@
 					<select
 						bind:value={turmaSelect}
 						required
-						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 					>
 						<option value="">Selecione uma turma</option>
 						<option value="turma-a">Turma A - Manhã</option>
@@ -142,14 +142,14 @@
 
 		<!-- Responsável Principal -->
 		<div class="md:col-span-2 border-b pb-4 mb-4">
-			<h3 class="font-semibold mb-3 text-primary">Responsável Principal</h3>
+			<h3 class="font-semibold mb-3 text-[#E11D48]">Responsável Principal</h3>
 			<div class="grid md:grid-cols-3 gap-4">
 				<div>
 					<label class="block text-sm font-medium mb-1">Nome completo *</label>
 					<input
 						bind:value={nomeResp}
 						required
-						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 						placeholder="Nome do responsável"
 					/>
 				</div>
@@ -158,7 +158,7 @@
 					<input
 						bind:value={contatoResp}
 						required
-						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 						placeholder="(xx) xxxxx-xxxx"
 					/>
 					<div class="text-red-500 text-xs mt-1 hidden">Formato inválido</div>
@@ -168,7 +168,7 @@
 					<select
 						bind:value={parentesco}
 						required
-						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 					>
 						<option value="">Selecione</option>
 						<option value="Pai">Pai</option>
@@ -185,13 +185,13 @@
 
 		<!-- Informações Médicas -->
 		<div class="md:col-span-2 border-b pb-4 mb-4">
-			<h3 class="font-semibold mb-3 text-primary">Informações Médicas</h3>
+			<h3 class="font-semibold mb-3 text-[#E11D48]">Informações Médicas</h3>
 			<div class="grid md:grid-cols-2 gap-4">
 				<div>
 					<label class="block text-sm font-medium mb-1">Condição médica</label>
 					<select
 						bind:value={condicaoMedica}
-						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 					>
 						<option value="normal">Normal</option>
 						<option value="asma">Asma</option>
@@ -205,7 +205,7 @@
 					<label class="block text-sm font-medium mb-1">Alergias</label>
 					<input
 						bind:value={alergias}
-						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 						placeholder="Ex.: poeira, lactose..."
 					/>
 				</div>
@@ -215,7 +215,7 @@
 				<textarea
 					bind:value={obsMedicas}
 					rows="2"
-					class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+					class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 					placeholder="Informações importantes para emergências"
 				></textarea>
 			</div>
@@ -234,9 +234,9 @@
 					bind:checked={acompanhamento}
 					id="acompanhamento"
 					type="checkbox"
-					class="w-5 h-5 accent-primary"
+					class="w-5 h-5 accent-[#E11D48]"
 				/>
-				<label for="acompanhamento" class="font-semibold text-primary"
+				<label for="acompanhamento" class="font-semibold text-[#E11D48]"
 					>Necessita acompanhamento pedagógico especial</label
 				>
 			</div>
@@ -246,7 +246,7 @@
 						<label class="block text-sm font-medium mb-1">Tipo de necessidade</label>
 						<select
 							bind:value={tipoAcompanhamento}
-							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 						>
 							<option value="">Selecione</option>
 							<option value="autismo">Transtorno do Espectro Autista</option>
@@ -261,7 +261,7 @@
 						<textarea
 							bind:value={obsAcompanhamento}
 							rows="2"
-							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 							placeholder="Estratégias e cuidados especiais"
 						></textarea>
 					</div>

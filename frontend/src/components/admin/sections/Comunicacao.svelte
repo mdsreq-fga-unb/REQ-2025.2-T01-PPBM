@@ -48,7 +48,7 @@
 		<div class="flex gap-2">
 			<button
 				on:click={handleNovaMsg}
-				class="px-4 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white transition"
+				class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition"
 			>
 				Nova Mensagem
 			</button>
@@ -66,7 +66,7 @@
 		<button
 			on:click={() => (activeTab = 'equipe')}
 			class="px-4 py-2 border-b-2 transition {activeTab === 'equipe'
-				? 'border-primary text-primary font-medium'
+				? 'border-[#E11D48] text-[#E11D48] font-medium'
 				: 'border-transparent text-slate-500 hover:text-slate-700'}"
 		>
 			Equipe Interna
@@ -74,7 +74,7 @@
 		<button
 			on:click={() => (activeTab = 'responsaveis')}
 			class="px-4 py-2 border-b-2 transition {activeTab === 'responsaveis'
-				? 'border-primary text-primary font-medium'
+				? 'border-[#E11D48] text-[#E11D48] font-medium'
 				: 'border-transparent text-slate-500 hover:text-slate-700'}"
 		>
 			Responsáveis
@@ -82,7 +82,7 @@
 		<button
 			on:click={() => (activeTab = 'avisos')}
 			class="px-4 py-2 border-b-2 transition {activeTab === 'avisos'
-				? 'border-primary text-primary font-medium'
+				? 'border-[#E11D48] text-[#E11D48] font-medium'
 				: 'border-transparent text-slate-500 hover:text-slate-700'}"
 		>
 			Avisos Gerais
@@ -116,7 +116,7 @@
 			<div class="lg:col-span-2">
 				<div class="border border-slate-200 rounded-xl h-96 flex flex-col">
 					<div class="p-4 border-b border-slate-200 bg-slate-50 rounded-t-xl">
-						<h4 class="font-medium">Selecione uma conversa</h4>
+						<h4 class="font-medium text-lg" >Selecione uma conversa</h4>
 					</div>
 					<div class="flex-1 p-4 overflow-y-auto space-y-3">
 						<div class="text-center text-slate-500 py-8">Selecione uma conversa para começar</div>
@@ -124,12 +124,12 @@
 					<div class="p-4 border-t border-slate-200">
 						<div class="flex gap-2">
 							<input
-								class="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+								class="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 								placeholder="Digite sua mensagem..."
 								disabled
 							/>
 							<button
-								class="px-4 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white transition"
+								class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition"
 								disabled
 							>
 								Enviar
@@ -151,7 +151,7 @@
 						<label class="block text-sm font-medium mb-1">Destinatários</label>
 						<select
 							bind:value={destinatarios}
-							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 						>
 							<option value="todos">Todos os responsáveis</option>
 							<option value="turma-a">Responsáveis - Turma A</option>
@@ -165,7 +165,7 @@
 						<div>
 							<label class="block text-sm font-medium mb-1">Selecionar responsável</label>
 							<select
-								class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+								class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 							>
 								<option value="">Escolha um responsável</option>
 							</select>
@@ -176,7 +176,7 @@
 						<label class="block text-sm font-medium mb-1">Assunto</label>
 						<input
 							bind:value={assuntoMsg}
-							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 							placeholder="Ex: Reunião de pais, Atividade especial..."
 						/>
 					</div>
@@ -186,19 +186,19 @@
 						<textarea
 							bind:value={conteudoMsg}
 							rows="6"
-							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 							placeholder="Digite sua mensagem aqui..."
 						></textarea>
 					</div>
 
 					<div class="flex items-center gap-2">
-						<input bind:checked={urgente} id="urgente" type="checkbox" class="w-4 h-4 accent-primary" />
+						<input bind:checked={urgente} id="urgente" type="checkbox" class="w-4 h-4 accent-[#E11D48]" />
 						<label for="urgente" class="text-sm">Marcar como urgente</label>
 					</div>
 
 					<button
 						type="submit"
-						class="w-full py-3 px-4 rounded-lg bg-primary hover:bg-primary-dark text-white transition"
+						class="w-full py-3 px-4 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition"
 					>
 						Enviar Mensagem
 					</button>
@@ -225,7 +225,7 @@
 						<label class="block text-sm font-medium mb-1">Tipo de aviso</label>
 						<select
 							bind:value={tipoAviso}
-							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 						>
 							<option value="informativo">Informativo</option>
 							<option value="importante">Importante</option>
@@ -238,7 +238,7 @@
 						<label class="block text-sm font-medium mb-1">Título do aviso</label>
 						<input
 							bind:value={tituloAviso}
-							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 							placeholder="Ex: Reunião de pais, Feriado..."
 						/>
 					</div>
@@ -248,7 +248,7 @@
 						<textarea
 							bind:value={conteudoAviso}
 							rows="6"
-							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 							placeholder="Descreva o aviso..."
 						></textarea>
 					</div>
@@ -258,13 +258,13 @@
 						<input
 							bind:value={validadeAviso}
 							type="date"
-							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 						/>
 					</div>
 
 					<button
 						type="submit"
-						class="w-full py-3 px-4 rounded-lg bg-primary hover:bg-primary-dark text-white transition"
+						class="w-full py-3 px-4 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition"
 					>
 						Publicar Aviso
 					</button>

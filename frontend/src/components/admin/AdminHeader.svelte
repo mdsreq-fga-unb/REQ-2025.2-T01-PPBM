@@ -17,7 +17,7 @@
 >
 	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-4">
 		<div
-			class="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary soft-shadow"
+			class="flex items-center justify-center w-12 h-12 rounded-xl bg-[#E11D48]/10 text-[#E11D48] soft-shadow"
 		>
 			<svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="drop-shadow">
 				<path
@@ -48,7 +48,7 @@
 					Sistema Ativo
 				</span>
 				<span
-					class="px-3 py-1 rounded-full bg-primary/10 text-primary-dark text-xs border border-primary/20"
+					class="px-3 py-1 rounded-full bg-[#E11D48]/10 text-[#BE123C] text-xs border border-[#E11D48]/20"
 				>
 					Usuário: {currentUser?.name || 'Admin'}
 				</span>
