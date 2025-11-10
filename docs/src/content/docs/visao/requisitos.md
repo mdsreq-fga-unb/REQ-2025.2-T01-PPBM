@@ -96,8 +96,7 @@ A interface deve ser simples e intuitiva, permitindo realizar ações frequentes
 O sistema deve estar em Português (Brasil) com terminologia adequada ao PBM (brigadinos/brigadinas).
 
 **RNF-003 – Navegabilidade de Conteúdos Institucionais**  
-Os conteúdos institucionais devem estar disponíveis em área dedicada, com navegação intuitiva, filtros por título, categoria ou palavra-chave e acesso restrito por perfil.
-
+Os conteúdos institucionais devem estar disponíveis em área dedicada do sistema, com as seguintes características verificáveis: Filtros funcionais por título, categoria e palavra-chave com retorno de resultados em até 2 segundos; Estrutura de navegação com no máximo 3 níveis de profundidade; Acesso controlado por perfil de usuário conforme matriz de permissões; 90% dos usuários devem conseguir localizar um conteúdo específico em até 3 cliques, medido através de testes de usabilidade com pelo menos 05 usuários.
 
 
 ### Reliability (Confiabilidade)
