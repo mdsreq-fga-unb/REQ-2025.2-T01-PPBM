@@ -93,23 +93,23 @@ A interface deve ser simples e intuitiva, permitindo realizar ações frequentes
 O sistema deve estar em Português (Brasil) com terminologia adequada ao PBM (brigadinos/brigadinas).
 
 **RNF-003 – Navegabilidade de Conteúdos Institucionais**  
-Os conteúdos institucionais devem estar disponíveis em área dedicada do sistema, com as seguintes características verificáveis: Filtros funcionais por título, categoria e palavra-chave com retorno de resultados em até 2 segundos; Estrutura de navegação com no máximo 3 níveis de profundidade; Acesso controlado por perfil de usuário conforme matriz de permissões; 90% dos usuários devem conseguir localizar um conteúdo específico em até 3 cliques, medido através de testes de usabilidade com pelo menos 05 usuários.
+Os conteúdos institucionais devem estar em área dedicada, com filtros por título, categoria e palavra-chave (retorno em até 2 segundos), navegação com até 3 níveis e acesso por perfil. 90% dos usuários devem localizar um conteúdo específico em até 3 cliques em testes de usabilidade.
 
 ### Reliability (Confiabilidade)
 
 **RNF-004 – Disponibilidade**  
-O sistema deve atingir 99,5% de disponibilidade mensal para o MVP, calculado pela fórmula: Disponibilidade (%) = (Tempo Total - Tempo de Inatividade) / Tempo Total × 100. Isso permite até 3,6 horas de downtime por mês. Para garantir este requisito: Implementar monitoramento contínuo com alertas automáticos; Realizar backups diários automatizados; Definir procedimentos de recuperação de desastres com RTO (Recovery Time Objective) de 2 horas; Manter logs de disponibilidade acessíveis para auditoria.
+O sistema deve atingir 99,5% de disponibilidade mensal, o que representa até 3,6 horas de indisponibilidade ao mês. Implementar monitoramento, alertas automáticos e backups diários. Logs de disponibilidade acessíveis para auditoria.
 
 ### Performance (Desempenho & Escalabilidade)
 
 **RNF-005 – Tempo de resposta consultas críticas**  
-As seguintes operações críticas devem responder em até 5 segundos sob condições normais: Busca de conteúdos institucionais; Login e autenticação de usuário; Carregamento da página inicial; Geração de relatórios simples. Condições normais são definidas como: até 100 usuários simultâneos, conexão de internet mínima de 5 Mbps, servidor com uso de CPU abaixo de 70%. O tempo de resposta será medido do momento da requisição até a renderização completa dos dados na interface, monitorado através de ferramentas de APM (Application Performance Monitoring).
+Consultas críticas (busca de conteúdos, login, página inicial e relatórios simples) devem responder em até 5 segundos, para até 100 usuários simultâneos e conexão mínima de 5 Mbps, com uso de CPU <70%
 
 **RNF-006 – Tempo de resposta páginas e exportações**  
 95% das páginas devem carregar em menos de 2 segundos; exportações de até 5k registros devem completar em até 10 segundos.
 
 **RNF-007 – Carga**  
-Suportar uso concorrente das 12 unidades, com pelo menos 150 usuários simultâneos no pico do registro de pres
+Suportar uso concorrente das 12 unidades, com pelo menos 150 usuários simultâneos no pico do registro de presença.
 
 ### Portability (Portabilidade & Tecnologia)
 
@@ -145,7 +145,7 @@ Seguir padrões de código (TypeScript, lint/prettier, TDD) com cobertura mínim
 Pipeline automatizado para build, testes, análise estática e deploy.
 
 **RNF-017 – Observabilidade**  
-O sistema deve implementar observabilidade completa com: Métricas: tempo de resposta por endpoint, taxa de erro, uso de CPU e memória, número de requisições por minuto, disponibilidade do sistema; Logs estruturados: formato JSON contendo timestamp, nível de severidade (INFO, WARNING, ERROR, CRITICAL), ID da requisição, usuário, ação realizada e mensagem descritiva, armazenados por no mínimo 90 dias; Alertas configuráveis: notificações automáticas via email/SMS quando disponibilidade cair abaixo de 99%, tempo de resposta exceder 8 segundos, taxa de erro ultrapassar 5%, ou uso de recursos exceder 85%.
+Implementar métricas de tempo de resposta, erro, uso de CPU/memória, requisições por minuto e disponibilidade; logs estruturados em JSON com dados essenciais; alertas automáticos para disponibilidade <99%, tempo >8s, erro >5% ou uso >85%.
 
 ## Histórico de Versão
 
@@ -153,3 +153,5 @@ O sistema deve implementar observabilidade completa com: Métricas: tempo de res
 |------|--------|-----------|-----------|-------------|
 | 15/09/2025 | 1.0 | Criação inicial do documento de requisito. | Philipe Morais | Todos |
 | 06/10/2025 | 1.1 | Update do documento de requisito. | Lucas Branco e Vitor Marconi | Todos |
+| 10/11/2025 | 1.2 | Update do documento de requisito. | Philipe Morais | Willian Silva (Monitor) |
+| 14/11/2025 | 1.3 | Update do documento de requisito. | Philipe Morais | Willian Silva (Monitor) |
