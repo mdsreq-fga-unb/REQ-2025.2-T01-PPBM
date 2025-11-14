@@ -33,25 +33,22 @@ Gerar relatório por aluno (período selecionável) com taxas de presença, falt
 **RF-007 – Exportar relatórios internos**  
 Permitir exportação de relatórios gerados pela plataforma para uso interno da equipe em formatos PDF e Excel (CSV/XLSX).
 
-**RF-008 – Exibir dashboards de frequência**  
-Exibir indicadores e gráficos (taxa média de presença, alertas de recorrência).
+RF-008 – Exibir dashboards de frequência
+O sistema deve exibir indicadores visuais e gráficos que mostrem a taxa média de presença e alertas de recorrência, permitindo ao usuário filtrar esses dados por unidade, posto, turma ou período.​
 
-**RF-008.1 – Exibir taxa média de presença**
-Calcular e exibir a taxa média de presença por período selecionável (dia, semana, mês, ano).​
+RF-009 – Exibir taxa média de presença
+O sistema deve calcular e apresentar a taxa média de presença dos colaboradores em determinado período, com opção de filtros contextuais (unidade, posto, turma, data).​
 
-**RF-008.2 – Exibir gráficos de frequência**
-Gerar gráficos visuais de frequência permitindo análise temporal e comparativa.​
+RF-010 – Exibir alertas de recorrência
+O sistema deve gerar alertas automáticos de recorrência quando os padrões de ausência ou baixa frequência forem detectados, com possibilidade de visualizar por filtros aplicáveis.​
 
-**RF-008.3 – Exibir alertas de recorrência**
-Mostrar indicadores automáticos de padrões de ausência recorrente ou baixa frequência.​
+RF-011 – Exportar relatórios oficiais padronizados administrativos
+O sistema deve permitir exportação de relatórios oficiais em modelos definidos pelo CBMDF, conforme detalhamento e padrões administrativos vigentes.
 
-**RF-008.4 – Filtrar dashboards por unidade/período**
-Permitir filtros personalizados nos dashboards (por unidade, posto, turma, data).
-
-**RF-009 – Exibir histórico do aluno**  
+**RF-012 – Exibir histórico do aluno**  
 Exibir linha do tempo com presenças, faltas, justificativas, atendimentos, advertências e comunicações relacionadas.
 
-**RF-010 – Exportar relatórios administrativos padronizados do CBMDF**
+**RF-013 – Exportar relatórios administrativos padronizados do CBMDF**
 O sistema deve permitir a exportação dos seguintes relatórios em formato PDF/Excel, conforme padrões do CBMDF:​
 
 ● Relatório Mensal de Frequência por Unidade - Consolidação mensal de todas as marcações de ponto
@@ -64,44 +61,41 @@ O sistema deve permitir a exportação dos seguintes relatórios em formato PDF/
 
 ### Objetivo Específico 2 – Monitoramento de Comportamento e Alertas
 
-**RF-011 – Registrar advertência para os alunos**  
+**RF-014 – Registrar advertência para os alunos**  
 Campo para anotações de comportamentos negativos de alunos.
 
-**RF-012 – Enviar notificações para os responsáveis**  
+**RF-015 – Enviar notificações para os responsáveis**  
 Bot de notificações de comunicados de faltas e advertências ou botão de redirecionamento de notificações (WhatsApp, e-mail, plataforma própria).
 
 ### Objetivo Específico 3 – Gestão de Usuários, Docentes e Turmas
 
-**RF-013 – Autenticar usuários e perfis**  
+**RF-016 – Autenticar usuários e perfis**  
 Acesso com autenticação e papéis: Administrador, Gestor de Unidade, Docente, Responsável.
 
-**RF-014 – Cadastrar os docentes**  
+**RF-017 – Cadastrar os docentes**  
 Permitir cadastro com: nome, data de nascimento, CPF, escola/unidade, cidade.
 
-**RF-015 – Cadastrar turmas e sessões**  
+**RF-018 – Cadastrar turmas e sessões**  
 Cadastrar turmas, dias/horários e lotação.
 
-**RF-016 – Consultar turma**  
+**RF-019 – Consultar turma**  
 Busca dentro da turma por nome de alunos, CPF, unidade, status de justificativa, taxa de presença e período.
 
 ### Objetivo Específico 4 – Acompanhamento Individualizado do Aluno
 
-**RF-017 – Registrar acompanhamento neurodivergente**  
+**RF-020 – Registrar acompanhamento neurodivergente**  
 Permitir o registro do acompanhamento pedagógico e o acompanhamento periódico com responsáveis.
 
-**RF-018 – Registrar relatórios gerados na sessão de acompanhamento com os responsáveis**  
+**RF-021 – Registrar relatórios gerados na sessão de acompanhamento com os responsáveis**  
 Permitir registro e importação de relatórios gerados na sessão de acompanhamento.
 
-**RF-019 – Gerar histórico de acompanhamento acessível a docentes e gestores**  
+**RF-022 – Gerar histórico de acompanhamento acessível a docentes e gestores**  
 Geração de histórico de relatórios de acompanhamento acessível a docentes e gestores e exportação de relatórios.
 
 ### Objetivo Específico 5 – Gestão de Conteúdos Institucionais
 
-**RF-020 – Cadastrar conteúdos institucionais**  
+**RF-023 – Cadastrar conteúdos institucionais**  
 Permitir o cadastro de conteúdos textuais e documentais, como regras de vestimenta, normas disciplinares, legislação aplicável e comunicados oficiais.
-
-
-
 
 ---
 
@@ -117,8 +111,6 @@ O sistema deve estar em Português (Brasil) com terminologia adequada ao PBM (br
 
 **RNF-003 – Navegabilidade de Conteúdos Institucionais**  
 Os conteúdos institucionais devem estar disponíveis em área dedicada, com navegação intuitiva, filtros por título, categoria ou palavra-chave e acesso restrito por perfil.
-
-
 
 ### Reliability (Confiabilidade)
 
@@ -136,8 +128,6 @@ Consultas e operações críticas devem responder em até 5 segundos em condiç�
 **RNF-007 – Carga**  
 Suportar uso concorrente das 12 unidades, com pelo menos 150 usuários simultâneos no pico do registro de presença.
 
-
-
 ### Portability (Portabilidade & Tecnologia)
 
 **RNF-008 – Contêineres**  
@@ -149,8 +139,6 @@ Back-end TypeScript + Express; Front-end Astro; Banco Supabase/PostgreSQL.
 **RNF-010 – Compatibilidade de navegação**  
 Suporte a Chrome/Edge/Firefox atuais e Safari atual -1 versão.
 
-
-
 ### Security (Segurança & Privacidade)
 
 **RNF-011 – Proteção de dados pessoais**  
@@ -161,8 +149,6 @@ Todos os dados transmitidos e armazenados devem utilizar criptografia (HTTPS/TLS
 
 **RNF-013 – Armazenamento de dados**  
 O sistema deve ser capaz de armazenar informações de usuários, registros de ponto e outros dados relacionados por pelo menos 2 anos.
-
-
 
 ### Maintainability (Manutenibilidade & Evolutividade)
 
