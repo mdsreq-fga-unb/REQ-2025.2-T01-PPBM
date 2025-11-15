@@ -15,16 +15,11 @@
 			"!**/dev-dist",
 			"!**/.zed",
 			"!**/.vscode",
-			"!**/routeTree.gen.ts",
-			"!**/src-tauri",
-			"!**/.nuxt",
-			"!bts.jsonc",
-			"!**/.expo",
-			"!**/.wrangler",
-			"!**/.alchemy",
 			"!**/.svelte-kit",
-			"!**/wrangler.jsonc",
-			"!**/.source"
+			"!**/.source",
+			"**/*.svelte",
+			"**/*.astro",
+			"**/*.vue"
 		]
 	},
 	"formatter": {
@@ -37,7 +32,9 @@
 		"rules": {
 			"recommended": true,
 			"correctness": {
-				"useExhaustiveDependencies": "info"
+				"useExhaustiveDependencies": "info",
+				"noUnusedVariables": "off",
+				"noUnusedImports": "off"
 			},
 			"nursery": {
 				"useSortedClasses": {
@@ -58,7 +55,9 @@
 				"noUnusedTemplateLiteral": "error",
 				"useNumberNamespace": "error",
 				"noInferrableTypes": "error",
-				"noUselessElse": "error"
+				"noUselessElse": "error",
+				"useConst": "off",
+				"useImportType": "off"
 			}
 		}
 	},
