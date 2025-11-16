@@ -145,7 +145,7 @@ Seguir padrões de código (TypeScript, lint/prettier, TDD) com cobertura mínim
 Pipeline automatizado para build, testes, análise estática e deploy.
 
 **RNF-017 – Observabilidade**  
-Implementar métricas de tempo de resposta, erro, uso de CPU/memória, requisições por minuto e disponibilidade; logs estruturados em JSON com dados essenciais; alertas automáticos para disponibilidade <99%, tempo >8s, erro >5% ou uso >85%.
+Implementar métricas de tempo de resposta, taxa de erro, uso de CPU e memória, requisições por minuto e disponibilidade; logs estruturados em JSON contendo os dados essenciais para o rastreamento do evento; alertas automáticos configurados para disponibilidade abaixo de 99%, tempo de resposta acima de 8 segundos, taxa de erro maior que 5% e uso de recursos acima de 85%.
 
 ## Histórico de Versão
 
