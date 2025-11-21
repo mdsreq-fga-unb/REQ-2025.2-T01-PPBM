@@ -58,6 +58,10 @@ export default defineConfig({
                         slug: "visao/estrategias",
                     },
                     {
+                        label: "Engenharia de Requisitos",
+                        slug: "visao/engrequisitos",
+                    },
+                    {
                         label: "Cronograma e Entregas",
                         slug: "visao/cronograma",
                     },
