@@ -14,6 +14,10 @@ import logger from './logger';
 import { environment, SUPABASE_URL } from './environment';
 import { EndpointController, RequestType, WebSocketEndpointController } from './interfaces/index';
 import { usuarioController } from './controllers/usuarios';
+import { alunoController } from './controllers/alunos';
+import { docenteController } from './controllers/docentes';
+import { turmaController } from './controllers/turmas';
+import { presencaController } from './controllers/presencas';
 
 
 dotenv.config();
@@ -23,7 +27,11 @@ SupabaseWrapper.init();
 const router = express.Router();
 
 const controllers: EndpointController[] = [
-    usuarioController
+    usuarioController,
+    alunoController,
+    docenteController,
+    turmaController,
+    presencaController
 ];
 
 const wsControllers: WebSocketEndpointController[] = [

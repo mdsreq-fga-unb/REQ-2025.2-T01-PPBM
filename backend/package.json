@@ -12,6 +12,7 @@
     "type-check": "tsc --noEmit",
     "lint": "echo 'Linting not configured yet'",
     "test": "jest",
+    "test:watch": "jest --watch",
     "start-release": "npm run build && npm run start",
     "build-and-start": "npm run build && npm run start"
   },
@@ -51,9 +52,11 @@
     "@types/express-ws": "^3.0.5",
     "@types/form-data": "^2.2.1",
     "@types/jest": "^30.0.0",
+    "@types/supertest": "^2.0.16",
     "@types/node": "^20.19.18",
     "jest": "^30.0.4",
     "nodemon": "^3.1.4",
+    "supertest": "^7.1.1",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"

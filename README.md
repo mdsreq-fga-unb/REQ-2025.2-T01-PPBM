@@ -153,6 +153,14 @@ cd ../backend
 npm run dev
 ```
 
+### 6. Testes automatizados do Backend
+```bash
+cd backend
+npm install          # necessário apenas na primeira vez
+npm run test         # executa todos os testes
+npm run test:watch   # reexecuta os testes ao salvar os arquivos
+```
+
 ## 📚 Documentação
 
 A documentação completa do projeto está disponível em:
