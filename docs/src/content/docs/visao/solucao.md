@@ -7,16 +7,27 @@ description: Descrição detalhada da solução proposta para o projeto PPBM.
 
 O sistema tem como objetivo *centralizar e simplificar a gestão das crianças atendidas*, garantindo eficiência administrativa, segurança e qualidade no acompanhamento pedagógico e social.
 
+## Objetivos Específicos e seus indicadores
+
+| Código | Objetivo Específico | Descrição |
+|--------|---------------------|-----------|
+| **OE01** | Gestão e Controle da Frequência | Através dessa funcionalidade, será possível gerenciar alunos, responsáveis, registros de presença e dados de frequência, garantindo integridade, rastreabilidade e confiabilidade das informações. |
+| **OE02** | Monitoramento de Comportamento e Alertas | Através dessa funcionalidade, será possível registrar advertências, enviar notificações e monitorar padrões de comportamento e assiduidade dos alunos, apoiando a tomada de decisão. |
+| **OE03** | Gestão de Usuários, Docentes e Turmas | Através dessa funcionalidade, será possível gerenciar usuários, docentes, turmas e sessões, garantindo autenticação segura, organização de turmas e controle de acesso. |
+| **OE04** | Acompanhamento Individualizado do Aluno | Através dessa funcionalidade, será possível registrar planos pedagógicos, relatórios de responsáveis e gerar históricos individuais acessíveis a docentes e gestores, apoiando o acompanhamento personalizado do aluno. |
+| **OE05** | Gestão de Conteúdos Institucionais | Através dessa funcionalidade, será possível cadastrar, organizar e disponibilizar conteúdos institucionais (regras, normas e comunicados), garantindo padronização e fácil acesso para toda a instituição. |
+
+
 ## Características da Solução
 
-•⁠  ⁠Cadastro completo da criança (nome, data de nascimento, CPF, responsável, contato, escola).  
-•⁠  ⁠Registro de presença com destaque para faltas justificadas.  
-•⁠  ⁠Consulta rápida de histórico de faltas por aluno.  
-•⁠  ⁠Emissão de relatórios e exportação em Excel/PDF.  
-•⁠  ⁠Ficha médica com observações (asma, alergias, etc.).  
-•⁠  ⁠Cadastro diferenciado para crianças neurodivergentes, com acompanhamento de desenvolvimento.  
-•⁠  ⁠Área de comunicação entre equipe e responsáveis.  
-•⁠  ⁠Ferramenta de análise gráfica de frequência e faltas.  
+•⁠  ⁠Cadastro completo da criança (nome, data de nascimento, CPF, responsável, contato, escola). Tem relação com o Objetivo Específico OE03.
+•⁠  ⁠Registro de presença com destaque para faltas justificadas. Tem relação com o Objetivo Específico OE01.
+•⁠  ⁠Consulta rápida de histórico de faltas por aluno. Tem relação com o Objetivo Específico OE01.
+•⁠  ⁠Emissão de relatórios e exportação em Excel/PDF. Tem relação com o Objetivo Específico OE05.
+•⁠  ⁠Ficha médica com observações (asma, alergias, etc.). Tem relação com o Objetivo Específico OE02 e OE02.
+•⁠  ⁠Cadastro diferenciado para crianças neurodivergentes, com acompanhamento de desenvolvimento. Tem relação com o Objetivo Específico OE02 e 04.
+•⁠  ⁠Área de comunicação entre equipe e responsáveis. Tem relação com o Objetivo Específico OE05.
+•⁠  ⁠Ferramenta de análise gráfica de frequência e faltas. Tem relação com o Objetivo Específico OE01.
 
 ## Tecnologias a serem utilizadas
 
@@ -69,3 +80,4 @@ Também melhora a *experiência de usuários*:
 | Data | Versão | Descrição | Autor(es) | Revisor(es) |
 |------|--------|-----------|-----------|-------------|
 | 15/09/2025 | 1.0 | Criação inicial do documento de solução. | Lucas Oliveira | Philipe Morais |
+| 21/11/2025 | 2.0 | Update do documento de solução, adicionado objetivos específicos. | Lucas Branco | Vitor Marconi |
