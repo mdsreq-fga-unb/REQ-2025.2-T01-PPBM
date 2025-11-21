@@ -11,11 +11,11 @@ O sistema tem como objetivo *centralizar e simplificar a gestão das crianças a
 
 | Código | Objetivo Específico | Descrição |
 |--------|---------------------|-----------|
-| **OE01** | Gestão e Controle da Frequência | Através dessa funcionalidade, será possível gerenciar alunos, responsáveis, registros de presença e dados de frequência, garantindo integridade, rastreabilidade e confiabilidade das informações. |
-| **OE02** | Monitoramento de Comportamento e Alertas | Através dessa funcionalidade, será possível registrar advertências, enviar notificações e monitorar padrões de comportamento e assiduidade dos alunos, apoiando a tomada de decisão. |
-| **OE03** | Gestão de Usuários, Docentes e Turmas | Através dessa funcionalidade, será possível gerenciar usuários, docentes, turmas e sessões, garantindo autenticação segura, organização de turmas e controle de acesso. |
-| **OE04** | Acompanhamento Individualizado do Aluno | Através dessa funcionalidade, será possível registrar planos pedagógicos, relatórios de responsáveis e gerar históricos individuais acessíveis a docentes e gestores, apoiando o acompanhamento personalizado do aluno. |
-| **OE05** | Gestão de Conteúdos Institucionais | Através dessa funcionalidade, será possível cadastrar, organizar e disponibilizar conteúdos institucionais (regras, normas e comunicados), garantindo padronização e fácil acesso para toda a instituição. |
+| **OE01** | Melhorar a eficiência e confiabilidade no controle de frequência | Reduzir o retrabalho e a dependência de registros manuais, garantindo precisão das informações de presença e maior agilidade no acompanhamento dos alunos. |
+| **OE02** | Apoiar intervenções pedagógicas por meio do monitoramento comportamental | Disponibilizar dados consolidados de comportamento e assiduidade para auxiliar a equipe escolar na identificação antecipada de riscos e na tomada de decisões preventivas. |
+| **OE03** | Fortalecer a segurança e organização da gestão acadêmica | Centralizar o controle de acesso e o cadastro de usuários, docentes e turmas para minimizar falhas operacionais e assegurar que cada perfil tenha permissões adequadas. |
+| **OE04** | Ampliar a personalização do acompanhamento estudantil | Fornecer informações pedagógicas estruturadas e histórico individual para que docentes e responsáveis possam acompanhar o progresso e realizar intervenções mais assertivas. |
+| **OE05** | Melhorar a comunicação institucional e o acesso a informações oficiais | Garantir que normas, comunicados e documentos da escola sejam disponibilizados de forma padronizada e acessível, reduzindo ruídos e falhas de comunicação com a comunidade escolar. |
 
 
 ## Características da Solução
