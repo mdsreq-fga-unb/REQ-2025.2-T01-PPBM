@@ -167,3 +167,13 @@ playwright-report/
 dist/
 build/
 out/
+
+# SSL Certificates (security - never commit private keys!)
+ssl/*.pem
+ssl/*.key
+ssl/*.crt
+ssl/*.cer
+ssl/*.p12
+ssl/*.pfx
+# Keep the README
+!ssl/README.md

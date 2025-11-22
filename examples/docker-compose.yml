@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: site-agro-backend
+    # No ports exposed - nginx handles external traffic
+    environment:
+      - NODE_ENV=production
+      - PORT=6948
+      - PYTHONUNBUFFERED=1  # Ensure Python output is not buffered
+      - PYTHONIOENCODING=utf-8  # Set proper encoding for Python output
+      - GIT_DISCOVERY_ACROSS_FILESYSTEM=1  # Allow git to work across filesystem boundaries
+    env_file:
+      - backend/.env
+    volumes:
+      # Mount the entire repository for git operations (includes .git automatically)
+      - .:/app:rw  # Make the mount read-write
+      # Override dist with Docker volume to maintain permissions
+      - dist_data:/app/backend/dist
+      # Use Docker volume for logs to maintain proper permissions
+      - logs_data:/app/backend/logs
+      # Python local packages directory
+      - python_local:/app/.local
+          # Temporarily disable node_modules volume to force fresh installation
+    # - node_modules_data:/app/backend/servidor/node_modules
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6948/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - site-agro-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: site-agro-nginx
+    ports:
+      - "6948:6948"   # Backend HTTPS (main port)
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./ssl:/etc/ssl/site-agro:ro  # Mount local SSL directory
+    depends_on:
+      - backend
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
+    networks:
+      - site-agro-network
+
+networks:
+  site-agro-network:
+    driver: bridge
+
+volumes:
+  logs_data:
+    driver: local
+  dist_data:
+    driver: local
+  python_local:
+    driver: local
+  # Temporarily disabled to force fresh node_modules installation
+  # node_modules_data:
+  #   driver: local 

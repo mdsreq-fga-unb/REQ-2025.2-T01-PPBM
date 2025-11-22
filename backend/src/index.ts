@@ -158,7 +158,7 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
     });
 });
 
-const PORT = process.env.PORT ?? 5423;
+const PORT = process.env.PORT ?? 6140;
 
 // Start server
 const server = app.listen(PORT, () => {

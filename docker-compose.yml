@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ppbm-backend
+    environment:
+      - NODE_ENV=production
+      - PORT=6140
+    env_file:
+      - backend/.env
+    volumes:
+      # Mount backend source for development
+      - ./backend:/app/backend:rw
+      # Use Docker volume for node_modules to avoid permission issues
+      - node_modules_data:/app/backend/node_modules
+      # Use Docker volume for logs
+      - logs_data:/app/backend/logs
+      # Use Docker volume for dist
+      - dist_data:/app/backend/dist
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+        mode: "non-blocking"
+        max-buffer-size: "8m"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6140/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - ppbm-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: ppbm-nginx
+    ports:
+      - "6140:6140"   # Backend HTTPS (main port)
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/ssl/ppbm:ro  # Mount local SSL directory
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+        mode: "non-blocking"
+        max-buffer-size: "8m"
+    networks:
+      - ppbm-network
+    command: ["nginx", "-g", "daemon off;"]
+
+  # Test service for running tests in container
+  backend-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ppbm-backend-test
+    environment:
+      - NODE_ENV=test
+      - PORT=6140
+    env_file:
+      - backend/.env
+    volumes:
+      - ./backend:/app/backend:rw
+      - node_modules_data:/app/backend/node_modules
+    command: ["npm", "test"]
+    networks:
+      - ppbm-network
+    profiles:
+      - test
+
+networks:
+  ppbm-network:
+    driver: bridge
+
+volumes:
+  logs_data:
+    driver: local
+  dist_data:
+    driver: local
+  node_modules_data:
+    driver: local
