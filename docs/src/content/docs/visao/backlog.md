@@ -23,17 +23,21 @@ Cada user story foi elaborada para representar uma necessidade real dos usuário
 
 ---
 
-## Histórias de Usuário
+## Priorização do Backlog
 
-Para visualizar as User Stories completas com descrições detalhadas e critérios de aceite, consulte o documento [Histórias de Usuário](./userstories.md).
+A priorização das histórias de usuário foi realizada combinando o método ICE e a técnica MoSCoW, permitindo uma visão equilibrada entre valor, esforço, risco e essencialidade.
 
-A priorização das histórias foi realizada utilizando a técnica **ICE** (Impact, Confidence, Ease), onde:
+No ICE, utilizamos os critérios de Impacto, Confiança e Facilidade, aplicando uma escala ampliada (equivalente ao modelo tradicional 1–10, porém ajustada aos pesos do projeto). O ICE Score resultante (Impacto × Confiança × Facilidade) serviu para comparar as histórias proporcionalmente e identificar aquelas que entregam maior valor com menor esforço.
 
-- **Impact (Impacto)**: Potencial do requisito em gerar valor para o negócio (1-10)
-- **Confidence (Confiança)**: Grau de certeza da equipe sobre o impacto estimado (1-10)
-- **Ease (Facilidade)**: Nível de simplicidade e velocidade de implementação (1-10)
+Já a técnica MoSCoW complementou essa análise classificando cada requisito em:
 
-**Fórmula**: ICE Score = Impacto × Confiança × Facilidade
+Must Have: indispensáveis para o funcionamento mínimo do sistema.
+
+Should Have: importantes, mas não críticas para a primeira entrega.
+
+Could Have: desejáveis, podendo ser adiados sem impacto relevante.
+
+A combinação desses dois métodos permitiu estruturar um backlog claro, consistente e orientado ao valor, garantindo que o projeto avance priorizando o que realmente importa.
 
 | ID | Descrição | Objetivo Específico | Requisito | Score ICE | MoSCoW |
 |----|-----------|---------------------|-----------|-----------|--------|
