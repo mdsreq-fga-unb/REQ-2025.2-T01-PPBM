@@ -9,7 +9,7 @@ Para uma visão consolidada e priorizada das histórias, consulte o [Backlog de 
 
 ---
 
-## 📌 Objetivo Específico 1 – Gestão e Controle da Frequência
+## 📌 Objetivo Específico 1 – Melhorar a eficiência e confiabilidade no controle de frequência
 
 ### **US-001 – Gerenciar Aluno**
 
@@ -188,7 +188,7 @@ Como gestor, quero exportar relatórios oficiais padronizados pelo CBMDF, garant
 
 ---
 
-## 📌 Objetivo Específico 2 – Monitoramento de Comportamento e Alertas
+## 📌 Objetivo Específico 2 – Apoiar intervenções pedagógicas por meio do monitoramento comportamental
 
 ### **US-011 – Registrar Advertência**
 
@@ -217,14 +217,14 @@ Como docente, quero enviar notificações sobre faltas, justificativas ou advert
 
 - Deve permitir enviar notificações sobre faltas, justificativas e advertências.
 - Deve permitir configurar o canal (WhatsApp/e-mail/sistema).
-- Deve registrar envio, status e leitura (quando possível).
+- Deve registrar envio, status e leitura (quando possível).**
 - Deve oferecer templates configuráveis.
 
 **Requisito:** RF-012 | **Score ICE:** 288 | **MoSCoW:** Should Have
 
 ---
 
-## 📌 Objetivo Específico 3 – Gestão de Usuários, Docentes e Turmas
+## 📌 Objetivo Específico 3 – Fortalecer a segurança e organização da gestão acadêmica
 
 ### **US-013 – Autenticar Usuários e Perfis**
 
@@ -294,7 +294,7 @@ Como gestor ou docente, quero consultar turmas com busca por nome de alunos, CPF
 
 ---
 
-## 📌 Objetivo Específico 4 – Acompanhamento Individualizado do Aluno
+## 📌 Objetivo Específico 4 – Ampliar a personalização do acompanhamento estudantil
 
 ### **US-017 – Registrar Acompanhamento Neurodivergente**
 
@@ -347,7 +347,7 @@ Como gestor ou docente, quero gerar histórico consolidado de relatórios de aco
 
 ---
 
-## 📌 Objetivo Específico 5 – Gestão de Conteúdos Institucionais
+## 📌 Objetivo Específico 5 – Melhorar a comunicação institucional e o acesso a informações oficiais
 
 ### **US-020 – Cadastrar Conteúdos Institucionais**
 
@@ -371,4 +371,5 @@ Como administrador, quero cadastrar regras, normas e comunicados oficiais para d
 | Data | Versão | Descrição | Autor(es) | Revisor(es) |
 |------|--------|-----------|-----------|-------------|
 | 21/10/2025 | 1.0 | Criação inicial do documento de User Stories | Equipe FireForce | Vitor Marconi |
+
 
