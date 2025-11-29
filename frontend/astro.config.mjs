@@ -1,10 +1,14 @@
 // @ts-check
 
 import { defineConfig } from 'astro/config';
+import svelte from '@astrojs/svelte';
+import tailwind from '@astrojs/tailwind';
+import mdx from '@astrojs/mdx';
 
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
+  integrations: [svelte(), tailwind(), mdx()],
   server: {
     port: 4321,
     host: true
