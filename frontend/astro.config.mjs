@@ -15,6 +15,9 @@ export default defineConfig({
     host: true
   },
   vite: {
+    preview: {
+      allowedHosts: ['ppbm.no-fluxo.com', 'localhost']
+    },
     server: {
       proxy: {
         '/api': {
