@@ -21,7 +21,7 @@ export class AlunosController implements EndpointController {
     name = 'alunos';
     
     routes = {
-        '': new Pair(RequestType.POST, this.cadastrarAluno.bind(this))
+        '': [new Pair(RequestType.POST, this.cadastrarAluno.bind(this))]
     };
 
     /**
