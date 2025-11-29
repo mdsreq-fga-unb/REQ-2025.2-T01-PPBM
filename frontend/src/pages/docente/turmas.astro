@@ -1,0 +1,449 @@
+---
+import Header from '../../components/Headerdocente.astro';
+import Sidebar from '../../components/Sidebardocente.astro';
+---
+
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turmas e Sessões - Programa Bombeiro Mirim</title>
+    <style>
+        :root {
+            --primary-color: #4A5568;
+            --secondary-color: #E2E8F0;
+            --accent-color: #3182CE;
+            --danger-color: #E53E3E;
+            --bg-color: #F7FAFC;
+            --text-color: #2D3748;
+            --label-color: #718096;
+            --border-color: #CBD5E0;
+            --white: #FFFFFF;
+            --success-color: #48BB78;
+            --warning-color: #ED8936;
+            --info-color: #4299E1;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+        .main-content {
+            padding: 120px 1.5rem 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+        .content-wrapper {
+            width: 100%;
+            max-width: 1280px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .container {
+            flex: 1;
+            max-width: 100%;
+            background-color: var(--white);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        .page-header .title h1 {
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--text-color);
+        }
+        .page-header .title p {
+            font-size: 1rem;
+            margin: 0;
+            color: var(--label-color);
+        }
+        .btn-new-class {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background-color: var(--danger-color);
+            color: var(--white);
+            white-space: nowrap;
+        }
+        .btn-new-class:hover {
+            background-color: #C53030;
+        }
+        .tabs {
+            display: flex;
+            gap: 24px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+        .tab {
+            padding: 12px 0;
+            font-weight: 600;
+            color: var(--label-color);
+            position: relative;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+        .tab:hover {
+            color: var(--text-color);
+        }
+        .tab.active {
+            color: var(--danger-color);
+        }
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--danger-color);
+            border-radius: 999px;
+        }
+        .tab-content {
+            min-height: 300px;
+        }
+        .empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            color: var(--label-color);
+            font-size: 1rem;
+            text-align: center;
+        }
+        .class-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .class-card {
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 20px;
+            background: var(--white);
+            position: relative;
+        }
+        .class-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .class-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+            color: var(--text-color);
+        }
+        .class-description {
+            font-size: 0.95rem;
+            color: var(--label-color);
+            margin: 0;
+        }
+        .status-tag {
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            background: rgba(72, 187, 120, 0.12);
+            color: var(--success-color);
+        }
+        .class-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--secondary-color);
+        }
+        .detail-item {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+        .detail-item strong {
+            color: var(--label-color);
+            font-weight: 500;
+        }
+        .class-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            justify-content: flex-end;
+        }
+        .btn-action {
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .btn-edit {
+            background-color: var(--accent-color);
+            color: var(--white);
+        }
+        .btn-edit:hover {
+            background-color: #2C5282;
+        }
+        .btn-delete {
+            background-color: var(--danger-color);
+            color: var(--white);
+        }
+        .btn-delete:hover {
+            background-color: #C53030;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 100px 1rem 20px;
+            }
+
+            .content-wrapper {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .container {
+                padding: 1.5rem;
+                border-radius: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .page-header .title h1 {
+                font-size: 1.5rem;
+            }
+
+            .btn-new-class {
+                width: 100%;
+            }
+
+            .tabs {
+                gap: 16px;
+            }
+
+            .class-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .class-actions {
+                width: 100%;
+                justify-content: stretch;
+            }
+
+            .btn-action {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 80px 0.5rem 20px;
+            }
+
+            .container {
+                padding: 1rem;
+                border-radius: 0.75rem;
+            }
+
+            .page-header .title h1 {
+                font-size: 1.25rem;
+            }
+
+            .class-details {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <Header />
+    
+    <main class="main-content">
+        <div class="content-wrapper">
+            <Sidebar />
+            <div class="container">
+                <div class="page-header">
+                    <div class="title">
+                        <h1>Turmas e Sessões</h1>
+                        <p>Gerencie turmas, horários e lotação</p>
+                    </div>
+                    <button type="button" class="btn-new-class" id="btn-new-class">Nova Turma</button>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" data-tab="turmas">Turmas</div>
+                    <div class="tab" data-tab="sessoes">Sessões</div>
+                </div>
+
+                <div class="tab-content">
+                    <div id="turmas-content" class="tab-panel">
+                        <div id="empty-state" class="empty-state">
+                            Nenhuma turma cadastrada
+                        </div>
+                        <div id="class-list" class="class-list" style="display: none;">
+                            <!-- Turmas serão renderizadas aqui via JavaScript -->
+                        </div>
+                    </div>
+                    <div id="sessoes-content" class="tab-panel" style="display: none;">
+                        <div class="empty-state">
+                            Nenhuma sessão cadastrada
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Dados de exemplo (será substituído por chamada à API)
+        let turmas = [];
+
+        // Função para renderizar turmas
+        function renderizarTurmas() {
+            const emptyState = document.getElementById('empty-state');
+            const classList = document.getElementById('class-list');
+
+            if (turmas.length === 0) {
+                emptyState.style.display = 'flex';
+                classList.style.display = 'none';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            classList.style.display = 'flex';
+            classList.innerHTML = '';
+
+            turmas.forEach(turma => {
+                const card = document.createElement('div');
+                card.className = 'class-card';
+                
+                card.innerHTML = `
+                    <div class="class-header">
+                        <div>
+                            <h3 class="class-title">${turma.nome}</h3>
+                            <p class="class-description">${turma.descricao}</p>
+                        </div>
+                        <span class="status-tag">${turma.status}</span>
+                    </div>
+                    <div class="class-details">
+                        <div class="detail-item">
+                            <strong>Horário:</strong> ${turma.horario}
+                        </div>
+                        <div class="detail-item">
+                            <strong>Dias:</strong> ${turma.dias}
+                        </div>
+                        <div class="detail-item">
+                            <strong>Capacidade:</strong> ${turma.capacidade}
+                        </div>
+                        <div class="detail-item">
+                            <strong>Ocupação:</strong> ${turma.ocupacao}
+                        </div>
+                    </div>
+                    <div class="class-actions">
+                        <button class="btn-action btn-edit" onclick="editarTurma('${turma.id}')">Editar</button>
+                        <button class="btn-action btn-delete" onclick="excluirTurma('${turma.id}')">Excluir</button>
+                    </div>
+                `;
+                classList.appendChild(card);
+            });
+        }
+
+        // Função para alternar entre tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                
+                // Atualizar tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Atualizar conteúdo
+                document.getElementById('turmas-content').style.display = tabName === 'turmas' ? 'block' : 'none';
+                document.getElementById('sessoes-content').style.display = tabName === 'sessoes' ? 'block' : 'none';
+            });
+        });
+
+        // Função para criar nova turma
+        document.getElementById('btn-new-class').addEventListener('click', function() {
+            // Aqui você pode abrir um modal ou redirecionar para página de criação
+            alert('Funcionalidade de criar nova turma será implementada');
+            // Exemplo: window.location.href = '/docente/turmas/nova';
+        });
+
+        // Funções para ações
+        window.editarTurma = function(id) {
+            // Aqui você pode abrir um modal ou redirecionar para página de edição
+            alert(`Editar turma com ID: ${id}`);
+            // Exemplo: window.location.href = `/docente/turmas/${id}/editar`;
+        };
+
+        window.excluirTurma = function(id) {
+            if (confirm('Tem certeza que deseja excluir esta turma?')) {
+                // Aqui você fará a chamada à API para excluir a turma
+                // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
+                // await fetch(`${backendUrl}/turmas/${id}`, { method: 'DELETE' });
+                
+                // Por enquanto, apenas remove da lista local
+                turmas = turmas.filter(t => t.id !== id);
+                renderizarTurmas();
+                alert('Turma excluída com sucesso!');
+            }
+        };
+
+        // Carregar turmas da API
+        async function carregarTurmas() {
+            try {
+                // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
+                // const response = await fetch(`${backendUrl}/turmas`);
+                // const data = await response.json();
+                // 
+                // turmas = data.turmas.map(turma => ({
+                //     id: turma.id_turma || turma.id,
+                //     nome: turma.nome_turma || turma.nome,
+                //     descricao: turma.descricao || '',
+                //     horario: `${turma.horario_inicio} - ${turma.horario_fim}`,
+                //     dias: turma.dias_semana || '',
+                //     capacidade: `${turma.alunos_atual || 0}/${turma.capacidade_max || 0} alunos`,
+                //     ocupacao: `${Math.round(((turma.alunos_atual || 0) / (turma.capacidade_max || 1)) * 100)}%`,
+                //     status: turma.status || 'Ativa'
+                // }));
+                
+                // Por enquanto, não carregar dados de exemplo
+                turmas = [];
+                renderizarTurmas();
+            } catch (error) {
+                console.error('Erro ao carregar turmas:', error);
+                turmas = [];
+                renderizarTurmas();
+            }
+        }
+
+        // Carregar dados ao inicializar
+        carregarTurmas();
+    </script>
+</body>
+</html>

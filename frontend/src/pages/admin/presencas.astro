@@ -1,0 +1,652 @@
+---
+import Header from '../../components/Header.astro';
+import Sidebar from '../../components/Sidebar.astro';
+---
+
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Presenças - Programa Bombeiro Mirim</title>
+    <style>
+        :root {
+            --primary-color: #4A5568;
+            --secondary-color: #E2E8F0;
+            --accent-color: #3182CE;
+            --danger-color: #E53E3E;
+            --bg-color: #F7FAFC;
+            --text-color: #2D3748;
+            --label-color: #718096;
+            --border-color: #CBD5E0;
+            --white: #FFFFFF;
+            --success-color: #48BB78;
+            --warning-color: #ED8936;
+            --info-color: #4299E1;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+        .main-content {
+            padding: 120px 1.5rem 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+        .content-wrapper {
+            width: 100%;
+            max-width: 1280px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .container {
+            flex: 1;
+            max-width: 912px;
+            background-color: var(--white);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .page-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        .page-header h1 {
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--text-color);
+        }
+        .page-header p {
+            font-size: 1rem;
+            margin: 0;
+            color: var(--label-color);
+        }
+        .form-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 200px;
+        }
+        .form-group label {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--label-color);
+            font-weight: 500;
+        }
+        .form-group select,
+        .form-group input {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            color: var(--text-color);
+            background-color: #FDFDFD;
+        }
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+        }
+        .form-group select.required {
+            border-color: var(--danger-color);
+        }
+        .btn-save {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background-color: var(--danger-color);
+            color: var(--white);
+            white-space: nowrap;
+        }
+        .btn-save:hover {
+            background-color: #C53030;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .stat-card.total {
+            background: linear-gradient(135deg, var(--info-color) 0%, #2B6CB0 100%);
+            color: white;
+        }
+        .stat-card.present {
+            background: linear-gradient(135deg, var(--success-color) 0%, #2F855A 100%);
+            color: white;
+        }
+        .stat-card.late {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #C05621 100%);
+            color: white;
+        }
+        .stat-card.absent {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #C53030 100%);
+            color: white;
+        }
+        .stat-card h3 {
+            font-size: 0.9rem;
+            margin: 0 0 0.5rem 0;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .table-container {
+            margin-top: 2rem;
+        }
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 2fr;
+            gap: 1rem;
+            padding: 1rem;
+            background-color: var(--secondary-color);
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        .table-body {
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 2fr;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        .table-row:hover {
+            background-color: #F7FAFC;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--label-color);
+            font-size: 1rem;
+        }
+        .student-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .student-name {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.25rem;
+        }
+        .student-id {
+            font-size: 0.85rem;
+            color: var(--label-color);
+            margin-bottom: 0.5rem;
+        }
+        .medical-warning {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #C05621;
+            margin-top: 0.5rem;
+        }
+        .medical-warning-icon {
+            font-size: 1rem;
+        }
+        .status-select-wrapper {
+            position: relative;
+        }
+        .status-select {
+            width: 100%;
+            padding: 0.75rem;
+            padding-right: 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            color: var(--text-color);
+            background-color: #FDFDFD;
+            appearance: none;
+            cursor: pointer;
+            background-image: none;
+        }
+        .status-select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+        }
+        .status-select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--label-color);
+            font-size: 0.75rem;
+        }
+        .status-select[value="present"],
+        .status-select option[value="present"]:checked {
+            background-color: #C6F6D5;
+        }
+        .status-select[value="late"],
+        .status-select option[value="late"]:checked {
+            background-color: #FEEBC8;
+        }
+        .status-select[value="absent"],
+        .status-select option[value="absent"]:checked {
+            background-color: #FED7D7;
+        }
+        .observations-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            color: var(--text-color);
+            background-color: #FDFDFD;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .observations-textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+        }
+        .observations-textarea::placeholder {
+            color: var(--label-color);
+        }
+        .date-input-wrapper {
+            position: relative;
+        }
+        .date-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--label-color);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 100px 1rem 20px;
+            }
+
+            .content-wrapper {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .container {
+                padding: 1.5rem;
+                border-radius: 1rem;
+                max-width: 100%;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-controls {
+                flex-direction: column;
+            }
+
+            .form-group {
+                width: 100%;
+            }
+
+            .btn-save {
+                width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .table-header,
+            .table-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .table-header {
+                display: none;
+            }
+
+            .table-row {
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                margin-bottom: 1rem;
+            }
+
+            .table-row::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--label-color);
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 80px 0.5rem 20px;
+            }
+
+            .container {
+                padding: 1rem;
+                border-radius: 0.75rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.25rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card .value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <Header />
+    
+    <main class="main-content">
+        <div class="content-wrapper">
+            <Sidebar />
+            <div class="container">
+                <div class="page-header">
+                    <h1>Controle de Presenças</h1>
+                    <p>Registre presença, falta ou atraso por turma</p>
+                </div>
+
+                <form id="presenca-form">
+                    <div class="form-controls">
+                        <div class="form-group">
+                            <label for="turma">Turma</label>
+                            <select id="turma" name="turma" class="required">
+                                <option value="">Selecione uma turma</option>
+                                <option value="1">Turma A - Manhã</option>
+                                <option value="2">Turma B - Tarde</option>
+                                <option value="3">Turma C - Manhã</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="data">Data</label>
+                            <div class="date-input-wrapper">
+                                <input type="date" id="data" name="data" value="2025-11-10">
+                                <span class="date-icon">📅</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-save">Salvar Presenças</button>
+                    </div>
+                </form>
+
+                <div class="stats-grid">
+                    <div class="stat-card total">
+                        <h3>Total Hoje</h3>
+                        <p class="value" id="total-hoje">0</p>
+                    </div>
+                    <div class="stat-card present">
+                        <h3>Presentes</h3>
+                        <p class="value" id="presentes">0</p>
+                    </div>
+                    <div class="stat-card late">
+                        <h3>Atrasos</h3>
+                        <p class="value" id="atrasos">0</p>
+                    </div>
+                    <div class="stat-card absent">
+                        <h3>Faltas</h3>
+                        <p class="value" id="faltas">0</p>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div id="empty-state" class="empty-state">
+                        Selecione uma turma para visualizar as crianças
+                    </div>
+                    <div id="table-content" style="display: none;">
+                        <div class="table-header">
+                            <div>Criança</div>
+                            <div>Status</div>
+                            <div>Observações</div>
+                        </div>
+                        <div class="table-body" id="table-body">
+                            <!-- Conteúdo será preenchido via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const turmaSelect = document.getElementById('turma');
+        const dataInput = document.getElementById('data');
+        const emptyState = document.getElementById('empty-state');
+        const tableContent = document.getElementById('table-content');
+        const tableBody = document.getElementById('table-body');
+
+        let alunosAtuais = [];
+
+        // Função para atualizar estatísticas
+        function atualizarEstatisticas() {
+            const total = alunosAtuais.length;
+            const presentes = alunosAtuais.filter(a => {
+                const select = document.querySelector(`select[data-aluno-id="${a.id}"]`);
+                return select && select.value === 'present';
+            }).length;
+            const atrasos = alunosAtuais.filter(a => {
+                const select = document.querySelector(`select[data-aluno-id="${a.id}"]`);
+                return select && select.value === 'late';
+            }).length;
+            const faltas = alunosAtuais.filter(a => {
+                const select = document.querySelector(`select[data-aluno-id="${a.id}"]`);
+                return select && select.value === 'absent';
+            }).length;
+
+            document.getElementById('total-hoje').textContent = total;
+            document.getElementById('presentes').textContent = presentes;
+            document.getElementById('atrasos').textContent = atrasos;
+            document.getElementById('faltas').textContent = faltas;
+        }
+
+        // Função para renderizar tabela
+        function renderizarTabela(alunos) {
+            alunosAtuais = alunos;
+            
+            if (alunos.length === 0) {
+                emptyState.style.display = 'block';
+                tableContent.style.display = 'none';
+                atualizarEstatisticas();
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            tableContent.style.display = 'block';
+            tableBody.innerHTML = '';
+
+            alunos.forEach(aluno => {
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                
+                const medicalWarning = aluno.condicao_medica ? `
+                    <div class="medical-warning">
+                        <span class="medical-warning-icon">⚠️</span>
+                        <span>Condição médica especial</span>
+                    </div>
+                ` : '';
+
+                row.innerHTML = `
+                    <div class="student-info">
+                        <div class="student-name">${aluno.nome}</div>
+                        <div class="student-id">ID: ${aluno.id}</div>
+                        ${medicalWarning}
+                    </div>
+                    <div class="status-select-wrapper">
+                        <select class="status-select" data-aluno-id="${aluno.id}" data-aluno-nome="${aluno.nome}">
+                            <option value="present" ${aluno.status === 'present' ? 'selected' : ''}>✓ Presente</option>
+                            <option value="late" ${aluno.status === 'late' ? 'selected' : ''}>⚠ Atraso</option>
+                            <option value="absent" ${aluno.status === 'absent' ? 'selected' : ''}>✗ Falta</option>
+                        </select>
+                    </div>
+                    <div>
+                        <textarea 
+                            class="observations-textarea" 
+                            data-aluno-id="${aluno.id}"
+                            placeholder="Observações sobre a presença...">${aluno.observacoes || ''}</textarea>
+                    </div>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Adicionar event listeners aos selects
+            tableBody.querySelectorAll('.status-select').forEach(select => {
+                select.addEventListener('change', atualizarEstatisticas);
+            });
+
+            atualizarEstatisticas();
+        }
+
+        // Event listener para mudança de turma
+        turmaSelect.addEventListener('change', async function() {
+            const turmaId = this.value;
+            
+            if (!turmaId) {
+                emptyState.style.display = 'block';
+                tableContent.style.display = 'none';
+                alunosAtuais = [];
+                atualizarEstatisticas();
+                return;
+            }
+
+            // Aqui você fará a chamada à API para buscar os alunos da turma
+            try {
+                // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
+                // const response = await fetch(`${backendUrl}/turmas/${turmaId}/alunos?data=${dataInput.value}`);
+                // const data = await response.json();
+                // 
+                // // Mapear dados da API para o formato esperado
+                // const alunos = data.alunos.map(aluno => ({
+                //     id: aluno.id_aluno || aluno.id,
+                //     nome: aluno.nome_aluno || aluno.nome,
+                //     status: aluno.status_presenca || 'present',
+                //     observacoes: aluno.observacoes || '',
+                //     condicao_medica: aluno.condicao_medica || false
+                // }));
+                // 
+                // renderizarTabela(alunos);
+                
+                // Por enquanto, não carregar dados de exemplo
+                emptyState.style.display = 'block';
+                tableContent.style.display = 'none';
+                alunosAtuais = [];
+                atualizarEstatisticas();
+            } catch (error) {
+                console.error('Erro ao carregar alunos:', error);
+                emptyState.style.display = 'block';
+                tableContent.style.display = 'none';
+                alunosAtuais = [];
+                atualizarEstatisticas();
+            }
+        });
+
+        // Event listener para o formulário
+        document.getElementById('presenca-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const turmaId = turmaSelect.value;
+            const data = dataInput.value;
+
+            if (!turmaId) {
+                alert('Por favor, selecione uma turma');
+                return;
+            }
+
+            if (alunosAtuais.length === 0) {
+                alert('Nenhum aluno encontrado para esta turma');
+                return;
+            }
+
+            // Coletar dados das presenças
+            const presencas = [];
+            tableBody.querySelectorAll('.table-row').forEach(row => {
+                const select = row.querySelector('.status-select');
+                const textarea = row.querySelector('.observations-textarea');
+                
+                if (select) {
+                    presencas.push({
+                        aluno_id: select.getAttribute('data-aluno-id'),
+                        status: select.value,
+                        observacoes: textarea ? textarea.value.trim() : ''
+                    });
+                }
+            });
+
+            // Aqui você fará a chamada à API para salvar as presenças
+            try {
+                // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
+                // const response = await fetch(`${backendUrl}/presencas`, {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json'
+                //     },
+                //     body: JSON.stringify({
+                //         turma_id: turmaId,
+                //         data: data,
+                //         presencas: presencas
+                //     })
+                // });
+                // 
+                // if (!response.ok) {
+                //     throw new Error('Erro ao salvar presenças');
+                // }
+                // 
+                // const result = await response.json();
+                
+                alert('Presenças salvas com sucesso!');
+            } catch (error) {
+                console.error('Erro ao salvar presenças:', error);
+                alert('Erro ao salvar presenças. Tente novamente.');
+            }
+        });
+
+        // Definir data padrão como hoje
+        const hoje = new Date();
+        const dataFormatada = hoje.toISOString().split('T')[0];
+        dataInput.value = dataFormatada;
+    </script>
+</body>
+</html>
+

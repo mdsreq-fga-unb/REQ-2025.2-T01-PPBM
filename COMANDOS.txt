@@ -1,0 +1,178 @@
+================================================================================
+                    COMANDOS PARA INICIAR E FECHAR
+================================================================================
+
+INICIAR O SISTEMA:
+==================
+
+OPCAO 1 - Script Automatizado (MAIS FACIL):
+--------------------------------------------
+Execute no terminal (na raiz do projeto):
+    iniciar_tudo.bat
+
+Ou clique duas vezes no arquivo: iniciar_tudo.bat
+
+Isso abrira duas janelas automaticamente:
+- Backend (porta 3000)
+- Frontend (porta 4321)
+
+
+OPCAO 2 - Comando NPM:
+----------------------
+Execute no terminal (na raiz do projeto):
+    npm run dev
+
+Isso iniciara backend e frontend juntos em um unico terminal.
+
+
+OPCAO 3 - Manual (dois terminais separados):
+---------------------------------------------
+Terminal 1 - Backend:
+    cd backend
+    npm run dev
+
+Terminal 2 - Frontend:
+    cd frontend
+    npm run dev
+
+
+================================================================================
+
+FECHAR O SISTEMA:
+=================
+
+OPCAO 1 - Se usou iniciar_tudo.bat:
+------------------------------------
+- Feche as duas janelas que foram abertas
+- Ou pressione Ctrl+C em cada janela
+
+
+OPCAO 2 - Se usou npm run dev:
+-------------------------------
+- Pressione Ctrl+C no terminal
+- Isso parara tanto o backend quanto o frontend
+
+
+OPCAO 3 - Se iniciou manualmente:
+----------------------------------
+- Em cada terminal, pressione Ctrl+C
+- Ou feche as janelas do terminal
+
+
+OPCAO 4 - Forcar fechamento (Windows):
+---------------------------------------
+Abra o PowerShell como Administrador e execute:
+
+    netstat -ano | findstr :3000
+    netstat -ano | findstr :4321
+
+Isso mostrara os processos usando as portas. Anote o PID.
+
+Depois execute (substitua PID pelo numero que apareceu):
+    taskkill /PID [PID] /F
+
+
+================================================================================
+
+VERIFICAR SE ESTA RODANDO:
+===========================
+
+Backend:
+--------
+Abra o navegador em: http://localhost:3000/health
+
+Se retornar {"status":"healthy",...} = esta rodando
+
+
+Frontend:
+---------
+Abra o navegador em: http://localhost:4321/alunos/cadastrar
+
+Se abrir a pagina = esta rodando
+
+
+================================================================================
+
+PROBLEMAS COMUNS:
+=================
+
+"Porta ja esta em uso":
+-----------------------
+Algum processo ja esta usando a porta.
+
+Solucao:
+1. Feche todas as janelas do terminal
+2. Use o metodo "Forcar fechamento" acima
+3. Ou reinicie o computador
+
+
+"Backend nao conecta":
+----------------------
+1. Verifique se o arquivo backend/.env existe
+2. Verifique se as credenciais do Supabase estao corretas
+3. Verifique se o Supabase esta acessivel
+
+
+"Frontend nao carrega":
+-----------------------
+1. Verifique se o backend esta rodando primeiro
+2. Limpe o cache do navegador (Ctrl+Shift+Delete)
+3. Tente acessar em modo anonimo
+
+
+================================================================================
+
+COMANDOS UTEIS:
+===============
+
+Verificar portas em uso (Windows):
+    netstat -ano | findstr :3000
+    netstat -ano | findstr :4321
+
+Matar processo por porta (Windows):
+    netstat -ano | findstr :3000
+    taskkill /PID [numero] /F
+
+Limpar cache do npm:
+    npm cache clean --force
+
+Reinstalar dependencias:
+    cd backend
+    npm install
+    
+    cd ../frontend
+    npm install
+
+
+================================================================================
+
+RESUMO RAPIDO:
+==============
+
+INICIAR:
+    iniciar_tudo.bat
+
+OU
+
+    npm run dev
+
+
+FECHAR:
+    Ctrl+C (no terminal)
+
+OU
+
+    Fechar as janelas do terminal
+
+
+VERIFICAR:
+    http://localhost:3000/health (backend)
+    http://localhost:4321/alunos/cadastrar (frontend)
+
+================================================================================
+
+
+
+
+
+

@@ -1,0 +1,168 @@
+---
+---
+
+<header class="header">
+    <div class="header-container">
+        <div class="header-left">
+            <div class="logo-icon">B</div>
+            <div class="title-group">
+                <h1>Programa Bombeiro Mirim</h1>
+            </div>
+        </div>
+        <div class="header-right">
+            <span class="status-badge status-user">Usuário: Responsavel</span>
+            <button class="btn-logout">Sair</button>
+        </div>
+    </div>
+</header>
+
+<style>
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        background-color: #fff;
+        border-bottom: 1px solid #eee;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: center;
+        padding: 0 1.5rem;
+    }
+
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 1280px;
+        height: 84px;
+        box-sizing: border-box;
+    }
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+    }
+
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-weight: bold;
+        font-size: 24px;
+        box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
+    }
+
+    .title-group h1 {
+        font-size: 20px;
+        margin: 0;
+        color: #333;
+        font-weight: 600;
+    }
+
+    .title-group p {
+        font-size: 12px;
+        margin: 0;
+        color: #777;
+        font-weight: 400;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    .status-badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: default;
+        transition: all 0.3s ease;
+    }
+
+    .status-user {
+        background-color: #ffe6f2;
+        color: #ff69b4;
+        border: 1px solid #ff69b4;
+    }
+
+    .btn-logout {
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        background-color: #343a40;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-logout:hover {
+        background-color: #495057;
+    }
+
+    @media (max-width: 768px) {
+        .header {
+            padding: 0 1rem;
+        }
+
+        .header-container {
+            height: 70px;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            font-size: 20px;
+        }
+
+        .title-group h1 {
+            font-size: 16px;
+        }
+
+        .title-group p {
+            font-size: 11px;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-logout {
+            padding: 6px 15px;
+            font-size: 12px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .header-container {
+            height: 60px;
+        }
+
+        .title-group h1 {
+            font-size: 14px;
+        }
+
+        .title-group p {
+            display: none;
+        }
+
+        .status-badge {
+            display: none;
+        }
+    }
+</style>
