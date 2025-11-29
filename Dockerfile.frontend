@@ -1,5 +1,5 @@
 # PPBM Frontend Dockerfile for Kubernetes
-# Astro SSR/SSG build
+# Astro with Node.js adapter (SSR)
 
 FROM node:20-alpine AS builder
 
@@ -24,11 +24,7 @@ WORKDIR /app
 RUN addgroup -g 1001 -S appgroup && \
     adduser -u 1001 -S appuser -G appgroup
 
-# Copy package files and install production dependencies
-COPY frontend/package*.json ./
-RUN npm ci --omit=dev || npm install --omit=dev
-
-# Copy built assets from builder
+# Copy built server and client assets from builder
 COPY --from=builder /app/dist ./dist
 
 # Set ownership
@@ -48,5 +44,5 @@ ENV PORT=4321
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:4321/ || exit 1
 
-# Start the application (Astro preview server or Node adapter)
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "4321"]
+# Start the Node.js server (Astro Node adapter standalone mode)
+CMD ["node", "./dist/server/entry.mjs"]
