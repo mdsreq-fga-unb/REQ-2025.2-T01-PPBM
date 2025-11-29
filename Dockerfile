@@ -5,17 +5,15 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-
 # Install dependencies first (better caching)
 COPY backend/package*.json ./
-RUN npm ci --omit=dev
+RUN npm install
 
 # Copy TypeScript config and source
 COPY backend/tsconfig.json ./
 COPY backend/src/ ./src/
 
-# Install TypeScript for build only
-RUN npm install -g typescript
+# Build TypeScript
 RUN npm run build
 
 # Production image
@@ -27,10 +25,12 @@ WORKDIR /app
 RUN addgroup -g 1001 -S appgroup && \
     adduser -u 1001 -S appuser -G appgroup
 
-# Copy built files and production dependencies
-COPY --from=builder /app/node_modules ./node_modules
+# Copy package files and install production dependencies only
+COPY backend/package*.json ./
+RUN npm ci --omit=dev
+
+# Copy built files from builder
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package*.json ./
 
 # Set ownership
 RUN chown -R appuser:appgroup /app
