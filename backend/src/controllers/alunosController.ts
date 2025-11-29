@@ -190,7 +190,7 @@ export class AlunosController implements EndpointController {
             nome_responsavel: dadosResponsavel.nome_responsavel,
             telefone_responsavel: dadosResponsavel.telefone_responsavel,
             email_responsavel: dadosResponsavel.email_responsavel,
-            cpf_responsavel: cpfNormalizado,
+            cpf_responsavel: cpfNormalizado ?? undefined,
             update_at: new Date().toISOString()
         };
 
