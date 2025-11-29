@@ -7,6 +7,7 @@
 # Required Secrets:
 #   - DEPLOY_API_KEY: Deploy API authentication key
 #   - REPO_TOKEN: GitHub token with repo access
+
 #   - SUPABASE_URL: Supabase project URL
 #   - SUPABASE_SERVICE_ROLE_KEY: Supabase service role key
 #   - SUPABASE_ANON_KEY: Supabase anon key for frontend
