@@ -1,13 +1,24 @@
 // @ts-check
 
-import mdx from '@astrojs/mdx';
-import sitemap from '@astrojs/sitemap';
-import svelte from '@astrojs/svelte';
-import tailwind from '@astrojs/tailwind';
 import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://example.com',
-	integrations: [mdx(), sitemap(), svelte(), tailwind()],
+  output: 'static',
+  server: {
+    port: 4321,
+    host: true
+  },
+  vite: {
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost:3000',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, '')
+        }
+      }
+    }
+  }
 });
+

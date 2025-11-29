@@ -26,12 +26,15 @@ SupabaseWrapper.init();
 
 const router = express.Router();
 
+import { AlunosController } from './controllers/alunosController';
+
 const controllers: EndpointController[] = [
     usuarioController,
     alunoController,
     docenteController,
     turmaController,
-    presencaController
+    presencaController,
+    new AlunosController()
 ];
 
 const wsControllers: WebSocketEndpointController[] = [

@@ -1,12 +1,14 @@
 {
-  "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"],
-  "compilerOptions": {
-    "strictNullChecks": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "bundler"
-  }
+	"extends": "astro/tsconfigs/strict",
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
+		"moduleResolution": "bundler"
+	}
 }

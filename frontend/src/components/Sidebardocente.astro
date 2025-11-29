@@ -1,0 +1,140 @@
+---
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+    { href: '/docente/dashboard', icon: '📊', label: 'Dashboard' },
+    { href: '/docente/controle', icon: '📅', label: 'Controle de Presenças' },
+    { href: '/docente/turmas', icon: '👥', label: 'Turmas e Sessões' },
+    { href: '/docente/conteudos', icon: '📚', label: 'Conteúdos Institucionais' },
+    { href: '/docente/comunicacao', icon: '💬', label: 'Comunicação' },
+    { href: '/docente/relatorios', icon: '📝', label: 'Relatórios' },
+];
+
+const isActive = (path: string) => currentPath === path || currentPath.startsWith(path);
+---
+
+<div class="sidebar-wrapper">
+    <nav class="sidebar">
+        <ul class="nav-list">
+            {navItems.map((item) => (
+                <li class={`nav-item ${isActive(item.href) ? 'active' : ''}`}>
+                    <a href={item.href} class="nav-link">
+                        <span class="nav-icon">{item.icon}</span>
+                        <span class="nav-text">{item.label}</span>
+                    </a>
+                </li>
+            ))}
+        </ul>
+    </nav>
+</div>
+
+<style>
+    .sidebar-wrapper {
+        display: block;
+    }
+
+    .sidebar {
+        width: 240px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        padding: 20px 0;
+        flex-shrink: 0;
+    }
+
+    .nav-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav-item {
+        margin-bottom: 4px;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 14px 20px;
+        color: #333;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        margin: 0 12px;
+        position: relative;
+    }
+
+    .nav-link:hover {
+        background-color: #f5f5f5;
+        transform: translateX(4px);
+    }
+
+    .nav-item.active .nav-link {
+        background: linear-gradient(135deg, #ff4d4d 0%, #ff1744 100%);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3);
+    }
+
+    .nav-item.active .nav-link:hover {
+        background: linear-gradient(135deg, #ff1744 0%, #ff4d4d 100%);
+        transform: translateX(4px);
+    }
+
+    .nav-icon {
+        font-size: 22px;
+        margin-right: 12px;
+        display: inline-block;
+        width: 24px;
+        text-align: center;
+    }
+
+    .nav-text {
+        flex: 1;
+    }
+
+    .sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+        background: #ddd;
+        border-radius: 3px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb:hover {
+        background: #bbb;
+    }
+
+    @media (max-width: 768px) {
+        .sidebar-wrapper {
+            padding: 0 1rem;
+        }
+
+        .sidebar {
+            width: 200px;
+            padding: 15px 0;
+        }
+
+        .nav-link {
+            padding: 12px 15px;
+            font-size: 14px;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .sidebar-wrapper {
+            display: none;
+        }
+    }
+</style>

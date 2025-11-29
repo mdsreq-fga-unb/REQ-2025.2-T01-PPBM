@@ -1,0 +1,523 @@
+---
+import Header from '../../components/Header.astro';
+import Sidebar from '../../components/Sidebar.astro';
+---
+
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Alunos - Programa Bombeiro Mirim</title>
+    <style>
+        :root {
+            --primary-color: #4A5568;
+            --secondary-color: #E2E8F0;
+            --accent-color: #3182CE;
+            --danger-color: #E53E3E;
+            --bg-color: #F7FAFC;
+            --text-color: #2D3748;
+            --label-color: #718096;
+            --border-color: #CBD5E0;
+            --white: #FFFFFF;
+            --success-color: #48BB78;
+            --warning-color: #ED8936;
+            --info-color: #4299E1;
+            --purple-color: #9F7AEA;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+        .main-content {
+            padding: 120px 1.5rem 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+        .content-wrapper {
+            width: 100%;
+            max-width: 1280px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .container {
+            flex: 1;
+            max-width: 100%;
+            background-color: var(--white);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        .page-header .title h1 {
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--text-color);
+        }
+        .page-header .title p {
+            font-size: 1rem;
+            margin: 0;
+            color: var(--label-color);
+        }
+        .btn-export {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background-color: var(--primary-color);
+            color: var(--white);
+            white-space: nowrap;
+        }
+        .btn-export:hover {
+            background-color: #2D3748;
+        }
+        .filters-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 200px;
+        }
+        .filter-group.full-width {
+            flex: 2;
+        }
+        .filter-group label {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--label-color);
+            font-weight: 500;
+        }
+        .filter-group input,
+        .filter-group select {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            color: var(--text-color);
+            background-color: #FDFDFD;
+        }
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--white);
+        }
+        .table thead {
+            background-color: var(--secondary-color);
+        }
+        .table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+        .table tbody tr:hover {
+            background-color: #F7FAFC;
+        }
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .student-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .student-name {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.25rem;
+        }
+        .student-id {
+            font-size: 0.85rem;
+            color: var(--label-color);
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .status-badge.medico {
+            background-color: #FED7D7;
+            color: #C53030;
+        }
+        .status-badge.pedagogico {
+            background-color: #E9D8FD;
+            color: #6B46C1;
+        }
+        .status-badge.normal {
+            background-color: #C6F6D5;
+            color: #2F855A;
+        }
+        .status-icon {
+            font-size: 1rem;
+        }
+        .actions-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-edit {
+            background-color: var(--accent-color);
+            color: var(--white);
+        }
+        .btn-edit:hover {
+            background-color: #2C5282;
+        }
+        .btn-remove {
+            background-color: var(--danger-color);
+            color: var(--white);
+        }
+        .btn-remove:hover {
+            background-color: #C53030;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--label-color);
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 100px 1rem 20px;
+            }
+
+            .content-wrapper {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .container {
+                padding: 1.5rem;
+                border-radius: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .page-header .title h1 {
+                font-size: 1.5rem;
+            }
+
+            .filters-section {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .table-container {
+                overflow-x: scroll;
+            }
+
+            .table {
+                min-width: 800px;
+            }
+
+            .actions-group {
+                flex-direction: column;
+            }
+
+            .btn-action {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 80px 0.5rem 20px;
+            }
+
+            .container {
+                padding: 1rem;
+                border-radius: 0.75rem;
+            }
+
+            .page-header .title h1 {
+                font-size: 1.25rem;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <Header />
+    
+    <main class="main-content">
+        <div class="content-wrapper">
+            <Sidebar />
+            <div class="container">
+                <div class="page-header">
+                    <div class="title">
+                        <h1>Gerenciar Alunos</h1>
+                        <p>Busque, edite e remova alunos do sistema</p>
+                    </div>
+                    <button type="button" class="btn-export" id="btn-export">Exportar Lista</button>
+                </div>
+
+                <div class="filters-section">
+                    <div class="filter-group full-width">
+                        <label for="buscar">Buscar aluno</label>
+                        <input 
+                            type="text" 
+                            id="buscar" 
+                            name="buscar" 
+                            placeholder="Nome, CPF ou responsável..."
+                        >
+                    </div>
+                    <div class="filter-group">
+                        <label for="turma">Filtrar por turma</label>
+                        <select id="turma" name="turma">
+                            <option value="">Todas as turmas</option>
+                            <option value="1">Turma A - Manhã</option>
+                            <option value="2">Turma B - Tarde</option>
+                            <option value="3">Turma C - Manhã</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="status">Status especial</label>
+                        <select id="status" name="status">
+                            <option value="">Todos</option>
+                            <option value="medico">Médico</option>
+                            <option value="pedagogico">Pedagógico</option>
+                            <option value="normal">Normal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Aluno</th>
+                                <th>CPF</th>
+                                <th>Turma</th>
+                                <th>Responsável</th>
+                                <th>Contato</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Conteúdo será preenchido via JavaScript -->
+                        </tbody>
+                    </table>
+                    <div id="empty-state" class="empty-state" style="display: none;">
+                        Nenhum aluno encontrado com os filtros selecionados.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let alunosFiltrados = [...alunosExemplo];
+
+        // Função para renderizar a tabela
+        function renderizarTabela(alunos) {
+            const tableBody = document.getElementById('table-body');
+            const emptyState = document.getElementById('empty-state');
+
+            if (alunos.length === 0) {
+                tableBody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            tableBody.innerHTML = '';
+
+            alunos.forEach(aluno => {
+                const row = document.createElement('tr');
+                
+                const statusClass = aluno.status === 'medico' ? 'medico' : 
+                                   aluno.status === 'pedagogico' ? 'pedagogico' : 'normal';
+                const statusText = aluno.status === 'medico' ? 'Médico' : 
+                                   aluno.status === 'pedagogico' ? 'Pedagógico' : 'Normal';
+                const statusIcon = aluno.status === 'medico' ? '⚠️' : 
+                                  aluno.status === 'pedagogico' ? '📚' : '';
+
+                row.innerHTML = `
+                    <td>
+                        <div class="student-info">
+                            <span class="student-name">${aluno.nome}</span>
+                            <span class="student-id">ID: ${aluno.id}</span>
+                        </div>
+                    </td>
+                    <td>${aluno.cpf}</td>
+                    <td>${aluno.turma}</td>
+                    <td>${aluno.responsavel}</td>
+                    <td>${aluno.contato}</td>
+                    <td>
+                        <span class="status-badge ${statusClass}">
+                            ${statusIcon ? `<span class="status-icon">${statusIcon}</span>` : ''}
+                            ${statusText}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="actions-group">
+                            <button class="btn-action btn-edit" onclick="editarAluno('${aluno.id}')">Editar</button>
+                            <button class="btn-action btn-remove" onclick="removerAluno('${aluno.id}')">Remover</button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Função para filtrar alunos
+        function filtrarAlunos() {
+            const busca = document.getElementById('buscar').value.toLowerCase();
+            const turma = document.getElementById('turma').value;
+            const status = document.getElementById('status').value;
+
+            alunosFiltrados = alunosExemplo.filter(aluno => {
+                const matchBusca = !busca || 
+                    aluno.nome.toLowerCase().includes(busca) ||
+                    aluno.cpf.includes(busca) ||
+                    aluno.responsavel.toLowerCase().includes(busca) ||
+                    aluno.id.toLowerCase().includes(busca);
+                
+                const matchTurma = !turma || aluno.turma.includes(turma);
+                const matchStatus = !status || aluno.status === status;
+
+                return matchBusca && matchTurma && matchStatus;
+            });
+
+            renderizarTabela(alunosFiltrados);
+        }
+
+        // Event listeners para filtros
+        document.getElementById('buscar').addEventListener('input', filtrarAlunos);
+        document.getElementById('turma').addEventListener('change', filtrarAlunos);
+        document.getElementById('status').addEventListener('change', filtrarAlunos);
+
+        // Função para exportar lista
+        document.getElementById('btn-export').addEventListener('click', function() {
+            // Aqui você pode implementar a exportação para CSV, Excel, etc.
+            const dados = alunosFiltrados.map(aluno => ({
+                Nome: aluno.nome,
+                ID: aluno.id,
+                CPF: aluno.cpf,
+                Turma: aluno.turma,
+                Responsável: aluno.responsavel,
+                Contato: aluno.contato,
+                Status: aluno.status === 'medico' ? 'Médico' : 
+                       aluno.status === 'pedagogico' ? 'Pedagógico' : 'Normal'
+            }));
+
+            // Converter para CSV
+            const headers = Object.keys(dados[0]);
+            const csvContent = [
+                headers.join(','),
+                ...dados.map(row => headers.map(header => `"${row[header]}"`).join(','))
+            ].join('\n');
+
+            // Criar e baixar arquivo
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `alunos_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        // Funções para ações
+        window.editarAluno = function(id) {
+            // Aqui você pode redirecionar para a página de edição ou abrir um modal
+            alert(`Editar aluno com ID: ${id}`);
+            // Exemplo: window.location.href = `/alunos/editar/${id}`;
+        };
+
+        window.removerAluno = function(id) {
+            if (confirm('Tem certeza que deseja remover este aluno?')) {
+                // Aqui você fará a chamada à API para remover o aluno
+                // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
+                // await fetch(`${backendUrl}/alunos/${id}`, { method: 'DELETE' });
+                
+                // Por enquanto, apenas remove da lista local
+                alunosExemplo.splice(alunosExemplo.findIndex(a => a.id === id), 1);
+                filtrarAlunos();
+                alert('Aluno removido com sucesso!');
+            }
+        };
+
+        // Carregar dados iniciais
+        renderizarTabela(alunosFiltrados);
+
+        // Carregar dados da API quando disponível
+        async function carregarAlunos() {
+            try {
+                // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
+                // const response = await fetch(`${backendUrl}/alunos`);
+                // const data = await response.json();
+                // alunosExemplo = data.alunos;
+                // alunosFiltrados = [...alunosExemplo];
+                // renderizarTabela(alunosFiltrados);
+            } catch (error) {
+                console.error('Erro ao carregar alunos:', error);
+            }
+        }
+
+        // carregarAlunos();
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Integração - Cadastro de Alunos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #3182CE;
+            padding-bottom: 10px;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        .status.success {
+            background-color: #C6F6D5;
+            color: #2F855A;
+        }
+        .status.error {
+            background-color: #FED7D7;
+            color: #C53030;
+        }
+        .status.info {
+            background-color: #BEE3F8;
+            color: #2C5282;
+        }
+        button {
+            background-color: #3182CE;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #2C5282;
+        }
+        button:disabled {
+            background-color: #CBD5E0;
+            cursor: not-allowed;
+        }
+        pre {
+            background-color: #2D3748;
+            color: #E2E8F0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #E2E8F0;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #4A5568;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste de Integração - Cadastro de Alunos</h1>
+        
+        <div class="test-section">
+            <h3>1. Verificar Backend</h3>
+            <button onclick="testBackend()">Testar Conexão com Backend</button>
+            <div id="backend-status"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Testar Cadastro de Aluno</h3>
+            <button onclick="testCadastro()">Enviar Dados de Teste</button>
+            <div id="cadastro-status"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Testar Validação de CPF</h3>
+            <button onclick="testCPFValidation()">Testar Validação</button>
+            <div id="cpf-validation-status"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Logs de Teste</h3>
+            <pre id="test-logs">Aguardando testes...</pre>
+        </div>
+    </div>
+
+    <script>
+        const backendUrl = 'http://localhost:3000';
+        
+        function log(message, type = 'info') {
+            const logs = document.getElementById('test-logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#FEB2B2' : type === 'success' ? '#9AE6B4' : '#90CDF4';
+            logs.innerHTML += `<span style="color: ${color}">[${timestamp}] ${message}</span>\n`;
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        function showStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        async function testBackend() {
+            log('🔍 Testando conexão com o backend...');
+            
+            try {
+                const response = await fetch(`${backendUrl}/health`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log(`✅ Backend está rodando! Status: ${data.status}`, 'success');
+                    showStatus('backend-status', '✅ Backend está rodando corretamente!', 'success');
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                log(`❌ Erro ao conectar com o backend: ${error.message}`, 'error');
+                showStatus('backend-status', `❌ Erro: ${error.message}. Verifique se o backend está rodando.`, 'error');
+            }
+        }
+
+        async function testCadastro() {
+            log('📝 Testando cadastro de aluno...');
+            
+            const testData = {
+                aluno: {
+                    nome_aluno: 'João Silva Teste',
+                    data_nascimento_aluno: '2010-05-15',
+                    cpf_aluno: '11144477735',
+                    escola_unidade: 'Escola Municipal de Teste',
+                    tipo_sanguineo: 'O+',
+                    nome_guerra: 'Joãozinho',
+                    graduacao: 'Soldado',
+                    cidade: 'Brasília',
+                    neurodivergente: false
+                },
+                responsavel: {
+                    nome_responsavel: 'Maria Silva Teste',
+                    telefone_responsavel: '61987654321',
+                    email_responsavel: 'maria.teste@email.com',
+                    cpf_responsavel: '52998224725'
+                }
+            };
+
+            try {
+                const response = await fetch(`${backendUrl}/alunos`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    log('✅ Aluno cadastrado com sucesso!', 'success');
+                    log(`📋 ID do Aluno: ${result.data?.aluno?.id_aluno}`, 'success');
+                    log(`📋 ID do Responsável: ${result.data?.responsavel?.id_responsavel}`, 'success');
+                    showStatus('cadastro-status', '✅ Cadastro realizado com sucesso!', 'success');
+                } else {
+                    log(`❌ Erro no cadastro: ${result.error || result.message}`, 'error');
+                    showStatus('cadastro-status', `❌ Erro: ${result.error || result.message}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Erro ao cadastrar: ${error.message}`, 'error');
+                showStatus('cadastro-status', `❌ Erro: ${error.message}`, 'error');
+            }
+        }
+
+        async function testCPFValidation() {
+            log('🔍 Testando validação de CPF...');
+            
+            const invalidCPF = {
+                aluno: {
+                    nome_aluno: 'Teste CPF Inválido',
+                    data_nascimento_aluno: '2010-05-15',
+                    cpf_aluno: '12345678901', // CPF inválido
+                    neurodivergente: false
+                },
+                responsavel: {
+                    nome_responsavel: 'Responsável Teste',
+                    telefone_responsavel: '61987654321'
+                }
+            };
+
+            try {
+                const response = await fetch(`${backendUrl}/alunos`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(invalidCPF)
+                });
+
+                const result = await response.json();
+                
+                if (!response.ok && response.status === 400) {
+                    log('✅ Validação de CPF está funcionando!', 'success');
+                    log(`📋 Mensagem de erro: ${result.error}`, 'info');
+                    showStatus('cpf-validation-status', '✅ Validação funcionando corretamente!', 'success');
+                } else {
+                    log('⚠️ Validação de CPF pode não estar funcionando', 'error');
+                    showStatus('cpf-validation-status', '⚠️ Validação pode não estar funcionando', 'error');
+                }
+            } catch (error) {
+                log(`❌ Erro ao testar validação: ${error.message}`, 'error');
+                showStatus('cpf-validation-status', `❌ Erro: ${error.message}`, 'error');
+            }
+        }
+
+        // Teste automático ao carregar a página
+        window.addEventListener('load', () => {
+            log('🚀 Página de teste carregada', 'info');
+            log('📌 Clique nos botões acima para executar os testes', 'info');
+        });
+    </script>
+</body>
+</html>
+
