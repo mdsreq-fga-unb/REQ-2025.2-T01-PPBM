@@ -1,0 +1,225 @@
+# GitHub Actions Deploy Workflow for Kubernetes
+# 
+# This workflow builds images directly on the Kubernetes cluster using Kaniko,
+# which is 2-3x faster than building on GitHub Actions runners.
+#
+# Required GitHub Secrets:
+#   DEPLOY_API_KEY            - Deploy API authentication key
+#   REPO_TOKEN                - GitHub token with repo access (for private repos)
+#   SUPABASE_URL              - Supabase project URL
+#   SUPABASE_SERVICE_ROLE_KEY - Supabase service role key
+#   SUPABASE_ANON_KEY         - Supabase anon key (frontend)
+#
+# Required GitHub Variables:
+#   DEPLOY_API_URL - https://deploy.kubernetes.crianex.com
+
+name: Deploy to Kubernetes
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  BACKEND_APP_NAME: ppbm-backend
+  FRONTEND_APP_NAME: ppbm-frontend
+  NAMESPACE: apps
+  BACKEND_PORT: 5919
+  FRONTEND_PORT: 4321
+  BACKEND_DOMAIN: api.ppbm.no-fluxo.com
+  FRONTEND_DOMAIN: ppbm.no-fluxo.com
+
+jobs:
+  build-and-deploy-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Trigger cluster build for backend
+        id: build
+        run: |
+          echo "🚀 Starting in-cluster build for ${{ env.BACKEND_APP_NAME }}..."
+          
+          response=$(curl -sf -X POST "${{ vars.DEPLOY_API_URL }}/build" \
+            -H "Content-Type: application/json" \
+            -H "X-API-Key: ${{ secrets.DEPLOY_API_KEY }}" \
+            -d '{
+              "app": "${{ env.BACKEND_APP_NAME }}",
+              "namespace": "${{ env.NAMESPACE }}",
+              "repoUrl": "https://github.com/${{ github.repository }}",
+              "gitRef": "${{ github.sha }}",
+              "gitToken": "${{ secrets.REPO_TOKEN }}",
+              "imageTag": "${{ github.sha }}",
+              "cache": true,
+              "deploy": true,
+              "deployConfig": {
+                "port": ${{ env.BACKEND_PORT }},
+                "replicas": 2,
+                "domain": "${{ env.BACKEND_DOMAIN }}",
+                "healthPath": "/health",
+                "env": {
+                  "SUPABASE_URL": "${{ secrets.SUPABASE_URL }}",
+                  "SUPABASE_SERVICE_ROLE_KEY": "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
+                }
+              }
+            }')
+          
+          echo "Response: $response"
+          jobName=$(echo $response | jq -r '.jobName')
+          image=$(echo $response | jq -r '.image')
+          echo "job_name=$jobName" >> $GITHUB_OUTPUT
+          echo "image=$image" >> $GITHUB_OUTPUT
+          echo "📦 Build job started: $jobName"
+          echo "🖼️ Image: $image"
+
+      - name: Wait for backend build to complete
+        run: |
+          echo "⏳ Waiting for backend build to complete..."
+          
+          result=$(curl -sf -X POST \
+            "${{ vars.DEPLOY_API_URL }}/build/${{ steps.build.outputs.job_name }}/wait?timeout=900" \
+            -H "X-API-Key: ${{ secrets.DEPLOY_API_KEY }}")
+          
+          status=$(echo $result | jq -r '.status')
+          message=$(echo $result | jq -r '.message')
+          
+          echo "Status: $status"
+          echo "Message: $message"
+          
+          if [ "$status" != "succeeded" ]; then
+            echo "❌ Build failed!"
+            echo ""
+            echo "📋 Build logs (last 100 lines):"
+            curl -sf "${{ vars.DEPLOY_API_URL }}/build/${{ steps.build.outputs.job_name }}/logs" \
+              -H "X-API-Key: ${{ secrets.DEPLOY_API_KEY }}" | jq -r '.logs' | tail -100
+            exit 1
+          fi
+          
+          echo "✅ Backend build and deployment succeeded!"
+
+      - name: Verify backend deployment
+        run: |
+          echo "🔍 Checking backend deployment status..."
+          sleep 10
+          
+          response=$(curl -sf "${{ vars.DEPLOY_API_URL }}/api/apps/${{ env.NAMESPACE }}/${{ env.BACKEND_APP_NAME }}" \
+            -H "X-API-Key: ${{ secrets.DEPLOY_API_KEY }}")
+          
+          echo "$response" | jq .
+          
+          ready=$(echo "$response" | jq -r '.app.readyReplicas // 0')
+          desired=$(echo "$response" | jq -r '.app.replicas // 0')
+          
+          echo ""
+          if [ "$ready" -eq "$desired" ] && [ "$ready" -gt 0 ]; then
+            echo "✅ All $ready backend replicas are ready!"
+            echo "🌐 Backend available at: https://${{ env.BACKEND_DOMAIN }}"
+          else
+            echo "⚠️ Backend deployment in progress: $ready/$desired replicas ready"
+          fi
+
+  build-and-deploy-frontend:
+    runs-on: ubuntu-latest
+    needs: build-and-deploy-backend
+    
+    steps:
+      - name: Trigger cluster build for frontend
+        id: build
+        run: |
+          echo "🚀 Starting in-cluster build for ${{ env.FRONTEND_APP_NAME }}..."
+          
+          response=$(curl -sf -X POST "${{ vars.DEPLOY_API_URL }}/build" \
+            -H "Content-Type: application/json" \
+            -H "X-API-Key: ${{ secrets.DEPLOY_API_KEY }}" \
+            -d '{
+              "app": "${{ env.FRONTEND_APP_NAME }}",
+              "namespace": "${{ env.NAMESPACE }}",
+              "repoUrl": "https://github.com/${{ github.repository }}",
+              "gitRef": "${{ github.sha }}",
+              "gitToken": "${{ secrets.REPO_TOKEN }}",
+              "imageTag": "${{ github.sha }}",
+              "dockerfile": "Dockerfile.frontend",
+              "cache": true,
+              "deploy": true,
+              "deployConfig": {
+                "port": ${{ env.FRONTEND_PORT }},
+                "replicas": 2,
+                "domain": "${{ env.FRONTEND_DOMAIN }}",
+                "healthPath": "/",
+                "env": {
+                  "PUBLIC_SUPABASE_URL": "${{ secrets.SUPABASE_URL }}",
+                  "PUBLIC_SUPABASE_ANON_KEY": "${{ secrets.SUPABASE_ANON_KEY }}"
+                }
+              }
+            }')
+          
+          echo "Response: $response"
+          jobName=$(echo $response | jq -r '.jobName')
+          image=$(echo $response | jq -r '.image')
+          echo "job_name=$jobName" >> $GITHUB_OUTPUT
+          echo "image=$image" >> $GITHUB_OUTPUT
+          echo "📦 Build job started: $jobName"
+          echo "🖼️ Image: $image"
+
+      - name: Wait for frontend build to complete
+        run: |
+          echo "⏳ Waiting for frontend build to complete..."
+          
+          result=$(curl -sf -X POST \
+            "${{ vars.DEPLOY_API_URL }}/build/${{ steps.build.outputs.job_name }}/wait?timeout=900" \
+            -H "X-API-Key: ${{ secrets.DEPLOY_API_KEY }}")
+          
+          status=$(echo $result | jq -r '.status')
+          message=$(echo $result | jq -r '.message')
+          
+          echo "Status: $status"
+          echo "Message: $message"
+          
+          if [ "$status" != "succeeded" ]; then
+            echo "❌ Build failed!"
+            echo ""
+            echo "📋 Build logs (last 100 lines):"
+            curl -sf "${{ vars.DEPLOY_API_URL }}/build/${{ steps.build.outputs.job_name }}/logs" \
+              -H "X-API-Key: ${{ secrets.DEPLOY_API_KEY }}" | jq -r '.logs' | tail -100
+            exit 1
+          fi
+          
+          echo "✅ Frontend build and deployment succeeded!"
+
+      - name: Verify frontend deployment
+        run: |
+          echo "🔍 Checking frontend deployment status..."
+          sleep 10
+          
+          response=$(curl -sf "${{ vars.DEPLOY_API_URL }}/api/apps/${{ env.NAMESPACE }}/${{ env.FRONTEND_APP_NAME }}" \
+            -H "X-API-Key: ${{ secrets.DEPLOY_API_KEY }}")
+          
+          echo "$response" | jq .
+          
+          ready=$(echo "$response" | jq -r '.app.readyReplicas // 0')
+          desired=$(echo "$response" | jq -r '.app.replicas // 0')
+          
+          echo ""
+          if [ "$ready" -eq "$desired" ] && [ "$ready" -gt 0 ]; then
+            echo "✅ All $ready frontend replicas are ready!"
+            echo "🌐 Frontend available at: https://${{ env.FRONTEND_DOMAIN }}"
+          else
+            echo "⚠️ Frontend deployment in progress: $ready/$desired replicas ready"
+          fi
+
+  summary:
+    runs-on: ubuntu-latest
+    needs: [build-and-deploy-backend, build-and-deploy-frontend]
+    if: always()
+    
+    steps:
+      - name: Deployment Summary
+        run: |
+          echo "🎉 Deployment Summary"
+          echo "===================="
+          echo ""
+          echo "🔗 Frontend: https://${{ env.FRONTEND_DOMAIN }}"
+          echo "🔗 Backend API: https://${{ env.BACKEND_DOMAIN }}"
+          echo "🔗 Health Check: https://${{ env.BACKEND_DOMAIN }}/health"
+          echo ""
+          echo "📊 View logs in Grafana → Explore → Loki"
+          echo "   Query: {app=\"${{ env.BACKEND_APP_NAME }}\"}"
