@@ -5,6 +5,7 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+
 # Install dependencies first (better caching)
 COPY backend/package*.json ./
 RUN npm ci --omit=dev
