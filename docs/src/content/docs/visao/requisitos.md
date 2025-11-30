@@ -66,13 +66,13 @@ Busca dentro da turma por nome de alunos, CPF, unidade, status de justificativa,
 
 ### Objetivo Específico 4 – Acompanhamento Individualizado do Aluno
 
-**RF-017 – Registrar acompanhamento neurodivergente**  
-Permitir o registro do acompanhamento pedagógico e o acompanhamento periódico com responsáveis.
+**RF-017 – Registrar plano de acompanhamento neurodivergente**  
+Permitir o registro de plano de acompanhamento pedagógica e acompanhamento periódico com responsáveis.
 
-**RF-018 – Registrar relatórios gerados na sessão de acompanhamento com os responsáveis**  
+**RF-018 – Registro de relatórios dos responsáveis**  
 Permitir registro e importação de relatórios gerados na sessão de acompanhamento.
 
-**RF-019 – Gerar histórico de acompanhamento acessível a docentes e gestores**  
+**RF-019 – Geração de histórico acessível a docentes e gestores**  
 Geração de histórico de relatórios de acompanhamento acessível a docentes e gestores e exportação de relatórios.
 
 ### Objetivo Específico 5 – Gestão de Conteúdos Institucionais

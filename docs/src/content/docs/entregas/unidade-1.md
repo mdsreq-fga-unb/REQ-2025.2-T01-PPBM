@@ -1,12 +1,15 @@
 ---
-title: Entregas - Unidade 1
-description: Entregas e apresentações do projeto PPBM - Unidade 1
+title: Entregas
+description: Entregas e apresentações do projeto PPBM por unidade.
 ---
 
+## Entregas por Unidade
 
-Esta seção contém as entregas e apresentações da primeira unidade do projeto PPBM.
+Esta seção contém as entregas e apresentações do projeto organizadas por unidade.
 
-### Apresentação Unidade 1
+### Unidade 1
+
+**Entrega Unidade 1**
 
 Apresentação da primeira unidade do projeto PPBM:
 
