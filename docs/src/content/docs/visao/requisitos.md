@@ -112,12 +112,12 @@ Os conteúdos institucionais devem estar disponíveis em área dedicada, com nav
 ### Reliability (Confiabilidade)
 
 **RNF-004 – Disponibilidade**  
-O sistema deve atingir 99,5% de disponibilidade mensal para o MVP.
+O sistema deve atingir 99,5% de disponibilidade mensal, o que representa até 3,6 horas de indisponibilidade ao mês. Implementar monitoramento, alertas automáticos e backups diários. Logs de disponibilidade acessíveis para auditoria.
 
 ### Performance (Desempenho & Escalabilidade)
 
 **RNF-005 – Tempo de resposta consultas críticas**  
-Consultas e operações críticas devem responder em até 5 segundos em condições normais de uso.
+Consultas críticas (busca de conteúdos, login, página inicial e relatórios simples) devem responder em até 5 segundos, para até 100 usuários simultâneos e conexão mínima de 5 Mbps, com uso de CPU <70%
 
 **RNF-006 – Tempo de resposta páginas e exportações**  
 95% das páginas devem carregar em menos de 2 segundos; exportações de até 5k registros devem completar em até 10 segundos.
@@ -159,7 +159,7 @@ Seguir padrões de código (TypeScript, lint/prettier, TDD) com cobertura mínim
 Pipeline automatizado para build, testes, análise estática e deploy.
 
 **RNF-017 – Observabilidade**  
-Monitoramento com métricas, logs estruturados e alertas configuráveis.
+Implementar métricas de tempo de resposta, taxa de erro, uso de CPU e memória, requisições por minuto e disponibilidade; logs estruturados em JSON contendo os dados essenciais para o rastreamento do evento; alertas automáticos configurados para disponibilidade abaixo de 99%, tempo de resposta acima de 8 segundos, taxa de erro maior que 5% e uso de recursos acima de 85%.
 
 ## Histórico de Versão
 
@@ -167,3 +167,5 @@ Monitoramento com métricas, logs estruturados e alertas configuráveis.
 |------|--------|-----------|-----------|-------------|
 | 15/09/2025 | 1.0 | Criação inicial do documento de requisito. | Philipe Morais | Todos |
 | 06/10/2025 | 1.1 | Update do documento de requisito. | Lucas Branco e Vitor Marconi | Todos |
+| 10/11/2025 | 1.2 | Update do documento de requisito. | Philipe Morais | Willian Silva (Monitor) |
+| 14/11/2025 | 1.3 | Update do documento de requisito. | Philipe Morais | Willian Silva (Monitor) |
