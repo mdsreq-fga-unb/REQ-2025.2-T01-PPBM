@@ -6,12 +6,12 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Install dependencies first (better caching)
-COPY backend/package*.json ./
+COPY app/apps/backend/package*.json ./
 RUN npm install
 
 # Copy TypeScript config and source
-COPY backend/tsconfig.json ./
-COPY backend/src/ ./src/
+COPY app/apps/backend/tsconfig.json ./
+COPY app/apps/backend/src/ ./src/
 
 # Build TypeScript
 RUN npm run build

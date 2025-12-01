@@ -6,11 +6,11 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Install dependencies first (better caching)
-COPY frontend/package*.json ./
+COPY app/apps/frontend/package*.json ./
 RUN npm install
 
 # Copy source
-COPY frontend/ ./
+COPY app/apps/frontend/ ./
 
 # Build the Astro site
 RUN npm run build

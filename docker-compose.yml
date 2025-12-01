@@ -10,10 +10,10 @@ services:
       - NODE_ENV=production
       - PORT=6140
     env_file:
-      - backend/.env
+      - app/apps/backend/.env
     volumes:
       # Mount backend source for development
-      - ./backend:/app/backend:rw
+      - ./app/apps/backend:/app/backend:rw
       # Use Docker volume for node_modules to avoid permission issues
       - node_modules_data:/app/backend/node_modules
       # Use Docker volume for logs
@@ -70,9 +70,9 @@ services:
       - NODE_ENV=test
       - PORT=6140
     env_file:
-      - backend/.env
+      - app/apps/backend/.env
     volumes:
-      - ./backend:/app/backend:rw
+      - ./app/apps/backend:/app/backend:rw
       - node_modules_data:/app/backend/node_modules
     command: ["npm", "test"]
     networks:

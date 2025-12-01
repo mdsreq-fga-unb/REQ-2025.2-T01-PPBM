@@ -162,6 +162,8 @@ Thumbs.db
 # Testing
 test-results/
 playwright-report/
+.specstory/
+
 
 # Build outputs
 dist/
