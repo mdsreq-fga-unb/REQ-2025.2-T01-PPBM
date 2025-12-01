@@ -177,3 +177,5 @@ ssl/*.p12
 ssl/*.pfx
 # Keep the README
 !ssl/README.md
+.github/
+docs/
