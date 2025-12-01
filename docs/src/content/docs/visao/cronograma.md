@@ -57,18 +57,16 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 
 **Objetivo:** Primeira entrega funcional - Módulo de Cadastro e Acesso
 **Entregas:**
-- **Módulo: Acesso & Perfis (parte inicial)**
-  - US-017 – Autenticação e perfis.
-  - US-018 – Controle de permissões.
 - **Módulo: Cadastro & Dados do Aluno**
-  - US-001 – Cadastrar criança.
+  - US-001 – Cadastrar aluno.
   - US-002 – Gerenciar responsáveis.
   - US-003 – Registrar ficha médica.
-  - US-004 – Diferenciar perfil neurodivergente.
-  - US-005 – Cadastrar informações complementares do aluno
-  - US-006 – Exportar documentos de comprovante
-- **Módulo: Operação & Processo (parte inicial)**
-  - US-029 – Cadastrar turmas e sessões.
+  - US-004 – Registrar presença.
+  - US-005 – Consultar aluno.
+  - US-006 – Justificar falta.
+- **Módulo: Acesso & Perfis (parte inicial)**
+  - US-013 - Autenticar usuários e perfis.
+  - US-018 – Controle de permissões.
 - **Requisitos Não Funcionais (RNF)**
   - US-RNF-002 – Proteção de dados pessoais (LGPD)
   - US-RNF-003 – Criptografia
@@ -100,24 +98,18 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 **Objetivo:** Segunda entrega funcional - Módulo de Presença e Justificativas
 **Entregas:**
 - **Módulo: Presença & Justificativas**
-  - US-007 – Registrar presença de aluno
-  - US-008 – Justificar falta de aluno
-  - US-009 – Editar lançamento de presença
-  - US-010 – Anexar comprovantes
-  - US-011 – Definir política de justificativa de faltas
-  - US-012 – Conceder autonomia docente para justificativas
-  - US-013 – Definir motivos e exigências para justificativas
-  - US-014 – Limitar número de alunos por turma
-- **Módulo: Operação & Processo (parte 2)**
-  - US-029 – Cadastrar turmas e sessões
-- **Módulo: Acesso & Perfis (parte 2)**
-  - US-026 – Controlar permissões de acesso
+  - US-007 – Exportar relatórios internos.
+  - US-008 – Exibir dashboards de frequência.
+  - US-009 – Consulta rápida por aluno.
+  - US-011 – Registrar advertência para o aluno.
+  - US-014 – Exibir histórico do aluno.
+  - US-015 – Cadastro de turmas e sessões.
 - **Requisitos Não Funcionais (RNF)**
-  - US-RNF-001 – Tempo de resposta (5 segundos)
-  - US-RNF-010 – Contêineres Docker
+  - US-RNF-001 – Tempo de resposta (5 segundos).
+  - US-RNF-010 – Contêineres Docker.
 - **Regras de Negócio (RB)**
-  - US-RB-001 – Contabilização separada de faltas justificadas
-  - US-RB-002 – Aprovação centralizada de justificativas
+  - US-RB-001 – Contabilização separada de faltas justificadas.
+  - US-RB-002 – Aprovação centralizada de justificativas.
 
 **Validação:** Demonstração completa do sistema de presença e justificativas  
 
@@ -127,19 +119,10 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 **Objetivo:** Terceira entrega funcional - Módulos de Relatórios e Comunicação
 **Entregas:**
 - **Módulo: Relatórios & Análises**
-  - US-015 – Consultar aluno
-  - US-016 – Gerar relatório individual de frequência
-  - US-020 – Exibir histórico do aluno
-- **Módulo: Comunicação**
-  - US-022 – Registrar advertência
-- **Módulo: Operação & Processo (parte 3)**
-  - US-028 – Registrar auditoria de operações
-  - US-030 – Implementar filtros e busca avançada
-- **Módulo: Acompanhamento Neurodivergente**
-  - US-031 – Registrar plano de acompanhamento pedagógico
-- **Módulo: Gestão de Conteúdo**
-  - US-032 – Cadastrar conteúdos institucionais
-  - US-033 – Exibir conteúdos institucionais para usuários
+  - US-012 - Enviar notificações para responsável.
+  - US-016 – Consultar turma.
+  - US-019 - Gerenciar unidades
+  - US-020 – Realizar auditoria
 - **Requisitos Não Funcionais (RNF)**
   - US-RNF-006 – Disponibilidade (99,5%)
   - US-RNF-012 – Compatibilidade de navegação
@@ -156,20 +139,10 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 **Objetivo:** Quarta entrega funcional - Módulos Complementares e Integração
 **Entregas:**
 - **Módulo: Relatórios & Análises (finalização)**
-  - US-017 – Consolidar relatórios por turma/unidade
-  - US-018 – Exportar relatórios
-  - US-019 – Exibir dashboards de frequência
-  - US-021 – Exportar relatórios oficiais padronizados
-- **Módulo: Comunicação (finalização)**
-  - US-023 – Enviar notificações
-  - US-024 – Configurar preferências de notificação
-- **Módulo: Acesso & Perfis (finalização)**
-  - US-025 – Autenticar usuários e perfis
-  - US-027 – Operar multiunidade
-  - Controle completo de permissões por papel
-  - Recuperação de senha e configurações de segurança
-  - Primeiro acesso com alteração obrigatória de senha
-
+  - US-004 - Gerenciar lançamento de presença.
+  - US-008 – Suportar anexos.
+  - US-010 – Exportar relatórios.
+  - US-010.1 – Exportar relatório individual.
 - **Requisitos Não Funcionais (RNF)**
   - US-RNF-009 – Observabilidade
   - US-RNF-008 – CI/CD
@@ -186,6 +159,9 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 ## Sprint 6 (26/11 – 01/12)
 **Objetivo:** Entrega final do MVP  
 **Entregas:**
+  - US-022 - Filtro e busca.
+  - US-012 – Exportação.
+  - US-017 – Registrar plano de acompanhamento neurodivergente.
 - Correções finais e otimização  
 - Testes de aceitação (UAT)  
 - Entrega do MVP em produção  
@@ -203,3 +179,4 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 | 15/09/2025 | 1.1    | Ajuste de datas nas Sprints. | Philipe Morais | Todos       |
 | 01/10/2025 | 1.2    | Reorganização do cronograma baseada na priorização de módulos funcionais (Cadastro e Acesso → Sprint 2, Presença → Sprint 3, Relatórios e Comunicação → Sprint 4, Módulos complementares → Sprint 5). Adição de atividades de organização de backlog e Kanban. | Todos | Vitor Marconi |
 | 15/01/2025 | 1.3    | Adição de User Stories específicas nas Sprints 2, 3, 4 e 5. Distribuição lógica dos Requisitos Não Funcionais (RNF-001 a RNF-007, RNF-009 a RNF-012) e Regras de Negócio (RB-001 a RB-005) ao longo das sprints. Inclusão das User Stories faltantes na Sprint 5 para completar o cronograma. | Vitor Marconi | Todos |
+| 01/12/2025 | 1.4    | Reorganizando as entregas de acordo com as Sprints. | Philipe Morais | Todos       |
