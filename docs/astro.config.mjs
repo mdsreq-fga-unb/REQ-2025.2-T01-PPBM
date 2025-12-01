@@ -74,6 +74,10 @@ export default defineConfig({
                         slug: "visao/requisitos",
                     },
                     {
+                        label: "User Stories",
+                        slug: "visao/userstories",
+                    },
+                    {
                         label: "DoR e DoD",
                         slug: "visao/dod",
                     },
