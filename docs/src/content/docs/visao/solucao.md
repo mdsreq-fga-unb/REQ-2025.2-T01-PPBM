@@ -20,14 +20,14 @@ O sistema tem como objetivo *centralizar e simplificar a gestão das crianças a
 
 ## Características da Solução
 
-•⁠  ⁠Cadastro completo da criança (nome, data de nascimento, CPF, responsável, contato, escola). Tem relação com o Objetivo Específico OE03.
-•⁠  ⁠Registro de presença com destaque para faltas justificadas. Tem relação com o Objetivo Específico OE01.
-•⁠  ⁠Consulta rápida de histórico de faltas por aluno. Tem relação com o Objetivo Específico OE01.
-•⁠  ⁠Emissão de relatórios e exportação em Excel/PDF. Tem relação com o Objetivo Específico OE05.
-•⁠  ⁠Ficha médica com observações (asma, alergias, etc.). Tem relação com o Objetivo Específico OE02 e OE02.
-•⁠  ⁠Cadastro diferenciado para crianças neurodivergentes, com acompanhamento de desenvolvimento. Tem relação com o Objetivo Específico OE02 e 04.
-•⁠  ⁠Área de comunicação entre equipe e responsáveis. Tem relação com o Objetivo Específico OE05.
-•⁠  ⁠Ferramenta de análise gráfica de frequência e faltas. Tem relação com o Objetivo Específico OE01.
+- ⁠Cadastro completo da criança (nome, data de nascimento, CPF, responsável, contato, escola). Tem relação com o Objetivo Específico OE03.
+- ⁠Registro de presença com destaque para faltas justificadas. Tem relação com o Objetivo Específico OE01.
+- ⁠Consulta rápida de histórico de faltas por aluno. Tem relação com o Objetivo Específico OE01.
+- ⁠Emissão de relatórios e exportação em Excel/PDF. Tem relação com o Objetivo Específico OE05.
+- ⁠Ficha médica com observações (asma, alergias, etc.). Tem relação com o Objetivo Específico OE02 e OE04.
+- ⁠Cadastro diferenciado para crianças neurodivergentes, com acompanhamento de desenvolvimento. Tem relação com o Objetivo Específico OE02 e 04.
+- ⁠Área de comunicação entre equipe e responsáveis. Tem relação com o Objetivo Específico OE05.
+- ⁠Ferramenta de análise gráfica de frequência e faltas. Tem relação com o Objetivo Específico OE01.
 
 ## Tecnologias a serem utilizadas
 
@@ -70,10 +70,10 @@ Assim, o projeto apresenta *alta viabilidade técnica, financeira e de mercado*,
 A plataforma trará *eficiência administrativa*, reduzindo tarefas que antes levavam horas para poucos minutos e diminuindo custos ao centralizar presença, comunicação e relatórios em um único sistema.  
 
 Também melhora a *experiência de usuários*:  
-•⁠  ⁠Responsáveis terão acesso rápido a informações.  
-•⁠  ⁠Educadores contarão com relatórios detalhados e acompanhamento individualizado, inclusive para crianças neurodivergentes.  
+- ⁠Responsáveis terão acesso rápido a informações.  
+- ⁠Educadores contarão com relatórios detalhados e acompanhamento individualizado, inclusive para crianças neurodivergentes.  
 
-*Em resumo:* gera *agilidade, economia, aumento de receita e melhor atendimento*, fortalecendo a atuação da empresa no setor educacional.
+**Em resumo:** gera *agilidade, economia, aumento de receita e melhor atendimento*, fortalecendo a atuação da empresa no setor educacional.
 
 ## Histórico de Versão
 
@@ -81,3 +81,4 @@ Também melhora a *experiência de usuários*:
 |------|--------|-----------|-----------|-------------|
 | 15/09/2025 | 1.0 | Criação inicial do documento de solução. | Lucas Oliveira | Philipe Morais |
 | 21/11/2025 | 2.0 | Update do documento de solução, adicionado objetivos específicos. | Lucas Branco | Vitor Marconi |
+| 30/11/2025 | 2.1 | Update do documento de solução, erros ortográficos. | Lucas Branco | Todos |

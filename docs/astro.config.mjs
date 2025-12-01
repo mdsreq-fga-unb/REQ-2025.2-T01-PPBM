@@ -78,10 +78,6 @@ export default defineConfig({
                         slug: "visao/dod",
                     },
                     {
-                        label: "User Stories",
-                        slug: "visao/userstories",
-                    },
-                    {
                         label: "Backlog do Produto",
                         slug: "visao/backlog",
                     }
