@@ -18,6 +18,7 @@ import { alunoController } from './controllers/alunos';
 import { docenteController } from './controllers/docentes';
 import { turmaController } from './controllers/turmas';
 import { presencaController } from './controllers/presencas';
+import { authController } from './controllers/auth';
 
 
 dotenv.config();
@@ -29,6 +30,7 @@ const router = express.Router();
 import { AlunosController } from './controllers/alunosController';
 
 const controllers: EndpointController[] = [
+    authController,
     usuarioController,
     alunoController,
     docenteController,

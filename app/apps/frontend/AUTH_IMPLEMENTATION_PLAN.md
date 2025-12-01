@@ -159,13 +159,13 @@ Update to:
 ## Execution Order
 
 1. ✅ Create plan (this file)
-2. [ ] Create `backend/src/interfaces/auth.ts`
-3. [ ] Create `backend/src/controllers/auth.ts`
-4. [ ] Create `backend/src/middleware/auth.ts`
-5. [ ] Update `backend/src/index.ts` to register auth routes
-6. [ ] Create `frontend/src/lib/api.ts`
-7. [ ] Update `frontend/src/stores/auth.ts`
-8. [ ] Update `frontend/src/components/Login.svelte`
+2. ✅ Create `backend/src/interfaces/auth.ts`
+3. ✅ Create `backend/src/controllers/auth.ts`
+4. ✅ Create `backend/src/middleware/auth.ts`
+5. ✅ Update `backend/src/index.ts` to register auth routes
+6. ✅ Create `frontend/src/lib/api.ts`
+7. ✅ Update `frontend/src/stores/auth.ts`
+8. ✅ Update `frontend/src/components/Login.svelte`
 9. [ ] Test full flow
 
 ---

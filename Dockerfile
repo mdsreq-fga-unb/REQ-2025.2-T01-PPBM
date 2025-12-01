@@ -26,7 +26,7 @@ RUN addgroup -g 1001 -S appgroup && \
     adduser -u 1001 -S appuser -G appgroup
 
 # Copy package files and install production dependencies only
-COPY backend/package*.json ./
+COPY app/apps/backend/package*.json ./
 RUN npm ci --omit=dev
 
 # Copy built files from builder
