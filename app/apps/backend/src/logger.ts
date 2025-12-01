@@ -75,4 +75,48 @@ const logger = winston.createLogger({
     transports: getTransports(),
 });
 
+/**
+ * Controller logger interface with endpoint as first argument
+ */
+export interface ControllerLogger {
+    error: (endpoint: string, message: string, meta?: unknown) => void;
+    warn: (endpoint: string, message: string, meta?: unknown) => void;
+    info: (endpoint: string, message: string, meta?: unknown) => void;
+    http: (endpoint: string, message: string, meta?: unknown) => void;
+    debug: (endpoint: string, message: string, meta?: unknown) => void;
+}
+
+/**
+ * Creates a logger prefixed with controller name
+ * @param controllerName - The name of the controller (e.g., 'auth', 'alunos')
+ * @returns A logger instance with methods that take endpoint as first argument
+ * 
+ * @example
+ * const log = createControllerLogger('auth');
+ * log.info('login', 'User logged in', { email: 'user@example.com' });
+ * // Output: [auth/login] User logged in { email: 'user@example.com' }
+ */
+export function createControllerLogger(controllerName: string): ControllerLogger {
+    const formatMessage = (endpoint: string, message: string) =>
+        `[${controllerName}/${endpoint}] ${message}`;
+
+    return {
+        error: (endpoint: string, message: string, meta?: unknown) => {
+            logger.error(formatMessage(endpoint, message), meta);
+        },
+        warn: (endpoint: string, message: string, meta?: unknown) => {
+            logger.warn(formatMessage(endpoint, message), meta);
+        },
+        info: (endpoint: string, message: string, meta?: unknown) => {
+            logger.info(formatMessage(endpoint, message), meta);
+        },
+        http: (endpoint: string, message: string, meta?: unknown) => {
+            logger.http(formatMessage(endpoint, message), meta);
+        },
+        debug: (endpoint: string, message: string, meta?: unknown) => {
+            logger.debug(formatMessage(endpoint, message), meta);
+        },
+    };
+}
+
 export default logger; 

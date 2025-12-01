@@ -18,14 +18,14 @@ declare global {
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const authHeader = req.headers.authorization;
-        
+
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             res.status(401).json({ success: false, error: 'Token não fornecido' });
             return;
         }
 
         const token = authHeader.substring(7); // Remove 'Bearer '
-        
+
         // Verify token with Supabase
         const supabase = SupabaseWrapper.get();
         const { data: { user }, error } = await supabase.auth.getUser(token);
@@ -38,7 +38,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
         // Get user details from database
         const authUser = await getUserByEmail(user.email!);
-        
+
         if (!authUser) {
             res.status(401).json({ success: false, error: 'Usuário não encontrado no sistema' });
             return;
@@ -73,57 +73,82 @@ export const requireRole = (...allowedRoles: UserType[]) => {
 
 /**
  * Helper function to get user from database by email
+ * Returns the highest role available for the user (admin > docente > responsavel)
+ * A user must exist in responsaveis table as base, then can be elevated to docente or admin
  */
 export async function getUserByEmail(email: string): Promise<AuthUser | null> {
     const supabase = SupabaseWrapper.get();
 
-    // Check admins table
-    const { data: admin } = await supabase
+    // First, check if user exists in responsaveis (base table - required)
+    const { data: responsavel, error: responsavelError } = await supabase
+        .from('responsaveis')
+        .select('id_responsavel, email_responsavel, nome_responsavel')
+        .eq('email_responsavel', email)
+        .maybeSingle();
+
+    logger.info(`Fetching user by email: ${email} | Found responsavel: ${!!responsavel} | Error: ${!!responsavelError}`);
+
+    if (responsavelError) {
+        logger.error('Error fetching responsavel', { email, error: responsavelError });
+        return null;
+    }
+
+    if (!responsavel) {
+        // User must be registered as responsavel first
+        return null;
+    }
+
+    // Check if user is also an admin (highest priority)
+    const { data: admin, error: adminError } = await supabase
         .from('admins')
         .select('id_admin, email')
         .eq('email', email)
         .maybeSingle();
+
+    logger.info('Checking if user is admin', { email, foundAdmin: !!admin, error: adminError });
+
+    if (adminError) {
+        logger.error('Error fetching admin', { email, error: adminError });
+        return null;
+    }
 
     if (admin) {
         return {
             id: admin.id_admin,
             email: admin.email,
             userType: 'admin',
-            name: 'Administrador'
+            name: responsavel.nome_responsavel // Get name from responsaveis
         };
     }
 
-    // Check docentes table
-    const { data: docente } = await supabase
+    // Check if user is also a docente
+    const { data: docente, error: docenteError } = await supabase
         .from('docentes')
         .select('id_docente, email_docente, nome_docente')
         .eq('email_docente', email)
         .maybeSingle();
+
+    logger.info('Checking if user is docente', { email, foundDocente: !!docente, error: docenteError });
+
+    if (docenteError) {
+        logger.error('Error fetching docente', { email, error: docenteError });
+        return null;
+    }
 
     if (docente) {
         return {
             id: docente.id_docente,
             email: docente.email_docente,
             userType: 'docente',
-            name: docente.nome_docente
+            name: docente.nome_docente || responsavel.nome_responsavel
         };
     }
 
-    // Check responsaveis table
-    const { data: responsavel } = await supabase
-        .from('responsaveis')
-        .select('id_responsavel, email_responsavel, nome_responsavel')
-        .eq('email_responsavel', email)
-        .maybeSingle();
-
-    if (responsavel) {
-        return {
-            id: responsavel.id_responsavel,
-            email: responsavel.email_responsavel,
-            userType: 'responsavel',
-            name: responsavel.nome_responsavel
-        };
-    }
-
-    return null;
+    // Default to responsavel role
+    return {
+        id: responsavel.id_responsavel,
+        email: responsavel.email_responsavel,
+        userType: 'responsavel',
+        name: responsavel.nome_responsavel
+    };
 }

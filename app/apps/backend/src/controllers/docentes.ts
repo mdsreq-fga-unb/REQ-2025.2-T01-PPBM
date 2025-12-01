@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import { SupabaseWrapper } from '../utils/supabase_wrapper';
-import logger from '../logger';
+import { createControllerLogger } from '../logger';
 import { EndpointController, RequestType } from '../interfaces/index';
 import { isPositiveInteger, isValidCPF, isValidEmail, sanitizeCPF, validateRequiredFields } from '../utils/validation';
+
+const log = createControllerLogger('docentes');
 
 type DocentesListQuery = {
     page?: string;
@@ -43,7 +45,7 @@ export default class DocenteController {
             const { page, pageSize } = parsePagination(req.query.page, req.query.pageSize);
             const { unidade, cidade, nome, email, cpf } = req.query;
 
-            logger.info('[docentes][getDocentes] Listando docentes', {
+            log.info('getDocentes', 'Listando docentes', {
                 page,
                 pageSize,
                 unidade,
@@ -96,7 +98,7 @@ export default class DocenteController {
             const { data, error, count } = await query;
 
             if (error) {
-                logger.error('[docentes][getDocentes] Erro ao buscar docentes', error);
+                log.error('getDocentes', 'Erro ao buscar docentes', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -111,7 +113,7 @@ export default class DocenteController {
                 pageSize
             });
         } catch (error) {
-            logger.error('[docentes][getDocentes] Erro inesperado', error as Error);
+            log.error('getDocentes', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -128,7 +130,7 @@ export default class DocenteController {
                 });
             }
 
-            logger.info('[docentes][getDocenteById] Buscando docente', { id });
+            log.info('getDocenteById', 'Buscando docente', { id });
 
             const { data, error } = await SupabaseWrapper.get()
                 .from('docentes')
@@ -145,7 +147,7 @@ export default class DocenteController {
                 .maybeSingle();
 
             if (error) {
-                logger.error('[docentes][getDocenteById] Erro ao buscar docente', error);
+                log.error('getDocenteById', 'Erro ao buscar docente', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -153,7 +155,7 @@ export default class DocenteController {
             }
 
             if (!data) {
-                logger.warn('[docentes][getDocenteById] Docente não encontrado', { id });
+                log.warn('getDocenteById', 'Docente não encontrado', { id });
                 return res.status(404).json({
                     error: 'Docente não encontrado'
                 });
@@ -164,7 +166,7 @@ export default class DocenteController {
                 data
             });
         } catch (error) {
-            logger.error('[docentes][getDocenteById] Erro inesperado', error as Error);
+            log.error('getDocenteById', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -200,7 +202,7 @@ export default class DocenteController {
 
             const normalizedEmail = payload.email_docente.trim().toLowerCase();
 
-            logger.info('[docentes][createDocente] Verificando duplicidades', {
+            log.info('createDocente', 'Verificando duplicidades', {
                 cpf: sanitizedCPF,
                 email: normalizedEmail
             });
@@ -219,7 +221,7 @@ export default class DocenteController {
             ]);
 
             if ((cpfError && cpfError.code !== 'PGRST116') || (emailError && emailError.code !== 'PGRST116')) {
-                logger.error('[docentes][createDocente] Erro ao verificar duplicidades', { cpfError, emailError });
+                log.error('createDocente', 'Erro ao verificar duplicidades', { cpfError, emailError });
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: cpfError?.message ?? emailError?.message
@@ -246,7 +248,7 @@ export default class DocenteController {
                 cidade_docente: payload.cidade_docente ?? null
             };
 
-            logger.info('[docentes][createDocente] Criando docente', { nome: insertPayload.nome_docente });
+            log.info('createDocente', 'Criando docente', { nome: insertPayload.nome_docente });
 
             const { data, error } = await SupabaseWrapper.get()
                 .from('docentes')
@@ -255,7 +257,7 @@ export default class DocenteController {
                 .single();
 
             if (error) {
-                logger.error('[docentes][createDocente] Erro ao criar docente', error);
+                log.error('createDocente', 'Erro ao criar docente', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -268,7 +270,7 @@ export default class DocenteController {
                 message: 'Docente criado com sucesso'
             });
         } catch (error) {
-            logger.error('[docentes][createDocente] Erro inesperado', error as Error);
+            log.error('createDocente', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -294,7 +296,7 @@ export default class DocenteController {
                 .maybeSingle();
 
             if (fetchError) {
-                logger.error('[docentes][updateDocente] Erro ao buscar docente', fetchError);
+                log.error('updateDocente', 'Erro ao buscar docente', fetchError);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: fetchError.message
@@ -338,7 +340,7 @@ export default class DocenteController {
                     .maybeSingle();
 
                 if (cpfError && cpfError.code !== 'PGRST116') {
-                    logger.error('[docentes][updateDocente] Erro ao verificar CPF', cpfError);
+                    log.error('updateDocente', 'Erro ao verificar CPF', cpfError);
                     return res.status(500).json({
                         error: 'Erro interno do servidor',
                         details: cpfError.message
@@ -371,7 +373,7 @@ export default class DocenteController {
                     .maybeSingle();
 
                 if (emailError && emailError.code !== 'PGRST116') {
-                    logger.error('[docentes][updateDocente] Erro ao verificar email', emailError);
+                    log.error('updateDocente', 'Erro ao verificar email', emailError);
                     return res.status(500).json({
                         error: 'Erro interno do servidor',
                         details: emailError.message
@@ -401,7 +403,7 @@ export default class DocenteController {
                 .single();
 
             if (error) {
-                logger.error('[docentes][updateDocente] Erro ao atualizar docente', error);
+                log.error('updateDocente', 'Erro ao atualizar docente', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -414,7 +416,7 @@ export default class DocenteController {
                 message: 'Docente atualizado com sucesso'
             });
         } catch (error) {
-            logger.error('[docentes][updateDocente] Erro inesperado', error as Error);
+            log.error('updateDocente', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -438,7 +440,7 @@ export default class DocenteController {
                 .maybeSingle();
 
             if (fetchError) {
-                logger.error('[docentes][deleteDocente] Erro ao buscar docente', fetchError);
+                log.error('deleteDocente', 'Erro ao buscar docente', fetchError);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: fetchError.message
@@ -457,7 +459,7 @@ export default class DocenteController {
                 .eq('id_docente', Number(id));
 
             if (error) {
-                logger.error('[docentes][deleteDocente] Erro ao remover docente', error);
+                log.error('deleteDocente', 'Erro ao remover docente', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -469,7 +471,7 @@ export default class DocenteController {
                 message: 'Docente removido com sucesso'
             });
         } catch (error) {
-            logger.error('[docentes][deleteDocente] Erro inesperado', error as Error);
+            log.error('deleteDocente', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });

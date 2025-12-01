@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import { SupabaseWrapper } from '../utils/supabase_wrapper';
-import logger from '../logger';
+import { createControllerLogger } from '../logger';
 import { EndpointController, RequestType } from '../interfaces/index';
 import { isPositiveInteger, validateRequiredFields } from '../utils/validation';
+
+const log = createControllerLogger('presencas');
 
 type PresencasListQuery = {
     page?: string;
@@ -47,7 +49,7 @@ async function ensureEntityExists(table: string, idColumn: string, idValue: numb
         .maybeSingle();
 
     if (error) {
-        logger.error(`[presencas][ensureEntityExists] Erro ao verificar entidade ${table}`, error);
+        log.error('ensureEntityExists', `Erro ao verificar entidade ${table}`, error);
         throw error;
     }
 
@@ -77,7 +79,7 @@ export default class PresencaController {
                 to
             } = req.query;
 
-            logger.info('[presencas][getPresencas] Listando presenças', {
+            log.info('getPresencas', 'Listando presenças', {
                 page,
                 pageSize,
                 alunoId,
@@ -142,7 +144,7 @@ export default class PresencaController {
             const { data, error, count } = await query;
 
             if (error) {
-                logger.error('[presencas][getPresencas] Erro ao buscar presenças', error);
+                log.error('getPresencas', 'Erro ao buscar presenças', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -157,7 +159,7 @@ export default class PresencaController {
                 pageSize
             });
         } catch (error) {
-            logger.error('[presencas][getPresencas] Erro inesperado', error as Error);
+            log.error('getPresencas', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -194,7 +196,7 @@ export default class PresencaController {
                 .maybeSingle();
 
             if (error) {
-                logger.error('[presencas][getPresencaById] Erro ao buscar presença', error);
+                log.error('getPresencaById', 'Erro ao buscar presença', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -212,7 +214,7 @@ export default class PresencaController {
                 data
             });
         } catch (error) {
-            logger.error('[presencas][getPresencaById] Erro inesperado', error as Error);
+            log.error('getPresencaById', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -290,7 +292,7 @@ export default class PresencaController {
                 .single();
 
             if (error) {
-                logger.error('[presencas][createPresenca] Erro ao criar presença', error);
+                log.error('createPresenca', 'Erro ao criar presença', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -303,7 +305,7 @@ export default class PresencaController {
                 message: 'Presença registrada com sucesso'
             });
         } catch (error) {
-            logger.error('[presencas][createPresenca] Erro inesperado', error as Error);
+            log.error('createPresenca', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -329,7 +331,7 @@ export default class PresencaController {
                 .maybeSingle();
 
             if (fetchError) {
-                logger.error('[presencas][updatePresenca] Erro ao buscar presença', fetchError);
+                log.error('updatePresenca', 'Erro ao buscar presença', fetchError);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: fetchError.message
@@ -450,7 +452,7 @@ export default class PresencaController {
                 .single();
 
             if (error) {
-                logger.error('[presencas][updatePresenca] Erro ao atualizar presença', error);
+                log.error('updatePresenca', 'Erro ao atualizar presença', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -463,7 +465,7 @@ export default class PresencaController {
                 message: 'Presença atualizada com sucesso'
             });
         } catch (error) {
-            logger.error('[presencas][updatePresenca] Erro inesperado', error as Error);
+            log.error('updatePresenca', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -487,7 +489,7 @@ export default class PresencaController {
                 .maybeSingle();
 
             if (fetchError) {
-                logger.error('[presencas][deletePresenca] Erro ao buscar presença', fetchError);
+                log.error('deletePresenca', 'Erro ao buscar presença', fetchError);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: fetchError.message
@@ -506,7 +508,7 @@ export default class PresencaController {
                 .eq('id_presenca', Number(id));
 
             if (error) {
-                logger.error('[presencas][deletePresenca] Erro ao remover presença', error);
+                log.error('deletePresenca', 'Erro ao remover presença', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -518,7 +520,7 @@ export default class PresencaController {
                 message: 'Registro de presença removido com sucesso'
             });
         } catch (error) {
-            logger.error('[presencas][deletePresenca] Erro inesperado', error as Error);
+            log.error('deletePresenca', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });

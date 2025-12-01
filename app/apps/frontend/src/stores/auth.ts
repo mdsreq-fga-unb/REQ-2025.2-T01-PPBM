@@ -1,182 +1,184 @@
 import { writable, get } from 'svelte/store';
-import { 
-    login as apiLogin, 
-    logout as apiLogout, 
-    getCurrentUser,
-    setAuthTokens,
-    clearAuthTokens,
-    getAuthToken,
-    type AuthUser 
+import {
+	login as apiLogin,
+	logout as apiLogout,
+	getCurrentUser,
+	setAuthTokens,
+	clearAuthTokens,
+	getAuthToken,
+	type AuthUser
 } from '../lib/api';
 
 export type { AuthUser };
 
 export interface AuthState {
-    isLoggedIn: boolean;
-    currentUser: AuthUser | null;
-    isLoading: boolean;
+	isLoggedIn: boolean;
+	currentUser: AuthUser | null;
+	isLoading: boolean;
 }
 
 // Create auth store
 function createAuthStore() {
-    const { subscribe, set, update } = writable<AuthState>({
-        isLoggedIn: false,
-        currentUser: null,
-        isLoading: false,
-    });
+	const { subscribe, set, update } = writable<AuthState>({
+		isLoggedIn: false,
+		currentUser: null,
+		isLoading: false,
+	});
 
-    return {
-        subscribe,
+	return {
+		subscribe,
 
-        /**
-         * Login with email and password
-         */
-        login: async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
-            update(state => ({ ...state, isLoading: true }));
+		/**
+		 * Login with email and password
+		 */
+		login: async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+			update(state => ({ ...state, isLoading: true }));
 
-            try {
-                const response = await apiLogin(email, password);
+			
 
-                if (response.success && response.data) {
-                    const { token, refreshToken, user } = response.data;
+			try {
+				const response = await apiLogin(email, password);
 
-                    // Store tokens
-                    setAuthTokens(token, refreshToken);
+				if (response.success && response.data) {
+					const { token, refreshToken, user } = response.data;
 
-                    // Store user in localStorage for persistence
-                    if (typeof window !== 'undefined') {
-                        localStorage.setItem('bm_user', JSON.stringify(user));
-                    }
+					// Store tokens
+					setAuthTokens(token, refreshToken);
 
-                    // Update store
-                    set({
-                        isLoggedIn: true,
-                        currentUser: user,
-                        isLoading: false,
-                    });
+					// Store user in localStorage for persistence
+					if (typeof window !== 'undefined') {
+						localStorage.setItem('bm_user', JSON.stringify(user));
+					}
 
-                    return { success: true };
-                }
+					// Update store
+					set({
+						isLoggedIn: true,
+						currentUser: user,
+						isLoading: false,
+					});
 
-                update(state => ({ ...state, isLoading: false }));
-                return { success: false, error: response.error || 'Erro ao fazer login' };
-            } catch (error) {
-                update(state => ({ ...state, isLoading: false }));
-                return { success: false, error: 'Erro de conexão com o servidor' };
-            }
-        },
+					return { success: true };
+				}
 
-        /**
-         * Logout user
-         */
-        logout: async () => {
-            try {
-                await apiLogout();
-            } catch {
-                // Even if API call fails, clear local state
-            }
+				update(state => ({ ...state, isLoading: false }));
+				return { success: false, error: response.error || 'Erro ao fazer login' };
+			} catch (error) {
+				update(state => ({ ...state, isLoading: false }));
+				return { success: false, error: 'Erro de conexão com o servidor' };
+			}
+		},
 
-            // Clear tokens and user data
-            clearAuthTokens();
+		/**
+		 * Logout user
+		 */
+		logout: async () => {
+			try {
+				await apiLogout();
+			} catch {
+				// Even if API call fails, clear local state
+			}
 
-            // Clear store
-            set({
-                isLoggedIn: false,
-                currentUser: null,
-                isLoading: false,
-            });
-        },
+			// Clear tokens and user data
+			clearAuthTokens();
 
-        /**
-         * Check if user is authenticated (on page load)
-         */
-        checkAuth: async (): Promise<boolean> => {
-            // First check if we have a token
-            const token = getAuthToken();
-            if (!token) {
-                return false;
-            }
+			// Clear store
+			set({
+				isLoggedIn: false,
+				currentUser: null,
+				isLoading: false,
+			});
+		},
 
-            // Try to load from localStorage first for faster UX
-            if (typeof window !== 'undefined') {
-                const savedUser = localStorage.getItem('bm_user');
-                if (savedUser) {
-                    try {
-                        const user = JSON.parse(savedUser) as AuthUser;
-                        set({
-                            isLoggedIn: true,
-                            currentUser: user,
-                            isLoading: true, // Still loading to verify token
-                        });
-                    } catch {
-                        // Invalid saved user, continue with API check
-                    }
-                }
-            }
+		/**
+		 * Check if user is authenticated (on page load)
+		 */
+		checkAuth: async (): Promise<boolean> => {
+			// First check if we have a token
+			const token = getAuthToken();
+			if (!token) {
+				return false;
+			}
 
-            // Verify token with API
-            try {
-                const response = await getCurrentUser();
+			// Try to load from localStorage first for faster UX
+			if (typeof window !== 'undefined') {
+				const savedUser = localStorage.getItem('bm_user');
+				if (savedUser) {
+					try {
+						const user = JSON.parse(savedUser) as AuthUser;
+						set({
+							isLoggedIn: true,
+							currentUser: user,
+							isLoading: true, // Still loading to verify token
+						});
+					} catch {
+						// Invalid saved user, continue with API check
+					}
+				}
+			}
 
-                if (response.success && response.data?.user) {
-                    const user = response.data.user;
+			// Verify token with API
+			try {
+				const response = await getCurrentUser();
 
-                    // Update localStorage with fresh data
-                    if (typeof window !== 'undefined') {
-                        localStorage.setItem('bm_user', JSON.stringify(user));
-                    }
+				if (response.success && response.data?.user) {
+					const user = response.data.user;
 
-                    set({
-                        isLoggedIn: true,
-                        currentUser: user,
-                        isLoading: false,
-                    });
+					// Update localStorage with fresh data
+					if (typeof window !== 'undefined') {
+						localStorage.setItem('bm_user', JSON.stringify(user));
+					}
 
-                    return true;
-                }
+					set({
+						isLoggedIn: true,
+						currentUser: user,
+						isLoading: false,
+					});
 
-                // Token invalid, clear everything
-                clearAuthTokens();
-                set({
-                    isLoggedIn: false,
-                    currentUser: null,
-                    isLoading: false,
-                });
+					return true;
+				}
 
-                return false;
-            } catch {
-                // Network error, but we have cached user, keep them logged in
-                const state = get({ subscribe });
-                if (state.currentUser) {
-                    update(s => ({ ...s, isLoading: false }));
-                    return true;
-                }
+				// Token invalid, clear everything
+				clearAuthTokens();
+				set({
+					isLoggedIn: false,
+					currentUser: null,
+					isLoading: false,
+				});
 
-                set({
-                    isLoggedIn: false,
-                    currentUser: null,
-                    isLoading: false,
-                });
+				return false;
+			} catch {
+				// Network error, but we have cached user, keep them logged in
+				const state = get({ subscribe });
+				if (state.currentUser) {
+					update(s => ({ ...s, isLoading: false }));
+					return true;
+				}
 
-                return false;
-            }
-        },
+				set({
+					isLoggedIn: false,
+					currentUser: null,
+					isLoading: false,
+				});
 
-        /**
-         * Get current user synchronously from store
-         */
-        getUser: (): AuthUser | null => {
-            return get({ subscribe }).currentUser;
-        },
+				return false;
+			}
+		},
 
-        /**
-         * Check if user has specific role
-         */
-        hasRole: (role: AuthUser['userType']): boolean => {
-            const state = get({ subscribe });
-            return state.currentUser?.userType === role;
-        },
-    };
+		/**
+		 * Get current user synchronously from store
+		 */
+		getUser: (): AuthUser | null => {
+			return get({ subscribe }).currentUser;
+		},
+
+		/**
+		 * Check if user has specific role
+		 */
+		hasRole: (role: AuthUser['tipo']): boolean => {
+			const state = get({ subscribe });
+			return state.currentUser?.tipo === role;
+		},
+	};
 }
 
 export const authStore = createAuthStore();

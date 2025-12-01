@@ -2,24 +2,26 @@ import { Request, Response } from 'express';
 import { EndpointController, RequestType } from '../interfaces/index';
 import { SupabaseWrapper } from '../utils/supabase_wrapper';
 import { Pair } from '../utils/utils';
-import { 
-    Aluno, 
-    Responsavel, 
-    CadastroAlunoRequest, 
-    CadastroAlunoResponse 
+import {
+    Aluno,
+    Responsavel,
+    CadastroAlunoRequest,
+    CadastroAlunoResponse
 } from '../interfaces/aluno';
-import { 
-    isValidCPF, 
-    normalizeCPF, 
-    isValidDate, 
-    isValidEmail, 
-    isValidPhone 
+import {
+    isValidCPF,
+    normalizeCPF,
+    isValidDate,
+    isValidEmail,
+    isValidPhone
 } from '../utils/validation';
-import logger from '../logger';
+import { createControllerLogger } from '../logger';
+
+const log = createControllerLogger('alunos');
 
 export class AlunosController implements EndpointController {
     name = 'alunos';
-    
+
     routes = {
         '': [new Pair(RequestType.POST, this.cadastrarAluno.bind(this))]
     };
@@ -30,14 +32,14 @@ export class AlunosController implements EndpointController {
      */
     async cadastrarAluno(req: Request, res: Response): Promise<Response> {
         try {
-            logger.info('[AlunosController][cadastrarAluno] Iniciando cadastro de aluno');
-            
+            log.info('cadastrarAluno', 'Iniciando cadastro de aluno');
+
             const requestData: CadastroAlunoRequest = req.body;
-            
+
             // Validar dados de entrada
             const validationResult = this.validateCadastroRequest(requestData);
             if (!validationResult.isValid) {
-                logger.warn('[AlunosController][cadastrarAluno] Dados inválidos:', validationResult.errors);
+                log.warn('cadastrarAluno', 'Dados inválidos:', validationResult.errors);
                 return res.status(400).json({
                     success: false,
                     message: 'Dados inválidos',
@@ -46,11 +48,11 @@ export class AlunosController implements EndpointController {
             }
 
             const supabase = SupabaseWrapper.get();
-            
+
             // Normalizar CPFs
             const cpfAlunoNormalizado = normalizeCPF(requestData.aluno.cpf_aluno);
-            const cpfResponsavelNormalizado = requestData.responsavel.cpf_responsavel 
-                ? normalizeCPF(requestData.responsavel.cpf_responsavel) 
+            const cpfResponsavelNormalizado = requestData.responsavel.cpf_responsavel
+                ? normalizeCPF(requestData.responsavel.cpf_responsavel)
                 : null;
 
             // Verificar se já existe aluno com o mesmo CPF
@@ -61,7 +63,7 @@ export class AlunosController implements EndpointController {
                 .maybeSingle();
 
             if (errorBuscaAluno) {
-                logger.error('[AlunosController][cadastrarAluno] Erro ao buscar aluno existente:', errorBuscaAluno);
+                log.error('cadastrarAluno', 'Erro ao buscar aluno existente:', errorBuscaAluno);
                 return res.status(500).json({
                     success: false,
                     message: 'Erro interno do servidor',
@@ -70,7 +72,7 @@ export class AlunosController implements EndpointController {
             }
 
             if (alunoExistente) {
-                logger.warn('[AlunosController][cadastrarAluno] CPF já cadastrado:', cpfAlunoNormalizado);
+                log.warn('cadastrarAluno', 'CPF já cadastrado:', cpfAlunoNormalizado);
                 return res.status(409).json({
                     success: false,
                     message: 'CPF já cadastrado',
@@ -80,7 +82,7 @@ export class AlunosController implements EndpointController {
 
             // Buscar ou criar responsável
             let responsavel: Responsavel;
-            
+
             if (cpfResponsavelNormalizado) {
                 // Buscar responsável existente pelo CPF
                 const { data: responsavelExistente, error: errorBuscaResponsavel } = await supabase
@@ -90,7 +92,7 @@ export class AlunosController implements EndpointController {
                     .maybeSingle();
 
                 if (errorBuscaResponsavel) {
-                    logger.error('[AlunosController][cadastrarAluno] Erro ao buscar responsável:', errorBuscaResponsavel);
+                    log.error('cadastrarAluno', 'Erro ao buscar responsável:', errorBuscaResponsavel);
                     return res.status(500).json({
                         success: false,
                         message: 'Erro interno do servidor',
@@ -100,7 +102,7 @@ export class AlunosController implements EndpointController {
 
                 if (responsavelExistente) {
                     responsavel = responsavelExistente;
-                    logger.info('[AlunosController][cadastrarAluno] Responsável encontrado:', responsavel.id_responsavel);
+                    log.info('cadastrarAluno', 'Responsável encontrado:', responsavel.id_responsavel);
                 } else {
                     // Criar novo responsável
                     responsavel = await this.criarResponsavel(requestData.responsavel, cpfResponsavelNormalizado);
@@ -131,7 +133,7 @@ export class AlunosController implements EndpointController {
                 .single();
 
             if (errorInsercaoAluno) {
-                logger.error('[AlunosController][cadastrarAluno] Erro ao inserir aluno:', errorInsercaoAluno);
+                log.error('cadastrarAluno', 'Erro ao inserir aluno:', errorInsercaoAluno);
                 return res.status(500).json({
                     success: false,
                     message: 'Erro interno do servidor',
@@ -148,10 +150,10 @@ export class AlunosController implements EndpointController {
                 });
 
             if (errorVinculo) {
-                logger.error('[AlunosController][cadastrarAluno] Erro ao criar vínculo:', errorVinculo);
+                log.error('cadastrarAluno', 'Erro ao criar vínculo:', errorVinculo);
                 // Tentar remover o aluno criado para manter consistência
                 await supabase.from('alunos').delete().eq('id_aluno', alunoInserido.id_aluno);
-                
+
                 return res.status(500).json({
                     success: false,
                     message: 'Erro interno do servidor',
@@ -159,7 +161,7 @@ export class AlunosController implements EndpointController {
                 } as CadastroAlunoResponse);
             }
 
-            logger.info('[AlunosController][cadastrarAluno] Aluno cadastrado com sucesso:', alunoInserido.id_aluno);
+            log.info('cadastrarAluno', 'Aluno cadastrado com sucesso:', alunoInserido.id_aluno);
 
             return res.status(201).json({
                 success: true,
@@ -171,7 +173,7 @@ export class AlunosController implements EndpointController {
             } as CadastroAlunoResponse);
 
         } catch (error) {
-            logger.error('[AlunosController][cadastrarAluno] Erro inesperado:', error);
+            log.error('cadastrarAluno', 'Erro inesperado:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Erro interno do servidor',
@@ -185,7 +187,7 @@ export class AlunosController implements EndpointController {
      */
     private async criarResponsavel(dadosResponsavel: any, cpfNormalizado: string | null): Promise<Responsavel> {
         const supabase = SupabaseWrapper.get();
-        
+
         const novoResponsavel: Partial<Responsavel> = {
             nome_responsavel: dadosResponsavel.nome_responsavel,
             telefone_responsavel: dadosResponsavel.telefone_responsavel,
@@ -201,11 +203,11 @@ export class AlunosController implements EndpointController {
             .single();
 
         if (errorInsercaoResponsavel) {
-            logger.error('[AlunosController][criarResponsavel] Erro ao inserir responsável:', errorInsercaoResponsavel);
+            log.error('criarResponsavel', 'Erro ao inserir responsável:', errorInsercaoResponsavel);
             throw new Error('Erro ao cadastrar responsável');
         }
 
-        logger.info('[AlunosController][criarResponsavel] Responsável criado:', responsavelInserido.id_responsavel);
+        log.info('criarResponsavel', 'Responsável criado:', responsavelInserido.id_responsavel);
         return responsavelInserido;
     }
 

@@ -2,20 +2,20 @@
 const currentPath = Astro.url.pathname;
 
 const isActive = (path: string) => {
-    if (path === '/admin/presencas') {
-        return currentPath === '/admin/presencas';
+    if (path === "/admin/presencas") {
+        return currentPath === "/admin/presencas";
     }
-    if (path === '/alunos/cadastrar') {
-        return currentPath === '/alunos/cadastrar';
+    if (path === "/admin/cadastrar-alunos") {
+        return currentPath === "/admin/cadastrar-alunos";
     }
-    if (path === '/admin/gerenciar-alunos') {
-        return currentPath === '/admin/gerenciar-alunos';
+    if (path === "/admin/gerenciar-alunos") {
+        return currentPath === "/admin/gerenciar-alunos";
     }
-    if (path === '/admin/relatorios') {
-        return currentPath === '/admin/relatorios';
+    if (path === "/admin/relatorios") {
+        return currentPath === "/admin/relatorios";
     }
-    if (path === '/admin/dashboard') {
-        return currentPath === '/admin/dashboard';
+    if (path === "/admin/dashboard") {
+        return currentPath === "/admin/dashboard";
     }
     return currentPath.startsWith(path);
 };
@@ -24,37 +24,49 @@ const isActive = (path: string) => {
 <div class="sidebar-wrapper">
     <nav class="sidebar">
         <ul class="nav-list">
-            <li class={`nav-item ${isActive('/admin/presencas') ? 'active' : ''}`}>
+            <li
+                class={`nav-item ${isActive("/admin/presencas") ? "active" : ""}`}
+            >
                 <a href="/admin/presencas" class="nav-link">
                     <span class="nav-icon">📅</span>
                     <span class="nav-text">Presenças</span>
                 </a>
             </li>
-            <li class={`nav-item ${isActive('/alunos/cadastrar') ? 'active' : ''}`}>
-                <a href="/alunos/cadastrar" class="nav-link">
+            <li
+                class={`nav-item ${isActive("/admin/cadastrar-alunos") ? "active" : ""}`}
+            >
+                <a href="/admin/cadastrar-alunos" class="nav-link">
                     <span class="nav-icon">😀</span>
-                    <span class="nav-text">Cadastro</span>
+                    <span class="nav-text">Cadastrar Aluno</span>
                 </a>
             </li>
-            <li class={`nav-item ${isActive('/admin/gerenciar-alunos') ? 'active' : ''}`}>
+            <li
+                class={`nav-item ${isActive("/admin/gerenciar-alunos") ? "active" : ""}`}
+            >
                 <a href="/admin/gerenciar-alunos" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Gerenciar Alunos</span>
                 </a>
             </li>
-            <li class={`nav-item ${isActive('/admin/comunicacao') ? 'active' : ''}`}>
+            <li
+                class={`nav-item ${isActive("/admin/comunicacao") ? "active" : ""}`}
+            >
                 <a href="/admin/comunicacao" class="nav-link">
                     <span class="nav-icon">💬</span>
                     <span class="nav-text">Comunicação</span>
                 </a>
             </li>
-            <li class={`nav-item ${isActive('/admin/relatorios') ? 'active' : ''}`}>
+            <li
+                class={`nav-item ${isActive("/admin/relatorios") ? "active" : ""}`}
+            >
                 <a href="/admin/relatorios" class="nav-link">
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Relatórios</span>
                 </a>
             </li>
-            <li class={`nav-item ${isActive('/admin/dashboard') ? 'active' : ''}`}>
+            <li
+                class={`nav-item ${isActive("/admin/dashboard") ? "active" : ""}`}
+            >
                 <a href="/admin/dashboard" class="nav-link">
                     <span class="nav-icon">📈</span>
                     <span class="nav-text">Dashboard</span>
@@ -73,7 +85,7 @@ const isActive = (path: string) => {
         width: 240px;
         background-color: #fff;
         border-radius: 12px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         padding: 20px 0;
         flex-shrink: 0;
     }
@@ -174,4 +186,3 @@ const isActive = (path: string) => {
         }
     }
 </style>
-

@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { SupabaseWrapper } from '../utils/supabase_wrapper';
-import logger from '../logger';
+import { createControllerLogger } from '../logger';
 import { EndpointController, RequestType } from '../interfaces/index';
+
+const log = createControllerLogger('usuarios');
 
 
 export default class UsuarioController {
@@ -10,31 +12,31 @@ export default class UsuarioController {
      */
     static async getUsuarios(req: Request, res: Response): Promise<Response | void> {
         try {
-            logger.info('[usuarios][getUsuarios] Listando todos os usuários');
-            
+            log.info('getUsuarios', 'Listando todos os usuários');
+
             const { data, error } = await SupabaseWrapper.get()
                 .from('admins')
                 .select('*')
                 .order('created_at', { ascending: false });
 
             if (error) {
-                logger.error('[usuarios][getUsuarios] Erro ao buscar usuários', error);
-                return res.status(500).json({ 
+                log.error('getUsuarios', 'Erro ao buscar usuários', error);
+                return res.status(500).json({
                     error: 'Erro interno do servidor',
-                    details: error.message 
+                    details: error.message
                 });
             }
 
-            logger.info(`[usuarios][getUsuarios] Encontrados ${data?.length || 0} usuários`);
+            log.info('getUsuarios', `Encontrados ${data?.length || 0} usuários`);
             return res.status(200).json({
                 success: true,
                 data: data || [],
                 total: data?.length || 0
             });
         } catch (error) {
-            logger.error('[usuarios][getUsuarios] Erro inesperado', error);
-            return res.status(500).json({ 
-                error: 'Erro interno do servidor' 
+            log.error('getUsuarios', 'Erro inesperado', error);
+            return res.status(500).json({
+                error: 'Erro interno do servidor'
             });
         }
     }
@@ -45,15 +47,15 @@ export default class UsuarioController {
     static async getUsuarioById(req: Request, res: Response): Promise<Response | void> {
         try {
             const { id } = req.params;
-            
+
             if (!id || isNaN(Number(id))) {
                 return res.status(400).json({
                     error: 'ID inválido'
                 });
             }
 
-            logger.info(`[usuarios][getUsuarioById] Buscando usuário com ID: ${id}`);
-            
+            log.info('getUsuarioById', `Buscando usuário com ID: ${id}`);
+
             const { data, error } = await SupabaseWrapper.get()
                 .from('admins')
                 .select('*')
@@ -61,29 +63,29 @@ export default class UsuarioController {
                 .maybeSingle();
 
             if (error) {
-                logger.error('[usuarios][getUsuarioById] Erro ao buscar usuário', error);
-                return res.status(500).json({ 
+                log.error('getUsuarioById', 'Erro ao buscar usuário', error);
+                return res.status(500).json({
                     error: 'Erro interno do servidor',
-                    details: error.message 
+                    details: error.message
                 });
             }
 
             if (!data) {
-                logger.warning(`[usuarios][getUsuarioById] Usuário não encontrado: ${id}`);
+                log.warn('getUsuarioById', `Usuário não encontrado: ${id}`);
                 return res.status(404).json({
                     error: 'Usuário não encontrado'
                 });
             }
 
-            logger.info(`[usuarios][getUsuarioById] Usuário encontrado: ${id}`);
+            log.info('getUsuarioById', `Usuário encontrado: ${id}`);
             return res.status(200).json({
                 success: true,
                 data
             });
         } catch (error) {
-            logger.error('[usuarios][getUsuarioById] Erro inesperado', error);
-            return res.status(500).json({ 
-                error: 'Erro interno do servidor' 
+            log.error('getUsuarioById', 'Erro inesperado', error);
+            return res.status(500).json({
+                error: 'Erro interno do servidor'
             });
         }
     }
@@ -101,8 +103,8 @@ export default class UsuarioController {
                 });
             }
 
-            logger.info(`[usuarios][verificarUsuarioPorEmail] Verificando usuário com email: ${email}`);
-            
+            log.info('verificarUsuarioPorEmail', `Verificando usuário com email: ${email}`);
+
             const { data, error } = await SupabaseWrapper.get()
                 .from('admins')
                 .select('id_admin, email')
@@ -110,16 +112,16 @@ export default class UsuarioController {
                 .maybeSingle();
 
             if (error) {
-                logger.error('[usuarios][verificarUsuarioPorEmail] Erro ao verificar usuário', error);
-                return res.status(500).json({ 
+                log.error('verificarUsuarioPorEmail', 'Erro ao verificar usuário', error);
+                return res.status(500).json({
                     error: 'Erro interno do servidor',
-                    details: error.message 
+                    details: error.message
                 });
             }
 
             const exists = !!data;
-            logger.info(`[usuarios][verificarUsuarioPorEmail] Usuário ${exists ? 'encontrado' : 'não encontrado'}: ${email}`);
-            
+            log.info('verificarUsuarioPorEmail', `Usuário ${exists ? 'encontrado' : 'não encontrado'}: ${email}`);
+
             return res.status(200).json({
                 success: true,
                 exists,
@@ -127,9 +129,9 @@ export default class UsuarioController {
                 userId: data?.id_admin || null
             });
         } catch (error) {
-            logger.error('[usuarios][verificarUsuarioPorEmail] Erro inesperado', error);
-            return res.status(500).json({ 
-                error: 'Erro interno do servidor' 
+            log.error('verificarUsuarioPorEmail', 'Erro inesperado', error);
+            return res.status(500).json({
+                error: 'Erro interno do servidor'
             });
         }
     }
@@ -148,7 +150,7 @@ export default class UsuarioController {
             }
 
             // Verificar se já existe um usuário com este email
-            logger.info(`[usuarios][createUsuario] Verificando se usuário já existe: ${email}`);
+            log.info('createUsuario', `Verificando se usuário já existe: ${email}`);
             const { data: existingUser } = await SupabaseWrapper.get()
                 .from('admins')
                 .select('id_admin')
@@ -156,14 +158,14 @@ export default class UsuarioController {
                 .maybeSingle();
 
             if (existingUser) {
-                logger.warning(`[usuarios][createUsuario] Usuário já existe: ${email}`);
+                log.warn('createUsuario', `Usuário já existe: ${email}`);
                 return res.status(409).json({
                     error: 'Usuário já existe com este email'
                 });
             }
 
-            logger.info(`[usuarios][createUsuario] Criando novo usuário: ${email}`);
-            
+            log.info('createUsuario', `Criando novo usuário: ${email}`);
+
             const { data, error } = await SupabaseWrapper.get()
                 .from('admins')
                 .insert([{ email }])
@@ -171,23 +173,23 @@ export default class UsuarioController {
                 .single();
 
             if (error) {
-                logger.error('[usuarios][createUsuario] Erro ao criar usuário', error);
-                return res.status(500).json({ 
+                log.error('createUsuario', 'Erro ao criar usuário', error);
+                return res.status(500).json({
                     error: 'Erro interno do servidor',
-                    details: error.message 
+                    details: error.message
                 });
             }
 
-            logger.info(`[usuarios][createUsuario] Usuário criado com sucesso: ${data.id_admin}`);
+            log.info('createUsuario', `Usuário criado com sucesso: ${data.id_admin}`);
             return res.status(201).json({
                 success: true,
                 data,
                 message: 'Usuário criado com sucesso'
             });
         } catch (error) {
-            logger.error('[usuarios][createUsuario] Erro inesperado', error);
-            return res.status(500).json({ 
-                error: 'Erro interno do servidor' 
+            log.error('createUsuario', 'Erro inesperado', error);
+            return res.status(500).json({
+                error: 'Erro interno do servidor'
             });
         }
     }
@@ -213,7 +215,7 @@ export default class UsuarioController {
             }
 
             // Verificar se o usuário existe
-            logger.info(`[usuarios][updateUsuario] Verificando se usuário existe: ${id}`);
+            log.info('updateUsuario', `Verificando se usuário existe: ${id}`);
             const { data: existingUser } = await SupabaseWrapper.get()
                 .from('admins')
                 .select('id_admin')
@@ -221,7 +223,7 @@ export default class UsuarioController {
                 .maybeSingle();
 
             if (!existingUser) {
-                logger.warning(`[usuarios][updateUsuario] Usuário não encontrado: ${id}`);
+                log.warn('updateUsuario', `Usuário não encontrado: ${id}`);
                 return res.status(404).json({
                     error: 'Usuário não encontrado'
                 });
@@ -236,17 +238,17 @@ export default class UsuarioController {
                 .maybeSingle();
 
             if (emailExists) {
-                logger.warning(`[usuarios][updateUsuario] Email já em uso: ${email}`);
+                log.warn('updateUsuario', `Email já em uso: ${email}`);
                 return res.status(409).json({
                     error: 'Email já está sendo usado por outro usuário'
                 });
             }
 
-            logger.info(`[usuarios][updateUsuario] Atualizando usuário: ${id}`);
-            
+            log.info('updateUsuario', `Atualizando usuário: ${id}`);
+
             const { data, error } = await SupabaseWrapper.get()
                 .from('admins')
-                .update({ 
+                .update({
                     email,
                     updated_at: new Date().toISOString()
                 })
@@ -255,23 +257,23 @@ export default class UsuarioController {
                 .single();
 
             if (error) {
-                logger.error('[usuarios][updateUsuario] Erro ao atualizar usuário', error);
-                return res.status(500).json({ 
+                log.error('updateUsuario', 'Erro ao atualizar usuário', error);
+                return res.status(500).json({
                     error: 'Erro interno do servidor',
-                    details: error.message 
+                    details: error.message
                 });
             }
 
-            logger.info(`[usuarios][updateUsuario] Usuário atualizado com sucesso: ${id}`);
+            log.info('updateUsuario', `Usuário atualizado com sucesso: ${id}`);
             return res.status(200).json({
                 success: true,
                 data,
                 message: 'Usuário atualizado com sucesso'
             });
         } catch (error) {
-            logger.error('[usuarios][updateUsuario] Erro inesperado', error);
-            return res.status(500).json({ 
-                error: 'Erro interno do servidor' 
+            log.error('updateUsuario', 'Erro inesperado', error);
+            return res.status(500).json({
+                error: 'Erro interno do servidor'
             });
         }
     }
@@ -290,7 +292,7 @@ export default class UsuarioController {
             }
 
             // Verificar se o usuário existe
-            logger.info(`[usuarios][deleteUsuario] Verificando se usuário existe: ${id}`);
+            log.info('deleteUsuario', `Verificando se usuário existe: ${id}`);
             const { data: existingUser } = await SupabaseWrapper.get()
                 .from('admins')
                 .select('id_admin, email')
@@ -298,36 +300,36 @@ export default class UsuarioController {
                 .maybeSingle();
 
             if (!existingUser) {
-                logger.warning(`[usuarios][deleteUsuario] Usuário não encontrado: ${id}`);
+                log.warn('deleteUsuario', `Usuário não encontrado: ${id}`);
                 return res.status(404).json({
                     error: 'Usuário não encontrado'
                 });
             }
 
-            logger.info(`[usuarios][deleteUsuario] Removendo usuário: ${id}`);
-            
+            log.info('deleteUsuario', `Removendo usuário: ${id}`);
+
             const { error } = await SupabaseWrapper.get()
                 .from('admins')
                 .delete()
                 .eq('id_admin', id);
 
             if (error) {
-                logger.error('[usuarios][deleteUsuario] Erro ao remover usuário', error);
-                return res.status(500).json({ 
+                log.error('deleteUsuario', 'Erro ao remover usuário', error);
+                return res.status(500).json({
                     error: 'Erro interno do servidor',
-                    details: error.message 
+                    details: error.message
                 });
             }
 
-            logger.info(`[usuarios][deleteUsuario] Usuário removido com sucesso: ${id}`);
+            log.info('deleteUsuario', `Usuário removido com sucesso: ${id}`);
             return res.status(200).json({
                 success: true,
                 message: 'Usuário removido com sucesso'
             });
         } catch (error) {
-            logger.error('[usuarios][deleteUsuario] Erro inesperado', error);
-            return res.status(500).json({ 
-                error: 'Erro interno do servidor' 
+            log.error('deleteUsuario', 'Erro inesperado', error);
+            return res.status(500).json({
+                error: 'Erro interno do servidor'
             });
         }
     }

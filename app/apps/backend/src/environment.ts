@@ -23,7 +23,7 @@ export const environment = {
 
 // Validate required environment variables
 export const validateEnvironment = (): void => {
-    const requiredVars = ['SUPABASE_URL', 'SUPABASE_ANON_KEY'];
+    const requiredVars = ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'];
 
     for (const varName of requiredVars) {
         if (!process.env[varName]) {

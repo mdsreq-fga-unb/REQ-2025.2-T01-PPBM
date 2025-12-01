@@ -2,6 +2,7 @@
  * API helper functions for frontend-backend communication
  * Handles authentication tokens and API requests
  */
+import { supabase, getSession } from './supabase';
 
 // Get API URL from environment or default
 const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000';
@@ -39,9 +40,18 @@ export interface ApiResponse<T = unknown> {
 }
 
 /**
- * Get stored auth token
+ * Get stored auth token from Supabase session
  */
-export function getAuthToken(): string | null {
+export async function getAuthToken(): Promise<string | null> {
+    if (typeof window === 'undefined') return null;
+    const session = await getSession();
+    return session?.access_token ?? null;
+}
+
+/**
+ * Get stored auth token synchronously (from localStorage backup)
+ */
+export function getAuthTokenSync(): string | null {
     if (typeof window === 'undefined') return null;
     return localStorage.getItem(TOKEN_KEY);
 }
@@ -80,8 +90,8 @@ export async function apiFetch<T = unknown>(
     endpoint: string,
     options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
-    const token = getAuthToken();
-    
+    const token = await getAuthToken();
+
     const headers: HeadersInit = {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -129,33 +139,20 @@ export async function apiFetch<T = unknown>(
 }
 
 /**
- * Refresh the auth token using the refresh token
+ * Refresh the auth token using Supabase
  */
 async function refreshAuthToken(): Promise<boolean> {
-    const refreshToken = getRefreshToken();
-    if (!refreshToken) return false;
-
     try {
-        const response = await fetch(`${API_URL}/auth/refresh`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ refreshToken }),
-        });
+        const { data, error } = await supabase.auth.refreshSession();
 
-        if (!response.ok) {
+        if (error || !data.session) {
             clearAuthTokens();
             return false;
         }
 
-        const data = await response.json();
-        if (data.token && data.refreshToken) {
-            setAuthTokens(data.token, data.refreshToken);
-            return true;
-        }
-
-        return false;
+        // Store backup in localStorage
+        setAuthTokens(data.session.access_token, data.session.refresh_token ?? '');
+        return true;
     } catch {
         clearAuthTokens();
         return false;
@@ -163,33 +160,58 @@ async function refreshAuthToken(): Promise<boolean> {
 }
 
 /**
- * Login with email and password
+ * Login with email and password using Supabase Auth
+ * Then fetch user details from backend
  */
 export async function login(email: string, password: string): Promise<LoginResponse> {
     try {
-        const response = await fetch(`${API_URL}/auth/login`, {
+        console.log('Attempting login for:', email);
+
+        // Step 1: Authenticate with Supabase directly
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (authError || !authData.user) {
+            console.error('Supabase auth error:', authError);
+            return {
+                success: false,
+                error: authError?.message || 'Credenciais inválidas',
+            };
+        }
+
+        // Store tokens as backup
+        if (authData.session) {
+            setAuthTokens(authData.session.access_token, authData.session.refresh_token ?? '');
+        }
+
+        // Step 2: Get user details from backend
+        const response = await fetch(`${API_URL}/auth/user-by-email`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authData.session?.access_token}`,
             },
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ email }),
         });
 
-        const data = await response.json();
+        const userData = await response.json();
 
-        if (!response.ok) {
+        if (!response.ok || !userData.success) {
+            // Auth succeeded but user not in system
             return {
                 success: false,
-                error: data.error || data.message || 'Login failed',
+                error: userData.error || 'Usuário não cadastrado no sistema',
             };
         }
 
         return {
             success: true,
             data: {
-                token: data.token,
-                refreshToken: data.refreshToken,
-                user: data.user,
+                token: authData.session?.access_token ?? '',
+                refreshToken: authData.session?.refresh_token ?? '',
+                user: userData.data.user,
             },
         };
     } catch (error) {
@@ -205,36 +227,71 @@ export async function login(email: string, password: string): Promise<LoginRespo
  * Logout the current user
  */
 export async function logout(): Promise<void> {
-    const token = getAuthToken();
-    
-    // Call logout endpoint (best effort)
-    if (token) {
-        try {
-            await fetch(`${API_URL}/auth/logout`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
-        } catch {
-            // Ignore errors during logout
-        }
+    try {
+        // Sign out from Supabase (this handles session cleanup)
+        await supabase.auth.signOut();
+    } catch {
+        // Ignore errors during logout
     }
 
-    // Clear local tokens regardless of API response
+    // Clear local tokens regardless
     clearAuthTokens();
 }
 
 /**
  * Get current user from token
  */
-export async function getCurrentUser(): Promise<AuthUser | null> {
-    const response = await apiFetch<{ user: AuthUser }>('/auth/me');
-    
-    if (response.success && response.data) {
-        return response.data.user;
-    }
+export async function getCurrentUser(): Promise<ApiResponse<{ user: AuthUser }>> {
+    return apiFetch<{ user: AuthUser }>('/auth/me');
+}
 
-    return null;
+/**
+ * Register a new responsável
+ */
+export interface RegisterData {
+    email: string;
+    password: string;
+    nome: string;
+    telefone: string;
+    cpf: string;
+}
+
+export interface RegisterResponse {
+    success: boolean;
+    data?: {
+        user: AuthUser;
+    };
+    error?: string;
+}
+
+export async function register(data: RegisterData): Promise<RegisterResponse> {
+    try {
+        const response = await fetch(`${API_URL}/auth/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            return {
+                success: false,
+                error: result.error || result.message || 'Erro ao cadastrar',
+            };
+        }
+
+        return {
+            success: true,
+            data: result.data,
+        };
+    } catch (error) {
+        console.error('Registration failed:', error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Erro de conexão',
+        };
+    }
 }

@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { SUPABASE_URL } from '../environment';
+import { SUPABASE_URL,SUPABASE_SERVICE_ROLE_KEY } from '../environment';
 import jwt from 'jsonwebtoken';
 
 export class SupabaseWrapper {
@@ -8,7 +8,7 @@ export class SupabaseWrapper {
     static init(): void {
         if (this._client) return;
         if (!SUPABASE_URL) throw new Error('SUPABASE_URL not configured');
-        this._client = createClient(SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY ?? '');
+        this._client = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     }
 
     static get(): SupabaseClient {
@@ -24,10 +24,10 @@ export class SupabaseWrapper {
             .maybeSingle();
 
         if (error) {
-            console.log(`Error getting user id by email: ${error}`);
+            console.log(`Error getting user id by email: ${ error }`);
             return null;
         }
-        console.log(`Got user id: ${data?.id_user}, from email: ${email}`);
+        console.log(`Got user id: ${ data?.id_user }, from email: ${ email }`);
         if (!data || typeof (data as any).id_user !== 'number') return null;
         return (data as any).id_user as number;
     }
@@ -40,7 +40,7 @@ export class SupabaseWrapper {
             .maybeSingle();
 
         if (error) {
-            console.log(`Error getting admin by email: ${error}`);
+            console.log(`Error getting admin by email: ${ error }`);
             return null;
         }
 
@@ -59,7 +59,7 @@ export class SupabaseWrapper {
                 userId: decoded.sub
             };
         } catch (error) {
-            console.log(`Error decoding JWT token: ${error}`);
+            console.log(`Error decoding JWT token: ${ error }`);
             return null;
         }
     }

@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import { SupabaseWrapper } from '../utils/supabase_wrapper';
-import logger from '../logger';
+import { createControllerLogger } from '../logger';
 import { EndpointController, RequestType } from '../interfaces/index';
 import { isPositiveInteger, isValidCPF, sanitizeCPF, validateRequiredFields } from '../utils/validation';
+
+const log = createControllerLogger('alunos');
 
 type ListQueryParams = {
     page?: string;
@@ -92,7 +94,7 @@ export default class AlunoController {
             const { turmaId, unidade, cidade, nome } = req.query;
             const neurodivergente = parseNeurodivergente(req.query.neurodivergente);
 
-            logger.info('[alunos][getAlunos] Listando alunos', {
+            log.info('getAlunos', 'Listando alunos', {
                 page,
                 pageSize,
                 turmaId,
@@ -152,7 +154,7 @@ export default class AlunoController {
             const { data, error, count } = await queryBuilder;
 
             if (error) {
-                logger.error('[alunos][getAlunos] Erro ao buscar alunos', error);
+                log.error('getAlunos', 'Erro ao buscar alunos', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -167,7 +169,7 @@ export default class AlunoController {
                 pageSize
             });
         } catch (error) {
-            logger.error('[alunos][getAlunos] Erro inesperado', error as Error);
+            log.error('getAlunos', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -184,7 +186,7 @@ export default class AlunoController {
                 });
             }
 
-            logger.info(`[alunos][getAlunoById] Buscando aluno com ID: ${id}`);
+            log.info('getAlunoById', `Buscando aluno com ID: ${id}`);
 
             const { data, error } = await SupabaseWrapper.get()
                 .from('alunos')
@@ -207,7 +209,7 @@ export default class AlunoController {
                 .maybeSingle();
 
             if (error) {
-                logger.error('[alunos][getAlunoById] Erro ao buscar aluno', error);
+                log.error('getAlunoById', 'Erro ao buscar aluno', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -215,7 +217,7 @@ export default class AlunoController {
             }
 
             if (!data) {
-                logger.warn(`[alunos][getAlunoById] Aluno não encontrado: ${id}`);
+                log.warn('getAlunoById', `Aluno não encontrado: ${id}`);
                 return res.status(404).json({
                     error: 'Aluno não encontrado'
                 });
@@ -226,7 +228,7 @@ export default class AlunoController {
                 data
             });
         } catch (error) {
-            logger.error('[alunos][getAlunoById] Erro inesperado', error as Error);
+            log.error('getAlunoById', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -254,7 +256,7 @@ export default class AlunoController {
                 });
             }
 
-            logger.info('[alunos][createAluno] Verificando CPF duplicado', { cpf: sanitizedCPF });
+            log.info('createAluno', 'Verificando CPF duplicado', { cpf: sanitizedCPF });
 
             const { data: existingAluno, error: existsError } = await SupabaseWrapper.get()
                 .from('alunos')
@@ -263,7 +265,7 @@ export default class AlunoController {
                 .maybeSingle();
 
             if (existsError && existsError.code !== 'PGRST116') {
-                logger.error('[alunos][createAluno] Erro ao verificar CPF', existsError);
+                log.error('createAluno', 'Erro ao verificar CPF', existsError);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: existsError.message
@@ -271,7 +273,7 @@ export default class AlunoController {
             }
 
             if (existingAluno) {
-                logger.warn('[alunos][createAluno] CPF já cadastrado', { cpf: sanitizedCPF });
+                log.warn('createAluno', 'CPF já cadastrado', { cpf: sanitizedCPF });
                 return res.status(409).json({
                     error: 'Já existe um aluno com este CPF'
                 });
@@ -297,7 +299,7 @@ export default class AlunoController {
                 neurodivergente: parsedNeurodivergente ?? false
             };
 
-            logger.info('[alunos][createAluno] Criando aluno', { nome: insertPayload.nome_aluno });
+            log.info('createAluno', 'Criando aluno', { nome: insertPayload.nome_aluno });
 
             const { data, error } = await SupabaseWrapper.get()
                 .from('alunos')
@@ -306,7 +308,7 @@ export default class AlunoController {
                 .single();
 
             if (error) {
-                logger.error('[alunos][createAluno] Erro ao criar aluno', error);
+                log.error('createAluno', 'Erro ao criar aluno', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -319,7 +321,7 @@ export default class AlunoController {
                 message: 'Aluno criado com sucesso'
             });
         } catch (error) {
-            logger.error('[alunos][createAluno] Erro inesperado', error as Error);
+            log.error('createAluno', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -338,7 +340,7 @@ export default class AlunoController {
 
             const payload = req.body ?? {};
 
-            logger.info('[alunos][updateAluno] Atualizando aluno', { id });
+            log.info('updateAluno', 'Atualizando aluno', { id });
 
             const { data: existingAluno, error: fetchError } = await SupabaseWrapper.get()
                 .from('alunos')
@@ -347,7 +349,7 @@ export default class AlunoController {
                 .maybeSingle();
 
             if (fetchError) {
-                logger.error('[alunos][updateAluno] Erro ao buscar aluno', fetchError);
+                log.error('updateAluno', 'Erro ao buscar aluno', fetchError);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: fetchError.message
@@ -355,7 +357,7 @@ export default class AlunoController {
             }
 
             if (!existingAluno) {
-                logger.warn('[alunos][updateAluno] Aluno não encontrado', { id });
+                log.warn('updateAluno', 'Aluno não encontrado', { id });
                 return res.status(404).json({
                     error: 'Aluno não encontrado'
                 });
@@ -422,7 +424,7 @@ export default class AlunoController {
                     .maybeSingle();
 
                 if (cpfError && cpfError.code !== 'PGRST116') {
-                    logger.error('[alunos][updateAluno] Erro ao verificar CPF', cpfError);
+                    log.error('updateAluno', 'Erro ao verificar CPF', cpfError);
                     return res.status(500).json({
                         error: 'Erro interno do servidor',
                         details: cpfError.message
@@ -430,7 +432,7 @@ export default class AlunoController {
                 }
 
                 if (cpfOwner) {
-                    logger.warn('[alunos][updateAluno] CPF já utilizado', { cpf: sanitizedCPF, conflictingId: cpfOwner.id_aluno });
+                    log.warn('updateAluno', 'CPF já utilizado', { cpf: sanitizedCPF, conflictingId: cpfOwner.id_aluno });
                     return res.status(409).json({
                         error: 'Já existe um aluno com este CPF'
                     });
@@ -454,7 +456,7 @@ export default class AlunoController {
                 .single();
 
             if (error) {
-                logger.error('[alunos][updateAluno] Erro ao atualizar aluno', error);
+                log.error('updateAluno', 'Erro ao atualizar aluno', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -467,7 +469,7 @@ export default class AlunoController {
                 message: 'Aluno atualizado com sucesso'
             });
         } catch (error) {
-            logger.error('[alunos][updateAluno] Erro inesperado', error as Error);
+            log.error('updateAluno', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -484,7 +486,7 @@ export default class AlunoController {
                 });
             }
 
-            logger.info('[alunos][deleteAluno] Removendo aluno', { id });
+            log.info('deleteAluno', 'Removendo aluno', { id });
 
             const { data: existingAluno, error: fetchError } = await SupabaseWrapper.get()
                 .from('alunos')
@@ -493,7 +495,7 @@ export default class AlunoController {
                 .maybeSingle();
 
             if (fetchError) {
-                logger.error('[alunos][deleteAluno] Erro ao buscar aluno', fetchError);
+                log.error('deleteAluno', 'Erro ao buscar aluno', fetchError);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: fetchError.message
@@ -501,7 +503,7 @@ export default class AlunoController {
             }
 
             if (!existingAluno) {
-                logger.warn('[alunos][deleteAluno] Aluno não encontrado', { id });
+                log.warn('deleteAluno', 'Aluno não encontrado', { id });
                 return res.status(404).json({
                     error: 'Aluno não encontrado'
                 });
@@ -513,7 +515,7 @@ export default class AlunoController {
                 .eq('id_aluno', Number(id));
 
             if (error) {
-                logger.error('[alunos][deleteAluno] Erro ao remover aluno', error);
+                log.error('deleteAluno', 'Erro ao remover aluno', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -525,7 +527,7 @@ export default class AlunoController {
                 message: 'Aluno removido com sucesso'
             });
         } catch (error) {
-            logger.error('[alunos][deleteAluno] Erro inesperado', error as Error);
+            log.error('deleteAluno', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });

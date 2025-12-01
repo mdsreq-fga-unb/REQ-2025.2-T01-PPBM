@@ -16,11 +16,15 @@
     "start:backend": "cd app/apps/backend && npm start",
     "start:frontend": "cd app/apps/frontend && npm run preview"
   },
-  "keywords": ["astro", "nodejs", "express", "supabase"],
+  "keywords": [
+    "astro",
+    "nodejs",
+    "express",
+    "supabase"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^8.2.2"
   }
 }
-

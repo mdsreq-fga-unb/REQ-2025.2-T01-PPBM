@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import { SupabaseWrapper } from '../utils/supabase_wrapper';
-import logger from '../logger';
+import { createControllerLogger } from '../logger';
 import { EndpointController, RequestType } from '../interfaces/index';
 import { isPositiveInteger, isWithinCapacity, validateRequiredFields } from '../utils/validation';
+
+const log = createControllerLogger('turmas');
 
 type TurmasListQuery = {
     page?: string;
@@ -42,7 +44,7 @@ async function countAlunosInTurma(turmaId: number): Promise<number | null> {
         .eq('id_turma', turmaId);
 
     if (error) {
-        logger.error('[turmas][countAlunos] Erro ao contar alunos na turma', { turmaId, error });
+        log.error('countAlunos', 'Erro ao contar alunos na turma', { turmaId, error });
         return null;
     }
 
@@ -55,7 +57,7 @@ export default class TurmaController {
             const { page, pageSize } = parsePagination(req.query.page, req.query.pageSize);
             const { unidade, cidade, nome } = req.query;
 
-            logger.info('[turmas][getTurmas] Listando turmas', {
+            log.info('getTurmas', 'Listando turmas', {
                 page,
                 pageSize,
                 unidade,
@@ -94,7 +96,7 @@ export default class TurmaController {
             const { data, error, count } = await query;
 
             if (error) {
-                logger.error('[turmas][getTurmas] Erro ao buscar turmas', error);
+                log.error('getTurmas', 'Erro ao buscar turmas', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -109,7 +111,7 @@ export default class TurmaController {
                 pageSize
             });
         } catch (error) {
-            logger.error('[turmas][getTurmas] Erro inesperado', error as Error);
+            log.error('getTurmas', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -126,7 +128,7 @@ export default class TurmaController {
                 });
             }
 
-            logger.info('[turmas][getTurmaById] Buscando turma', { id });
+            log.info('getTurmaById', 'Buscando turma', { id });
 
             const { data, error } = await SupabaseWrapper.get()
                 .from('turmas')
@@ -142,7 +144,7 @@ export default class TurmaController {
                 .maybeSingle();
 
             if (error) {
-                logger.error('[turmas][getTurmaById] Erro ao buscar turma', error);
+                log.error('getTurmaById', 'Erro ao buscar turma', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -160,7 +162,7 @@ export default class TurmaController {
                 data
             });
         } catch (error) {
-            logger.error('[turmas][getTurmaById] Erro inesperado', error as Error);
+            log.error('getTurmaById', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -193,7 +195,7 @@ export default class TurmaController {
                 cidade_turma: payload.cidade_turma ?? null
             };
 
-            logger.info('[turmas][createTurma] Criando turma', { nome: insertPayload.nome_turma });
+            log.info('createTurma', 'Criando turma', { nome: insertPayload.nome_turma });
 
             const { data, error } = await SupabaseWrapper.get()
                 .from('turmas')
@@ -202,7 +204,7 @@ export default class TurmaController {
                 .single();
 
             if (error) {
-                logger.error('[turmas][createTurma] Erro ao criar turma', error);
+                log.error('createTurma', 'Erro ao criar turma', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -215,7 +217,7 @@ export default class TurmaController {
                 message: 'Turma criada com sucesso'
             });
         } catch (error) {
-            logger.error('[turmas][createTurma] Erro inesperado', error as Error);
+            log.error('createTurma', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -241,7 +243,7 @@ export default class TurmaController {
                 .maybeSingle();
 
             if (fetchError) {
-                logger.error('[turmas][updateTurma] Erro ao buscar turma', fetchError);
+                log.error('updateTurma', 'Erro ao buscar turma', fetchError);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: fetchError.message
@@ -310,7 +312,7 @@ export default class TurmaController {
                 .single();
 
             if (error) {
-                logger.error('[turmas][updateTurma] Erro ao atualizar turma', error);
+                log.error('updateTurma', 'Erro ao atualizar turma', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -323,7 +325,7 @@ export default class TurmaController {
                 message: 'Turma atualizada com sucesso'
             });
         } catch (error) {
-            logger.error('[turmas][updateTurma] Erro inesperado', error as Error);
+            log.error('updateTurma', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });
@@ -347,7 +349,7 @@ export default class TurmaController {
                 .maybeSingle();
 
             if (fetchError) {
-                logger.error('[turmas][deleteTurma] Erro ao buscar turma', fetchError);
+                log.error('deleteTurma', 'Erro ao buscar turma', fetchError);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: fetchError.message
@@ -381,7 +383,7 @@ export default class TurmaController {
                 .eq('id_turma', Number(id));
 
             if (error) {
-                logger.error('[turmas][deleteTurma] Erro ao remover turma', error);
+                log.error('deleteTurma', 'Erro ao remover turma', error);
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
@@ -393,7 +395,7 @@ export default class TurmaController {
                 message: 'Turma removida com sucesso'
             });
         } catch (error) {
-            logger.error('[turmas][deleteTurma] Erro inesperado', error as Error);
+            log.error('deleteTurma', 'Erro inesperado', error as Error);
             return res.status(500).json({
                 error: 'Erro interno do servidor'
             });

@@ -1,0 +1,856 @@
+---
+import Header from "../../components/Header.astro";
+import Sidebar from "../../components/Sidebar.astro";
+---
+
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Cadastrar Aluno - Programa Bombeiro Mirim</title>
+        <style>
+            :root {
+                --primary-color: #4a5568;
+                --secondary-color: #e2e8f0;
+                --accent-color: #3182ce;
+                --danger-color: #e53e3e;
+                --bg-color: #f7fafc;
+                --text-color: #2d3748;
+                --label-color: #718096;
+                --border-color: #cbd5e0;
+                --white: #ffffff;
+                --success-color: #48bb78;
+                --warning-color: #ed8936;
+            }
+            body {
+                font-family: "Inter", sans-serif;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                margin: 0;
+                padding: 0;
+            }
+            .main-content {
+                padding: 120px 1.5rem 40px;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+            }
+            .content-wrapper {
+                width: 100%;
+                max-width: 1280px;
+                display: flex;
+                gap: 20px;
+                align-items: flex-start;
+            }
+            .container {
+                flex: 1;
+                max-width: 100%;
+                background-color: var(--white);
+                padding: 2.5rem;
+                border-radius: 1.5rem;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            }
+            .page-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 2rem;
+                padding-bottom: 1.5rem;
+                border-bottom: 2px solid var(--secondary-color);
+            }
+            .page-header .title h1 {
+                font-size: 1.8rem;
+                margin: 0 0 0.5rem 0;
+                color: var(--text-color);
+            }
+            .page-header .title p {
+                font-size: 1rem;
+                margin: 0;
+                color: var(--label-color);
+            }
+            .form-section {
+                margin-bottom: 2rem;
+            }
+            .form-section h2 {
+                font-size: 1.2rem;
+                color: var(--text-color);
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 1px solid var(--secondary-color);
+            }
+            .form-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1.5rem;
+            }
+            .form-group {
+                display: flex;
+                flex-direction: column;
+            }
+            .form-group.full-width {
+                grid-column: 1 / -1;
+            }
+            .form-group label {
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+                color: var(--label-color);
+                font-weight: 500;
+            }
+            .form-group label .required {
+                color: var(--danger-color);
+            }
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 0.75rem;
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                font-size: 1rem;
+                color: var(--text-color);
+                background-color: #fdfdfd;
+                transition:
+                    border-color 0.3s,
+                    box-shadow 0.3s;
+            }
+            .form-group input:focus,
+            .form-group select:focus,
+            .form-group textarea:focus {
+                outline: none;
+                border-color: var(--accent-color);
+                box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+            }
+            .form-group textarea {
+                min-height: 100px;
+                resize: vertical;
+            }
+            .checkbox-group {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .checkbox-group input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                accent-color: var(--accent-color);
+            }
+            .checkbox-group label {
+                margin-bottom: 0;
+            }
+            .btn-group {
+                display: flex;
+                gap: 1rem;
+                justify-content: flex-end;
+                margin-top: 2rem;
+                padding-top: 1.5rem;
+                border-top: 1px solid var(--secondary-color);
+            }
+            .btn {
+                padding: 0.75rem 1.5rem;
+                border-radius: 6px;
+                border: none;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+            .btn-primary {
+                background-color: var(--accent-color);
+                color: var(--white);
+            }
+            .btn-primary:hover {
+                background-color: #2c5282;
+            }
+            .btn-primary:disabled {
+                background-color: var(--border-color);
+                cursor: not-allowed;
+            }
+            .btn-secondary {
+                background-color: var(--secondary-color);
+                color: var(--text-color);
+            }
+            .btn-secondary:hover {
+                background-color: #cbd5e0;
+            }
+            .alert {
+                padding: 1rem;
+                border-radius: 6px;
+                margin-bottom: 1.5rem;
+                display: none;
+            }
+            .alert-success {
+                background-color: #c6f6d5;
+                color: #2f855a;
+                border: 1px solid #9ae6b4;
+            }
+            .alert-error {
+                background-color: #fed7d7;
+                color: #c53030;
+                border: 1px solid #feb2b2;
+            }
+            .responsavel-section {
+                background-color: #f8fafc;
+                padding: 1.5rem;
+                border-radius: 8px;
+                margin-bottom: 1rem;
+                border: 1px solid var(--border-color);
+            }
+            .responsavel-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1rem;
+            }
+            .responsavel-header h3 {
+                margin: 0;
+                font-size: 1rem;
+                color: var(--text-color);
+            }
+            .btn-remove-responsavel {
+                background: none;
+                border: none;
+                color: var(--danger-color);
+                cursor: pointer;
+                font-size: 0.9rem;
+                padding: 0.25rem 0.5rem;
+            }
+            .btn-remove-responsavel:hover {
+                text-decoration: underline;
+            }
+            .btn-add-responsavel {
+                background: none;
+                border: 1px dashed var(--accent-color);
+                color: var(--accent-color);
+                padding: 0.75rem 1rem;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                width: 100%;
+                transition: all 0.3s;
+            }
+            .btn-add-responsavel:hover {
+                background-color: rgba(49, 130, 206, 0.1);
+            }
+
+            @media (max-width: 768px) {
+                .main-content {
+                    padding: 100px 1rem 20px;
+                }
+                .content-wrapper {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+                .container {
+                    padding: 1.5rem;
+                    border-radius: 1rem;
+                }
+                .page-header {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+                .page-header .title h1 {
+                    font-size: 1.5rem;
+                }
+                .form-grid {
+                    grid-template-columns: 1fr;
+                }
+                .btn-group {
+                    flex-direction: column;
+                }
+                .btn {
+                    width: 100%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <div class="main-content">
+            <div class="content-wrapper">
+                <Sidebar />
+                <main class="container">
+                    <div class="page-header">
+                        <div class="title">
+                            <h1>Cadastrar Novo Aluno</h1>
+                            <p>
+                                Preencha os dados do aluno (brigadino/brigadina)
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="alert-success" class="alert alert-success">
+                        Aluno cadastrado com sucesso!
+                    </div>
+                    <div id="alert-error" class="alert alert-error">
+                        Erro ao cadastrar aluno. Por favor, tente novamente.
+                    </div>
+
+                    <form id="cadastro-form">
+                        <!-- Dados Pessoais -->
+                        <section class="form-section">
+                            <h2>📋 Dados Pessoais</h2>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label
+                                        >Nome Completo <span class="required"
+                                            >*</span
+                                        ></label
+                                    >
+                                    <input
+                                        type="text"
+                                        name="nome"
+                                        required
+                                        placeholder="Nome completo do aluno"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label
+                                        >Data de Nascimento <span
+                                            class="required">*</span
+                                        ></label
+                                    >
+                                    <input
+                                        type="date"
+                                        name="data_nascimento"
+                                        required
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label
+                                        >CPF <span class="required">*</span
+                                        ></label
+                                    >
+                                    <input
+                                        type="text"
+                                        name="cpf"
+                                        required
+                                        placeholder="000.000.000-00"
+                                        maxlength="14"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label
+                                        >Sexo <span class="required">*</span
+                                        ></label
+                                    >
+                                    <select name="sexo" required>
+                                        <option value="">Selecione</option>
+                                        <option value="M">Masculino</option>
+                                        <option value="F">Feminino</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Dados Escolares -->
+                        <section class="form-section">
+                            <h2>🏫 Dados Escolares</h2>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label
+                                        >Escola <span class="required">*</span
+                                        ></label
+                                    >
+                                    <input
+                                        type="text"
+                                        name="escola"
+                                        required
+                                        placeholder="Nome da escola"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label
+                                        >Série/Ano <span class="required"
+                                            >*</span
+                                        ></label
+                                    >
+                                    <input
+                                        type="text"
+                                        name="serie"
+                                        required
+                                        placeholder="Ex: 5º Ano"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label
+                                        >Unidade do PBM <span class="required"
+                                            >*</span
+                                        ></label
+                                    >
+                                    <select name="unidade" required>
+                                        <option value=""
+                                            >Selecione a unidade</option
+                                        >
+                                        <option value="gama">Gama</option>
+                                        <option value="santa_maria"
+                                            >Santa Maria</option
+                                        >
+                                        <option value="recanto"
+                                            >Recanto das Emas</option
+                                        >
+                                        <option value="samambaia"
+                                            >Samambaia</option
+                                        >
+                                        <option value="nucleo_bandeirante"
+                                            >Núcleo Bandeirante</option
+                                        >
+                                        <option value="estrutural"
+                                            >Cidade Estrutural</option
+                                        >
+                                        <option value="ceilandia"
+                                            >Ceilândia</option
+                                        >
+                                        <option value="brazlandia"
+                                            >Brazlândia</option
+                                        >
+                                        <option value="sobradinho"
+                                            >Sobradinho</option
+                                        >
+                                        <option value="planaltina"
+                                            >Planaltina</option
+                                        >
+                                        <option value="paranoa">Paranoá</option>
+                                        <option value="sao_sebastiao"
+                                            >São Sebastião</option
+                                        >
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Turma</label>
+                                    <select name="turma">
+                                        <option value=""
+                                            >Selecione a turma</option
+                                        >
+                                        <!-- Turmas serão carregadas dinamicamente -->
+                                    </select>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Informações Médicas -->
+                        <section class="form-section">
+                            <h2>🏥 Informações Médicas</h2>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Tipo Sanguíneo</label>
+                                    <select name="tipo_sanguineo">
+                                        <option value="">Selecione</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>Alergias</label>
+                                    <textarea
+                                        name="alergias"
+                                        placeholder="Descreva as alergias do aluno, se houver"
+                                    ></textarea>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>Condições Médicas</label>
+                                    <textarea
+                                        name="condicoes_medicas"
+                                        placeholder="Ex: Asma, diabetes, etc."
+                                    ></textarea>
+                                </div>
+                                <div class="form-group full-width">
+                                    <div class="checkbox-group">
+                                        <input
+                                            type="checkbox"
+                                            name="neurodivergente"
+                                            id="neurodivergente"
+                                        />
+                                        <label for="neurodivergente"
+                                            >Aluno neurodivergente (requer
+                                            acompanhamento especial)</label
+                                        >
+                                    </div>
+                                </div>
+                                <div
+                                    class="form-group full-width"
+                                    id="observacoes-neuro"
+                                    style="display: none;"
+                                >
+                                    <label
+                                        >Observações sobre acompanhamento</label
+                                    >
+                                    <textarea
+                                        name="observacoes_neuro"
+                                        placeholder="Descreva as necessidades especiais de acompanhamento"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Responsáveis -->
+                        <section class="form-section">
+                            <h2>👨‍👩‍👧 Responsáveis</h2>
+                            <div id="responsaveis-container">
+                                <div class="responsavel-section" data-index="0">
+                                    <div class="responsavel-header">
+                                        <h3>Responsável 1 (Principal)</h3>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label
+                                                >Nome Completo <span
+                                                    class="required">*</span
+                                                ></label
+                                            >
+                                            <input
+                                                type="text"
+                                                name="responsavel_nome_0"
+                                                required
+                                                placeholder="Nome do responsável"
+                                            />
+                                        </div>
+                                        <div class="form-group">
+                                            <label
+                                                >CPF <span class="required"
+                                                    >*</span
+                                                ></label
+                                            >
+                                            <input
+                                                type="text"
+                                                name="responsavel_cpf_0"
+                                                required
+                                                placeholder="000.000.000-00"
+                                                maxlength="14"
+                                                class="cpf-input"
+                                            />
+                                        </div>
+                                        <div class="form-group">
+                                            <label
+                                                >Parentesco <span
+                                                    class="required">*</span
+                                                ></label
+                                            >
+                                            <select
+                                                name="responsavel_parentesco_0"
+                                                required
+                                            >
+                                                <option value=""
+                                                    >Selecione</option
+                                                >
+                                                <option value="pai">Pai</option>
+                                                <option value="mae">Mãe</option>
+                                                <option value="avo"
+                                                    >Avô/Avó</option
+                                                >
+                                                <option value="tio"
+                                                    >Tio/Tia</option
+                                                >
+                                                <option value="outro"
+                                                    >Outro</option
+                                                >
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label
+                                                >Telefone <span class="required"
+                                                    >*</span
+                                                ></label
+                                            >
+                                            <input
+                                                type="tel"
+                                                name="responsavel_telefone_0"
+                                                required
+                                                placeholder="(00) 00000-0000"
+                                                class="telefone-input"
+                                            />
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input
+                                                type="email"
+                                                name="responsavel_email_0"
+                                                placeholder="email@exemplo.com"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                class="btn-add-responsavel"
+                                id="btn-add-responsavel"
+                            >
+                                + Adicionar outro responsável
+                            </button>
+                        </section>
+
+                        <!-- Botões de Ação -->
+                        <div class="btn-group">
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                onclick="window.location.href='/admin/gerenciar-alunos'"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                                id="btn-submit"
+                            >
+                                Cadastrar Aluno
+                            </button>
+                        </div>
+                    </form>
+                </main>
+            </div>
+        </div>
+
+        <script>
+            // Check authentication
+            document.addEventListener("DOMContentLoaded", async () => {
+                const token = localStorage.getItem("bm_token");
+                const user = localStorage.getItem("bm_user");
+
+                if (!token || !user) {
+                    window.location.href = "/login";
+                    return;
+                }
+
+                try {
+                    const userData = JSON.parse(user);
+                    if (userData.userType !== "admin") {
+                        alert(
+                            "Acesso negado. Apenas administradores podem cadastrar alunos.",
+                        );
+                        window.location.href = "/login";
+                        return;
+                    }
+                } catch {
+                    window.location.href = "/login";
+                }
+            });
+
+            // CPF mask
+            function applyCpfMask(input) {
+                input.addEventListener("input", (e) => {
+                    let value = e.target.value.replace(/\D/g, "");
+                    if (value.length > 11) value = value.slice(0, 11);
+                    value = value.replace(/(\d{3})(\d)/, "$1.$2");
+                    value = value.replace(/(\d{3})(\d)/, "$1.$2");
+                    value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+                    e.target.value = value;
+                });
+            }
+
+            // Phone mask
+            function applyPhoneMask(input) {
+                input.addEventListener("input", (e) => {
+                    let value = e.target.value.replace(/\D/g, "");
+                    if (value.length > 11) value = value.slice(0, 11);
+                    if (value.length > 2) {
+                        value = "(" + value.slice(0, 2) + ") " + value.slice(2);
+                    }
+                    if (value.length > 10) {
+                        value = value.slice(0, 10) + "-" + value.slice(10);
+                    }
+                    e.target.value = value;
+                });
+            }
+
+            // Apply masks to existing inputs
+            document
+                .querySelectorAll('input[name="cpf"], .cpf-input')
+                .forEach(applyCpfMask);
+            document
+                .querySelectorAll(".telefone-input")
+                .forEach(applyPhoneMask);
+
+            // Toggle neurodivergente observations
+            document
+                .getElementById("neurodivergente")
+                .addEventListener("change", (e) => {
+                    document.getElementById("observacoes-neuro").style.display =
+                        e.target.checked ? "block" : "none";
+                });
+
+            // Add responsável
+            let responsavelCount = 1;
+            document
+                .getElementById("btn-add-responsavel")
+                .addEventListener("click", () => {
+                    if (responsavelCount >= 3) {
+                        alert("Máximo de 3 responsáveis permitido.");
+                        return;
+                    }
+
+                    const container = document.getElementById(
+                        "responsaveis-container",
+                    );
+                    const newSection = document.createElement("div");
+                    newSection.className = "responsavel-section";
+                    newSection.dataset.index = responsavelCount;
+                    newSection.innerHTML = `
+                <div class="responsavel-header">
+                    <h3>Responsável ${responsavelCount + 1}</h3>
+                    <button type="button" class="btn-remove-responsavel">Remover</button>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nome Completo</label>
+                        <input type="text" name="responsavel_nome_${responsavelCount}" placeholder="Nome do responsável">
+                    </div>
+                    <div class="form-group">
+                        <label>CPF</label>
+                        <input type="text" name="responsavel_cpf_${responsavelCount}" placeholder="000.000.000-00" maxlength="14" class="cpf-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Parentesco</label>
+                        <select name="responsavel_parentesco_${responsavelCount}">
+                            <option value="">Selecione</option>
+                            <option value="pai">Pai</option>
+                            <option value="mae">Mãe</option>
+                            <option value="avo">Avô/Avó</option>
+                            <option value="tio">Tio/Tia</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="tel" name="responsavel_telefone_${responsavelCount}" placeholder="(00) 00000-0000" class="telefone-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="responsavel_email_${responsavelCount}" placeholder="email@exemplo.com">
+                    </div>
+                </div>
+            `;
+
+                    container.appendChild(newSection);
+
+                    // Apply masks to new inputs
+                    newSection
+                        .querySelectorAll(".cpf-input")
+                        .forEach(applyCpfMask);
+                    newSection
+                        .querySelectorAll(".telefone-input")
+                        .forEach(applyPhoneMask);
+
+                    // Remove responsável handler
+                    newSection
+                        .querySelector(".btn-remove-responsavel")
+                        .addEventListener("click", () => {
+                            newSection.remove();
+                            responsavelCount--;
+                        });
+
+                    responsavelCount++;
+                });
+
+            // Form submit
+            document
+                .getElementById("cadastro-form")
+                .addEventListener("submit", async (e) => {
+                    e.preventDefault();
+
+                    const form = e.target;
+                    const submitBtn = document.getElementById("btn-submit");
+                    const alertSuccess =
+                        document.getElementById("alert-success");
+                    const alertError = document.getElementById("alert-error");
+
+                    alertSuccess.style.display = "none";
+                    alertError.style.display = "none";
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = "Cadastrando...";
+
+                    const formData = new FormData(form);
+
+                    // Build aluno data
+                    const alunoData = {
+                        nome: formData.get("nome"),
+                        data_nascimento: formData.get("data_nascimento"),
+                        cpf: formData.get("cpf")?.replace(/\D/g, ""),
+                        sexo: formData.get("sexo"),
+                        escola: formData.get("escola"),
+                        serie: formData.get("serie"),
+                        unidade: formData.get("unidade"),
+                        turma_id: formData.get("turma") || null,
+                        tipo_sanguineo: formData.get("tipo_sanguineo") || null,
+                        alergias: formData.get("alergias") || null,
+                        condicoes_medicas:
+                            formData.get("condicoes_medicas") || null,
+                        neurodivergente:
+                            formData.get("neurodivergente") === "on",
+                        observacoes_neuro:
+                            formData.get("observacoes_neuro") || null,
+                        responsaveis: [],
+                    };
+
+                    // Collect responsáveis
+                    for (let i = 0; i < responsavelCount; i++) {
+                        const nome = formData.get(`responsavel_nome_${i}`);
+                        if (nome) {
+                            alunoData.responsaveis.push({
+                                nome: nome,
+                                cpf: formData
+                                    .get(`responsavel_cpf_${i}`)
+                                    ?.replace(/\D/g, ""),
+                                parentesco: formData.get(
+                                    `responsavel_parentesco_${i}`,
+                                ),
+                                telefone: formData
+                                    .get(`responsavel_telefone_${i}`)
+                                    ?.replace(/\D/g, ""),
+                                email:
+                                    formData.get(`responsavel_email_${i}`) ||
+                                    null,
+                            });
+                        }
+                    }
+
+                    try {
+                        const token = localStorage.getItem("bm_token");
+                        const API_URL =
+                            import.meta.env.PUBLIC_API_URL ||
+                            "http://localhost:3000";
+
+                        const response = await fetch(`${API_URL}/alunos`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${token}`,
+                            },
+                            body: JSON.stringify(alunoData),
+                        });
+
+                        if (response.ok) {
+                            alertSuccess.style.display = "block";
+                            form.reset();
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+
+                            setTimeout(() => {
+                                window.location.href =
+                                    "/admin/gerenciar-alunos";
+                            }, 2000);
+                        } else {
+                            const error = await response.json();
+                            alertError.textContent =
+                                error.message || "Erro ao cadastrar aluno";
+                            alertError.style.display = "block";
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                        }
+                    } catch (error) {
+                        console.error("Erro:", error);
+                        alertError.textContent =
+                            "Erro de conexão com o servidor";
+                        alertError.style.display = "block";
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = "Cadastrar Aluno";
+                    }
+                });
+        </script>
+    </body>
+</html>

@@ -19,6 +19,7 @@
     "@astrojs/rss": "^4.0.14",
     "@astrojs/svelte": "^7.2.2",
     "@astrojs/tailwind": "^6.0.2",
+    "@supabase/supabase-js": "^2.86.0",
     "astro": "^5.14.7",
     "clsx": "^2.1.1",
     "svelte": "^5.45.2",

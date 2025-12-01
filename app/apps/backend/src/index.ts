@@ -1,4 +1,3 @@
-import { createClient } from '@supabase/supabase-js'
 import { SupabaseWrapper } from './utils/supabase_wrapper'
 import expressws from "express-ws";
 
