@@ -134,3 +134,9 @@ backend/logs/
 
 # Spectory
 spectory/
+.spectory/
+
+.cursorindexingignore
+
+frontend/
+backend/
