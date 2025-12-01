@@ -39,23 +39,26 @@ description: Conceitos e práticas de engenharia de requisitos aplicadas no proj
 
 **Priorização contínua:** Revisão das prioridades usando MoSCoW e a matriz de valor e complexidade. 
 
-### Ferramentas Utilizadas
+## Engenharia de Requisitos e o Scrum/XP
 
-#### Comunicação:
-**Google Meet:** Ferramenta utilizada para reuniões com stakeholder.
+| **Etapas do Processo** | **Atividades de ER** | **Prática** | **Técnica** | **Resultado Esperado** |
+|-------------------------|----------------------|-------------|--------------|-------------------------|
+| Planejamento de Release | Elicitação e Levantamento | Coleta de requisitos | Entrevistas com interessados, Brainstorming, Construção do Product Backlog (PBB) | Compreensão dos problemas, identificação das funcionalidades e catalogação das necessidades |
+| Análise e Alinhamento | Product Backlog Building (PBB), Priorização MoSCoW, Priorização ICE | Definição de prioridades | Escopo e funcionalidades críticas definidos e priorizados em consenso |
+| Verificação e Validação | Validação dos requisitos | Critérios de aceitação | Confirmação de que o requisito gera valor ao produto |
+| Documentação | Registro dos requisitos | User Story | Histórias de usuário descrevendo as funcionalidades e Features agrupando essas histórias |
+| Organização e Atualização | Organização dos requisitos concluídos ou pendentes | Backlog de requisitos | Backlog revisado e atualizado |
+| Sprint Planning | Análise e Alinhamento | Avaliação da viabilidade dos requisitos | Planning Game, Priorização ICE | Definição negociada do desenvolvimento junto à equipe |
+| Declaração | Definição dos Critérios de Aceitação | Critérios de aceitação, User Stories | User Stories definidos com escopo bem delimitado |
+| Execução da Sprint | Verificação e Validação | Conferência da implementação | Critérios de aceitação, DoD, DoR, Revisões formais ou informais | Garantia de que a entrega atende ao requisito proposto |
+| Representação | Elaboração de storyboard | Storyboards | Storyboards orientando a equipe de desenvolvimento |
+| Sprint Review | Verificação e Validação | Apresentação ao cliente dos incrementos produzidos na Sprint | Feedback do cliente | Funcionalidades analisadas com base no retorno dos usuários |
+| Organização e Atualização | Organização dos requisitos finalizados ou adiados | Backlog de requisitos | Backlog mantido atualizado |
 
-**Discord:** Ferramenta utilizada para comunicação entre membros da equipe e dailys.
-
-#### Gestão e Controle:
-
-**Github Projects:** Backlog e gestão de tarefas.
-
-**GitHub Issues:** Criação de issues para cada história de usuário e acompanhamento detalhado do projeto.
-
-**Git:** Controle de versão de código e documentação.
 
 ## Histórico de Versão
 
 | Data       | Versão | Descrição                                                                    | Autor(es)      | Revisor(es)    |
 | ---------- | ------ | ---------------------------------------------------------------------------- | -------------- | -------------- |
 | 21/11/2025 | 1.0    | Criação inicial do documento de engenharia de requisitos.                    | Lucas Branco   | Todos          |
+| 30/11/2025 | 2.0    | Atualização do documento, adição da Engenharia de Requisitos e Scrum/XP.     | Lucas Branco   | Todos          |c

@@ -10,7 +10,7 @@ A equipe realizou o refinamento de requisitos funcionais e não funcionais de so
 
 ## Requisitos Funcionais (RF)
 
-### Objetivo Específico 1 – Gestão e Controle da Frequência
+### Objetivo Específico 1 – Melhorar a eficiência e confiabilidade no controle de frequência
 
 **RF-001 – Gerenciar Aluno**  
 Permitir cadastro, edição, remoção e exclusão de nome, data de nascimento, CPF, responsável(éis), contatos, escola/unidade, cidade.
@@ -33,13 +33,13 @@ Gerar relatório por aluno (período selecionável) com taxas de presença, falt
 **RF-007 – Exportar relatórios internos**  
 Permitir exportação de relatórios gerados pela plataforma para uso interno da equipe em formatos PDF e Excel (CSV/XLSX).
 
-RF-008 – Exibir dashboards de frequência
+**RF-008 – Exibir dashboards de frequência**
 O sistema deve exibir indicadores visuais e gráficos que mostrem a taxa média de presença e alertas de recorrência, permitindo ao usuário filtrar esses dados por unidade, posto, turma ou período.​
 
-RF-009 – Exibir taxa média de presença
+**RF-009 – Exibir taxa média de presença**
 O sistema deve calcular e apresentar a taxa média de presença dos colaboradores em determinado período, com opção de filtros contextuais (unidade, posto, turma, data).​
 
-RF-010 – Exibir alertas de recorrência
+**RF-010 – Exibir alertas de recorrência**
 O sistema deve gerar alertas automáticos de recorrência quando os padrões de ausência ou baixa frequência forem detectados, com possibilidade de visualizar por filtros aplicáveis.​
 
 **RF-011 – Exibir histórico do aluno**  
@@ -56,7 +56,7 @@ O sistema deve permitir a exportação dos seguintes relatórios em formato PDF/
 
 ● Relatório de Ocorrências Disciplinares - Registro de faltas não justificadas e advertências
 
-### Objetivo Específico 2 – Monitoramento de Comportamento e Alertas
+### Objetivo Específico 2 – Apoiar intervenções pedagógicas por meio do monitoramento comportamental
 
 **RF-013 – Registrar advertência para os alunos**  
 Campo para anotações de comportamentos negativos de alunos.
@@ -64,7 +64,7 @@ Campo para anotações de comportamentos negativos de alunos.
 **RF-014 – Enviar notificações para os responsáveis**  
 Bot de notificações de comunicados de faltas e advertências ou botão de redirecionamento de notificações (WhatsApp, e-mail, plataforma própria).
 
-### Objetivo Específico 3 – Gestão de Usuários, Docentes e Turmas
+### Objetivo Específico 3 – Fortalecer a segurança e organização da gestão acadêmica
 
 **RF-015 – Autenticar usuários e perfis**  
 Acesso com autenticação e papéis: Administrador, Gestor de Unidade, Docente, Responsável.
@@ -78,7 +78,7 @@ Cadastrar turmas, dias/horários e lotação.
 **RF-018 – Consultar turma**  
 Busca dentro da turma por nome de alunos, CPF, unidade, status de justificativa, taxa de presença e período.
 
-### Objetivo Específico 4 – Acompanhamento Individualizado do Aluno
+### Objetivo Específico 4 – Ampliar a personalização do acompanhamento estudantil
 
 **RF-019 – Registrar acompanhamento neurodivergente**  
 Permitir o registro do acompanhamento pedagógico e o acompanhamento periódico com responsáveis.
@@ -89,7 +89,7 @@ Permitir registro e importação de relatórios gerados na sessão de acompanham
 **RF-021 – Gerar histórico de acompanhamento acessível a docentes e gestores**  
 Geração de histórico de relatórios de acompanhamento acessível a docentes e gestores e exportação de relatórios.
 
-### Objetivo Específico 5 – Gestão de Conteúdos Institucionais
+### Objetivo Específico 5 – Melhorar a comunicação institucional e o acesso a informações oficiais
 
 **RF-022 – Cadastrar conteúdos institucionais**  
 Permitir o cadastro de conteúdos textuais e documentais, como regras de vestimenta, normas disciplinares, legislação aplicável e comunicados oficiais.
@@ -169,3 +169,4 @@ Implementar métricas de tempo de resposta, taxa de erro, uso de CPU e memória,
 | 06/10/2025 | 1.1 | Update do documento de requisito. | Lucas Branco e Vitor Marconi | Todos |
 | 10/11/2025 | 1.2 | Update do documento de requisito. | Philipe Morais | Willian Silva (Monitor) |
 | 14/11/2025 | 1.3 | Update do documento de requisito. | Philipe Morais | Willian Silva (Monitor) |
+| 30/11/2025 | 1.4 | Update do documento de requisito. | Lucas Branco | Todos |
