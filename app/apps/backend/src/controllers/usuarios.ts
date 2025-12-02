@@ -168,6 +168,30 @@ export default class UsuarioController {
                 });
             }
 
+            // Se está tentando mudar de responsável para docente, verificar se tem alunos vinculados
+            if (currentRole === 'responsavel' && newRole === 'docente') {
+                const { data: alunosVinculados, error: alunosError } = await supabase
+                    .from('responsaveis_por_alunos')
+                    .select('id_aluno')
+                    .eq('id_responsavel', responsavel.id_responsavel);
+
+                if (alunosError) {
+                    log.error('updateUserRole', 'Erro ao verificar alunos vinculados', alunosError);
+                    return res.status(500).json({
+                        error: 'Erro ao verificar alunos vinculados',
+                        details: alunosError.message
+                    });
+                }
+
+                if (alunosVinculados && alunosVinculados.length > 0) {
+                    log.warn('updateUserRole', `Usuário ${email} possui ${alunosVinculados.length} aluno(s) vinculado(s)`);
+                    return res.status(400).json({
+                        error: `Não é possível alterar para docente. Este responsável possui ${alunosVinculados.length} aluno(s) cadastrado(s).`,
+                        alunosCount: alunosVinculados.length
+                    });
+                }
+            }
+
             // Atualizar o role
             if (newRole === 'docente') {
                 // Adicionar à tabela de docentes

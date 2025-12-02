@@ -111,6 +111,15 @@ import "../styles/global.css";
 								/>
 							</div>
 
+							<label class="flex items-center cursor-pointer">
+								<input
+									type="checkbox"
+									id="show-password"
+									class="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary"
+								/>
+								<span class="ml-2 text-sm text-slate-600">Mostrar senhas</span>
+							</label>
+
 							<div id="error-message" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm"></div>
 
 							<button
@@ -177,6 +186,17 @@ import "../styles/global.css";
                 value = value.slice(0, 10) + "-" + value.slice(10);
             }
             (e.target as HTMLInputElement).value = value;
+        });
+
+        // Show/hide password toggle
+        const showPasswordCheckbox = document.getElementById("show-password") as HTMLInputElement;
+        const passwordInput = form.querySelector('input[name="password"]') as HTMLInputElement;
+        const confirmPasswordInput = form.querySelector('input[name="confirmPassword"]') as HTMLInputElement;
+        
+        showPasswordCheckbox.addEventListener("change", () => {
+            const type = showPasswordCheckbox.checked ? "text" : "password";
+            passwordInput.type = type;
+            confirmPasswordInput.type = type;
         });
 
         form.addEventListener("submit", async (e) => {

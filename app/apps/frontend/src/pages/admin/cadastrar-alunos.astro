@@ -124,6 +124,8 @@ import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
             .form-group textarea {
                 min-height: 100px;
                 resize: vertical;
+                width: 100%;
+                box-sizing: border-box;
             }
             .checkbox-group {
                 display: flex;
@@ -298,18 +300,6 @@ import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
                         <section class="form-section">
                             <h2>🏫 Dados Escolares</h2>
                             <div class="form-grid">
-                                <div class="form-group">
-                                    <label
-                                        >Escola <span class="required">*</span
-                                        ></label
-                                    >
-                                    <input
-                                        type="text"
-                                        name="escola"
-                                        required
-                                        placeholder="Nome da escola"
-                                    />
-                                </div>
                                 <FormSelect name="serie" label="Série/Ano" required>
                                     <option value="">Selecione a série</option>
                                     <option value="Maternal">Maternal</option>
@@ -572,7 +562,6 @@ import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
                         data_nascimento_aluno: formData.get("data_nascimento"),
                         cpf_aluno: formData.get("cpf")?.replace(/\D/g, ""),
                         sexo: formData.get("sexo"),
-                        escola: formData.get("escola"),
                         serie: formData.get("serie"),
                         unidade: formData.get("unidade"),
                         turma_id: formData.get("turma") || null,

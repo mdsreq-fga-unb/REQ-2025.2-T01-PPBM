@@ -6,6 +6,7 @@
 	let loginPassword = "";
 	let errorMessage = "";
 	let isLoading = false;
+	let showPassword = false;
 
 	onMount(async () => {
 		console.log("[Login] Component mounted, checking auth status...");
@@ -151,12 +152,20 @@
 					>
 					<input
 						bind:value={loginPassword}
-						type="password"
+						type={showPassword ? "text" : "password"}
 						required
 						disabled={isLoading}
 						class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition disabled:opacity-50 disabled:cursor-not-allowed"
 						placeholder="Digite sua senha"
 					/>
+					<label class="flex items-center mt-2 cursor-pointer">
+						<input
+							type="checkbox"
+							bind:checked={showPassword}
+							class="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary"
+						/>
+						<span class="ml-2 text-sm text-slate-600">Mostrar senha</span>
+					</label>
 				</div>
 
 				{#if errorMessage}
