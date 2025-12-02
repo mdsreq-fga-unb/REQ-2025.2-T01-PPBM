@@ -2,7 +2,7 @@
  * API helper functions for frontend-backend communication
  * Handles authentication tokens and API requests
  */
-import { supabase, getSession } from './supabase';
+import { getSupabaseClient, getSession } from './supabase';
 
 // Get API URL from environment or default
 const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000';
@@ -151,6 +151,9 @@ export async function apiFetch<T = unknown>(
  */
 async function refreshAuthToken(): Promise<boolean> {
     try {
+        const supabase = getSupabaseClient();
+        if (!supabase) return false;
+        
         const { data, error } = await supabase.auth.refreshSession();
 
         if (error || !data.session) {
@@ -174,6 +177,14 @@ async function refreshAuthToken(): Promise<boolean> {
 export async function login(email: string, password: string): Promise<LoginResponse> {
     try {
         console.log('[API] login() called for:', email);
+
+        const supabase = getSupabaseClient();
+        if (!supabase) {
+            return {
+                success: false,
+                error: 'Cliente de autenticação não disponível',
+            };
+        }
 
         // Step 1: Authenticate with Supabase directly
         console.log('[API] Step 1: Authenticating with Supabase...');
@@ -258,6 +269,7 @@ export async function login(email: string, password: string): Promise<LoginRespo
 export async function logout(): Promise<void> {
     try {
         // Sign out from Supabase (this handles session cleanup)
+        const supabase = getSupabaseClient();
         if (supabase) {
             await supabase.auth.signOut({ scope: 'global' });
         }
