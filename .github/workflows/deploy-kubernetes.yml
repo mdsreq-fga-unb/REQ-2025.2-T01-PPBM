@@ -235,7 +235,10 @@ jobs:
                   "NODE_ENV": "production",
                   "PORT": "4321",
                   "HOST": "0.0.0.0",
-                  "ORIGIN": "https://${{ env.FRONTEND_HOST }}"
+                  "ORIGIN": "https://${{ env.FRONTEND_HOST }}",
+                  "PUBLIC_SUPABASE_URL": "${{ secrets.SUPABASE_URL }}",
+                  "PUBLIC_SUPABASE_ANON_KEY": "${{ secrets.SUPABASE_ANON_KEY }}",
+                  "PUBLIC_API_URL": "https://${{ env.BACKEND_HOST }}"
                 }
               },
               "resources": {
