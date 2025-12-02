@@ -1,5 +1,17 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import Toast from "../../ui/Toast.svelte";
+
+    // Toast state
+    let toastMessage = '';
+    let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+    let showToast = false;
+
+    function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+        toastMessage = message;
+        toastType = type;
+        showToast = true;
+    }
 
     // State
     let activeTab: "mensagens" | "avisos" | "enviar" = "mensagens";
@@ -109,7 +121,7 @@
 
     async function handleSendMessage() {
         if (!assunto.trim() || !conteudo.trim()) {
-            alert("Preencha o assunto e a mensagem");
+            displayToast("Preencha o assunto e a mensagem", "warning");
             return;
         }
 
@@ -125,7 +137,7 @@
 
         isSending = false;
 
-        alert("Mensagem enviada com sucesso!");
+        displayToast("Mensagem enviada com sucesso!", "success");
 
         // Switch to messages tab
         activeTab = "mensagens";
@@ -343,3 +355,10 @@
         </div>
     {/if}
 </section>
+
+<!-- Toast notifications -->
+<Toast 
+    bind:show={showToast} 
+    message={toastMessage} 
+    type={toastType} 
+/>

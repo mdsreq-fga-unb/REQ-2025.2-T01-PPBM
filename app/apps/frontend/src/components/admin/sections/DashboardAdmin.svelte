@@ -1,11 +1,24 @@
 <script lang="ts">
+	import Toast from '../../ui/Toast.svelte';
+
 	let totalAlunos = 0;
 	let presencaMedia = '0%';
 	let alertasMedicos = 0;
 	let acompanhamentoEspecial = 0;
 
+	// Toast state
+	let toastMessage = '';
+	let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+	let showToast = false;
+
+	function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+		toastMessage = message;
+		toastType = type;
+		showToast = true;
+	}
+
 	function handleAtualizar() {
-		alert('Funcionalidade em desenvolvimento. Os dados serão atualizados em breve.');
+		displayToast('Funcionalidade em desenvolvimento. Os dados serão atualizados em breve.', 'info');
 	}
 </script>
 
@@ -82,4 +95,11 @@
 		</div>
 	</div>
 </section>
+
+<!-- Toast notifications -->
+<Toast 
+	bind:show={showToast} 
+	message={toastMessage} 
+	type={toastType} 
+/>
 

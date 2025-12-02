@@ -1,6 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import DataTable from '../ui/DataTable.svelte';
+    import Toast from '../ui/Toast.svelte';
+    import ConfirmDialog from '../ui/ConfirmDialog.svelte';
     import type { Column } from '../../interfaces/table';
 
     export let apiUrl: string = '';
@@ -23,6 +25,24 @@
     let searchTerm = '';
     let unidadeFilter = '';
     let cidadeFilter = '';
+
+    // Toast state
+    let toastMessage = '';
+    let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+    let showToast = false;
+
+    // Confirm dialog state
+    let showConfirmDialog = false;
+    let confirmDialogTitle = '';
+    let confirmDialogMessage = '';
+    let confirmDialogAction: (() => Promise<void>) | null = null;
+    let confirmLoading = false;
+
+    function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+        toastMessage = message;
+        toastType = type;
+        showToast = true;
+    }
 
     // Stats
     $: stats = {
@@ -125,7 +145,7 @@
                     props: {
                         variant: 'danger',
                         text: 'Remover',
-                        onClick: () => removerTurma(row.id_turma)
+                        onClick: () => removerTurma(row.id_turma, row.nome_turma)
                     }
                 }
             ]
@@ -201,38 +221,43 @@
         window.location.href = `/admin/editar-turma/${id}`;
     }
 
-    async function removerTurma(id: number) {
-        if (!confirm('Tem certeza que deseja remover esta turma? Esta ação não pode ser desfeita.')) {
-            return;
-        }
+    async function removerTurma(id: number, nomeTurma: string = 'esta turma') {
+        confirmDialogTitle = 'Remover Turma';
+        confirmDialogMessage = `Tem certeza que deseja remover a turma <strong>"${nomeTurma}"</strong>?<br><br>Esta ação não pode ser desfeita.`;
+        confirmDialogAction = async () => {
+            confirmLoading = true;
+            try {
+                const token = await getAuthToken();
+                const response = await fetch(`${apiUrl}/turmas/deletar/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-        try {
-            const token = await getAuthToken();
-            const response = await fetch(`${apiUrl}/turmas/deletar/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    throw new Error(data.error || 'Erro ao remover turma');
                 }
-            });
 
-            const data = await response.json();
-
-            if (!response.ok || !data.success) {
-                throw new Error(data.error || 'Erro ao remover turma');
+                showConfirmDialog = false;
+                displayToast('Turma removida com sucesso!', 'success');
+                await loadTurmas();
+            } catch (error) {
+                console.error('Erro ao remover turma:', error);
+                displayToast(error instanceof Error ? error.message : 'Erro ao remover turma. Por favor, tente novamente.', 'error');
+            } finally {
+                confirmLoading = false;
             }
-
-            alert('Turma removida com sucesso!');
-            await loadTurmas();
-        } catch (error) {
-            console.error('Erro ao remover turma:', error);
-            alert(error instanceof Error ? error.message : 'Erro ao remover turma. Por favor, tente novamente.');
-        }
+        };
+        showConfirmDialog = true;
     }
 
     function exportarLista() {
         if (filteredTurmas.length === 0) {
-            alert('Nenhuma turma para exportar.');
+            displayToast('Nenhuma turma para exportar.', 'warning');
             return;
         }
 
@@ -344,6 +369,33 @@
         loadingMessage="Carregando turmas..."
     />
 </div>
+
+<!-- Toast notifications -->
+<Toast 
+    bind:show={showToast} 
+    message={toastMessage} 
+    type={toastType} 
+/>
+
+<!-- Confirm dialog -->
+<ConfirmDialog
+    bind:show={showConfirmDialog}
+    title={confirmDialogTitle}
+    message={confirmDialogMessage}
+    confirmText="Confirmar"
+    cancelText="Cancelar"
+    variant="danger"
+    loading={confirmLoading}
+    on:confirm={async () => {
+        if (confirmDialogAction) {
+            await confirmDialogAction();
+        }
+    }}
+    on:cancel={() => {
+        showConfirmDialog = false;
+        confirmDialogAction = null;
+    }}
+/>
 
 <style>
     .turmas-manager {

@@ -1,6 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import DataTable from '../ui/DataTable.svelte';
+    import Toast from '../ui/Toast.svelte';
+    import ConfirmDialog from '../ui/ConfirmDialog.svelte';
     import type { Column } from '../../interfaces/table';
 
     export let apiUrl: string = '';
@@ -37,6 +39,24 @@
     let totalPages = 1;
     let totalAlunos = 0;
     const pageSize = 20;
+
+    // Toast state
+    let toastMessage = '';
+    let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+    let showToast = false;
+
+    // Confirm dialog state
+    let showConfirmDialog = false;
+    let confirmDialogTitle = '';
+    let confirmDialogMessage = '';
+    let confirmDialogAction: (() => Promise<void>) | null = null;
+    let confirmLoading = false;
+
+    function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+        toastMessage = message;
+        toastType = type;
+        showToast = true;
+    }
 
     // Stats
     $: stats = {
@@ -214,36 +234,41 @@
     }
 
     async function removerAluno(id: number, nome: string) {
-        if (!confirm(`Tem certeza que deseja remover o aluno "${nome}"?\n\nEsta ação não pode ser desfeita.`)) {
-            return;
-        }
+        confirmDialogTitle = 'Remover Aluno';
+        confirmDialogMessage = `Tem certeza que deseja remover o aluno <strong>"${nome}"</strong>?<br><br>Esta ação não pode ser desfeita.`;
+        confirmDialogAction = async () => {
+            confirmLoading = true;
+            try {
+                const token = await getAuthToken();
+                const response = await fetch(`${apiUrl}/alunos/deletar/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-        try {
-            const token = await getAuthToken();
-            const response = await fetch(`${apiUrl}/alunos/deletar/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Erro ao remover aluno');
                 }
-            });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Erro ao remover aluno');
+                showConfirmDialog = false;
+                displayToast('Aluno removido com sucesso!', 'success');
+                await loadAlunos();
+            } catch (error) {
+                console.error('Erro ao remover aluno:', error);
+                displayToast(`Erro ao remover aluno: ${error instanceof Error ? error.message : 'Erro desconhecido'}`, 'error');
+            } finally {
+                confirmLoading = false;
             }
-
-            alert('Aluno removido com sucesso!');
-            await loadAlunos();
-        } catch (error) {
-            console.error('Erro ao remover aluno:', error);
-            alert(`Erro ao remover aluno: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
-        }
+        };
+        showConfirmDialog = true;
     }
 
     function exportarLista() {
         if (alunosData.length === 0) {
-            alert('Nenhum aluno para exportar');
+            displayToast('Nenhum aluno para exportar', 'warning');
             return;
         }
 
@@ -350,6 +375,21 @@
         on:pageChange={handlePageChange}
     />
 </div>
+
+<!-- Toast Notification -->
+<Toast bind:show={showToast} message={toastMessage} type={toastType} />
+
+<!-- Confirm Dialog -->
+<ConfirmDialog
+    bind:show={showConfirmDialog}
+    title={confirmDialogTitle}
+    message={confirmDialogMessage}
+    confirmText="Remover"
+    confirmVariant="danger"
+    loading={confirmLoading}
+    on:confirm={() => confirmDialogAction && confirmDialogAction()}
+    on:cancel={() => showConfirmDialog = false}
+/>
 
 <style>
     .alunos-manager {

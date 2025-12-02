@@ -1,14 +1,26 @@
 <script lang="ts">
     import ResponsavelForm from './ResponsavelForm.svelte';
+    import Toast from './ui/Toast.svelte';
 
     export let maxResponsaveis: number = 3;
 
     let responsaveis = [{ id: 0 }];
     let nextId = 1;
 
+    // Toast state
+    let toastMessage = '';
+    let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+    let showToast = false;
+
+    function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+        toastMessage = message;
+        toastType = type;
+        showToast = true;
+    }
+
     function addResponsavel() {
         if (responsaveis.length >= maxResponsaveis) {
-            alert(`Máximo de ${maxResponsaveis} responsáveis permitido.`);
+            displayToast(`Máximo de ${maxResponsaveis} responsáveis permitido.`, 'warning');
             return;
         }
         responsaveis = [...responsaveis, { id: nextId }];
@@ -44,6 +56,13 @@
         </div>
     </div>
 </section>
+
+<!-- Toast notifications -->
+<Toast 
+    bind:show={showToast} 
+    message={toastMessage} 
+    type={toastType} 
+/>
 
 <style>
     .form-section {

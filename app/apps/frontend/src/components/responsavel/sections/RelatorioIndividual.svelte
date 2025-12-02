@@ -1,5 +1,17 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import Toast from "../../ui/Toast.svelte";
+
+    // Toast state
+    let toastMessage = '';
+    let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+    let showToast = false;
+
+    function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+        toastMessage = message;
+        toastType = type;
+        showToast = true;
+    }
 
     // State
     let periodo = "30";
@@ -143,8 +155,9 @@
     }
 
     function handleExportPDF() {
-        alert(
-            "Funcionalidade de exportação em desenvolvimento.\n\nEm breve você poderá baixar o relatório em PDF.",
+        displayToast(
+            "Funcionalidade de exportação em desenvolvimento. Em breve você poderá baixar o relatório em PDF.",
+            "info"
         );
     }
 
@@ -375,3 +388,10 @@
         </div>
     </div>
 </section>
+
+<!-- Toast notifications -->
+<Toast 
+    bind:show={showToast} 
+    message={toastMessage} 
+    type={toastType} 
+/>

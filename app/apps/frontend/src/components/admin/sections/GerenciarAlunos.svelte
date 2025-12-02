@@ -1,20 +1,40 @@
 <script lang="ts">
+	import Toast from '../../ui/Toast.svelte';
+	import ConfirmDialog from '../../ui/ConfirmDialog.svelte';
+
 	let buscaGerenciar = '';
 	let filtroTurmaGerenciar = '';
 	let filtroStatus = '';
 
+	// Toast state
+	let toastMessage = '';
+	let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+	let showToast = false;
+
+	// Confirm dialog state
+	let showConfirmDialog = false;
+	let confirmDialogAction: (() => void) | null = null;
+
+	function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+		toastMessage = message;
+		toastType = type;
+		showToast = true;
+	}
+
 	function handleExportar() {
-		alert('Funcionalidade em desenvolvimento. A exportação será implementada em breve.');
+		displayToast('Funcionalidade em desenvolvimento. A exportação será implementada em breve.', 'info');
 	}
 
 	function handleEditar(id: string) {
-		alert(`Funcionalidade em desenvolvimento. Edição do aluno ${id} será implementada em breve.`);
+		displayToast(`Funcionalidade em desenvolvimento. Edição do aluno ${id} será implementada em breve.`, 'info');
 	}
 
 	function handleRemover(id: string) {
-		if (confirm('Tem certeza que deseja remover este aluno?')) {
-			alert('Funcionalidade em desenvolvimento. A remoção será implementada em breve.');
-		}
+		confirmDialogAction = () => {
+			displayToast('Funcionalidade em desenvolvimento. A remoção será implementada em breve.', 'info');
+			showConfirmDialog = false;
+		};
+		showConfirmDialog = true;
 	}
 </script>
 
@@ -92,4 +112,28 @@
 		</table>
 	</div>
 </section>
+
+<!-- Toast notifications -->
+<Toast 
+	bind:show={showToast} 
+	message={toastMessage} 
+	type={toastType} 
+/>
+
+<!-- Confirm dialog -->
+<ConfirmDialog
+	bind:show={showConfirmDialog}
+	title="Remover Aluno"
+	message="Tem certeza que deseja remover este aluno?"
+	confirmText="Remover"
+	cancelText="Cancelar"
+	variant="danger"
+	on:confirm={() => {
+		if (confirmDialogAction) confirmDialogAction();
+	}}
+	on:cancel={() => {
+		showConfirmDialog = false;
+		confirmDialogAction = null;
+	}}
+/>
 

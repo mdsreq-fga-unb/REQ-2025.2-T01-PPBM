@@ -1,0 +1,64 @@
+---
+/**
+ * This component provides a simple inline toast notification system
+ * for Astro pages with inline JavaScript.
+ * Usage: Include this component and call showPageToast(message, type) from your script.
+ */
+---
+
+<div id="page-toast" class="page-toast" role="alert"></div>
+
+<style>
+    .page-toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        z-index: 10000;
+        transform: translateX(120%);
+        transition: transform 0.3s ease-in-out;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-width: 400px;
+    }
+
+    .page-toast.show {
+        transform: translateX(0);
+    }
+
+    .page-toast.success {
+        background-color: #48BB78;
+        color: white;
+    }
+
+    .page-toast.error {
+        background-color: #E53E3E;
+        color: white;
+    }
+
+    .page-toast.warning {
+        background-color: #ED8936;
+        color: white;
+    }
+
+    .page-toast.info {
+        background-color: #4299E1;
+        color: white;
+    }
+</style>
+
+<script is:inline>
+    window.showPageToast = function(message, type = 'info', duration = 4000) {
+        const toast = document.getElementById('page-toast');
+        if (!toast) return;
+        
+        toast.textContent = message;
+        toast.className = 'page-toast ' + type + ' show';
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, duration);
+    };
+</script>

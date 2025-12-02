@@ -1,15 +1,28 @@
 <script lang="ts">
+	import Toast from '../../ui/Toast.svelte';
+
 	let tipoRelatorio = 'presencas';
 	let dataInicio = '';
 	let dataFim = '';
 	let relTurma = '';
 
+	// Toast state
+	let toastMessage = '';
+	let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+	let showToast = false;
+
+	function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+		toastMessage = message;
+		toastType = type;
+		showToast = true;
+	}
+
 	function handleGerarRelatorio() {
-		alert('Funcionalidade em desenvolvimento. O relatório será gerado em breve.');
+		displayToast('Funcionalidade em desenvolvimento. O relatório será gerado em breve.', 'info');
 	}
 
 	function handleExportarRelatorio() {
-		alert('Funcionalidade em desenvolvimento. A exportação será implementada em breve.');
+		displayToast('Funcionalidade em desenvolvimento. A exportação será implementada em breve.', 'info');
 	}
 </script>
 
@@ -81,4 +94,11 @@
 		</div>
 	</div>
 </section>
+
+<!-- Toast notifications -->
+<Toast 
+	bind:show={showToast} 
+	message={toastMessage} 
+	type={toastType} 
+/>
 

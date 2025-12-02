@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Toast from '../../ui/Toast.svelte';
+
 	let nome = '';
 	let cpf = '';
 	let nascimento = '';
@@ -16,6 +18,17 @@
 	let obsAcompanhamento = '';
 	let mostrarAlertaMedico = false;
 	let mostrarAcompanhamentoExtra = false;
+
+	// Toast state
+	let toastMessage = '';
+	let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+	let showToast = false;
+
+	function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+		toastMessage = message;
+		toastType = type;
+		showToast = true;
+	}
 
 	function handleNovo() {
 		nome = '';
@@ -38,7 +51,7 @@
 	}
 
 	function handleSalvar() {
-		alert('Funcionalidade em desenvolvimento. O cadastro será salvo em breve.');
+		displayToast('Funcionalidade em desenvolvimento. O cadastro será salvo em breve.', 'info');
 	}
 
 	$: {
@@ -270,4 +283,11 @@
 		</div>
 	</form>
 </section>
+
+<!-- Toast notifications -->
+<Toast 
+	bind:show={showToast} 
+	message={toastMessage} 
+	type={toastType} 
+/>
 

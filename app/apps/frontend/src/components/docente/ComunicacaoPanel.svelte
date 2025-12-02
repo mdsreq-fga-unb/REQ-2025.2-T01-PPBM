@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import ConfirmDialog from "../ui/ConfirmDialog.svelte";
 
     export let apiUrl: string;
     export let docenteId: number | null = null;
@@ -59,6 +60,13 @@
     // Modal
     let showModal = false;
     let modalNotificacao: Notificacao | null = null;
+
+    // Confirm dialog state
+    let showConfirmDialog = false;
+    let confirmDialogTitle = '';
+    let confirmDialogMessage = '';
+    let confirmDialogAction: (() => Promise<void>) | null = null;
+    let confirmLoading = false;
 
     const tiposNotificacao = [
         { value: "comunicado", label: "Comunicado Geral", icon: "📢" },
@@ -298,25 +306,31 @@
     }
 
     async function deleteNotificacao(id: number) {
-        if (!confirm("Tem certeza que deseja excluir esta notificação?"))
-            return;
+        confirmDialogTitle = 'Excluir Notificação';
+        confirmDialogMessage = 'Tem certeza que deseja excluir esta notificação?';
+        confirmDialogAction = async () => {
+            confirmLoading = true;
+            try {
+                const response = await fetch(
+                    `${apiUrl}/notificacoes/deletar/${id}`,
+                    {
+                        method: "DELETE",
+                    },
+                );
 
-        try {
-            const response = await fetch(
-                `${apiUrl}/notificacoes/deletar/${id}`,
-                {
-                    method: "DELETE",
-                },
-            );
+                if (!response.ok) throw new Error("Erro ao excluir notificação");
 
-            if (!response.ok) throw new Error("Erro ao excluir notificação");
-
-            displayToast("Notificação excluída com sucesso", "success");
-            await loadNotificacoes();
-        } catch (err) {
-            console.error("Erro ao excluir notificação:", err);
-            displayToast("Erro ao excluir notificação", "error");
-        }
+                showConfirmDialog = false;
+                displayToast("Notificação excluída com sucesso", "success");
+                await loadNotificacoes();
+            } catch (err) {
+                console.error("Erro ao excluir notificação:", err);
+                displayToast("Erro ao excluir notificação", "error");
+            } finally {
+                confirmLoading = false;
+            }
+        };
+        showConfirmDialog = true;
     }
 
     function openModal(notificacao: Notificacao) {
@@ -368,6 +382,26 @@
             <span>{toastMessage}</span>
         </div>
     {/if}
+
+    <!-- Confirm Dialog -->
+    <ConfirmDialog
+        bind:show={showConfirmDialog}
+        title={confirmDialogTitle}
+        message={confirmDialogMessage}
+        confirmText="Confirmar"
+        cancelText="Cancelar"
+        variant="danger"
+        loading={confirmLoading}
+        on:confirm={async () => {
+            if (confirmDialogAction) {
+                await confirmDialogAction();
+            }
+        }}
+        on:cancel={() => {
+            showConfirmDialog = false;
+            confirmDialogAction = null;
+        }}
+    />
 
     <!-- Tabs -->
     <div class="tabs">

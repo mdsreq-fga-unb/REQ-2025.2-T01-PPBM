@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Toast from '../../ui/Toast.svelte';
+
 	let activeTab: 'equipe' | 'responsaveis' | 'avisos' = 'equipe';
 	let destinatarios = 'todos';
 	let mostrarSeletorIndividual = false;
@@ -10,17 +12,28 @@
 	let conteudoAviso = '';
 	let validadeAviso = '';
 
+	// Toast state
+	let toastMessage = '';
+	let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+	let showToast = false;
+
+	function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+		toastMessage = message;
+		toastType = type;
+		showToast = true;
+	}
+
 	function handleNovaMsg() {
 		activeTab = 'responsaveis';
 	}
 
 	function handleMarcarLidas() {
-		alert('Funcionalidade em desenvolvimento.');
+		displayToast('Funcionalidade em desenvolvimento.', 'info');
 	}
 
 	function handleEnviarMensagem(e: Event) {
 		e.preventDefault();
-		alert('Funcionalidade em desenvolvimento. A mensagem será enviada em breve.');
+		displayToast('Funcionalidade em desenvolvimento. A mensagem será enviada em breve.', 'info');
 		assuntoMsg = '';
 		conteudoMsg = '';
 		urgente = false;
@@ -28,7 +41,7 @@
 
 	function handleCriarAviso(e: Event) {
 		e.preventDefault();
-		alert('Funcionalidade em desenvolvimento. O aviso será publicado em breve.');
+		displayToast('Funcionalidade em desenvolvimento. O aviso será publicado em breve.', 'info');
 		tituloAviso = '';
 		conteudoAviso = '';
 		validadeAviso = '';
@@ -281,4 +294,11 @@
 		</div>
 	{/if}
 </section>
+
+<!-- Toast notifications -->
+<Toast 
+	bind:show={showToast} 
+	message={toastMessage} 
+	type={toastType} 
+/>
 

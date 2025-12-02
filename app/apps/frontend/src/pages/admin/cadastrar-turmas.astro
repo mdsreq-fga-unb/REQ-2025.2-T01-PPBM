@@ -3,6 +3,7 @@ import Header from '../../components/Header.astro';
 import Sidebar from '../../components/Sidebar.astro';
 import FormSelect from '../../components/ui/FormSelect.astro';
 import UserSearchDialog from '../../components/UserSearchDialog.svelte';
+import PageToast from '../../components/ui/PageToast.astro';
 ---
 
 <html lang="pt-br">
@@ -504,8 +505,12 @@ import UserSearchDialog from '../../components/UserSearchDialog.svelte';
             // Check if user is admin
             const user = authStore.getUser();
             if (!user || user.tipo !== "admin") {
-                alert("Acesso negado. Apenas administradores podem cadastrar turmas.");
-                window.location.href = "/login";
+                if (typeof window.showPageToast === 'function') {
+                    window.showPageToast("Acesso negado. Apenas administradores podem cadastrar turmas.", "error");
+                }
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 2000);
                 return;
             }
 
@@ -667,5 +672,6 @@ import UserSearchDialog from '../../components/UserSearchDialog.svelte';
             alertError.style.display = 'none';
         });
     </script>
+    <PageToast />
 </body>
 </html>

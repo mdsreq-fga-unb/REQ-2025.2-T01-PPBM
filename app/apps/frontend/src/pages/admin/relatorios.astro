@@ -2,6 +2,7 @@
 import Header from '../../components/Header.astro';
 import Sidebar from '../../components/Sidebar.astro';
 import FormSelect from '../../components/ui/FormSelect.astro';
+import PageToast from '../../components/ui/PageToast.astro';
 ---
 
 <html lang="pt-br">
@@ -397,12 +398,16 @@ import FormSelect from '../../components/ui/FormSelect.astro';
 
             // Validação
             if (!dataInicial || !dataFinal) {
-                alert('Por favor, selecione as datas inicial e final');
+                if (typeof window.showPageToast === 'function') {
+                    window.showPageToast('Por favor, selecione as datas inicial e final', 'warning');
+                }
                 return;
             }
 
             if (new Date(dataInicial) > new Date(dataFinal)) {
-                alert('A data inicial não pode ser maior que a data final');
+                if (typeof window.showPageToast === 'function') {
+                    window.showPageToast('A data inicial não pode ser maior que a data final', 'warning');
+                }
                 return;
             }
 
@@ -443,7 +448,9 @@ import FormSelect from '../../components/ui/FormSelect.astro';
 
             } catch (error) {
                 console.error('Erro ao gerar relatório:', error);
-                alert('Erro ao gerar relatório. Tente novamente.');
+                if (typeof window.showPageToast === 'function') {
+                    window.showPageToast('Erro ao gerar relatório. Tente novamente.', 'error');
+                }
             }
         }
 
@@ -510,7 +517,9 @@ import FormSelect from '../../components/ui/FormSelect.astro';
         // Função para exportar relatório
         function exportarRelatorio() {
             if (!currentReportData) {
-                alert('Gere um relatório antes de exportar');
+                if (typeof window.showPageToast === 'function') {
+                    window.showPageToast('Gere um relatório antes de exportar', 'warning');
+                }
                 return;
             }
 
@@ -550,6 +559,7 @@ import FormSelect from '../../components/ui/FormSelect.astro';
         document.getElementById('data-inicial').value = dataFormatada;
         document.getElementById('data-final').value = dataFormatada;
     </script>
+    <PageToast />
 </body>
 </html>
 

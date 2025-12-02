@@ -2,6 +2,7 @@
 import Header from '../../components/Headerusuario.astro';
 import Sidebar from '../../components/Sidebarusuario.astro';
 import FormSelect from '../../components/ui/FormSelect.astro';
+import PageToast from '../../components/ui/PageToast.astro';
 ---
 
 <html lang="pt-br">
@@ -411,7 +412,7 @@ import FormSelect from '../../components/ui/FormSelect.astro';
                             <h1>Relatório Individual</h1>
                             <p>Relatório de Ana Pereira Silva</p>
                         </div>
-                        <button class="btn-export" onclick="alert('Exportar PDF em construção')">Exportar PDF</button>
+                        <button class="btn-export" id="btn-export-pdf">Exportar PDF</button>
                     </div>
 
                     <!-- Período selector -->
@@ -543,9 +544,17 @@ import FormSelect from '../../components/ui/FormSelect.astro';
             atualizarRelatorio(e.target.value);
         });
 
+        // Export PDF button handler
+        document.getElementById('btn-export-pdf')?.addEventListener('click', () => {
+            if (typeof window.showPageToast === 'function') {
+                window.showPageToast('Funcionalidade de exportação PDF em desenvolvimento.', 'info');
+            }
+        });
+
         // Inicializar
         atualizarRelatorio(periodoSelect.value || '30');
     </script>
+    <PageToast />
 </body>
 </html>
 

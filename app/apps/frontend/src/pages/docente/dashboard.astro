@@ -1,6 +1,7 @@
 ---
 import Header from '../../components/Headerdocente.astro';
 import Sidebar from '../../components/Sidebardocente.astro';
+import PageToast from '../../components/ui/PageToast.astro';
 ---
 
 <html lang="pt-br">
@@ -291,10 +292,14 @@ import Sidebar from '../../components/Sidebardocente.astro';
                 // Por enquanto, apenas simular atualização
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 
-                alert('Dashboard atualizado com sucesso!');
+                if (typeof window.showPageToast === 'function') {
+                    window.showPageToast('Dashboard atualizado com sucesso!', 'success');
+                }
             } catch (error) {
                 console.error('Erro ao atualizar dashboard:', error);
-                alert('Erro ao atualizar dashboard. Tente novamente.');
+                if (typeof window.showPageToast === 'function') {
+                    window.showPageToast('Erro ao atualizar dashboard. Tente novamente.', 'error');
+                }
             } finally {
                 btnUpdate.disabled = false;
                 btnUpdate.textContent = 'Atualizar';
@@ -324,6 +329,7 @@ import Sidebar from '../../components/Sidebardocente.astro';
         // Carregar dados ao inicializar
         // carregarDashboard();
     </script>
+    <PageToast />
 </body>
 </html>
 

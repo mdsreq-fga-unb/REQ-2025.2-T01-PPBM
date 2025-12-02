@@ -2,6 +2,7 @@
 import Header from '../../components/Header.astro';
 import Sidebar from '../../components/Sidebar.astro';
 import AlunosTable from '../../components/admin/AlunosTable.svelte';
+import PageToast from '../../components/ui/PageToast.astro';
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000';
 ---
@@ -205,8 +206,12 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000';
             // Check if user is admin
             const user = authStore.getUser();
             if (!user || user.tipo !== "admin") {
-                alert("Acesso negado. Apenas administradores podem gerenciar alunos.");
-                window.location.href = "/login";
+                if (typeof window.showPageToast === 'function') {
+                    window.showPageToast("Acesso negado. Apenas administradores podem gerenciar alunos.", "error");
+                }
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 2000);
                 return;
             }
         });
@@ -218,5 +223,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000';
             }
         });
     </script>
+    <PageToast />
 </body>
 </html>

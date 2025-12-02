@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Toast from '../../ui/Toast.svelte';
+
 	let turmaPresenca = '';
 	let dataPresenca = new Date().toISOString().slice(0, 10);
 	let totalHoje = 0;
@@ -6,8 +8,19 @@
 	let atrasosHoje = 0;
 	let faltasHoje = 0;
 
+	// Toast state
+	let toastMessage = '';
+	let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+	let showToast = false;
+
+	function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+		toastMessage = message;
+		toastType = type;
+		showToast = true;
+	}
+
 	function handleSalvarPresencas() {
-		alert('Funcionalidade em desenvolvimento. As presenças serão salvas em breve.');
+		displayToast('Funcionalidade em desenvolvimento. As presenças serão salvas em breve.', 'info');
 	}
 </script>
 
@@ -95,6 +108,13 @@
 		</table>
 	</div>
 </section>
+
+<!-- Toast notifications -->
+<Toast 
+	bind:show={showToast} 
+	message={toastMessage} 
+	type={toastType} 
+/>
 
 <style>
 	@media (max-width: 768px) {

@@ -1,11 +1,16 @@
 <script lang="ts">
 	import { authStore } from "../../stores/auth";
+	import ConfirmDialog from "../ui/ConfirmDialog.svelte";
 
-	function handleLogout() {
-		if (confirm("Deseja realmente sair do sistema?")) {
-			authStore.logout();
-			window.location.href = "/login";
-		}
+	let showLogoutDialog = false;
+
+	function handleLogoutClick() {
+		showLogoutDialog = true;
+	}
+
+	function confirmLogout() {
+		authStore.logout();
+		window.location.href = "/login";
 	}
 
 	$: currentUser = $authStore.currentUser;
@@ -66,7 +71,7 @@
 			</div>
 			<button
 				id="btnLogout"
-				on:click={handleLogout}
+				on:click={handleLogoutClick}
 				class="px-3 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-sm transition"
 			>
 				Sair
@@ -74,3 +79,14 @@
 		</div>
 	</div>
 </header>
+
+<ConfirmDialog
+	bind:show={showLogoutDialog}
+	title="Sair do Sistema"
+	message="Deseja realmente sair do sistema?"
+	confirmText="Sair"
+	cancelText="Cancelar"
+	variant="warning"
+	on:confirm={confirmLogout}
+	on:cancel={() => showLogoutDialog = false}
+/>

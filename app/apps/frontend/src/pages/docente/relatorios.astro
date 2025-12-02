@@ -2,6 +2,7 @@
 import Header from '../../components/Headerdocente.astro';
 import Sidebar from '../../components/Sidebardocente.astro';
 import FormSelect from '../../components/ui/FormSelect.astro';
+import PageToast from '../../components/ui/PageToast.astro';
 ---
 
 <html lang="pt-br">
@@ -349,10 +350,14 @@ import FormSelect from '../../components/ui/FormSelect.astro';
                 // Por enquanto, apenas simular geração
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 
-                alert('Relatório gerado com sucesso!');
+                if (typeof window.showPageToast === 'function') {
+                    window.showPageToast('Relatório gerado com sucesso!', 'success');
+                }
             } catch (error) {
                 console.error('Erro ao gerar relatório:', error);
-                alert('Erro ao gerar relatório. Tente novamente.');
+                if (typeof window.showPageToast === 'function') {
+                    window.showPageToast('Erro ao gerar relatório. Tente novamente.', 'error');
+                }
             } finally {
                 btnGerar.disabled = false;
                 btnGerar.textContent = 'Gerar Relatório';
@@ -362,6 +367,7 @@ import FormSelect from '../../components/ui/FormSelect.astro';
         // Event listener para o botão de gerar
         btnGerar.addEventListener('click', gerarRelatorio);
     </script>
+    <PageToast />
 </body>
 </html>
 
