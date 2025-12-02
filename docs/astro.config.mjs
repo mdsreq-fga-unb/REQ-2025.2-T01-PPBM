@@ -116,9 +116,9 @@ export default defineConfig({
                         slug: "entregas/unidade-2",
                     },
                     {
-                        label: "Unidade 3 - Especificações",
+                        label: "Unidade 3 - UC",
                         slug: "entregas/unidade-3-uc",
-                    },
+                    }
                 ],
             },
             {

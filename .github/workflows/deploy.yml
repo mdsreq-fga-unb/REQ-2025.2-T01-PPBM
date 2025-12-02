@@ -16,6 +16,16 @@ jobs:
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install backend dependencies
+        working-directory: app/apps/backend
+        run: npm ci
+      - name: Run backend tests
+        working-directory: app/apps/backend
+        run: npm test
       - name: Install, build, and upload your site
         uses: withastro/action@v3
         with:

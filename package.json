@@ -1,0 +1,30 @@
+{
+  "name": "sistema-cadastro-alunos",
+  "version": "1.0.0",
+  "description": "Sistema de cadastro de alunos com Astro e Node.js",
+  "scripts": {
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "install:backend": "cd app/apps/backend && npm install",
+    "install:frontend": "cd app/apps/frontend && npm install",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd app/apps/backend && npm run dev",
+    "dev:frontend": "cd app/apps/frontend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd app/apps/backend && npm run build",
+    "build:frontend": "cd app/apps/frontend && npm run build",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd app/apps/backend && npm start",
+    "start:frontend": "cd app/apps/frontend && npm run preview"
+  },
+  "keywords": [
+    "astro",
+    "nodejs",
+    "express",
+    "supabase"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

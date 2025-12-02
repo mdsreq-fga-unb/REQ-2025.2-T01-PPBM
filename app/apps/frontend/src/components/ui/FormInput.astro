@@ -1,0 +1,109 @@
+---
+interface Props {
+    id?: string;
+    name?: string;
+    label?: string;
+    type?: 'text' | 'email' | 'password' | 'tel' | 'number' | 'search' | 'date';
+    placeholder?: string;
+    required?: boolean;
+    disabled?: boolean;
+    value?: string;
+    class?: string;
+    fullWidth?: boolean;
+    maxlength?: number;
+    minlength?: number;
+}
+
+const { 
+    id, 
+    name, 
+    label,
+    type = 'text',
+    placeholder,
+    required = false, 
+    disabled = false, 
+    value,
+    class: className = '',
+    fullWidth = false,
+    maxlength,
+    minlength
+} = Astro.props;
+---
+
+<div class:list={["form-group", { "full-width": fullWidth }]}>
+    {label && (
+        <label for={id}>
+            {label}
+            {required && <span class="required-mark">*</span>}
+        </label>
+    )}
+    <input 
+        type={type}
+        id={id}
+        name={name}
+        placeholder={placeholder}
+        required={required}
+        disabled={disabled}
+        value={value}
+        maxlength={maxlength}
+        minlength={minlength}
+        class:list={["form-input", className]}
+    />
+</div>
+
+<style>
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .form-group.full-width {
+        flex: 2;
+    }
+
+    label {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        color: #718096;
+        font-weight: 500;
+    }
+
+    .required-mark {
+        color: #E53E3E;
+        margin-left: 2px;
+    }
+
+    .form-input {
+        padding: 0.75rem;
+        border: 1px solid #CBD5E0;
+        border-radius: 6px;
+        font-size: 1rem;
+        color: #2D3748;
+        background-color: #FDFDFD;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #3182CE;
+        box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+    }
+
+    .form-input:disabled {
+        background-color: #EDF2F7;
+        cursor: not-allowed;
+        color: #718096;
+    }
+
+    .form-input::placeholder {
+        color: #A0AEC0;
+    }
+
+    @media (max-width: 768px) {
+        .form-group {
+            width: 100%;
+        }
+    }
+</style>

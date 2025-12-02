@@ -1,0 +1,931 @@
+---
+import Header from "../../components/admin/AdminHeader.svelte";
+import Sidebar from "../../components/Sidebar.astro";
+import FormSelect from "../../components/ui/FormSelect.astro";
+import UserSearchDialog from "../../components/UserSearchDialog.svelte";
+import PageToast from "../../components/ui/PageToast.astro";
+---
+
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Cadastrar Turma - Programa Bombeiro Mirim</title>
+        <style>
+            :root {
+                --primary-color: #4a5568;
+                --secondary-color: #e2e8f0;
+                --accent-color: #3182ce;
+                --danger-color: #e53e3e;
+                --bg-color: #f7fafc;
+                --text-color: #2d3748;
+                --label-color: #718096;
+                --border-color: #cbd5e0;
+                --white: #ffffff;
+                --success-color: #48bb78;
+                --warning-color: #ed8936;
+            }
+            body {
+                font-family: "Inter", sans-serif;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                margin: 0;
+                padding: 0;
+            }
+            .main-content {
+                padding: 120px 1.5rem 40px;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+            }
+            .content-wrapper {
+                width: 100%;
+                max-width: 1280px;
+                display: flex;
+                gap: 20px;
+                align-items: flex-start;
+            }
+            .container {
+                flex: 1;
+                max-width: 100%;
+                background-color: var(--white);
+                padding: 2.5rem;
+                border-radius: 1.5rem;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            }
+            .page-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 2rem;
+                padding-bottom: 1.5rem;
+                border-bottom: 2px solid var(--secondary-color);
+            }
+            .page-header .title h1 {
+                font-size: 1.8rem;
+                margin: 0 0 0.5rem 0;
+                color: var(--text-color);
+            }
+            .page-header .title p {
+                font-size: 1rem;
+                margin: 0;
+                color: var(--label-color);
+            }
+            .btn-back {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                border-radius: 6px;
+                border: 1px solid var(--border-color);
+                background-color: var(--white);
+                color: var(--text-color);
+                font-size: 1rem;
+                font-weight: 500;
+                text-decoration: none;
+                transition: all 0.3s;
+            }
+            .btn-back:hover {
+                background-color: var(--secondary-color);
+            }
+            .form-section {
+                margin-bottom: 2rem;
+            }
+            .form-section h2 {
+                font-size: 1.2rem;
+                color: var(--text-color);
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 1px solid var(--secondary-color);
+            }
+            .form-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1.5rem;
+            }
+            .form-group {
+                display: flex;
+                flex-direction: column;
+            }
+            .form-group.full-width {
+                grid-column: 1 / -1;
+            }
+            .form-group label {
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+                color: var(--label-color);
+                font-weight: 500;
+            }
+            .form-group label .required {
+                color: var(--danger-color);
+            }
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 0.75rem;
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                font-size: 1rem;
+                color: var(--text-color);
+                background-color: #fdfdfd;
+                transition:
+                    border-color 0.3s,
+                    box-shadow 0.3s;
+            }
+            .form-group input:focus,
+            .form-group select:focus,
+            .form-group textarea:focus {
+                outline: none;
+                border-color: var(--accent-color);
+                box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+            }
+            .form-group input:disabled {
+                background-color: #edf2f7;
+                cursor: not-allowed;
+            }
+            .btn-group {
+                display: flex;
+                gap: 1rem;
+                justify-content: flex-end;
+                margin-top: 2rem;
+                padding-top: 1.5rem;
+                border-top: 1px solid var(--secondary-color);
+            }
+            .btn {
+                padding: 0.75rem 1.5rem;
+                border-radius: 6px;
+                border: none;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+            .btn-primary {
+                background-color: var(--accent-color);
+                color: var(--white);
+            }
+            .btn-primary:hover {
+                background-color: #2c5282;
+            }
+            .btn-primary:disabled {
+                background-color: var(--border-color);
+                cursor: not-allowed;
+            }
+            .btn-secondary {
+                background-color: var(--secondary-color);
+                color: var(--text-color);
+            }
+            .btn-secondary:hover {
+                background-color: #cbd5e0;
+            }
+            .alert {
+                padding: 1rem;
+                border-radius: 6px;
+                margin-bottom: 1.5rem;
+                display: none;
+            }
+            .alert-success {
+                background-color: #c6f6d5;
+                color: #2f855a;
+                border: 1px solid #9ae6b4;
+            }
+            .alert-error {
+                background-color: #fed7d7;
+                color: #c53030;
+                border: 1px solid #feb2b2;
+            }
+            .info-box {
+                background-color: #ebf8ff;
+                border: 1px solid #90cdf4;
+                border-radius: 8px;
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            .info-box p {
+                margin: 0;
+                color: #2b6cb0;
+                font-size: 0.9rem;
+            }
+            .info-box strong {
+                font-weight: 600;
+            }
+
+            /* Docentes Section Styles */
+            .docentes-section {
+                background-color: #f8fafc;
+                padding: 1.5rem;
+                border-radius: 8px;
+                border: 1px solid var(--border-color);
+            }
+            .docentes-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1rem;
+            }
+            .docentes-header h3 {
+                margin: 0;
+                font-size: 1rem;
+                color: var(--text-color);
+            }
+            .btn-add-docente {
+                padding: 0.5rem 1rem;
+                background-color: var(--accent-color);
+                color: var(--white);
+                border: none;
+                border-radius: 6px;
+                font-size: 0.9rem;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background-color 0.2s;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .btn-add-docente:hover {
+                background-color: #2c5282;
+            }
+            .docentes-list {
+                overflow-x: auto;
+            }
+            .docentes-table {
+                width: 100%;
+                border-collapse: collapse;
+                background-color: var(--white);
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            .docentes-table thead {
+                background-color: #e2e8f0;
+            }
+            .docentes-table th {
+                padding: 0.75rem 1rem;
+                text-align: left;
+                font-weight: 600;
+                font-size: 0.9rem;
+                color: var(--text-color);
+                border-bottom: 2px solid var(--border-color);
+            }
+            .docentes-table th:last-child {
+                text-align: center;
+                width: 100px;
+            }
+            .docentes-table td {
+                padding: 0.75rem 1rem;
+                border-bottom: 1px solid var(--border-color);
+                font-size: 0.95rem;
+                color: var(--text-color);
+                vertical-align: middle;
+            }
+            .docentes-table td:last-child {
+                text-align: center;
+            }
+            .docentes-table tbody tr:hover {
+                background-color: #f7fafc;
+            }
+            .docentes-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+            .docente-nome {
+                font-weight: 600;
+                color: var(--text-color);
+            }
+            .docente-email {
+                font-size: 0.85rem;
+                color: var(--label-color);
+            }
+            .btn-remove-docente {
+                padding: 0.5rem 1rem;
+                background-color: #fed7d7;
+                color: #c53030;
+                border: none;
+                border-radius: 4px;
+                font-size: 0.85rem;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
+            .btn-remove-docente:hover {
+                background-color: #feb2b2;
+            }
+            .docentes-empty {
+                text-align: center;
+                padding: 1.5rem;
+                color: var(--label-color);
+                font-size: 0.9rem;
+                background-color: var(--white);
+                border-radius: 8px;
+                border: 1px dashed var(--border-color);
+            }
+
+            @media (max-width: 768px) {
+                .main-content {
+                    padding: 100px 1rem 20px;
+                }
+
+                .content-wrapper {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+
+                .container {
+                    padding: 1.5rem;
+                    border-radius: 1rem;
+                }
+
+                .page-header {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .page-header .title h1 {
+                    font-size: 1.5rem;
+                }
+
+                .btn-back {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                .form-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .btn-group {
+                    flex-direction: column;
+                }
+
+                .btn {
+                    width: 100%;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .main-content {
+                    padding: 80px 0.5rem 20px;
+                }
+
+                .container {
+                    padding: 1rem;
+                    border-radius: 0.75rem;
+                }
+
+                .page-header .title h1 {
+                    font-size: 1.25rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <Header client:load />
+
+        <main class="main-content">
+            <div class="content-wrapper">
+                <Sidebar />
+                <div class="container">
+                    <div class="page-header">
+                        <div class="title">
+                            <h1 id="page-title">Cadastrar Turma</h1>
+                            <p id="page-description">
+                                Crie uma nova turma para o programa
+                            </p>
+                        </div>
+                        <a href="/admin/gerenciar-turmas" class="btn-back">
+                            <span>←</span> Voltar
+                        </a>
+                    </div>
+
+                    <div id="alert-success" class="alert alert-success">
+                        <span id="success-message"
+                            >Turma cadastrada com sucesso!</span
+                        >
+                    </div>
+                    <div id="alert-error" class="alert alert-error">
+                        Erro ao cadastrar turma. Por favor, tente novamente.
+                    </div>
+
+                    <div class="info-box">
+                        <p>
+                            <strong>Campos obrigatórios:</strong> Nome da turma,
+                            limite de alunos e unidade são obrigatórios para criar
+                            uma turma.
+                        </p>
+                    </div>
+
+                    <form id="form-cadastro">
+                        <div class="form-section">
+                            <h2>Informações da Turma</h2>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="nome_turma">
+                                        Nome da Turma <span class="required"
+                                            >*</span
+                                        >
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="nome_turma"
+                                        name="nome_turma"
+                                        placeholder="Ex: Turma A - Manhã"
+                                        required
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label for="limite_alunos_turma">
+                                        Limite de Alunos <span class="required"
+                                            >*</span
+                                        >
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="limite_alunos_turma"
+                                        name="limite_alunos_turma"
+                                        placeholder="Ex: 30"
+                                        min="1"
+                                        max="100"
+                                        required
+                                    />
+                                </div>
+                                <FormSelect
+                                    id="unidade_turma"
+                                    name="unidade_turma"
+                                    label="Unidade"
+                                    required={true}
+                                >
+                                    <option value=""
+                                        >Selecione uma unidade</option
+                                    >
+                                    <option value="gama">Gama</option>
+                                    <option value="santa_maria"
+                                        >Santa Maria</option
+                                    >
+                                    <option value="recanto"
+                                        >Recanto das Emas</option
+                                    >
+                                    <option value="samambaia">Samambaia</option>
+                                    <option value="nucleo_bandeirante"
+                                        >Núcleo Bandeirante</option
+                                    >
+                                    <option value="estrutural"
+                                        >Cidade Estrutural</option
+                                    >
+                                    <option value="ceilandia">Ceilândia</option>
+                                    <option value="brazlandia"
+                                        >Brazlândia</option
+                                    >
+                                    <option value="sobradinho"
+                                        >Sobradinho</option
+                                    >
+                                    <option value="planaltina"
+                                        >Planaltina</option
+                                    >
+                                    <option value="paranoa">Paranoá</option>
+                                    <option value="sao_sebastiao"
+                                        >São Sebastião</option
+                                    >
+                                </FormSelect>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h2>Docentes Responsáveis</h2>
+                            <div class="docentes-section">
+                                <div class="docentes-header">
+                                    <h3>Docentes da Turma</h3>
+                                    <button
+                                        type="button"
+                                        class="btn-add-docente"
+                                        id="btn-add-docente"
+                                    >
+                                        <span>+</span> Adicionar Docente
+                                    </button>
+                                </div>
+                                <div class="docentes-list" id="docentes-list">
+                                    <div
+                                        class="docentes-empty"
+                                        id="docentes-empty"
+                                    >
+                                        Nenhum docente adicionado. Clique em
+                                        "Adicionar Docente" para selecionar.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                id="btn-limpar"
+                            >
+                                Limpar
+                            </button>
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                                id="btn-submit"
+                            >
+                                <span id="btn-submit-text">Cadastrar Turma</span
+                                >
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <!-- Docente Search Dialog -->
+        <UserSearchDialog
+            client:load
+            title="Selecionar Docentes"
+            placeholder="Buscar docente por nome ou email..."
+            filterRole="docente"
+            multiSelect={true}
+            useDirectEndpoint={true}
+        />
+
+        <script>
+            import { authStore } from "../../stores/auth";
+            import { apiFetch } from "../../lib/api";
+
+            interface Docente {
+                id: number;
+                nome: string;
+                email: string;
+                role: string;
+            }
+
+            let selectedDocentes: Docente[] = [];
+
+            // Edit mode variables
+            let isEditMode = false;
+            let turmaId: string | null = null;
+
+            // Check authentication
+            document.addEventListener("DOMContentLoaded", async () => {
+                const isAuthenticated = await authStore.checkAuth();
+
+                if (!isAuthenticated) {
+                    window.location.href = "/login";
+                    return;
+                }
+
+                // Check if user is admin
+                const user = authStore.getUser();
+                if (!user || user.tipo !== "admin") {
+                    if (typeof window.showPageToast === "function") {
+                        window.showPageToast(
+                            "Acesso negado. Apenas administradores podem cadastrar turmas.",
+                            "error",
+                        );
+                    }
+                    setTimeout(() => {
+                        window.location.href = "/login";
+                    }, 2000);
+                    return;
+                }
+
+                // Check for edit mode (id in URL params)
+                const urlParams = new URLSearchParams(window.location.search);
+                turmaId = urlParams.get("id");
+                isEditMode = !!turmaId;
+
+                if (isEditMode && turmaId) {
+                    await carregarDadosTurma(turmaId);
+                    updateUIForEditMode();
+                }
+
+                // Setup docente search dialog
+                setupDocenteDialog();
+            });
+
+            async function carregarDadosTurma(id: string) {
+                try {
+                    const response = await apiFetch(`/turmas/detalhe/${id}`);
+
+                    if (response.success && response.data) {
+                        const turma =
+                            (response.data as any).data || response.data;
+
+                        // Populate form fields
+                        const nomeTurmaInput = document.getElementById(
+                            "nome_turma",
+                        ) as HTMLInputElement;
+                        const limiteAlunosInput = document.getElementById(
+                            "limite_alunos_turma",
+                        ) as HTMLInputElement;
+                        const unidadeTurmaSelect = document.getElementById(
+                            "unidade_turma",
+                        ) as HTMLSelectElement;
+
+                        if (nomeTurmaInput)
+                            nomeTurmaInput.value = turma.nome_turma || "";
+                        if (limiteAlunosInput)
+                            limiteAlunosInput.value =
+                                turma.limite_alunos_turma?.toString() || "";
+                        if (unidadeTurmaSelect)
+                            unidadeTurmaSelect.value =
+                                turma.unidade_turma || "";
+
+                        // Load associated docentes if available
+                        if (turma.docentes && Array.isArray(turma.docentes)) {
+                            selectedDocentes = turma.docentes.map((d: any) => ({
+                                id: d.id_docente || d.id,
+                                nome: d.nome_docente || d.nome || "Docente",
+                                email: d.email_docente || d.email || "",
+                                role: "docente",
+                            }));
+                            renderDocentesList();
+                        }
+                    } else {
+                        throw new Error(
+                            response.error || "Erro ao carregar dados da turma",
+                        );
+                    }
+                } catch (error) {
+                    console.error("Erro ao carregar turma:", error);
+                    const alertError = document.getElementById(
+                        "alert-error",
+                    ) as HTMLDivElement;
+                    if (alertError) {
+                        alertError.textContent =
+                            "Erro ao carregar dados da turma. Verifique se a turma existe.";
+                        alertError.style.display = "block";
+                    }
+                }
+            }
+
+            function updateUIForEditMode() {
+                // Update page title
+                const pageTitle = document.getElementById("page-title");
+                const pageDescription =
+                    document.getElementById("page-description");
+                const btnSubmitText =
+                    document.getElementById("btn-submit-text");
+                const successMessage =
+                    document.getElementById("success-message");
+
+                if (pageTitle) pageTitle.textContent = "Editar Turma";
+                if (pageDescription)
+                    pageDescription.textContent =
+                        "Atualize as informações da turma";
+                if (btnSubmitText)
+                    btnSubmitText.textContent = "Salvar Alterações";
+                if (successMessage)
+                    successMessage.textContent =
+                        "Turma atualizada com sucesso!";
+
+                // Update document title
+                document.title = "Editar Turma - Programa Bombeiro Mirim";
+            }
+
+            function setupDocenteDialog() {
+                const btnAddDocente =
+                    document.getElementById("btn-add-docente");
+
+                // Listen for the custom select event from the Svelte component (dispatched on window)
+                window.addEventListener("select-docentes", (event: any) => {
+                    const selected = event.detail;
+                    if (Array.isArray(selected)) {
+                        selectedDocentes = selected;
+                        renderDocentesList();
+                    }
+                });
+
+                btnAddDocente?.addEventListener("click", () => {
+                    // Dispatch event to open dialog
+                    window.dispatchEvent(
+                        new CustomEvent("open-docente-dialog", {
+                            detail: { selectedUsers: selectedDocentes },
+                        }),
+                    );
+                });
+            }
+
+            function renderDocentesList() {
+                const docentesList = document.getElementById("docentes-list");
+
+                if (!docentesList) return;
+
+                if (selectedDocentes.length === 0) {
+                    docentesList.innerHTML = `
+                    <div class="docentes-empty">
+                        Nenhum docente adicionado. Clique em "Adicionar Docente" para selecionar.
+                    </div>
+                `;
+                    return;
+                }
+
+                const tableRows = selectedDocentes
+                    .map(
+                        (docente) => `
+                    <tr data-docente-id="${docente.id}">
+                        <td><span class="docente-nome">${docente.nome}</span></td>
+                        <td><span class="docente-email">${docente.email || "Sem email"}</span></td>
+                        <td>
+                            <button type="button" class="btn-remove-docente" onclick="removeDocente(${docente.id})">
+                                Remover
+                            </button>
+                        </td>
+                    </tr>
+                `,
+                    )
+                    .join("");
+
+                docentesList.innerHTML = `
+                    <table class="docentes-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                `;
+            }
+
+            (window as any).removeDocente = function (id: number) {
+                selectedDocentes = selectedDocentes.filter((d) => d.id !== id);
+                renderDocentesList();
+            };
+
+            // Form submission
+            const form = document.getElementById(
+                "form-cadastro",
+            ) as HTMLFormElement;
+            const btnSubmit = document.getElementById(
+                "btn-submit",
+            ) as HTMLButtonElement;
+            const alertSuccess = document.getElementById(
+                "alert-success",
+            ) as HTMLDivElement;
+            const alertError = document.getElementById(
+                "alert-error",
+            ) as HTMLDivElement;
+
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                // Hide previous alerts
+                alertSuccess.style.display = "none";
+                alertError.style.display = "none";
+
+                // Get form data
+                const nomeTurma = (
+                    document.getElementById("nome_turma") as HTMLInputElement
+                ).value.trim();
+                const limiteAlunos = (
+                    document.getElementById(
+                        "limite_alunos_turma",
+                    ) as HTMLInputElement
+                ).value;
+                const unidadeTurma = (
+                    document.getElementById(
+                        "unidade_turma",
+                    ) as HTMLSelectElement
+                ).value;
+
+                // Validate required fields
+                if (!nomeTurma || !limiteAlunos || !unidadeTurma) {
+                    alertError.textContent =
+                        "Por favor, preencha todos os campos obrigatórios.";
+                    alertError.style.display = "block";
+                    return;
+                }
+
+                // Validate limite_alunos is a positive integer
+                const limiteNum = parseInt(limiteAlunos, 10);
+                if (isNaN(limiteNum) || limiteNum < 1) {
+                    alertError.textContent =
+                        "O limite de alunos deve ser um número inteiro positivo.";
+                    alertError.style.display = "block";
+                    return;
+                }
+
+                // Disable submit button
+                btnSubmit.disabled = true;
+                const btnSubmitText =
+                    document.getElementById("btn-submit-text");
+                const originalButtonText =
+                    btnSubmitText?.textContent || "Cadastrar Turma";
+                if (btnSubmitText) {
+                    btnSubmitText.textContent = isEditMode
+                        ? "Salvando..."
+                        : "Cadastrando...";
+                }
+
+                try {
+                    const payload = {
+                        nome_turma: nomeTurma,
+                        limite_alunos_turma: limiteNum,
+                        unidade_turma: unidadeTurma,
+                    };
+
+                    // Create or update turma based on mode
+                    const endpoint = isEditMode
+                        ? `/turmas/atualizar/${turmaId}`
+                        : "/turmas/criar";
+                    const method = isEditMode ? "PUT" : "POST";
+
+                    const response = await apiFetch(endpoint, {
+                        method,
+                        body: JSON.stringify(payload),
+                    });
+
+                    if (response.success && response.data) {
+                        const turmaData =
+                            (response.data as any).data || response.data;
+                        const resultTurmaId = turmaData.id_turma || turmaId;
+
+                        // If docentes were selected, associate them with the turma
+                        if (selectedDocentes.length > 0 && resultTurmaId) {
+                            const docenteIds = selectedDocentes.map(
+                                (d) => d.id,
+                            );
+
+                            await apiFetch(
+                                `/turmas/${resultTurmaId}/docentes`,
+                                {
+                                    method: "PUT",
+                                    body: JSON.stringify({
+                                        docente_ids: docenteIds,
+                                    }),
+                                },
+                            );
+                        } else if (isEditMode && resultTurmaId) {
+                            // If in edit mode and no docentes selected, clear the association
+                            await apiFetch(
+                                `/turmas/${resultTurmaId}/docentes`,
+                                {
+                                    method: "PUT",
+                                    body: JSON.stringify({
+                                        docente_ids: [],
+                                    }),
+                                },
+                            );
+                        }
+
+                        alertSuccess.style.display = "block";
+
+                        if (!isEditMode) {
+                            form.reset();
+                            selectedDocentes = [];
+                            renderDocentesList();
+                        }
+
+                        // Scroll to top to show success message
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+
+                        // Redirect after a short delay
+                        setTimeout(() => {
+                            window.location.href = "/admin/gerenciar-turmas";
+                        }, 2000);
+                    } else {
+                        throw new Error(
+                            response.error ||
+                                (isEditMode
+                                    ? "Erro ao atualizar turma"
+                                    : "Erro ao cadastrar turma"),
+                        );
+                    }
+                } catch (error) {
+                    console.error(
+                        isEditMode
+                            ? "Erro ao atualizar turma:"
+                            : "Erro ao cadastrar turma:",
+                        error,
+                    );
+                    alertError.textContent =
+                        error instanceof Error
+                            ? error.message
+                            : (isEditMode
+                                  ? "Erro ao atualizar turma."
+                                  : "Erro ao cadastrar turma.") +
+                              " Por favor, tente novamente.";
+                    alertError.style.display = "block";
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                } finally {
+                    btnSubmit.disabled = false;
+                    if (btnSubmitText) {
+                        btnSubmitText.textContent = originalButtonText;
+                    }
+                }
+            });
+
+            // Clear form button
+            document
+                .getElementById("btn-limpar")
+                ?.addEventListener("click", () => {
+                    form.reset();
+                    selectedDocentes = [];
+                    renderDocentesList();
+                    alertSuccess.style.display = "none";
+                    alertError.style.display = "none";
+                });
+        </script>
+        <PageToast />
+    </body>
+</html>

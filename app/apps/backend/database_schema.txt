@@ -1,0 +1,206 @@
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.admins (
+  id_admin bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  email text,
+  CONSTRAINT admins_pkey PRIMARY KEY (id_admin)
+);
+CREATE TABLE public.advertencias (
+  id_advertencia bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  id_aluno bigint,
+  id_docente bigint,
+  descricao_advertencia text,
+  CONSTRAINT advertencias_pkey PRIMARY KEY (id_advertencia),
+  CONSTRAINT advertencias_id_aluno_fkey FOREIGN KEY (id_aluno) REFERENCES public.alunos(id_aluno),
+  CONSTRAINT advertencias_id_docente_fkey FOREIGN KEY (id_docente) REFERENCES public.docentes(id_docente)
+);
+CREATE TABLE public.alunos (
+  id_aluno bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  nome_aluno text,
+  data_nascimento_aluno date,
+  cpf_aluno text,
+  tipo_sanguineo text,
+  nome_guerra text,
+  serie text,
+  escola_unidade text,
+  cidade text,
+  neurodivergente boolean,
+  updated_at timestamp with time zone,
+  alergias text,
+  condicoes_medicas text,
+  observacoes_neuro text,
+  sexo text,
+  CONSTRAINT alunos_pkey PRIMARY KEY (id_aluno)
+);
+CREATE TABLE public.alunos_por_turma (
+  id_aluno_por_turma bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  id_aluno bigint,
+  id_turma bigint,
+  CONSTRAINT alunos_por_turma_pkey PRIMARY KEY (id_aluno_por_turma),
+  CONSTRAINT alunos_por_turma_id_aluno_fkey FOREIGN KEY (id_aluno) REFERENCES public.alunos(id_aluno),
+  CONSTRAINT alunos_por_turma_id_turma_fkey FOREIGN KEY (id_turma) REFERENCES public.turmas(id_turma)
+);
+CREATE TABLE public.conteudos_institucionais (
+  id_conteudos_institucionais bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  id_docente bigint,
+  categoria text,
+  conteudo text,
+  anexo_url text,
+  data_time_conteudo timestamp without time zone,
+  atualizado_conteudo timestamp without time zone,
+  id_unidade bigint,
+  CONSTRAINT conteudos_institucionais_pkey PRIMARY KEY (id_conteudos_institucionais),
+  CONSTRAINT conteudos_institucionais_id_docente_fkey FOREIGN KEY (id_docente) REFERENCES public.docentes(id_docente),
+  CONSTRAINT conteudos_institucionais_id_unidade_fkey FOREIGN KEY (id_unidade) REFERENCES public.unidades(id_unidade)
+);
+CREATE TABLE public.docentes (
+  id_docente bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  cpf_docente text,
+  unidade_docente text,
+  cidade_docente text,
+  nome_docente text,
+  email_docente text,
+  CONSTRAINT docentes_pkey PRIMARY KEY (id_docente)
+);
+CREATE TABLE public.docentes_por_turma (
+  id_docentes_por_turma bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  id_docente bigint,
+  id_turma bigint,
+  CONSTRAINT docentes_por_turma_pkey PRIMARY KEY (id_docentes_por_turma),
+  CONSTRAINT docentes_por_turma_id_docente_fkey FOREIGN KEY (id_docente) REFERENCES public.docentes(id_docente),
+  CONSTRAINT docentes_por_turma_id_turma_fkey FOREIGN KEY (id_turma) REFERENCES public.turmas(id_turma)
+);
+CREATE TABLE public.docentes_por_unidade (
+  id_docente_por_unidade bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  id_docente bigint,
+  id_unidade bigint,
+  CONSTRAINT docentes_por_unidade_pkey PRIMARY KEY (id_docente_por_unidade),
+  CONSTRAINT docentes_por_unidade_id_docente_fkey FOREIGN KEY (id_docente) REFERENCES public.docentes(id_docente),
+  CONSTRAINT docentes_por_unidade_id_unidade_fkey FOREIGN KEY (id_unidade) REFERENCES public.unidades(id_unidade)
+);
+CREATE TABLE public.justificativa (
+  id_justificativa bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  id_aluno bigint,
+  id_docente bigint,
+  motivo_justificativa text,
+  anexo_url text,
+  aprovado_por_docente_justificativa boolean,
+  CONSTRAINT justificativa_pkey PRIMARY KEY (id_justificativa),
+  CONSTRAINT justificativa_id_aluno_fkey FOREIGN KEY (id_aluno) REFERENCES public.alunos(id_aluno),
+  CONSTRAINT justificativa_id_docente_fkey FOREIGN KEY (id_docente) REFERENCES public.docentes(id_docente)
+);
+CREATE TABLE public.logs_atividades (
+  id_log bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  acao text NOT NULL,
+  descricao text NOT NULL,
+  usuario_tipo text,
+  usuario_email text,
+  entidade_tipo text,
+  entidade_id bigint,
+  dados_adicionais jsonb,
+  CONSTRAINT logs_atividades_pkey PRIMARY KEY (id_log)
+);
+CREATE TABLE public.notificacoes (
+  id_notificacoes bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  id_responsavel bigint,
+  id_aluno bigint,
+  tipo_notifi text,
+  canal_notifi text,
+  mensagem_notifi text,
+  entregue_notif boolean,
+  data_envio timestamp without time zone,
+  id_docente bigint,
+  CONSTRAINT notificacoes_pkey PRIMARY KEY (id_notificacoes),
+  CONSTRAINT notificacoes_id_responsavel_fkey FOREIGN KEY (id_responsavel) REFERENCES public.responsaveis(id_responsavel),
+  CONSTRAINT notificacoes_id_aluno_fkey FOREIGN KEY (id_aluno) REFERENCES public.alunos(id_aluno),
+  CONSTRAINT notificacoes_id_docente_fkey FOREIGN KEY (id_docente) REFERENCES public.docentes(id_docente)
+);
+CREATE TABLE public.presencas (
+  id_presenca bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  id_aluno bigint,
+  id_turma bigint,
+  data_time_presenca timestamp without time zone,
+  status_presenca text,
+  id_docente bigint,
+  id_justificativa bigint,
+  CONSTRAINT presencas_pkey PRIMARY KEY (id_presenca),
+  CONSTRAINT presencas_id_aluno_fkey FOREIGN KEY (id_aluno) REFERENCES public.alunos(id_aluno),
+  CONSTRAINT presencas_id_turma_fkey FOREIGN KEY (id_turma) REFERENCES public.turmas(id_turma),
+  CONSTRAINT presencas_id_docente_fkey FOREIGN KEY (id_docente) REFERENCES public.docentes(id_docente),
+  CONSTRAINT presencas_id_justificativa_fkey FOREIGN KEY (id_justificativa) REFERENCES public.justificativa(id_justificativa)
+);
+CREATE TABLE public.relatorios_acompanhamentos (
+  id_relatorios_acompanhamento bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  id_aluno bigint,
+  id_docente bigint,
+  descricao_relatorio_acompanhamento text,
+  data_relatorio_acompanhamento timestamp without time zone,
+  anexo_url text,
+  tipo_relatorio text,
+  id_responsavel bigint,
+  CONSTRAINT relatorios_acompanhamentos_pkey PRIMARY KEY (id_relatorios_acompanhamento),
+  CONSTRAINT relatorios_acompanhamentos_id_aluno_fkey FOREIGN KEY (id_aluno) REFERENCES public.alunos(id_aluno),
+  CONSTRAINT relatorios_acompanhamentos_id_docente_fkey FOREIGN KEY (id_docente) REFERENCES public.docentes(id_docente),
+  CONSTRAINT relatorios_acompanhamentos_id_responsavel_fkey FOREIGN KEY (id_responsavel) REFERENCES public.responsaveis(id_responsavel),
+  CONSTRAINT relatorios_acompanhamentos_id_aluno_fkey1 FOREIGN KEY (id_aluno) REFERENCES public.alunos(id_aluno),
+  CONSTRAINT relatorios_acompanhamentos_id_docente_fkey1 FOREIGN KEY (id_docente) REFERENCES public.docentes(id_docente)
+);
+CREATE TABLE public.responsaveis (
+  id_responsavel bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  update_at timestamp without time zone,
+  nome_responsavel text,
+  telefone_responsavel text,
+  email_responsavel text,
+  cpf_responsavel text,
+  CONSTRAINT responsaveis_pkey PRIMARY KEY (id_responsavel)
+);
+CREATE TABLE public.responsaveis_por_alunos (
+  id_responsaveis_por_alunos bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  id_responsavel bigint,
+  id_aluno bigint,
+  parentesco text,
+  CONSTRAINT responsaveis_por_alunos_pkey PRIMARY KEY (id_responsaveis_por_alunos),
+  CONSTRAINT responsaveis_por_aluno_id_responsavel_fkey FOREIGN KEY (id_responsavel) REFERENCES public.responsaveis(id_responsavel),
+  CONSTRAINT responsaveis_por_aluno_id_aluno_fkey FOREIGN KEY (id_aluno) REFERENCES public.alunos(id_aluno)
+);
+CREATE TABLE public.turmas (
+  id_turma bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  nome_turma text,
+  limite_alunos_turma bigint,
+  unidade_turma text,
+  cidade_turma text,
+  CONSTRAINT turmas_pkey PRIMARY KEY (id_turma)
+);
+CREATE TABLE public.turmas_por_unidade (
+  id_turma_por_unidade bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  id_turma bigint,
+  id_unidade bigint,
+  CONSTRAINT turmas_por_unidade_pkey PRIMARY KEY (id_turma_por_unidade),
+  CONSTRAINT turmas_por_unidade_id_turma_fkey FOREIGN KEY (id_turma) REFERENCES public.turmas(id_turma),
+  CONSTRAINT turmas_por_unidade_id_unidade_fkey FOREIGN KEY (id_unidade) REFERENCES public.unidades(id_unidade)
+);
+CREATE TABLE public.unidades (
+  id_unidade bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  nome_unidade text,
+  endereco_unidade text,
+  CONSTRAINT unidades_pkey PRIMARY KEY (id_unidade)
+);

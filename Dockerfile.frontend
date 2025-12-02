@@ -1,0 +1,60 @@
+# PPBM Frontend Dockerfile for Kubernetes
+# Astro with Node.js adapter (SSR)
+
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Build arguments for environment variables (needed at build time for Astro)
+ARG PUBLIC_SUPABASE_URL
+ARG PUBLIC_SUPABASE_ANON_KEY
+ARG PUBLIC_API_URL
+
+# Set as environment variables for the build process
+ENV PUBLIC_SUPABASE_URL=$PUBLIC_SUPABASE_URL
+ENV PUBLIC_SUPABASE_ANON_KEY=$PUBLIC_SUPABASE_ANON_KEY
+ENV PUBLIC_API_URL=$PUBLIC_API_URL
+
+# Install dependencies first (better caching)
+COPY app/apps/frontend/package*.json ./
+RUN npm install
+
+# Copy source
+COPY app/apps/frontend/ ./
+
+# Build the Astro site (will use PUBLIC_* env vars)
+RUN npm run build
+
+# Production image
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -u 1001 -S appuser -G appgroup
+
+# Copy built server and client assets from builder
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+# Set ownership
+RUN chown -R appuser:appgroup /app
+
+USER appuser
+
+# Expose port
+EXPOSE 4321
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=4321
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:4321/ || exit 1
+
+# Start the Node.js server (Astro Node adapter standalone mode)
+CMD ["node", "./dist/server/entry.mjs"]

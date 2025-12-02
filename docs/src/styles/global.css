@@ -118,3 +118,24 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Starlight sidebar improvements */
+@layer components {
+  /* Force sidebar items to break to new lines */
+  [data-sidebar] ul {
+    @apply flex flex-col gap-1;
+  }
+
+  [data-sidebar] li {
+    @apply block w-full;
+  }
+
+  [data-sidebar] a {
+    @apply block w-full py-2 px-3 rounded text-sm truncate;
+  }
+
+  /* Better spacing for sidebar groups */
+  [data-sidebar] strong {
+    @apply block py-2 px-3 text-sm font-semibold;
+  }
+}

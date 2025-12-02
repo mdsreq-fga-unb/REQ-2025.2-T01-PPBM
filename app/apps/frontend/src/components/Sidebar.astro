@@ -1,0 +1,230 @@
+---
+const currentPath = Astro.url.pathname;
+
+const isActive = (path: string) => {
+    if (path === "/admin/presencas") {
+        return currentPath === "/admin/presencas";
+    }
+    if (path === "/admin/gerenciar-alunos") {
+        return (
+            currentPath === "/admin/gerenciar-alunos" ||
+            currentPath === "/admin/cadastrar-alunos"
+        );
+    }
+    if (path === "/admin/gerenciar-turmas") {
+        return (
+            currentPath === "/admin/gerenciar-turmas" ||
+            currentPath === "/admin/cadastrar-turmas"
+        );
+    }
+    if (path === "/admin/relatorios") {
+        return currentPath === "/admin/relatorios";
+    }
+    if (path === "/admin/dashboard") {
+        return currentPath === "/admin/dashboard";
+    }
+    if (path === "/admin/usuarios") {
+        return currentPath === "/admin/usuarios";
+    }
+    if (path === "/admin/advertencias") {
+        return currentPath === "/admin/advertencias";
+    }
+    if (path === "/admin/comunicacao") {
+        return currentPath === "/admin/comunicacao";
+    }
+    if (path === "/admin/conteudos") {
+        return currentPath === "/admin/conteudos";
+    }
+    return currentPath.startsWith(path);
+};
+---
+
+<div class="sidebar-wrapper">
+    <nav class="sidebar">
+        <ul class="nav-list">
+            <li
+                class={`nav-item ${isActive("/admin/presencas") ? "active" : ""}`}
+            >
+                <a href="/admin/presencas" class="nav-link">
+                    <span class="nav-icon">📅</span>
+                    <span class="nav-text">Presenças</span>
+                </a>
+            </li>
+            <li
+                class={`nav-item ${isActive("/admin/gerenciar-alunos") ? "active" : ""}`}
+            >
+                <a href="/admin/gerenciar-alunos" class="nav-link">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">Gerenciar Alunos</span>
+                </a>
+            </li>
+            <li
+                class={`nav-item ${isActive("/admin/gerenciar-turmas") ? "active" : ""}`}
+            >
+                <a href="/admin/gerenciar-turmas" class="nav-link">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">Gerenciar Turmas</span>
+                </a>
+            </li>
+            <li
+                class={`nav-item ${isActive("/admin/advertencias") ? "active" : ""}`}
+            >
+                <a href="/admin/advertencias" class="nav-link">
+                    <span class="nav-icon">⚠️</span>
+                    <span class="nav-text">Advertências</span>
+                </a>
+            </li>
+            <li
+                class={`nav-item ${isActive("/admin/usuarios") ? "active" : ""}`}
+            >
+                <a href="/admin/usuarios" class="nav-link">
+                    <span class="nav-icon">🔐</span>
+                    <span class="nav-text">Usuários</span>
+                </a>
+            </li>
+            <li
+                class={`nav-item ${isActive("/admin/comunicacao") ? "active" : ""}`}
+            >
+                <a href="/admin/comunicacao" class="nav-link">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-text">Comunicação</span>
+                </a>
+            </li>
+            <li
+                class={`nav-item ${isActive("/admin/conteudos") ? "active" : ""}`}
+            >
+                <a href="/admin/conteudos" class="nav-link">
+                    <span class="nav-icon">📖</span>
+                    <span class="nav-text">Conteúdos Institucionais</span>
+                </a>
+            </li>
+            <li
+                class={`nav-item ${isActive("/admin/relatorios") ? "active" : ""}`}
+            >
+                <a href="/admin/relatorios" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Relatórios</span>
+                </a>
+            </li>
+            <li
+                class={`nav-item ${isActive("/admin/dashboard") ? "active" : ""}`}
+            >
+                <a href="/admin/dashboard" class="nav-link">
+                    <span class="nav-icon">📈</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<style>
+    .sidebar-wrapper {
+        display: block;
+    }
+
+    .sidebar {
+        width: 240px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        padding: 20px 0;
+        flex-shrink: 0;
+    }
+
+    .nav-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav-item {
+        margin-bottom: 4px;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 14px 20px;
+        color: #333;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        margin: 0 12px;
+        position: relative;
+    }
+
+    .nav-link:hover {
+        background-color: #f5f5f5;
+        transform: translateX(4px);
+    }
+
+    .nav-item.active .nav-link {
+        background: linear-gradient(135deg, #ff4d4d 0%, #ff1744 100%);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3);
+    }
+
+    .nav-item.active .nav-link:hover {
+        background: linear-gradient(135deg, #ff1744 0%, #ff4d4d 100%);
+        transform: translateX(4px);
+    }
+
+    .nav-icon {
+        font-size: 22px;
+        margin-right: 12px;
+        display: inline-block;
+        width: 24px;
+        text-align: center;
+    }
+
+    .nav-text {
+        flex: 1;
+    }
+
+    .sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+        background: #ddd;
+        border-radius: 3px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb:hover {
+        background: #bbb;
+    }
+
+    @media (max-width: 768px) {
+        .sidebar-wrapper {
+            padding: 0 1rem;
+        }
+
+        .sidebar {
+            width: 200px;
+            padding: 15px 0;
+        }
+
+        .nav-link {
+            padding: 12px 15px;
+            font-size: 14px;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .sidebar-wrapper {
+            display: none;
+        }
+    }
+</style>
