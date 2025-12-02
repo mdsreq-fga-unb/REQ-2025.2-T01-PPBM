@@ -293,7 +293,18 @@ Este é um projeto acadêmico desenvolvido para o Corpo de Bombeiros Militar do 
 
 ---
 
+Entrega 3 
+PPB https://miro.com/app/board/uXjVJsrQvmQ=/
+
+PBB - CulturaViva
+Grupo: FireForce
+https://miro.com/app/board/uXjVJspZdyY=/?share_link_id=293790226060
+
+USM - HealthConnect
+Grupo: FireForce
+
 <div align="center">
   <p>Desenvolvido com ❤️ pela equipe FireForce</p>
   <p>Programa Bombeiro Mirim - CBMDF | 2025</p>
 </div>
+
