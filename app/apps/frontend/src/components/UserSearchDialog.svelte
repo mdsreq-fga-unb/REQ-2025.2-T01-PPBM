@@ -175,11 +175,17 @@
         }
     }
 
-    // Focus input when dialog opens
+    // Focus input when dialog opens and reset filtered users to show all
     $: if (isOpen && searchInputElement) {
         setTimeout(() => {
             searchInputElement?.focus();
         }, 100);
+    }
+
+    // Reset filtered users to show all when dialog opens
+    $: if (isOpen && allUsers.length > 0) {
+        filteredUsers = [...allUsers];
+        searchQuery = '';
     }
 
     // Sync internal selected users when dialog opens in multi-select mode

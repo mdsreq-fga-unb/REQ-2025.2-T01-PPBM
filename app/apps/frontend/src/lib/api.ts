@@ -272,18 +272,18 @@ export async function logout(): Promise<void> {
  */
 export async function getCurrentUser(): Promise<ApiResponse<{ user: AuthUser }>> {
     const response = await apiFetch<{ success: boolean; data: { user: { id: string; email: string; userType: UserType; name: string } } }>('/auth/me');
-    
+
     console.log('[API] getCurrentUser raw response:', response);
 
     // The backend returns { success: true, data: { user: {...} } }
     // apiFetch wraps it as { success: true, data: backendResponse }
     // So we need to access response.data.data.user (if backend wraps in success/data)
     // OR response.data.user (if apiFetch already extracts it)
-    
+
     // Check the actual structure
     const backendData = response.data as any;
     console.log('[API] getCurrentUser backendData:', backendData);
-    
+
     // Backend returns { success: true, data: { user: {...} } }
     // So backendData might be the full backend response or just the data part
     const user = backendData?.data?.user || backendData?.user;

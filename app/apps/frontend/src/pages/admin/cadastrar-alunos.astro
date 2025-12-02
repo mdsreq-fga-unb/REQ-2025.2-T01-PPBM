@@ -323,20 +323,41 @@ import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
                                         placeholder="Ex: 5º Ano"
                                     />
                                 </div>
-                                <FormSelect name="unidade" label="Unidade do PBM" required>
-                                    <option value="">Selecione a unidade</option>
+                                <FormSelect
+                                    name="unidade"
+                                    label="Unidade do PBM"
+                                    required
+                                >
+                                    <option value="">Selecione a unidade</option
+                                    >
                                     <option value="gama">Gama</option>
-                                    <option value="santa_maria">Santa Maria</option>
-                                    <option value="recanto">Recanto das Emas</option>
+                                    <option value="santa_maria"
+                                        >Santa Maria</option
+                                    >
+                                    <option value="recanto"
+                                        >Recanto das Emas</option
+                                    >
                                     <option value="samambaia">Samambaia</option>
-                                    <option value="nucleo_bandeirante">Núcleo Bandeirante</option>
-                                    <option value="estrutural">Cidade Estrutural</option>
+                                    <option value="nucleo_bandeirante"
+                                        >Núcleo Bandeirante</option
+                                    >
+                                    <option value="estrutural"
+                                        >Cidade Estrutural</option
+                                    >
                                     <option value="ceilandia">Ceilândia</option>
-                                    <option value="brazlandia">Brazlândia</option>
-                                    <option value="sobradinho">Sobradinho</option>
-                                    <option value="planaltina">Planaltina</option>
+                                    <option value="brazlandia"
+                                        >Brazlândia</option
+                                    >
+                                    <option value="sobradinho"
+                                        >Sobradinho</option
+                                    >
+                                    <option value="planaltina"
+                                        >Planaltina</option
+                                    >
                                     <option value="paranoa">Paranoá</option>
-                                    <option value="sao_sebastiao">São Sebastião</option>
+                                    <option value="sao_sebastiao"
+                                        >São Sebastião</option
+                                    >
                                 </FormSelect>
                                 <FormSelect name="turma" label="Turma">
                                     <option value="">Selecione a turma</option>
@@ -349,7 +370,10 @@ import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
                         <section class="form-section">
                             <h2>🏥 Informações Médicas</h2>
                             <div class="form-grid">
-                                <FormSelect name="tipo_sanguineo" label="Tipo Sanguíneo">
+                                <FormSelect
+                                    name="tipo_sanguineo"
+                                    label="Tipo Sanguíneo"
+                                >
                                     <option value="">Selecione</option>
                                     <option value="A+">A+</option>
                                     <option value="A-">A-</option>
@@ -541,14 +565,25 @@ import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
                     while (true) {
                         const nome = formData.get(`responsavel_nome_${i}`);
                         if (!nome) break;
-                        
+
                         alunoData.responsaveis.push({
                             id: formData.get(`responsavel_id_${i}`) || null,
                             nome: nome,
-                            cpf: formData.get(`responsavel_cpf_${i}`)?.toString().replace(/\D/g, "") || null,
-                            parentesco: formData.get(`responsavel_parentesco_${i}`),
-                            telefone: formData.get(`responsavel_telefone_${i}`)?.toString().replace(/\D/g, "") || null,
-                            email: formData.get(`responsavel_email_${i}`) || null,
+                            cpf:
+                                formData
+                                    .get(`responsavel_cpf_${i}`)
+                                    ?.toString()
+                                    .replace(/\D/g, "") || null,
+                            parentesco: formData.get(
+                                `responsavel_parentesco_${i}`,
+                            ),
+                            telefone:
+                                formData
+                                    .get(`responsavel_telefone_${i}`)
+                                    ?.toString()
+                                    .replace(/\D/g, "") || null,
+                            email:
+                                formData.get(`responsavel_email_${i}`) || null,
                         });
                         i++;
                     }

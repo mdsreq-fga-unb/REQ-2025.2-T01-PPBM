@@ -2,28 +2,37 @@
 const currentPath = Astro.url.pathname;
 
 const navItems = [
-    { href: '/docente/dashboard', icon: '📊', label: 'Dashboard' },
-    { href: '/docente/controle', icon: '📅', label: 'Controle de Presenças' },
-    { href: '/docente/turmas', icon: '👥', label: 'Turmas' },
-    { href: '/docente/conteudos', icon: '📚', label: 'Conteúdos Institucionais' },
-    { href: '/docente/comunicacao', icon: '💬', label: 'Comunicação' },
-    { href: '/docente/relatorios', icon: '📝', label: 'Relatórios' },
+    { href: "/docente/dashboard", icon: "📊", label: "Dashboard" },
+    { href: "/docente/controle", icon: "📅", label: "Controle de Presenças" },
+    { href: "/docente/turmas", icon: "👥", label: "Turmas" },
+    {
+        href: "/docente/conteudos",
+        icon: "📚",
+        label: "Conteúdos Institucionais",
+    },
+    { href: "/docente/comunicacao", icon: "💬", label: "Comunicação" },
+    { href: "/docente/relatorios", icon: "📝", label: "Relatórios" },
 ];
 
-const isActive = (path: string) => currentPath === path || currentPath.startsWith(path);
+const isActive = (path: string) =>
+    currentPath === path || currentPath.startsWith(path);
 ---
 
 <div class="sidebar-wrapper">
     <nav class="sidebar">
         <ul class="nav-list">
-            {navItems.map((item) => (
-                <li class={`nav-item ${isActive(item.href) ? 'active' : ''}`}>
-                    <a href={item.href} class="nav-link">
-                        <span class="nav-icon">{item.icon}</span>
-                        <span class="nav-text">{item.label}</span>
-                    </a>
-                </li>
-            ))}
+            {
+                navItems.map((item) => (
+                    <li
+                        class={`nav-item ${isActive(item.href) ? "active" : ""}`}
+                    >
+                        <a href={item.href} class="nav-link">
+                            <span class="nav-icon">{item.icon}</span>
+                            <span class="nav-text">{item.label}</span>
+                        </a>
+                    </li>
+                ))
+            }
         </ul>
     </nav>
 </div>
@@ -37,7 +46,7 @@ const isActive = (path: string) => currentPath === path || currentPath.startsWit
         width: 240px;
         background-color: #fff;
         border-radius: 12px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         padding: 20px 0;
         flex-shrink: 0;
     }

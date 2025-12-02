@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onMount } from "svelte";
 
     export let apiUrl: string;
     export let docenteId: number | null = null;
@@ -35,46 +35,49 @@
     let alunos: Aluno[] = [];
     let loading = true;
     let sending = false;
-    let activeTab: 'mensagens' | 'nova' = 'mensagens';
+    let activeTab: "mensagens" | "nova" = "mensagens";
 
     // Filters
-    let filterTipo = '';
-    let filterCanal = '';
-    let filterEntregue = '';
+    let filterTipo = "";
+    let filterCanal = "";
+    let filterEntregue = "";
 
     // New message form
     let selectedAlunoId: number | null = null;
     let selectedResponsavelId: number | null = null;
     let responsaveisDoAluno: Responsavel[] = [];
     let loadingResponsaveis = false;
-    let tipoNotificacao = 'comunicado';
-    let canalNotificacao = 'sistema';
-    let mensagem = '';
+    let tipoNotificacao = "comunicado";
+    let canalNotificacao = "sistema";
+    let mensagem = "";
 
     // Toast
     let showToast = false;
-    let toastMessage = '';
-    let toastType: 'success' | 'error' = 'success';
+    let toastMessage = "";
+    let toastType: "success" | "error" = "success";
 
     // Modal
     let showModal = false;
     let modalNotificacao: Notificacao | null = null;
 
     const tiposNotificacao = [
-        { value: 'comunicado', label: 'Comunicado Geral', icon: '📢' },
-        { value: 'falta', label: 'Aviso de Falta', icon: '❌' },
-        { value: 'advertencia', label: 'Advertência', icon: '⚠️' },
-        { value: 'justificativa', label: 'Justificativa', icon: '📝' },
-        { value: 'geral', label: 'Outro', icon: '💬' }
+        { value: "comunicado", label: "Comunicado Geral", icon: "📢" },
+        { value: "falta", label: "Aviso de Falta", icon: "❌" },
+        { value: "advertencia", label: "Advertência", icon: "⚠️" },
+        { value: "justificativa", label: "Justificativa", icon: "📝" },
+        { value: "geral", label: "Outro", icon: "💬" },
     ];
 
     const canaisNotificacao = [
-        { value: 'sistema', label: 'Sistema (interno)', icon: '🔔' },
-        { value: 'whatsapp', label: 'WhatsApp', icon: '📱' },
-        { value: 'email', label: 'E-mail', icon: '✉️' }
+        { value: "sistema", label: "Sistema (interno)", icon: "🔔" },
+        { value: "whatsapp", label: "WhatsApp", icon: "📱" },
+        { value: "email", label: "E-mail", icon: "✉️" },
     ];
 
-    function displayToast(message: string, type: 'success' | 'error' = 'success') {
+    function displayToast(
+        message: string,
+        type: "success" | "error" = "success",
+    ) {
         toastMessage = message;
         toastType = type;
         showToast = true;
@@ -84,27 +87,29 @@
     }
 
     function formatDate(dateStr: string): string {
-        if (!dateStr) return '-';
+        if (!dateStr) return "-";
         const date = new Date(dateStr);
-        return date.toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+        return date.toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
         });
     }
 
     function formatPhone(phone: string): string {
-        if (!phone) return '';
-        const cleaned = phone.replace(/\D/g, '');
+        if (!phone) return "";
+        const cleaned = phone.replace(/\D/g, "");
         // Remove country code if present
-        const phoneNumber = cleaned.startsWith('55') ? cleaned.slice(2) : cleaned;
+        const phoneNumber = cleaned.startsWith("55")
+            ? cleaned.slice(2)
+            : cleaned;
         return phoneNumber;
     }
 
     function generateWhatsAppLink(phone: string, message: string): string {
-        const cleanedPhone = '55' + formatPhone(phone);
+        const cleanedPhone = "55" + formatPhone(phone);
         const encodedMessage = encodeURIComponent(message);
         return `https://wa.me/${cleanedPhone}?text=${encodedMessage}`;
     }
@@ -113,29 +118,31 @@
         try {
             loading = true;
             const params = new URLSearchParams();
-            params.append('pageSize', '50');
-            
+            params.append("pageSize", "50");
+
             if (docenteId) {
-                params.append('docenteId', docenteId.toString());
+                params.append("docenteId", docenteId.toString());
             }
             if (filterTipo) {
-                params.append('tipo', filterTipo);
+                params.append("tipo", filterTipo);
             }
             if (filterCanal) {
-                params.append('canal', filterCanal);
+                params.append("canal", filterCanal);
             }
             if (filterEntregue) {
-                params.append('entregue', filterEntregue);
+                params.append("entregue", filterEntregue);
             }
 
-            const response = await fetch(`${apiUrl}/notificacoes/listar?${params}`);
-            if (!response.ok) throw new Error('Erro ao carregar notificações');
-            
+            const response = await fetch(
+                `${apiUrl}/notificacoes/listar?${params}`,
+            );
+            if (!response.ok) throw new Error("Erro ao carregar notificações");
+
             const data = await response.json();
             notificacoes = data.data || [];
         } catch (err) {
-            console.error('Erro ao carregar notificações:', err);
-            displayToast('Erro ao carregar notificações', 'error');
+            console.error("Erro ao carregar notificações:", err);
+            displayToast("Erro ao carregar notificações", "error");
         } finally {
             loading = false;
         }
@@ -143,13 +150,15 @@
 
     async function loadAlunos() {
         try {
-            const response = await fetch(`${apiUrl}/alunos/listar?pageSize=100`);
-            if (!response.ok) throw new Error('Erro ao carregar alunos');
-            
+            const response = await fetch(
+                `${apiUrl}/alunos/listar?pageSize=100`,
+            );
+            if (!response.ok) throw new Error("Erro ao carregar alunos");
+
             const data = await response.json();
             alunos = data.data || [];
         } catch (err) {
-            console.error('Erro ao carregar alunos:', err);
+            console.error("Erro ao carregar alunos:", err);
         }
     }
 
@@ -159,18 +168,20 @@
             responsaveisDoAluno = [];
             selectedResponsavelId = null;
 
-            const response = await fetch(`${apiUrl}/notificacoes/responsaveis-aluno/${alunoId}`);
-            if (!response.ok) throw new Error('Erro ao carregar responsáveis');
-            
+            const response = await fetch(
+                `${apiUrl}/notificacoes/responsaveis-aluno/${alunoId}`,
+            );
+            if (!response.ok) throw new Error("Erro ao carregar responsáveis");
+
             const data = await response.json();
             responsaveisDoAluno = data.data || [];
-            
+
             if (responsaveisDoAluno.length === 1) {
                 selectedResponsavelId = responsaveisDoAluno[0].id_responsavel;
             }
         } catch (err) {
-            console.error('Erro ao carregar responsáveis:', err);
-            displayToast('Erro ao carregar responsáveis do aluno', 'error');
+            console.error("Erro ao carregar responsáveis:", err);
+            displayToast("Erro ao carregar responsáveis do aluno", "error");
         } finally {
             loadingResponsaveis = false;
         }
@@ -187,7 +198,10 @@
 
     async function enviarNotificacao() {
         if (!selectedResponsavelId || !mensagem.trim()) {
-            displayToast('Selecione um responsável e escreva uma mensagem', 'error');
+            displayToast(
+                "Selecione um responsável e escreva uma mensagem",
+                "error",
+            );
             return;
         }
 
@@ -200,17 +214,25 @@
                 id_docente: docenteId,
                 tipo_notifi: tipoNotificacao,
                 canal_notifi: canalNotificacao,
-                mensagem_notifi: mensagem.trim()
+                mensagem_notifi: mensagem.trim(),
             };
 
             // For WhatsApp, open the link and mark as sent
-            if (canalNotificacao === 'whatsapp') {
-                const responsavel = responsaveisDoAluno.find(r => r.id_responsavel === selectedResponsavelId);
+            if (canalNotificacao === "whatsapp") {
+                const responsavel = responsaveisDoAluno.find(
+                    (r) => r.id_responsavel === selectedResponsavelId,
+                );
                 if (responsavel?.telefone_responsavel) {
-                    const whatsappLink = generateWhatsAppLink(responsavel.telefone_responsavel, mensagem);
-                    window.open(whatsappLink, '_blank');
+                    const whatsappLink = generateWhatsAppLink(
+                        responsavel.telefone_responsavel,
+                        mensagem,
+                    );
+                    window.open(whatsappLink, "_blank");
                 } else {
-                    displayToast('Responsável não possui telefone cadastrado', 'error');
+                    displayToast(
+                        "Responsável não possui telefone cadastrado",
+                        "error",
+                    );
                     sending = false;
                     return;
                 }
@@ -218,66 +240,82 @@
 
             // For email, we would integrate with an email service
             // For now, just save the notification
-            if (canalNotificacao === 'email') {
-                const responsavel = responsaveisDoAluno.find(r => r.id_responsavel === selectedResponsavelId);
+            if (canalNotificacao === "email") {
+                const responsavel = responsaveisDoAluno.find(
+                    (r) => r.id_responsavel === selectedResponsavelId,
+                );
                 if (!responsavel?.email_responsavel) {
-                    displayToast('Responsável não possui e-mail cadastrado', 'error');
+                    displayToast(
+                        "Responsável não possui e-mail cadastrado",
+                        "error",
+                    );
                     sending = false;
                     return;
                 }
                 // TODO: Integrate with email service
-                displayToast('Funcionalidade de e-mail será implementada em breve. Notificação salva no sistema.', 'success');
+                displayToast(
+                    "Funcionalidade de e-mail será implementada em breve. Notificação salva no sistema.",
+                    "success",
+                );
             }
 
             // Save notification to database
             const response = await fetch(`${apiUrl}/notificacoes/criar`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || 'Erro ao enviar notificação');
+                throw new Error(
+                    errorData.error || "Erro ao enviar notificação",
+                );
             }
 
-            displayToast('Notificação enviada com sucesso!', 'success');
-            
+            displayToast("Notificação enviada com sucesso!", "success");
+
             // Reset form
             selectedAlunoId = null;
             selectedResponsavelId = null;
             responsaveisDoAluno = [];
-            mensagem = '';
-            tipoNotificacao = 'comunicado';
-            canalNotificacao = 'sistema';
-            
-            // Switch to messages tab and reload
-            activeTab = 'mensagens';
-            await loadNotificacoes();
+            mensagem = "";
+            tipoNotificacao = "comunicado";
+            canalNotificacao = "sistema";
 
+            // Switch to messages tab and reload
+            activeTab = "mensagens";
+            await loadNotificacoes();
         } catch (err) {
-            console.error('Erro ao enviar notificação:', err);
-            displayToast((err as Error).message || 'Erro ao enviar notificação', 'error');
+            console.error("Erro ao enviar notificação:", err);
+            displayToast(
+                (err as Error).message || "Erro ao enviar notificação",
+                "error",
+            );
         } finally {
             sending = false;
         }
     }
 
     async function deleteNotificacao(id: number) {
-        if (!confirm('Tem certeza que deseja excluir esta notificação?')) return;
+        if (!confirm("Tem certeza que deseja excluir esta notificação?"))
+            return;
 
         try {
-            const response = await fetch(`${apiUrl}/notificacoes/deletar/${id}`, {
-                method: 'DELETE'
-            });
+            const response = await fetch(
+                `${apiUrl}/notificacoes/deletar/${id}`,
+                {
+                    method: "DELETE",
+                },
+            );
 
-            if (!response.ok) throw new Error('Erro ao excluir notificação');
+            if (!response.ok) throw new Error("Erro ao excluir notificação");
 
-            displayToast('Notificação excluída com sucesso', 'success');
+            displayToast("Notificação excluída com sucesso", "success");
             await loadNotificacoes();
         } catch (err) {
-            console.error('Erro ao excluir notificação:', err);
-            displayToast('Erro ao excluir notificação', 'error');
+            console.error("Erro ao excluir notificação:", err);
+            displayToast("Erro ao excluir notificação", "error");
         }
     }
 
@@ -292,22 +330,22 @@
     }
 
     function getTipoIcon(tipo: string): string {
-        const found = tiposNotificacao.find(t => t.value === tipo);
-        return found?.icon || '💬';
+        const found = tiposNotificacao.find((t) => t.value === tipo);
+        return found?.icon || "💬";
     }
 
     function getTipoLabel(tipo: string): string {
-        const found = tiposNotificacao.find(t => t.value === tipo);
+        const found = tiposNotificacao.find((t) => t.value === tipo);
         return found?.label || tipo;
     }
 
     function getCanalIcon(canal: string): string {
-        const found = canaisNotificacao.find(c => c.value === canal);
-        return found?.icon || '🔔';
+        const found = canaisNotificacao.find((c) => c.value === canal);
+        return found?.icon || "🔔";
     }
 
     function getCanalLabel(canal: string): string {
-        const found = canaisNotificacao.find(c => c.value === canal);
+        const found = canaisNotificacao.find((c) => c.value === canal);
         return found?.label || canal;
     }
 
@@ -315,13 +353,9 @@
         await Promise.all([loadNotificacoes(), loadAlunos()]);
     });
 
-    // Reactive filter
-    $: if (filterTipo !== undefined || filterCanal !== undefined || filterEntregue !== undefined) {
-        // Debounce the filter reload
-        const timeoutId = setTimeout(() => {
-            if (!loading) loadNotificacoes();
-        }, 300);
-        return () => clearTimeout(timeoutId);
+    // Handle filter changes with debounce
+    function handleFilterChange() {
+        loadNotificacoes();
     }
 </script>
 
@@ -329,51 +363,68 @@
     <!-- Toast -->
     {#if showToast}
         <div class="toast {toastType}" role="alert">
-            <span class="toast-icon">{toastType === 'success' ? '✓' : '✕'}</span>
+            <span class="toast-icon">{toastType === "success" ? "✓" : "✕"}</span
+            >
             <span>{toastMessage}</span>
         </div>
     {/if}
 
     <!-- Tabs -->
     <div class="tabs">
-        <button 
+        <button
             class="tab {activeTab === 'mensagens' ? 'active' : ''}"
-            on:click={() => activeTab = 'mensagens'}
+            on:click={() => (activeTab = "mensagens")}
         >
             📨 Mensagens Enviadas
         </button>
-        <button 
+        <button
             class="tab {activeTab === 'nova' ? 'active' : ''}"
-            on:click={() => activeTab = 'nova'}
+            on:click={() => (activeTab = "nova")}
         >
             ✏️ Nova Mensagem
         </button>
     </div>
 
     <!-- Messages Tab -->
-    {#if activeTab === 'mensagens'}
+    {#if activeTab === "mensagens"}
         <div class="filters">
             <div class="filter-group">
                 <label for="filter-tipo">Tipo</label>
-                <select id="filter-tipo" bind:value={filterTipo}>
+                <select
+                    id="filter-tipo"
+                    bind:value={filterTipo}
+                    on:change={handleFilterChange}
+                >
                     <option value="">Todos</option>
                     {#each tiposNotificacao as tipo}
-                        <option value={tipo.value}>{tipo.icon} {tipo.label}</option>
+                        <option value={tipo.value}
+                            >{tipo.icon} {tipo.label}</option
+                        >
                     {/each}
                 </select>
             </div>
             <div class="filter-group">
                 <label for="filter-canal">Canal</label>
-                <select id="filter-canal" bind:value={filterCanal}>
+                <select
+                    id="filter-canal"
+                    bind:value={filterCanal}
+                    on:change={handleFilterChange}
+                >
                     <option value="">Todos</option>
                     {#each canaisNotificacao as canal}
-                        <option value={canal.value}>{canal.icon} {canal.label}</option>
+                        <option value={canal.value}
+                            >{canal.icon} {canal.label}</option
+                        >
                     {/each}
                 </select>
             </div>
             <div class="filter-group">
                 <label for="filter-entregue">Status</label>
-                <select id="filter-entregue" bind:value={filterEntregue}>
+                <select
+                    id="filter-entregue"
+                    bind:value={filterEntregue}
+                    on:change={handleFilterChange}
+                >
                     <option value="">Todos</option>
                     <option value="true">✅ Entregue</option>
                     <option value="false">⏳ Pendente</option>
@@ -390,7 +441,10 @@
             <div class="empty-state">
                 <span class="empty-icon">📭</span>
                 <p>Nenhuma mensagem encontrada</p>
-                <button class="btn-primary" on:click={() => activeTab = 'nova'}>
+                <button
+                    class="btn-primary"
+                    on:click={() => (activeTab = "nova")}
+                >
                     Enviar primeira mensagem
                 </button>
             </div>
@@ -400,24 +454,38 @@
                     <div class="message-card">
                         <div class="message-header">
                             <div class="message-tipo">
-                                <span class="tipo-icon">{getTipoIcon(notificacao.tipo_notifi)}</span>
-                                <span class="tipo-label">{getTipoLabel(notificacao.tipo_notifi)}</span>
+                                <span class="tipo-icon"
+                                    >{getTipoIcon(
+                                        notificacao.tipo_notifi,
+                                    )}</span
+                                >
+                                <span class="tipo-label"
+                                    >{getTipoLabel(
+                                        notificacao.tipo_notifi,
+                                    )}</span
+                                >
                             </div>
                             <div class="message-canal">
-                                <span class="canal-badge {notificacao.canal_notifi}">
-                                    {getCanalIcon(notificacao.canal_notifi)} {getCanalLabel(notificacao.canal_notifi)}
+                                <span
+                                    class="canal-badge {notificacao.canal_notifi}"
+                                >
+                                    {getCanalIcon(notificacao.canal_notifi)}
+                                    {getCanalLabel(notificacao.canal_notifi)}
                                 </span>
                             </div>
                         </div>
-                        
+
                         <div class="message-body">
-                            <p class="message-text">{notificacao.mensagem_notifi}</p>
+                            <p class="message-text">
+                                {notificacao.mensagem_notifi}
+                            </p>
                         </div>
 
                         <div class="message-meta">
                             <div class="meta-left">
                                 <span class="meta-item">
-                                    👤 {notificacao.responsaveis?.nome_responsavel || 'Responsável'}
+                                    👤 {notificacao.responsaveis
+                                        ?.nome_responsavel || "Responsável"}
                                 </span>
                                 {#if notificacao.alunos?.nome_aluno}
                                     <span class="meta-item">
@@ -426,18 +494,37 @@
                                 {/if}
                             </div>
                             <div class="meta-right">
-                                <span class="meta-date">{formatDate(notificacao.created_at)}</span>
-                                <span class="status-badge {notificacao.entregue_notif ? 'delivered' : 'pending'}">
-                                    {notificacao.entregue_notif ? '✅ Entregue' : '⏳ Pendente'}
+                                <span class="meta-date"
+                                    >{formatDate(notificacao.created_at)}</span
+                                >
+                                <span
+                                    class="status-badge {notificacao.entregue_notif
+                                        ? 'delivered'
+                                        : 'pending'}"
+                                >
+                                    {notificacao.entregue_notif
+                                        ? "✅ Entregue"
+                                        : "⏳ Pendente"}
                                 </span>
                             </div>
                         </div>
 
                         <div class="message-actions">
-                            <button class="btn-icon" on:click={() => openModal(notificacao)} title="Ver detalhes">
+                            <button
+                                class="btn-icon"
+                                on:click={() => openModal(notificacao)}
+                                title="Ver detalhes"
+                            >
                                 👁️
                             </button>
-                            <button class="btn-icon danger" on:click={() => deleteNotificacao(notificacao.id_notificacoes)} title="Excluir">
+                            <button
+                                class="btn-icon danger"
+                                on:click={() =>
+                                    deleteNotificacao(
+                                        notificacao.id_notificacoes,
+                                    )}
+                                title="Excluir"
+                            >
                                 🗑️
                             </button>
                         </div>
@@ -448,21 +535,23 @@
     {/if}
 
     <!-- New Message Tab -->
-    {#if activeTab === 'nova'}
+    {#if activeTab === "nova"}
         <div class="new-message-form">
             <div class="form-section">
                 <h3>📬 Destinatário</h3>
-                
+
                 <div class="form-group">
                     <label for="select-aluno">Selecione o Aluno</label>
-                    <select 
-                        id="select-aluno" 
+                    <select
+                        id="select-aluno"
                         bind:value={selectedAlunoId}
                         on:change={handleAlunoChange}
                     >
                         <option value={null}>-- Selecione um aluno --</option>
                         {#each alunos as aluno}
-                            <option value={aluno.id_aluno}>{aluno.nome_aluno}</option>
+                            <option value={aluno.id_aluno}
+                                >{aluno.nome_aluno}</option
+                            >
                         {/each}
                     </select>
                 </div>
@@ -479,13 +568,22 @@
                 {:else if responsaveisDoAluno.length > 0}
                     <div class="form-group">
                         <label for="select-responsavel">Responsável</label>
-                        <select id="select-responsavel" bind:value={selectedResponsavelId}>
-                            <option value={null}>-- Selecione o responsável --</option>
+                        <select
+                            id="select-responsavel"
+                            bind:value={selectedResponsavelId}
+                        >
+                            <option value={null}
+                                >-- Selecione o responsável --</option
+                            >
                             {#each responsaveisDoAluno as resp}
                                 <option value={resp.id_responsavel}>
                                     {resp.nome_responsavel}
-                                    {resp.telefone_responsavel ? ` (📱 ${resp.telefone_responsavel})` : ''}
-                                    {resp.email_responsavel ? ` (✉️ ${resp.email_responsavel})` : ''}
+                                    {resp.telefone_responsavel
+                                        ? ` (📱 ${resp.telefone_responsavel})`
+                                        : ""}
+                                    {resp.email_responsavel
+                                        ? ` (✉️ ${resp.email_responsavel})`
+                                        : ""}
                                 </option>
                             {/each}
                         </select>
@@ -498,38 +596,51 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="tipo-notificacao">Tipo de Notificação</label>
-                        <select id="tipo-notificacao" bind:value={tipoNotificacao}>
+                        <label for="tipo-notificacao">Tipo de Notificação</label
+                        >
+                        <select
+                            id="tipo-notificacao"
+                            bind:value={tipoNotificacao}
+                        >
                             {#each tiposNotificacao as tipo}
-                                <option value={tipo.value}>{tipo.icon} {tipo.label}</option>
+                                <option value={tipo.value}
+                                    >{tipo.icon} {tipo.label}</option
+                                >
                             {/each}
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="canal-notificacao">Canal de Envio</label>
-                        <select id="canal-notificacao" bind:value={canalNotificacao}>
+                        <select
+                            id="canal-notificacao"
+                            bind:value={canalNotificacao}
+                        >
                             {#each canaisNotificacao as canal}
-                                <option value={canal.value}>{canal.icon} {canal.label}</option>
+                                <option value={canal.value}
+                                    >{canal.icon} {canal.label}</option
+                                >
                             {/each}
                         </select>
                     </div>
                 </div>
 
-                {#if canalNotificacao === 'whatsapp'}
+                {#if canalNotificacao === "whatsapp"}
                     <div class="info-box">
-                        📱 Ao enviar, será aberto o WhatsApp Web com a mensagem pronta para enviar.
+                        📱 Ao enviar, será aberto o WhatsApp Web com a mensagem
+                        pronta para enviar.
                     </div>
-                {:else if canalNotificacao === 'email'}
+                {:else if canalNotificacao === "email"}
                     <div class="info-box">
-                        ✉️ A funcionalidade de e-mail será implementada em breve. Por enquanto, a mensagem será salva no sistema.
+                        ✉️ A funcionalidade de e-mail será implementada em
+                        breve. Por enquanto, a mensagem será salva no sistema.
                     </div>
                 {/if}
 
                 <div class="form-group">
                     <label for="mensagem">Mensagem</label>
-                    <textarea 
-                        id="mensagem" 
+                    <textarea
+                        id="mensagem"
                         bind:value={mensagem}
                         placeholder="Digite sua mensagem aqui..."
                         rows="5"
@@ -539,21 +650,23 @@
             </div>
 
             <div class="form-actions">
-                <button 
+                <button
                     class="btn-secondary"
                     on:click={() => {
                         selectedAlunoId = null;
                         selectedResponsavelId = null;
                         responsaveisDoAluno = [];
-                        mensagem = '';
+                        mensagem = "";
                     }}
                 >
                     Limpar
                 </button>
-                <button 
+                <button
                     class="btn-primary"
                     on:click={enviarNotificacao}
-                    disabled={sending || !selectedResponsavelId || !mensagem.trim()}
+                    disabled={sending ||
+                        !selectedResponsavelId ||
+                        !mensagem.trim()}
                 >
                     {#if sending}
                         <span class="spinner-small"></span> Enviando...
@@ -570,49 +683,84 @@
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div class="modal-overlay" on:click={closeModal}>
-            <div class="modal" on:click|stopPropagation role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <div
+                class="modal"
+                on:click|stopPropagation
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="modal-title"
+            >
                 <div class="modal-header">
                     <h2 id="modal-title">
                         {getTipoIcon(modalNotificacao.tipo_notifi)} Detalhes da Notificação
                     </h2>
-                    <button class="modal-close" on:click={closeModal} aria-label="Fechar">×</button>
+                    <button
+                        class="modal-close"
+                        on:click={closeModal}
+                        aria-label="Fechar">×</button
+                    >
                 </div>
                 <div class="modal-body">
                     <div class="detail-row">
                         <span class="detail-label">Tipo:</span>
-                        <span class="detail-value">{getTipoLabel(modalNotificacao.tipo_notifi)}</span>
+                        <span class="detail-value"
+                            >{getTipoLabel(modalNotificacao.tipo_notifi)}</span
+                        >
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Canal:</span>
-                        <span class="detail-value">{getCanalIcon(modalNotificacao.canal_notifi)} {getCanalLabel(modalNotificacao.canal_notifi)}</span>
+                        <span class="detail-value"
+                            >{getCanalIcon(modalNotificacao.canal_notifi)}
+                            {getCanalLabel(modalNotificacao.canal_notifi)}</span
+                        >
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Responsável:</span>
-                        <span class="detail-value">{modalNotificacao.responsaveis?.nome_responsavel || '-'}</span>
+                        <span class="detail-value"
+                            >{modalNotificacao.responsaveis?.nome_responsavel ||
+                                "-"}</span
+                        >
                     </div>
                     {#if modalNotificacao.alunos?.nome_aluno}
                         <div class="detail-row">
                             <span class="detail-label">Aluno:</span>
-                            <span class="detail-value">{modalNotificacao.alunos.nome_aluno}</span>
+                            <span class="detail-value"
+                                >{modalNotificacao.alunos.nome_aluno}</span
+                            >
                         </div>
                     {/if}
                     <div class="detail-row">
                         <span class="detail-label">Status:</span>
-                        <span class="detail-value status-badge {modalNotificacao.entregue_notif ? 'delivered' : 'pending'}">
-                            {modalNotificacao.entregue_notif ? '✅ Entregue' : '⏳ Pendente'}
+                        <span
+                            class="detail-value status-badge {modalNotificacao.entregue_notif
+                                ? 'delivered'
+                                : 'pending'}"
+                        >
+                            {modalNotificacao.entregue_notif
+                                ? "✅ Entregue"
+                                : "⏳ Pendente"}
                         </span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Data de Envio:</span>
-                        <span class="detail-value">{formatDate(modalNotificacao.data_envio || modalNotificacao.created_at)}</span>
+                        <span class="detail-value"
+                            >{formatDate(
+                                modalNotificacao.data_envio ||
+                                    modalNotificacao.created_at,
+                            )}</span
+                        >
                     </div>
                     <div class="detail-row full">
                         <span class="detail-label">Mensagem:</span>
-                        <p class="detail-message">{modalNotificacao.mensagem_notifi}</p>
+                        <p class="detail-message">
+                            {modalNotificacao.mensagem_notifi}
+                        </p>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn-secondary" on:click={closeModal}>Fechar</button>
+                    <button class="btn-secondary" on:click={closeModal}
+                        >Fechar</button
+                    >
                 </div>
             </div>
         </div>
@@ -621,7 +769,7 @@
 
 <style>
     .comunicacao-panel {
-        font-family: 'Inter', sans-serif;
+        font-family: "Inter", sans-serif;
     }
 
     /* Toast */
@@ -640,12 +788,12 @@
     }
 
     .toast.success {
-        background-color: #48BB78;
+        background-color: #48bb78;
         color: white;
     }
 
     .toast.error {
-        background-color: #E53E3E;
+        background-color: #e53e3e;
         color: white;
     }
 
@@ -669,7 +817,7 @@
     .tabs {
         display: flex;
         gap: 0;
-        border-bottom: 2px solid #E2E8F0;
+        border-bottom: 2px solid #e2e8f0;
         margin-bottom: 1.5rem;
     }
 
@@ -686,21 +834,21 @@
     }
 
     .tab:hover {
-        color: #2D3748;
+        color: #2d3748;
     }
 
     .tab.active {
-        color: #E53E3E;
+        color: #e53e3e;
     }
 
     .tab.active::after {
-        content: '';
+        content: "";
         position: absolute;
         bottom: -2px;
         left: 0;
         right: 0;
         height: 3px;
-        background: #E53E3E;
+        background: #e53e3e;
         border-radius: 3px 3px 0 0;
     }
 
@@ -727,7 +875,7 @@
 
     .filter-group select {
         padding: 0.6rem 1rem;
-        border: 1px solid #CBD5E0;
+        border: 1px solid #cbd5e0;
         border-radius: 6px;
         font-size: 0.95rem;
         background-color: #fff;
@@ -735,7 +883,7 @@
 
     .filter-group select:focus {
         outline: none;
-        border-color: #3182CE;
+        border-color: #3182ce;
         box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
     }
 
@@ -752,8 +900,8 @@
     .spinner {
         width: 40px;
         height: 40px;
-        border: 3px solid #E2E8F0;
-        border-top-color: #E53E3E;
+        border: 3px solid #e2e8f0;
+        border-top-color: #e53e3e;
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin-bottom: 1rem;
@@ -771,14 +919,16 @@
     .spinner-small {
         width: 16px;
         height: 16px;
-        border: 2px solid #E2E8F0;
-        border-top-color: #E53E3E;
+        border: 2px solid #e2e8f0;
+        border-top-color: #e53e3e;
         border-radius: 50%;
         animation: spin 1s linear infinite;
     }
 
     @keyframes spin {
-        to { transform: rotate(360deg); }
+        to {
+            transform: rotate(360deg);
+        }
     }
 
     /* Empty State */
@@ -806,7 +956,7 @@
     }
 
     .message-card {
-        border: 1px solid #E2E8F0;
+        border: 1px solid #e2e8f0;
         border-radius: 12px;
         padding: 1.25rem;
         background-color: #fff;
@@ -836,7 +986,7 @@
 
     .tipo-label {
         font-weight: 600;
-        color: #2D3748;
+        color: #2d3748;
     }
 
     .canal-badge {
@@ -847,18 +997,18 @@
     }
 
     .canal-badge.sistema {
-        background-color: #EBF8FF;
-        color: #2B6CB0;
+        background-color: #ebf8ff;
+        color: #2b6cb0;
     }
 
     .canal-badge.whatsapp {
-        background-color: #C6F6D5;
-        color: #22543D;
+        background-color: #c6f6d5;
+        color: #22543d;
     }
 
     .canal-badge.email {
-        background-color: #FED7E2;
-        color: #97266D;
+        background-color: #fed7e2;
+        color: #97266d;
     }
 
     .message-body {
@@ -866,7 +1016,7 @@
     }
 
     .message-text {
-        color: #4A5568;
+        color: #4a5568;
         line-height: 1.5;
         margin: 0;
         white-space: pre-wrap;
@@ -902,13 +1052,13 @@
     }
 
     .status-badge.delivered {
-        background-color: #C6F6D5;
-        color: #22543D;
+        background-color: #c6f6d5;
+        color: #22543d;
     }
 
     .status-badge.pending {
-        background-color: #FEEBC8;
-        color: #C05621;
+        background-color: #feebc8;
+        color: #c05621;
     }
 
     .message-actions {
@@ -917,13 +1067,13 @@
         justify-content: flex-end;
         margin-top: 0.75rem;
         padding-top: 0.75rem;
-        border-top: 1px solid #E2E8F0;
+        border-top: 1px solid #e2e8f0;
     }
 
     .btn-icon {
         padding: 0.5rem;
         border: none;
-        background: #F7FAFC;
+        background: #f7fafc;
         border-radius: 6px;
         cursor: pointer;
         font-size: 1rem;
@@ -931,11 +1081,11 @@
     }
 
     .btn-icon:hover {
-        background-color: #E2E8F0;
+        background-color: #e2e8f0;
     }
 
     .btn-icon.danger:hover {
-        background-color: #FED7D7;
+        background-color: #fed7d7;
     }
 
     /* New Message Form */
@@ -946,7 +1096,7 @@
     }
 
     .form-section {
-        border: 1px solid #E2E8F0;
+        border: 1px solid #e2e8f0;
         border-radius: 12px;
         padding: 1.5rem;
         background-color: #fff;
@@ -955,7 +1105,7 @@
     .form-section h3 {
         margin: 0 0 1rem 0;
         font-size: 1.1rem;
-        color: #2D3748;
+        color: #2d3748;
     }
 
     .form-group {
@@ -970,7 +1120,7 @@
         display: block;
         font-size: 0.9rem;
         font-weight: 500;
-        color: #4A5568;
+        color: #4a5568;
         margin-bottom: 0.5rem;
     }
 
@@ -978,17 +1128,17 @@
     .form-group textarea {
         width: 100%;
         padding: 0.75rem 1rem;
-        border: 1px solid #CBD5E0;
+        border: 1px solid #cbd5e0;
         border-radius: 6px;
         font-size: 1rem;
         font-family: inherit;
-        background-color: #FDFDFD;
+        background-color: #fdfdfd;
     }
 
     .form-group select:focus,
     .form-group textarea:focus {
         outline: none;
-        border-color: #3182CE;
+        border-color: #3182ce;
         box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
     }
 
@@ -1012,22 +1162,22 @@
     }
 
     .info-box {
-        background-color: #EBF8FF;
-        border: 1px solid #90CDF4;
+        background-color: #ebf8ff;
+        border: 1px solid #90cdf4;
         border-radius: 8px;
         padding: 0.75rem 1rem;
         font-size: 0.9rem;
-        color: #2B6CB0;
+        color: #2b6cb0;
         margin-bottom: 1rem;
     }
 
     .warning-box {
-        background-color: #FFFAF0;
-        border: 1px solid #F6AD55;
+        background-color: #fffaf0;
+        border: 1px solid #f6ad55;
         border-radius: 8px;
         padding: 0.75rem 1rem;
         font-size: 0.9rem;
-        color: #C05621;
+        color: #c05621;
     }
 
     .form-actions {
@@ -1051,26 +1201,26 @@
     }
 
     .btn-primary {
-        background-color: #E53E3E;
+        background-color: #e53e3e;
         color: white;
     }
 
     .btn-primary:hover:not(:disabled) {
-        background-color: #C53030;
+        background-color: #c53030;
     }
 
     .btn-primary:disabled {
-        background-color: #CBD5E0;
+        background-color: #cbd5e0;
         cursor: not-allowed;
     }
 
     .btn-secondary {
-        background-color: #E2E8F0;
-        color: #4A5568;
+        background-color: #e2e8f0;
+        color: #4a5568;
     }
 
     .btn-secondary:hover {
-        background-color: #CBD5E0;
+        background-color: #cbd5e0;
     }
 
     /* Modal */
@@ -1103,13 +1253,13 @@
         justify-content: space-between;
         align-items: center;
         padding: 1.5rem;
-        border-bottom: 1px solid #E2E8F0;
+        border-bottom: 1px solid #e2e8f0;
     }
 
     .modal-header h2 {
         margin: 0;
         font-size: 1.25rem;
-        color: #2D3748;
+        color: #2d3748;
     }
 
     .modal-close {
@@ -1123,7 +1273,7 @@
     }
 
     .modal-close:hover {
-        color: #2D3748;
+        color: #2d3748;
     }
 
     .modal-body {
@@ -1141,16 +1291,16 @@
 
     .detail-label {
         font-weight: 600;
-        color: #4A5568;
+        color: #4a5568;
         min-width: 120px;
     }
 
     .detail-value {
-        color: #2D3748;
+        color: #2d3748;
     }
 
     .detail-message {
-        background-color: #F7FAFC;
+        background-color: #f7fafc;
         padding: 1rem;
         border-radius: 8px;
         margin-top: 0.5rem;
@@ -1160,7 +1310,7 @@
 
     .modal-footer {
         padding: 1rem 1.5rem;
-        border-top: 1px solid #E2E8F0;
+        border-top: 1px solid #e2e8f0;
         display: flex;
         justify-content: flex-end;
     }
@@ -1180,7 +1330,7 @@
         }
 
         .tab.active {
-            background-color: #FFF5F5;
+            background-color: #fff5f5;
             border-radius: 8px;
         }
 

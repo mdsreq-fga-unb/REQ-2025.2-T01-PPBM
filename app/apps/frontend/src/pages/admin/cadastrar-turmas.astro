@@ -515,10 +515,9 @@ import UserSearchDialog from '../../components/UserSearchDialog.svelte';
 
         function setupDocenteDialog() {
             const btnAddDocente = document.getElementById('btn-add-docente');
-            const dialogElement = document.querySelector('user-search-dialog, [data-svelte-component]');
             
-            // Listen for the custom select event from the Svelte component
-            document.addEventListener('select-docentes', (event: any) => {
+            // Listen for the custom select event from the Svelte component (dispatched on window)
+            window.addEventListener('select-docentes', (event: any) => {
                 const selected = event.detail;
                 if (Array.isArray(selected)) {
                     selectedDocentes = selected;

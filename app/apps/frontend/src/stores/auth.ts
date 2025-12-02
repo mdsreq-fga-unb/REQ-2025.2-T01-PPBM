@@ -98,11 +98,11 @@ function createAuthStore() {
 		 */
 		checkAuth: async (): Promise<boolean> => {
 			console.log('[AuthStore] checkAuth() called');
-			
+
 			// First check if we have a token
 			const token = await getAuthToken();
 			console.log('[AuthStore] Token from getAuthToken:', token ? 'exists' : 'null');
-			
+
 			if (!token) {
 				// Also check localStorage backup
 				if (typeof window !== 'undefined') {
