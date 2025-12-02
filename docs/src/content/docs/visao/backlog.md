@@ -13,6 +13,8 @@ Cada user story foi elaborada para representar uma necessidade real dos usuário
 
 ## Objetivos Específicos do Projeto
 
+Recapitulamos os Objetivos Específicos do Projeto para fazermos o link com cada User Story e conseguirmos rastrear o impacto das funcionalidades no alcance dos objetivos do projeto, permitindo uma tomada de decisão mais informada durante o planejamento e a execução das sprints.
+
 | Código | Objetivo Específico | Descrição |
 |--------|---------------------|-----------|
 | **OE01** | Melhorar a eficiência e confiabilidade no controle de frequência | Reduzir o retrabalho e a dependência de registros manuais, garantindo precisão das informações de presença e maior agilidade no acompanhamento dos alunos. |
@@ -25,19 +27,17 @@ Cada user story foi elaborada para representar uma necessidade real dos usuário
 
 ## Priorização do Backlog
 
-A priorização das histórias de usuário foi realizada combinando o método ICE e a técnica MoSCoW, permitindo uma visão equilibrada entre valor, esforço, risco e essencialidade.
+A priorização das histórias foi realizada utilizando a técnica **ICE** (Impact, Confidence, Ease), onde:
 
-No ICE, utilizamos os critérios de Impacto, Confiança e Facilidade, aplicando uma escala ampliada (equivalente ao modelo tradicional 1–10, porém ajustada aos pesos do projeto). O ICE Score resultante (Impacto × Confiança × Facilidade) serviu para comparar as histórias proporcionalmente e identificar aquelas que entregam maior valor com menor esforço.
+- **Impact (Impacto)**: Potencial do requisito em gerar valor para o negócio (1-10)
+- **Confidence (Confiança)**: Grau de certeza da equipe sobre o impacto estimado (1-10)
+- **Ease (Facilidade)**: Nível de simplicidade e velocidade de implementação (1-10)
 
-Já a técnica MoSCoW complementou essa análise classificando cada requisito em:
+**Fórmula**: ICE Score = Impacto × Confiança × Facilidade
 
-Must Have: indispensáveis para o funcionamento mínimo do sistema.
+No nosso caso a escala do ICE Score varia de **0 a 1000** (ao invés de 0 a 10) porque cada dimensão é avaliada de 1 a 10 apresenta baixo nível de granulariadade do ICE. Esta escala mais ampla permite uma melhor diferenciação entre as histórias, facilitando a ordenação e priorização do backlog.
 
-Should Have: importantes, mas não críticas para a primeira entrega.
-
-Could Have: desejáveis, podendo ser adiados sem impacto relevante.
-
-A combinação desses dois métodos permitiu estruturar um backlog claro, consistente e orientado ao valor, garantindo que o projeto avance priorizando o que realmente importa.
+Além da técnica ICE, utilizamos também a classificação **MoSCoW** (Must Have, Should Have, Could Have, Won't Have) para categorizar as histórias de usuário de acordo com sua criticidade para o sucesso do projeto. Esta combinação de técnicas permite uma priorização mais robusta, considerando tanto o valor potencial (ICE) quanto a essencialidade (MoSCoW) de cada funcionalidade.
 
 | ID | Descrição | Objetivo Específico | Requisito | Score ICE | MoSCoW |
 |----|-----------|---------------------|-----------|-----------|--------|
@@ -62,11 +62,13 @@ A combinação desses dois métodos permitiu estruturar um backlog claro, consis
 | **US-019** | Como gestor ou docente, quero gerar histórico consolidado de relatórios de acompanhamento, disponível para exportação e análise periódica. | OE04 | RF-019 | 432 | Should Have |
 | **US-020** | Como administrador, quero cadastrar regras, normas e comunicados oficiais para disponibilizar conteúdos institucionais de forma organizada e acessível. | OE05 | RF-020 | 252 | Could Have |
 
+Para consultar as descrições completas e os critérios de aceite detalhados de cada User Story, consulte a página [User Stories](./userstories.md).
+
 ---
 
 ## Definição do MVP
 
-Utilizando a técnica **MoSCoW** em conjunto com a análise ICE, definimos:
+Com a técnica **MoSCoW** em conjunto com a análise **ICE** aplicada, definimos:
 
 ### Requisitos Funcionais no MVP
 

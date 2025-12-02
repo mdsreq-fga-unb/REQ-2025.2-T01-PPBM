@@ -53,7 +53,7 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 
 ## Sprint 2 (01/10 – 13/10)
 
-![Em Progresso](https://img.shields.io/badge/Status-Em%20Progresso-green)
+![Encerrada](https://img.shields.io/badge/Status-Encerrada-blue)
 
 **Objetivo:** Primeira entrega funcional - Módulo de Cadastro e Acesso
 **Entregas:**
@@ -95,6 +95,9 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 ---
 
 ## Sprint 3 (15/10 – 27/10)
+
+![Encerrada](https://img.shields.io/badge/Status-Encerrada-blue)
+
 **Objetivo:** Segunda entrega funcional - Módulo de Presença e Justificativas
 **Entregas:**
 - **Módulo: Presença & Justificativas**
@@ -116,6 +119,9 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 ---
 
 ## Sprint 4 (29/10 – 10/11)
+
+![Encerrada](https://img.shields.io/badge/Status-Encerrada-blue)
+
 **Objetivo:** Terceira entrega funcional - Módulos de Relatórios e Comunicação
 **Entregas:**
 - **Módulo: Relatórios & Análises**
@@ -136,6 +142,9 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 ---
 
 ## Sprint 5 (12/11 – 24/11)
+
+![Encerrada](https://img.shields.io/badge/Status-Encerrada-blue)
+
 **Objetivo:** Quarta entrega funcional - Módulos Complementares e Integração
 **Entregas:**
 - **Módulo: Relatórios & Análises (finalização)**
@@ -157,6 +166,9 @@ O cronograma abaixo apresenta a distribuição das atividades do projeto ao long
 ---
 
 ## Sprint 6 (26/11 – 01/12)
+
+![Em Progresso](https://img.shields.io/badge/Status-Em%20Progresso-green)
+
 **Objetivo:** Entrega final do MVP  
 **Entregas:**
   - US-022 - Filtro e busca.
