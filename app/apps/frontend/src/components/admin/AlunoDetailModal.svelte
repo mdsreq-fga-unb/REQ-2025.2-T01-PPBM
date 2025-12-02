@@ -140,6 +140,19 @@
             const statsData = await statsResponse.json();
             const timelineData = await timelineResponse.json();
 
+            // Debug logging
+            console.log("[AlunoDetailModal] API URL:", apiUrl);
+            console.log(
+                "[AlunoDetailModal] Stats response status:",
+                statsResponse.status,
+            );
+            console.log("[AlunoDetailModal] Stats data:", statsData);
+            console.log(
+                "[AlunoDetailModal] Timeline response status:",
+                timelineResponse.status,
+            );
+            console.log("[AlunoDetailModal] Timeline data:", timelineData);
+
             if (!statsResponse.ok || !statsData.success) {
                 throw new Error(
                     statsData.error || "Erro ao carregar estatísticas",
@@ -155,6 +168,16 @@
             aluno = statsData.aluno;
             estatisticas = statsData.estatisticas;
             timeline = timelineData.timeline || [];
+
+            console.log("[AlunoDetailModal] Assigned aluno:", aluno);
+            console.log(
+                "[AlunoDetailModal] Assigned estatisticas:",
+                estatisticas,
+            );
+            console.log(
+                "[AlunoDetailModal] Assigned timeline length:",
+                timeline.length,
+            );
 
             // Load accompaniment plans if student is neurodivergent
             if (statsData.aluno?.neurodivergente) {
@@ -508,98 +531,115 @@
 
                 <!-- Tab Content -->
                 <div class="tab-content">
-                    {#if activeTab === "estatisticas" && estatisticas}
-                        <!-- Stats Grid -->
-                        <div class="stats-grid">
-                            <div class="stat-card presenca">
-                                <div class="stat-header">
-                                    <span class="stat-icon">📊</span>
-                                    <span class="stat-title"
-                                        >Taxa de Presença</span
-                                    >
-                                </div>
-                                <div class="stat-value">
-                                    {estatisticas.presenca.taxaPresenca}%
-                                </div>
-                                <div class="stat-footer">
-                                    de {estatisticas.presenca.totalAulas} aulas
-                                </div>
-                            </div>
-
-                            <div class="stat-card presentes">
-                                <div class="stat-header">
-                                    <span class="stat-icon">✅</span>
-                                    <span class="stat-title">Presenças</span>
-                                </div>
-                                <div class="stat-value">
-                                    {estatisticas.presenca.presentes}
-                                </div>
-                            </div>
-
-                            <div class="stat-card atrasos">
-                                <div class="stat-header">
-                                    <span class="stat-icon">⏰</span>
-                                    <span class="stat-title">Atrasos</span>
-                                </div>
-                                <div class="stat-value">
-                                    {estatisticas.presenca.atrasos}
-                                </div>
-                            </div>
-
-                            <div class="stat-card faltas">
-                                <div class="stat-header">
-                                    <span class="stat-icon">❌</span>
-                                    <span class="stat-title">Faltas</span>
-                                </div>
-                                <div class="stat-value">
-                                    {estatisticas.presenca.faltas}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Justificativas & Advertências -->
-                        <div class="secondary-stats">
-                            <div class="secondary-stat-card">
-                                <h5>📄 Justificativas</h5>
-                                <div class="secondary-stat-items">
-                                    <div class="stat-item">
-                                        <span>Total</span>
-                                        <span class="value"
-                                            >{estatisticas.justificativas
-                                                .total}</span
+                    {#if activeTab === "estatisticas"}
+                        {#if estatisticas}
+                            <!-- Stats Grid -->
+                            <div class="stats-grid">
+                                <div class="stat-card presenca">
+                                    <div class="stat-header">
+                                        <span class="stat-icon">📊</span>
+                                        <span class="stat-title"
+                                            >Taxa de Presença</span
                                         >
                                     </div>
-                                    <div class="stat-item approved">
-                                        <span>Aprovadas</span>
-                                        <span class="value"
-                                            >{estatisticas.justificativas
-                                                .aprovadas}</span
+                                    <div class="stat-value">
+                                        {estatisticas?.presenca?.taxaPresenca ??
+                                            0}%
+                                    </div>
+                                    <div class="stat-footer">
+                                        de {estatisticas?.presenca
+                                            ?.totalAulas ?? 0} aulas
+                                    </div>
+                                </div>
+
+                                <div class="stat-card presentes">
+                                    <div class="stat-header">
+                                        <span class="stat-icon">✅</span>
+                                        <span class="stat-title">Presenças</span
                                         >
                                     </div>
-                                    <div class="stat-item pending">
-                                        <span>Pendentes</span>
-                                        <span class="value"
-                                            >{estatisticas.justificativas
-                                                .pendentes}</span
-                                        >
+                                    <div class="stat-value">
+                                        {estatisticas?.presenca?.presentes ?? 0}
                                     </div>
-                                    <div class="stat-item rejected">
-                                        <span>Rejeitadas</span>
-                                        <span class="value"
-                                            >{estatisticas.justificativas
-                                                .rejeitadas}</span
-                                        >
+                                </div>
+
+                                <div class="stat-card atrasos">
+                                    <div class="stat-header">
+                                        <span class="stat-icon">⏰</span>
+                                        <span class="stat-title">Atrasos</span>
+                                    </div>
+                                    <div class="stat-value">
+                                        {estatisticas?.presenca?.atrasos ?? 0}
+                                    </div>
+                                </div>
+
+                                <div class="stat-card faltas">
+                                    <div class="stat-header">
+                                        <span class="stat-icon">❌</span>
+                                        <span class="stat-title">Faltas</span>
+                                    </div>
+                                    <div class="stat-value">
+                                        {estatisticas?.presenca?.faltas ?? 0}
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="secondary-stat-card warning">
-                                <h5>⚠️ Advertências</h5>
-                                <div class="advertencias-count">
-                                    {estatisticas.advertencias.total}
+                            <!-- Justificativas & Advertências -->
+                            <div class="secondary-stats">
+                                <div class="secondary-stat-card">
+                                    <h5>📄 Justificativas</h5>
+                                    <div class="secondary-stat-items">
+                                        <div class="stat-item">
+                                            <span>Total</span>
+                                            <span class="value"
+                                                >{estatisticas?.justificativas
+                                                    ?.total ?? 0}</span
+                                            >
+                                        </div>
+                                        <div class="stat-item approved">
+                                            <span>Aprovadas</span>
+                                            <span class="value"
+                                                >{estatisticas?.justificativas
+                                                    ?.aprovadas ?? 0}</span
+                                            >
+                                        </div>
+                                        <div class="stat-item pending">
+                                            <span>Pendentes</span>
+                                            <span class="value"
+                                                >{estatisticas?.justificativas
+                                                    ?.pendentes ?? 0}</span
+                                            >
+                                        </div>
+                                        <div class="stat-item rejected">
+                                            <span>Rejeitadas</span>
+                                            <span class="value"
+                                                >{estatisticas?.justificativas
+                                                    ?.rejeitadas ?? 0}</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="secondary-stat-card warning">
+                                    <h5>⚠️ Advertências</h5>
+                                    <div class="advertencias-count">
+                                        {estatisticas?.advertencias?.total ?? 0}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        {:else}
+                            <div class="empty-state">
+                                <span class="empty-icon">📊</span>
+                                <p>
+                                    Nenhum dado de frequência encontrado para
+                                    este aluno.
+                                </p>
+                                <p class="empty-hint">
+                                    Os dados aparecerão aqui quando houver
+                                    registros de presença.
+                                </p>
+                            </div>
+                        {/if}
                     {:else if activeTab === "timeline"}
                         <!-- Timeline -->
                         {#if timeline.length === 0}
