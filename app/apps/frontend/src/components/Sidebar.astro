@@ -32,6 +32,9 @@ const isActive = (path: string) => {
     if (path === "/admin/comunicacao") {
         return currentPath === "/admin/comunicacao";
     }
+    if (path === "/admin/conteudos") {
+        return currentPath === "/admin/conteudos";
+    }
     return currentPath.startsWith(path);
 };
 ---
@@ -85,6 +88,14 @@ const isActive = (path: string) => {
                 <a href="/admin/comunicacao" class="nav-link">
                     <span class="nav-icon">💬</span>
                     <span class="nav-text">Comunicação</span>
+                </a>
+            </li>
+            <li
+                class={`nav-item ${isActive("/admin/conteudos") ? "active" : ""}`}
+            >
+                <a href="/admin/conteudos" class="nav-link">
+                    <span class="nav-icon">📖</span>
+                    <span class="nav-text">Conteúdos Institucionais</span>
                 </a>
             </li>
             <li

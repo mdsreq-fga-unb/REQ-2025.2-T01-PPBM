@@ -3,8 +3,9 @@
     import DataTable from "../ui/DataTable.svelte";
     import Toast from "../ui/Toast.svelte";
     import FormSelect from "../ui/FormSelect.svelte";
+    import AlunoDetailModal from "../admin/AlunoDetailModal.svelte";
     import type { Column } from "../../interfaces/table";
-    import { apiFetch } from "../../lib/api";
+    import { apiFetch, getApiUrl } from "../../lib/api";
 
     interface Aluno {
         id_aluno: number;
@@ -65,6 +66,11 @@
     let statsCache: Map<number, EstatisticasResponse["estatisticas"]> =
         new Map();
     let loadingStats: Set<number> = new Set();
+
+    // Detail modal state
+    let showDetailModal = false;
+    let selectedAlunoId: number | null = null;
+    let apiUrl = "";
 
     // Toast state
     let toastMessage = "";
@@ -184,8 +190,8 @@
                     component: "button",
                     props: {
                         variant: "primary",
-                        text: "Ver Histórico",
-                        onClick: () => verHistorico(row.id_aluno),
+                        text: "Ver Detalhes",
+                        onClick: () => verDetalhes(row.id_aluno),
                     },
                 },
             ],
@@ -278,11 +284,13 @@
         loadAlunos();
     }
 
-    function verHistorico(id: number) {
-        window.location.href = `/docente/alunos/${id}`;
+    function verDetalhes(id: number) {
+        selectedAlunoId = id;
+        showDetailModal = true;
     }
 
     onMount(async () => {
+        apiUrl = getApiUrl();
         await loadTurmas();
         await loadAlunos();
     });
@@ -353,6 +361,17 @@
 
 <!-- Toast Notification -->
 <Toast bind:show={showToast} message={toastMessage} type={toastType} />
+
+<!-- Aluno Detail Modal -->
+<AlunoDetailModal
+    bind:show={showDetailModal}
+    alunoId={selectedAlunoId}
+    {apiUrl}
+    on:close={() => {
+        showDetailModal = false;
+        selectedAlunoId = null;
+    }}
+/>
 
 <style>
     .consulta-alunos {

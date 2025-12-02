@@ -370,7 +370,7 @@ export default class DocumentosController {
 
             // Extract file path - handle both new format (path only) and legacy (full URL)
             let filePath = doc.anexo_url;
-            
+
             if (doc.anexo_url.startsWith('http')) {
                 // Legacy full URL - extract the file path
                 try {

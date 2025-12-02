@@ -3,6 +3,7 @@ import { SupabaseWrapper } from '../utils/supabase_wrapper';
 import { createControllerLogger } from '../logger';
 import { EndpointController, RequestType } from '../interfaces/index';
 import { isPositiveInteger, isWithinCapacity, validateRequiredFields } from '../utils/validation';
+import { registrarLog } from './logs';
 
 const log = createControllerLogger('turmas');
 
@@ -258,6 +259,15 @@ export default class TurmaController {
                     details: error.message
                 });
             }
+
+            // Registrar log de atividade
+            await registrarLog({
+                acao: 'turma_criada',
+                descricao: `Turma "${data.nome_turma}" foi criada`,
+                entidade_tipo: 'turma',
+                entidade_id: data.id_turma,
+                dados_adicionais: { nome_turma: data.nome_turma }
+            });
 
             return res.status(201).json({
                 success: true,

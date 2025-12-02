@@ -3,6 +3,7 @@ import { SupabaseWrapper } from '../utils/supabase_wrapper';
 import { createControllerLogger } from '../logger';
 import { EndpointController, RequestType } from '../interfaces/index';
 import { isPositiveInteger, isValidCPF, sanitizeCPF, validateRequiredFields } from '../utils/validation';
+import { registrarLog } from './logs';
 
 const log = createControllerLogger('alunos');
 
@@ -324,6 +325,15 @@ export default class AlunoController {
                 });
             }
 
+            // Registrar log de atividade
+            await registrarLog({
+                acao: 'aluno_criado',
+                descricao: `Aluno "${data.nome_aluno}" foi cadastrado no sistema`,
+                entidade_tipo: 'aluno',
+                entidade_id: data.id_aluno,
+                dados_adicionais: { nome_aluno: data.nome_aluno }
+            });
+
             return res.status(201).json({
                 success: true,
                 data,
@@ -618,6 +628,15 @@ export default class AlunoController {
                     details: error.message
                 });
             }
+
+            // Registrar log de atividade
+            await registrarLog({
+                acao: 'aluno_atualizado',
+                descricao: `Aluno "${data.nome_aluno}" foi atualizado`,
+                entidade_tipo: 'aluno',
+                entidade_id: data.id_aluno,
+                dados_adicionais: { nome_aluno: data.nome_aluno }
+            });
 
             return res.status(200).json({
                 success: true,

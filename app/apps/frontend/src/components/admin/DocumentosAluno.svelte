@@ -174,10 +174,27 @@
                 data: { url: string; nome: string; expiresIn: number };
             }>(`/documentos/download/${docId}`);
 
+            console.log("Download response:", response);
+
             if (response.success && response.data) {
-                const downloadUrl = (response.data as any).url;
-                // Open in new tab for viewing/downloading
-                window.open(downloadUrl, "_blank");
+                // Handle nested data structure from apiFetch
+                const responseData = response.data as any;
+                const downloadUrl = responseData.data?.url || responseData.url;
+
+                console.log("Download URL:", downloadUrl);
+
+                if (downloadUrl && downloadUrl !== "") {
+                    // Use a temporary anchor element for more reliable download
+                    const link = document.createElement("a");
+                    link.href = downloadUrl;
+                    link.target = "_blank";
+                    link.rel = "noopener noreferrer";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    displayToast("URL de download não disponível", "error");
+                }
             } else {
                 displayToast("Erro ao obter link de download", "error");
             }

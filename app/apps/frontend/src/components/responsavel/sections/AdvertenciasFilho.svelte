@@ -247,7 +247,9 @@
                         <span class="text-3xl">⚠️</span>
                     </div>
                     <div>
-                        <p class="text-white/80 text-sm">Total de Advertências</p>
+                        <p class="text-white/80 text-sm">
+                            Total de Advertências
+                        </p>
                         <p class="text-4xl font-bold">
                             {#if isLoadingAdvertencias}
                                 <span class="text-2xl">...</span>
@@ -284,7 +286,8 @@
                     Nenhuma advertência
                 </h3>
                 <p class="text-slate-500 max-w-md">
-                    {childName} não possui nenhuma advertência registrada. Continue assim!
+                    {childName} não possui nenhuma advertência registrada. Continue
+                    assim!
                 </p>
             </div>
         {:else}

@@ -3,6 +3,7 @@ import { SupabaseWrapper } from '../utils/supabase_wrapper';
 import { createControllerLogger } from '../logger';
 import { EndpointController, RequestType } from '../interfaces/index';
 import { isPositiveInteger, validateRequiredFields } from '../utils/validation';
+import { registrarLog } from './logs';
 
 const log = createControllerLogger('justificativas');
 
@@ -240,6 +241,18 @@ export default class JustificativaController {
                 });
             }
 
+            // Registrar log de atividade
+            await registrarLog({
+                acao: 'justificativa_criada',
+                descricao: `Justificativa enviada para aluno #${data.id_aluno}`,
+                entidade_tipo: 'justificativa',
+                entidade_id: data.id_justificativa,
+                dados_adicionais: { 
+                    id_aluno: data.id_aluno,
+                    motivo: data.motivo_justificativa
+                }
+            });
+
             return res.status(201).json({
                 success: true,
                 data,
@@ -359,6 +372,25 @@ export default class JustificativaController {
                 return res.status(500).json({
                     error: 'Erro interno do servidor',
                     details: error.message
+                });
+            }
+
+            // Registrar log de atividade se aprovação foi alterada
+            if (payload.aprovado_por_docente_justificativa !== undefined) {
+                const acao = data.aprovado_por_docente_justificativa ? 'justificativa_aprovada' : 'justificativa_rejeitada';
+                const descricao = data.aprovado_por_docente_justificativa 
+                    ? `Justificativa #${data.id_justificativa} foi aprovada`
+                    : `Justificativa #${data.id_justificativa} foi rejeitada`;
+                
+                await registrarLog({
+                    acao,
+                    descricao,
+                    entidade_tipo: 'justificativa',
+                    entidade_id: data.id_justificativa,
+                    dados_adicionais: { 
+                        id_aluno: data.id_aluno,
+                        aprovado: data.aprovado_por_docente_justificativa
+                    }
                 });
             }
 

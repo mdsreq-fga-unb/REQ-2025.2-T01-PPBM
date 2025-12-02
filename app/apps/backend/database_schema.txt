@@ -99,6 +99,18 @@ CREATE TABLE public.justificativa (
   CONSTRAINT justificativa_id_aluno_fkey FOREIGN KEY (id_aluno) REFERENCES public.alunos(id_aluno),
   CONSTRAINT justificativa_id_docente_fkey FOREIGN KEY (id_docente) REFERENCES public.docentes(id_docente)
 );
+CREATE TABLE public.logs_atividades (
+  id_log bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  acao text NOT NULL,
+  descricao text NOT NULL,
+  usuario_tipo text,
+  usuario_email text,
+  entidade_tipo text,
+  entidade_id bigint,
+  dados_adicionais jsonb,
+  CONSTRAINT logs_atividades_pkey PRIMARY KEY (id_log)
+);
 CREATE TABLE public.notificacoes (
   id_notificacoes bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   created_at timestamp with time zone NOT NULL DEFAULT now(),

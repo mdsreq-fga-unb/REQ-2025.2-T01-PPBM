@@ -159,14 +159,79 @@ import PageToast from "../../components/ui/PageToast.astro";
             .section-content {
                 min-height: 200px;
                 display: flex;
-                align-items: center;
-                justify-content: center;
+                flex-direction: column;
                 color: var(--label-color);
                 font-size: 0.95rem;
             }
             .empty-message {
                 text-align: center;
                 padding: 2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex: 1;
+            }
+            .activity-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                max-height: 350px;
+                overflow-y: auto;
+            }
+            .activity-item {
+                display: flex;
+                align-items: flex-start;
+                gap: 0.75rem;
+                padding: 0.75rem;
+                border-bottom: 1px solid var(--secondary-color);
+                transition: background-color 0.2s;
+            }
+            .activity-item:last-child {
+                border-bottom: none;
+            }
+            .activity-item:hover {
+                background-color: var(--bg-color);
+            }
+            .activity-icon {
+                font-size: 1.25rem;
+                flex-shrink: 0;
+            }
+            .activity-content {
+                flex: 1;
+                min-width: 0;
+            }
+            .activity-text {
+                font-size: 0.9rem;
+                color: var(--text-color);
+                margin: 0 0 0.25rem 0;
+                line-height: 1.4;
+            }
+            .activity-time {
+                font-size: 0.75rem;
+                color: var(--label-color);
+            }
+            .activity-user {
+                font-size: 0.75rem;
+                color: var(--accent-color);
+                margin-top: 0.125rem;
+            }
+            .loading-spinner {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+                flex: 1;
+            }
+            .spinner {
+                width: 30px;
+                height: 30px;
+                border: 3px solid var(--secondary-color);
+                border-top-color: var(--accent-color);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+            @keyframes spin {
+                to { transform: rotate(360deg); }
             }
 
             @media (max-width: 768px) {
@@ -268,7 +333,7 @@ import PageToast from "../../components/ui/PageToast.astro";
                     <div class="sections-grid">
                         <div class="section-card">
                             <h2>Resumo por Turma</h2>
-                            <div class="section-content">
+                            <div class="section-content" id="resumo-turmas">
                                 <div class="empty-message">
                                     Nenhuma informação disponível no momento.
                                 </div>
@@ -276,9 +341,9 @@ import PageToast from "../../components/ui/PageToast.astro";
                         </div>
                         <div class="section-card">
                             <h2>Últimas Atividades</h2>
-                            <div class="section-content">
-                                <div class="empty-message">
-                                    Nenhuma atividade registrada no momento.
+                            <div class="section-content" id="ultimas-atividades">
+                                <div class="loading-spinner">
+                                    <div class="spinner"></div>
                                 </div>
                             </div>
                         </div>
@@ -288,7 +353,98 @@ import PageToast from "../../components/ui/PageToast.astro";
         </main>
 
         <script>
+            import { apiFetch } from "../../lib/api";
+            import { authStore } from "../../stores/auth";
+
             const btnUpdate = document.getElementById("btn-update");
+            const ultimasAtividadesContainer = document.getElementById("ultimas-atividades");
+
+            // Format date for display
+            function formatRelativeTime(dateString) {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+
+                if (diffMins < 1) return "agora mesmo";
+                if (diffMins < 60) return `há ${diffMins} min`;
+                if (diffHours < 24) return `há ${diffHours}h`;
+                if (diffDays < 7) return `há ${diffDays} dia${diffDays > 1 ? "s" : ""}`;
+                
+                return date.toLocaleDateString("pt-BR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
+            }
+
+            // Render activities list
+            function renderActivities(activities) {
+                if (!activities || activities.length === 0) {
+                    ultimasAtividadesContainer.innerHTML = `
+                        <div class="empty-message">
+                            Nenhuma atividade registrada no momento.
+                        </div>
+                    `;
+                    return;
+                }
+
+                const html = `
+                    <ul class="activity-list">
+                        ${activities.map(activity => `
+                            <li class="activity-item">
+                                <span class="activity-icon">${activity.acao_formatada?.split(" ")[0] || "📋"}</span>
+                                <div class="activity-content">
+                                    <p class="activity-text">${activity.descricao}</p>
+                                    <div class="activity-time">${formatRelativeTime(activity.created_at)}</div>
+                                    ${activity.usuario_email ? `<div class="activity-user">por ${activity.usuario_email}</div>` : ""}
+                                </div>
+                            </li>
+                        `).join("")}
+                    </ul>
+                `;
+
+                ultimasAtividadesContainer.innerHTML = html;
+            }
+
+            // Load recent activities
+            async function carregarAtividades() {
+                try {
+                    ultimasAtividadesContainer.innerHTML = `
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                        </div>
+                    `;
+
+                    const response = await apiFetch("/logs/recentes?limit=10");
+                    console.log("Logs response:", response);
+                    
+                    if (response.success && response.data) {
+                        // Handle both response.data and response.data.data structures
+                        const activities = Array.isArray(response.data) 
+                            ? response.data 
+                            : (response.data.data || []);
+                        renderActivities(activities);
+                    } else {
+                        ultimasAtividadesContainer.innerHTML = `
+                            <div class="empty-message">
+                                Nenhuma atividade registrada no momento.
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error("Erro ao carregar atividades:", error);
+                    ultimasAtividadesContainer.innerHTML = `
+                        <div class="empty-message">
+                            Erro ao carregar atividades.
+                        </div>
+                    `;
+                }
+            }
 
             // Função para atualizar dashboard
             async function atualizarDashboard() {
@@ -296,6 +452,9 @@ import PageToast from "../../components/ui/PageToast.astro";
                 btnUpdate.textContent = "Atualizando...";
 
                 try {
+                    // Recarregar atividades
+                    await carregarAtividades();
+
                     // Aqui você fará a chamada à API para atualizar os dados do dashboard
                     // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
                     // const response = await fetch(`${backendUrl}/dashboard`);
@@ -308,7 +467,7 @@ import PageToast from "../../components/ui/PageToast.astro";
                     // document.getElementById('acompanhamento-especial').textContent = data.acompanhamento_especial || 0;
 
                     // Por enquanto, apenas simular atualização
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                    await new Promise((resolve) => setTimeout(resolve, 500));
 
                     if (typeof window.showPageToast === "function") {
                         window.showPageToast(
@@ -336,6 +495,16 @@ import PageToast from "../../components/ui/PageToast.astro";
             // Carregar dados iniciais do dashboard
             async function carregarDashboard() {
                 try {
+                    // Verificar autenticação
+                    const isAuth = await authStore.checkAuth();
+                    if (!isAuth) {
+                        window.location.href = "/login";
+                        return;
+                    }
+
+                    // Carregar atividades
+                    await carregarAtividades();
+
                     // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
                     // const response = await fetch(`${backendUrl}/dashboard`);
                     // const data = await response.json();
@@ -350,7 +519,7 @@ import PageToast from "../../components/ui/PageToast.astro";
             }
 
             // Carregar dados ao inicializar
-            // carregarDashboard();
+            carregarDashboard();
         </script>
         <PageToast />
     </body>

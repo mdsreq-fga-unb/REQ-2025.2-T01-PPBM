@@ -26,7 +26,7 @@ function getSupabaseClient(): SupabaseClient | null {
     if (typeof window === 'undefined') {
         return null;
     }
-    
+
     // Create client only once
     if (!_supabaseClient && supabaseAnonKey) {
         _supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
@@ -37,7 +37,7 @@ function getSupabaseClient(): SupabaseClient | null {
             },
         });
     }
-    
+
     return _supabaseClient;
 }
 

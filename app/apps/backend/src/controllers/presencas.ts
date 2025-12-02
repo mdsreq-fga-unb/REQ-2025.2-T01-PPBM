@@ -3,6 +3,7 @@ import { SupabaseWrapper } from '../utils/supabase_wrapper';
 import { createControllerLogger } from '../logger';
 import { EndpointController, RequestType } from '../interfaces/index';
 import { isPositiveInteger, validateRequiredFields } from '../utils/validation';
+import { registrarLog } from './logs';
 
 const log = createControllerLogger('presencas');
 
@@ -298,6 +299,21 @@ export default class PresencaController {
                     details: error.message
                 });
             }
+
+            // Registrar log de atividade
+            const statusLabel = data.status_presenca === 'presente' ? 'Presente' : 
+                               data.status_presenca === 'falta' ? 'Falta' : 
+                               data.status_presenca === 'atraso' ? 'Atraso' : data.status_presenca;
+            await registrarLog({
+                acao: 'presenca_registrada',
+                descricao: `Presença registrada: ${statusLabel} para aluno #${data.id_aluno}`,
+                entidade_tipo: 'presenca',
+                entidade_id: data.id_presenca,
+                dados_adicionais: { 
+                    id_aluno: data.id_aluno,
+                    status: data.status_presenca
+                }
+            });
 
             return res.status(201).json({
                 success: true,

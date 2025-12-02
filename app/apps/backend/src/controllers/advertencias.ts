@@ -3,6 +3,7 @@ import { SupabaseWrapper } from '../utils/supabase_wrapper';
 import { createControllerLogger } from '../logger';
 import { EndpointController, RequestType } from '../interfaces/index';
 import { isPositiveInteger, validateRequiredFields } from '../utils/validation';
+import { registrarLog } from './logs';
 
 const log = createControllerLogger('advertencias');
 
@@ -338,6 +339,23 @@ export default class AdvertenciaController {
                     details: error.message
                 });
             }
+
+            // Registrar log de atividade
+            // Handle both array and object responses from Supabase
+            const alunosData = data.alunos as any;
+            const nomeAluno = Array.isArray(alunosData) 
+                ? alunosData[0]?.nome_aluno 
+                : alunosData?.nome_aluno || 'Aluno';
+            await registrarLog({
+                acao: 'advertencia_criada',
+                descricao: `Advertência registrada para ${nomeAluno}`,
+                entidade_tipo: 'advertencia',
+                entidade_id: data.id_advertencia,
+                dados_adicionais: { 
+                    id_aluno: data.id_aluno,
+                    nome_aluno: nomeAluno
+                }
+            });
 
             return res.status(201).json({
                 success: true,

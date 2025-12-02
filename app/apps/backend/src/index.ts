@@ -25,6 +25,7 @@ import { responsavelController } from './controllers/responsaveis';
 import { acompanhamentoController } from './controllers/acompanhamentos';
 import { conteudosController } from './controllers/conteudos';
 import { documentosController } from './controllers/documentos';
+import { logsController } from './controllers/logs';
 
 
 dotenv.config();
@@ -49,6 +50,7 @@ const controllers: EndpointController[] = [
     acompanhamentoController,
     conteudosController,
     documentosController,
+    logsController,
     new AlunosController()
 ];
 

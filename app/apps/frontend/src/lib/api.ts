@@ -7,6 +7,13 @@ import { getSupabaseClient, getSession } from './supabase';
 // Get API URL from environment or default
 const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000';
 
+/**
+ * Get the API URL
+ */
+export function getApiUrl(): string {
+    return API_URL;
+}
+
 // Token storage keys
 const TOKEN_KEY = 'bm_token';
 const REFRESH_TOKEN_KEY = 'bm_refresh_token';
@@ -153,7 +160,7 @@ async function refreshAuthToken(): Promise<boolean> {
     try {
         const supabase = getSupabaseClient();
         if (!supabase) return false;
-        
+
         const { data, error } = await supabase.auth.refreshSession();
 
         if (error || !data.session) {

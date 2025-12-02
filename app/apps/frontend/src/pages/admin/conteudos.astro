@@ -1,6 +1,6 @@
 ---
-import Header from "../../components/docente/DocenteHeader.svelte";
-import Sidebar from "../../components/Sidebardocente.astro";
+import Header from "../../components/admin/AdminHeader.svelte";
+import Sidebar from "../../components/Sidebar.astro";
 import ConteudosList from "../../components/docente/ConteudosList.svelte";
 import PageToast from "../../components/ui/PageToast.astro";
 ---
@@ -109,12 +109,12 @@ import PageToast from "../../components/ui/PageToast.astro";
                     return;
                 }
 
-                // Check if user is docente or admin
+                // Check if user is admin
                 const user = authStore.getUser();
-                if (!user || (user.tipo !== "docente" && user.tipo !== "admin")) {
+                if (!user || user.tipo !== "admin") {
                     if (typeof window.showPageToast === "function") {
                         window.showPageToast(
-                            "Acesso negado. Apenas docentes podem acessar esta página.",
+                            "Acesso negado. Apenas administradores podem acessar esta página.",
                             "error",
                         );
                     }
