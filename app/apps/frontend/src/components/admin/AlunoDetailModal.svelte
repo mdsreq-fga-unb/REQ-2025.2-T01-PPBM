@@ -1142,13 +1142,19 @@
                                                 </p>
                                             {/if}
                                             {#if event.tipo === "presenca" && event.detalhes.status}
-                                                {@const statusLower = String(event.detalhes.status).toLowerCase()}
+                                                {@const statusLower = String(
+                                                    event.detalhes.status,
+                                                ).toLowerCase()}
                                                 <span
                                                     class="event-status"
-                                                    class:presente={statusLower === "presente"}
-                                                    class:atraso={statusLower === "atraso"}
-                                                    class:falta={statusLower === "falta" ||
-                                                        statusLower === "ausente"}
+                                                    class:presente={statusLower ===
+                                                        "presente"}
+                                                    class:atraso={statusLower ===
+                                                        "atraso"}
+                                                    class:falta={statusLower ===
+                                                        "falta" ||
+                                                        statusLower ===
+                                                            "ausente"}
                                                 >
                                                     {getStatusIcon(
                                                         String(

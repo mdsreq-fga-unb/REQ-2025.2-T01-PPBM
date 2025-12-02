@@ -131,10 +131,10 @@ test.describe('Admin - Cadastrar Alunos', () => {
     try {
       const turmaSelect = adminPage.locator('select[name="turma"]');
       await turmaSelect.waitFor({ state: 'visible', timeout: 5000 });
-      
+
       // Wait a bit for options to populate from API
       await adminPage.waitForTimeout(2000);
-      
+
       const turmaOptions = await adminPage.locator('select[name="turma"] option:not([value=""])').all();
       if (turmaOptions.length > 0) {
         const firstTurmaValue = await turmaOptions[0].getAttribute('value');
@@ -148,11 +148,11 @@ test.describe('Admin - Cadastrar Alunos', () => {
 
     // Note: Responsavel selection now uses a modal flow, not direct input
     // This test validates that the form structure is correct
-    
+
     // Check submit button is available
     const submitButton = adminPage.locator('#btn-submit, button[type="submit"]').first();
     await expect(submitButton).toBeVisible();
-    
+
     // We don't actually submit as it requires responsavel selection via modal
     // which requires specific backend users to be present
   });

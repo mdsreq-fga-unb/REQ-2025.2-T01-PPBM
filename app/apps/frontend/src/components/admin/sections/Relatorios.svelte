@@ -32,7 +32,11 @@
 	let alunoId = "";
 
 	// Data state
-	let turmas: Array<{ id_turma: number; nome_turma: string; unidade_turma?: string }> = [];
+	let turmas: Array<{
+		id_turma: number;
+		nome_turma: string;
+		unidade_turma?: string;
+	}> = [];
 	let alunos: Array<{ id_aluno: number; nome_aluno: string }> = [];
 	let isLoading = false;
 	let reportGenerated = false;
@@ -56,7 +60,12 @@
 	// DataTable columns for detalhamento
 	const detalhesColumns: Column[] = [
 		{ key: "aluno", label: "Aluno", sortable: true },
-		{ key: "presentes", label: "Presenças", sortable: true, align: "center" },
+		{
+			key: "presentes",
+			label: "Presenças",
+			sortable: true,
+			align: "center",
+		},
 		{ key: "faltas", label: "Faltas", sortable: true, align: "center" },
 		{ key: "atrasos", label: "Atrasos", sortable: true, align: "center" },
 		{
@@ -68,29 +77,39 @@
 				component: "badge",
 				props: {
 					text: `${row.taxa}%`,
-					variant: row.taxa >= 75 ? "success" : row.taxa >= 50 ? "warning" : "danger",
+					variant:
+						row.taxa >= 75
+							? "success"
+							: row.taxa >= 50
+								? "warning"
+								: "danger",
 				},
 			}),
 		},
 	];
 
 	// Computed rows for DataTable
-	$: detalhesRows = (currentReportData?.detalhes || []).map((item: any, index: number) => {
-		const total = item.presentes + item.faltas + item.atrasos;
-		const taxa = item.taxaPresenca !== undefined
-			? item.taxaPresenca
-			: total > 0
-				? Math.round(((item.presentes + item.atrasos) / total) * 100)
-				: 0;
-		return {
-			id: index,
-			aluno: item.aluno,
-			presentes: item.presentes,
-			faltas: item.faltas,
-			atrasos: item.atrasos,
-			taxa,
-		};
-	});
+	$: detalhesRows = (currentReportData?.detalhes || []).map(
+		(item: any, index: number) => {
+			const total = item.presentes + item.faltas + item.atrasos;
+			const taxa =
+				item.taxaPresenca !== undefined
+					? item.taxaPresenca
+					: total > 0
+						? Math.round(
+								((item.presentes + item.atrasos) / total) * 100,
+							)
+						: 0;
+			return {
+				id: index,
+				aluno: item.aluno,
+				presentes: item.presentes,
+				faltas: item.faltas,
+				atrasos: item.atrasos,
+				taxa,
+			};
+		},
+	);
 
 	// Show aluno filter only for individual report
 	$: showAlunoFilter = tipoRelatorio === "individual";
@@ -123,7 +142,9 @@
 
 	async function loadTurmas() {
 		try {
-			const response = await apiFetch<{ success: boolean; data: any }>("/turmas/listar?pageSize=100");
+			const response = await apiFetch<{ success: boolean; data: any }>(
+				"/turmas/listar?pageSize=100",
+			);
 			if (response.success && response.data) {
 				turmas = (response.data as any).data || response.data || [];
 			}
@@ -134,7 +155,9 @@
 
 	async function loadAlunos() {
 		try {
-			const response = await apiFetch<{ success: boolean; data: any }>("/alunos/listar?pageSize=500");
+			const response = await apiFetch<{ success: boolean; data: any }>(
+				"/alunos/listar?pageSize=500",
+			);
 			if (response.success && response.data) {
 				alunos = (response.data as any).data || response.data || [];
 			}
@@ -151,17 +174,26 @@
 	async function handleGerarRelatorio() {
 		// Validation
 		if (!dataInicio || !dataFim) {
-			displayToast("Por favor, selecione as datas inicial e final", "warning");
+			displayToast(
+				"Por favor, selecione as datas inicial e final",
+				"warning",
+			);
 			return;
 		}
 
 		if (new Date(dataInicio) > new Date(dataFim)) {
-			displayToast("A data inicial não pode ser maior que a data final", "warning");
+			displayToast(
+				"A data inicial não pode ser maior que a data final",
+				"warning",
+			);
 			return;
 		}
 
 		if (tipoRelatorio === "individual" && !alunoId) {
-			displayToast("Por favor, selecione um aluno para o relatório individual", "warning");
+			displayToast(
+				"Por favor, selecione um aluno para o relatório individual",
+				"warning",
+			);
 			return;
 		}
 
@@ -179,7 +211,7 @@
 			const tipoText: Record<string, string> = {
 				"presencas-periodo": "Presenças por Período",
 				"presencas-turma": "Presenças por Turma",
-				"individual": "Individual",
+				individual: "Individual",
 				"frequencia-geral": "Frequência Geral",
 			};
 
@@ -188,7 +220,10 @@
 			if (tipoRelatorio === "individual" && currentReportData.aluno) {
 				reportInfo = `Aluno: ${currentReportData.aluno.nome_aluno} | Período: ${formatDate(dataInicio)} a ${formatDate(dataFim)}`;
 			} else {
-				const turmaText = turmaId ? turmas.find(t => t.id_turma === Number(turmaId))?.nome_turma || "Selecionada" : "Todas";
+				const turmaText = turmaId
+					? turmas.find((t) => t.id_turma === Number(turmaId))
+							?.nome_turma || "Selecionada"
+					: "Todas";
 				reportInfo = `Período: ${formatDate(dataInicio)} a ${formatDate(dataFim)} | Turma: ${turmaText}`;
 			}
 
@@ -206,7 +241,7 @@
 
 	async function gerarRelatorioIndividual() {
 		const response = await apiFetch<{ success: boolean; data: any }>(
-			`/alunos/estatisticas/${alunoId}?from=${dataInicio}&to=${dataFim}`
+			`/alunos/estatisticas/${alunoId}?from=${dataInicio}&to=${dataFim}`,
 		);
 		if (response.success && response.data) {
 			const serverData = (response.data as any).data || response.data;
@@ -227,18 +262,20 @@
 		if (turmaId) params.append("turmaId", turmaId);
 
 		const response = await apiFetch<{ success: boolean; data: any }>(
-			`/presencas/estatisticas?${params}`
+			`/presencas/estatisticas?${params}`,
 		);
 		if (response.success && response.data) {
 			const statsData = (response.data as any).data || response.data;
 
-			const detalhes = (statsData.todosAlunos || []).map((aluno: any) => ({
-				aluno: aluno.nome,
-				presentes: aluno.presente,
-				faltas: aluno.falta,
-				atrasos: aluno.atraso,
-				taxaPresenca: aluno.taxaPresenca,
-			}));
+			const detalhes = (statsData.todosAlunos || []).map(
+				(aluno: any) => ({
+					aluno: aluno.nome,
+					presentes: aluno.presente,
+					faltas: aluno.falta,
+					atrasos: aluno.atraso,
+					taxaPresenca: aluno.taxaPresenca,
+				}),
+			);
 
 			return {
 				tipo: tipoRelatorio,
@@ -263,7 +300,10 @@
 	function createCharts() {
 		if (!currentReportData) return;
 
-		if (currentReportData.tipo === "individual" && currentReportData.estatisticas) {
+		if (
+			currentReportData.tipo === "individual" &&
+			currentReportData.estatisticas
+		) {
 			const stats = currentReportData.estatisticas;
 			createDistributionChart("individual-distribution-chart", {
 				presentes: stats.presenca?.presentes || 0,
@@ -277,8 +317,11 @@
 				faltas: currentReportData.estatisticas.faltas,
 			});
 
-			if ((tipoRelatorio === "presencas-turma" || tipoRelatorio === "frequencia-geral") &&
-				currentReportData.porTurma?.length > 0) {
+			if (
+				(tipoRelatorio === "presencas-turma" ||
+					tipoRelatorio === "frequencia-geral") &&
+				currentReportData.porTurma?.length > 0
+			) {
 				createTurmaChart("turma-chart", currentReportData.porTurma);
 			}
 
@@ -287,12 +330,18 @@
 			}
 
 			if (currentReportData.topAlunos?.length > 0) {
-				createTopAlunosChart("top-alunos-chart", currentReportData.topAlunos);
+				createTopAlunosChart(
+					"top-alunos-chart",
+					currentReportData.topAlunos,
+				);
 			}
 		}
 	}
 
-	function createDistributionChart(canvasId: string, data: { presentes: number; atrasos: number; faltas: number }) {
+	function createDistributionChart(
+		canvasId: string,
+		data: { presentes: number; atrasos: number; faltas: number },
+	) {
 		const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
 		if (!canvas) return null;
 
@@ -303,12 +352,26 @@
 			type: "doughnut",
 			data: {
 				labels: ["Presenças", "Atrasos", "Faltas"],
-				datasets: [{
-					data: [data.presentes || 0, data.atrasos || 0, data.faltas || 0],
-					backgroundColor: [chartColors.presente.bg, chartColors.atraso.bg, chartColors.falta.bg],
-					borderColor: [chartColors.presente.border, chartColors.atraso.border, chartColors.falta.border],
-					borderWidth: 2,
-				}],
+				datasets: [
+					{
+						data: [
+							data.presentes || 0,
+							data.atrasos || 0,
+							data.faltas || 0,
+						],
+						backgroundColor: [
+							chartColors.presente.bg,
+							chartColors.atraso.bg,
+							chartColors.falta.bg,
+						],
+						borderColor: [
+							chartColors.presente.border,
+							chartColors.atraso.border,
+							chartColors.falta.border,
+						],
+						borderWidth: 2,
+					},
+				],
 			},
 			options: {
 				responsive: true,
@@ -316,13 +379,27 @@
 				plugins: {
 					legend: {
 						position: "bottom",
-						labels: { padding: 20, usePointStyle: true, font: { size: 12, family: "Atkinson, sans-serif" } },
+						labels: {
+							padding: 20,
+							usePointStyle: true,
+							font: { size: 12, family: "Atkinson, sans-serif" },
+						},
 					},
 					tooltip: {
 						callbacks: {
 							label: (context) => {
-								const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
-								const percentage = total > 0 ? Math.round((context.raw as number / total) * 100) : 0;
+								const total = context.dataset.data.reduce(
+									(a: number, b: number) => a + b,
+									0,
+								);
+								const percentage =
+									total > 0
+										? Math.round(
+												((context.raw as number) /
+													total) *
+													100,
+											)
+										: 0;
 								return `${context.label}: ${context.raw} (${percentage}%)`;
 							},
 						},
@@ -346,18 +423,56 @@
 			data: {
 				labels: turmasData.map((t) => t.nome || "Sem nome"),
 				datasets: [
-					{ label: "Presenças", data: turmasData.map((t) => t.presente || 0), backgroundColor: chartColors.presente.bg, borderColor: chartColors.presente.border, borderWidth: 1 },
-					{ label: "Atrasos", data: turmasData.map((t) => t.atraso || 0), backgroundColor: chartColors.atraso.bg, borderColor: chartColors.atraso.border, borderWidth: 1 },
-					{ label: "Faltas", data: turmasData.map((t) => t.falta || 0), backgroundColor: chartColors.falta.bg, borderColor: chartColors.falta.border, borderWidth: 1 },
+					{
+						label: "Presenças",
+						data: turmasData.map((t) => t.presente || 0),
+						backgroundColor: chartColors.presente.bg,
+						borderColor: chartColors.presente.border,
+						borderWidth: 1,
+					},
+					{
+						label: "Atrasos",
+						data: turmasData.map((t) => t.atraso || 0),
+						backgroundColor: chartColors.atraso.bg,
+						borderColor: chartColors.atraso.border,
+						borderWidth: 1,
+					},
+					{
+						label: "Faltas",
+						data: turmasData.map((t) => t.falta || 0),
+						backgroundColor: chartColors.falta.bg,
+						borderColor: chartColors.falta.border,
+						borderWidth: 1,
+					},
 				],
 			},
 			options: {
 				responsive: true,
 				maintainAspectRatio: false,
-				plugins: { legend: { position: "top", labels: { padding: 15, usePointStyle: true, font: { size: 12, family: "Atkinson, sans-serif" } } } },
+				plugins: {
+					legend: {
+						position: "top",
+						labels: {
+							padding: 15,
+							usePointStyle: true,
+							font: { size: 12, family: "Atkinson, sans-serif" },
+						},
+					},
+				},
 				scales: {
-					x: { grid: { display: false }, ticks: { font: { size: 11, family: "Atkinson, sans-serif" } } },
-					y: { beginAtZero: true, grid: { color: "rgba(0, 0, 0, 0.05)" }, ticks: { font: { size: 11, family: "Atkinson, sans-serif" } } },
+					x: {
+						grid: { display: false },
+						ticks: {
+							font: { size: 11, family: "Atkinson, sans-serif" },
+						},
+					},
+					y: {
+						beginAtZero: true,
+						grid: { color: "rgba(0, 0, 0, 0.05)" },
+						ticks: {
+							font: { size: 11, family: "Atkinson, sans-serif" },
+						},
+					},
 				},
 			},
 		});
@@ -377,22 +492,74 @@
 			data: {
 				labels: tendencia.map((t) => {
 					const date = new Date(t.data);
-					return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+					return date.toLocaleDateString("pt-BR", {
+						day: "2-digit",
+						month: "2-digit",
+					});
 				}),
 				datasets: [
-					{ label: "Presenças", data: tendencia.map((t) => t.presente || 0), borderColor: chartColors.presente.border, backgroundColor: "rgba(72, 187, 120, 0.1)", fill: true, tension: 0.3, pointRadius: 4, pointHoverRadius: 6 },
-					{ label: "Atrasos", data: tendencia.map((t) => t.atraso || 0), borderColor: chartColors.atraso.border, backgroundColor: "rgba(237, 137, 54, 0.1)", fill: true, tension: 0.3, pointRadius: 4, pointHoverRadius: 6 },
-					{ label: "Faltas", data: tendencia.map((t) => t.falta || 0), borderColor: chartColors.falta.border, backgroundColor: "rgba(229, 62, 62, 0.1)", fill: true, tension: 0.3, pointRadius: 4, pointHoverRadius: 6 },
+					{
+						label: "Presenças",
+						data: tendencia.map((t) => t.presente || 0),
+						borderColor: chartColors.presente.border,
+						backgroundColor: "rgba(72, 187, 120, 0.1)",
+						fill: true,
+						tension: 0.3,
+						pointRadius: 4,
+						pointHoverRadius: 6,
+					},
+					{
+						label: "Atrasos",
+						data: tendencia.map((t) => t.atraso || 0),
+						borderColor: chartColors.atraso.border,
+						backgroundColor: "rgba(237, 137, 54, 0.1)",
+						fill: true,
+						tension: 0.3,
+						pointRadius: 4,
+						pointHoverRadius: 6,
+					},
+					{
+						label: "Faltas",
+						data: tendencia.map((t) => t.falta || 0),
+						borderColor: chartColors.falta.border,
+						backgroundColor: "rgba(229, 62, 62, 0.1)",
+						fill: true,
+						tension: 0.3,
+						pointRadius: 4,
+						pointHoverRadius: 6,
+					},
 				],
 			},
 			options: {
 				responsive: true,
 				maintainAspectRatio: false,
 				interaction: { intersect: false, mode: "index" },
-				plugins: { legend: { position: "top", labels: { padding: 15, usePointStyle: true, font: { size: 12, family: "Atkinson, sans-serif" } } } },
+				plugins: {
+					legend: {
+						position: "top",
+						labels: {
+							padding: 15,
+							usePointStyle: true,
+							font: { size: 12, family: "Atkinson, sans-serif" },
+						},
+					},
+				},
 				scales: {
-					x: { grid: { display: false }, ticks: { font: { size: 10, family: "Atkinson, sans-serif" }, maxRotation: 45, minRotation: 0 } },
-					y: { beginAtZero: true, grid: { color: "rgba(0, 0, 0, 0.05)" }, ticks: { font: { size: 11, family: "Atkinson, sans-serif" } } },
+					x: {
+						grid: { display: false },
+						ticks: {
+							font: { size: 10, family: "Atkinson, sans-serif" },
+							maxRotation: 45,
+							minRotation: 0,
+						},
+					},
+					y: {
+						beginAtZero: true,
+						grid: { color: "rgba(0, 0, 0, 0.05)" },
+						ticks: {
+							font: { size: 11, family: "Atkinson, sans-serif" },
+						},
+					},
 				},
 			},
 		});
@@ -411,23 +578,25 @@
 			type: "bar",
 			data: {
 				labels: alunosData.map((a) => a.nome || "Desconhecido"),
-				datasets: [{
-					label: "Taxa de Presença (%)",
-					data: alunosData.map((a) => a.taxaPresenca || 0),
-					backgroundColor: alunosData.map((a) => {
-						const rate = a.taxaPresenca || 0;
-						if (rate >= 75) return chartColors.presente.bg;
-						if (rate >= 50) return chartColors.atraso.bg;
-						return chartColors.falta.bg;
-					}),
-					borderColor: alunosData.map((a) => {
-						const rate = a.taxaPresenca || 0;
-						if (rate >= 75) return chartColors.presente.border;
-						if (rate >= 50) return chartColors.atraso.border;
-						return chartColors.falta.border;
-					}),
-					borderWidth: 1,
-				}],
+				datasets: [
+					{
+						label: "Taxa de Presença (%)",
+						data: alunosData.map((a) => a.taxaPresenca || 0),
+						backgroundColor: alunosData.map((a) => {
+							const rate = a.taxaPresenca || 0;
+							if (rate >= 75) return chartColors.presente.bg;
+							if (rate >= 50) return chartColors.atraso.bg;
+							return chartColors.falta.bg;
+						}),
+						borderColor: alunosData.map((a) => {
+							const rate = a.taxaPresenca || 0;
+							if (rate >= 75) return chartColors.presente.border;
+							if (rate >= 50) return chartColors.atraso.border;
+							return chartColors.falta.border;
+						}),
+						borderWidth: 1,
+					},
+				],
 			},
 			options: {
 				indexAxis: "y",
@@ -435,8 +604,21 @@
 				maintainAspectRatio: false,
 				plugins: { legend: { display: false } },
 				scales: {
-					x: { beginAtZero: true, max: 100, grid: { color: "rgba(0, 0, 0, 0.05)" }, ticks: { font: { size: 11, family: "Atkinson, sans-serif" }, callback: (value) => `${value}%` } },
-					y: { grid: { display: false }, ticks: { font: { size: 11, family: "Atkinson, sans-serif" } } },
+					x: {
+						beginAtZero: true,
+						max: 100,
+						grid: { color: "rgba(0, 0, 0, 0.05)" },
+						ticks: {
+							font: { size: 11, family: "Atkinson, sans-serif" },
+							callback: (value) => `${value}%`,
+						},
+					},
+					y: {
+						grid: { display: false },
+						ticks: {
+							font: { size: 11, family: "Atkinson, sans-serif" },
+						},
+					},
 				},
 			},
 		});
@@ -467,18 +649,29 @@
 			csvContent = "Aluno,Presenças,Faltas,Atrasos,Taxa\n";
 			currentReportData.detalhes.forEach((item: any) => {
 				const total = item.presentes + item.faltas + item.atrasos;
-				const taxa = item.taxaPresenca !== undefined
-					? item.taxaPresenca
-					: total > 0 ? Math.round(((item.presentes + item.atrasos) / total) * 100) : 0;
+				const taxa =
+					item.taxaPresenca !== undefined
+						? item.taxaPresenca
+						: total > 0
+							? Math.round(
+									((item.presentes + item.atrasos) / total) *
+										100,
+								)
+							: 0;
 				csvContent += `"${item.aluno}",${item.presentes},${item.faltas},${item.atrasos},${taxa}%\n`;
 			});
 		}
 
-		const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+		const blob = new Blob(["\ufeff" + csvContent], {
+			type: "text/csv;charset=utf-8;",
+		});
 		const link = document.createElement("a");
 		const url = URL.createObjectURL(blob);
 		link.setAttribute("href", url);
-		link.setAttribute("download", `relatorio_${tipoRelatorio}_${dataInicio}_${dataFim}.csv`);
+		link.setAttribute(
+			"download",
+			`relatorio_${tipoRelatorio}_${dataInicio}_${dataFim}.csv`,
+		);
 		link.style.visibility = "hidden";
 		document.body.appendChild(link);
 		link.click();
@@ -502,7 +695,10 @@
 
 			const reportElement = document.getElementById("report-content");
 			if (!reportElement) {
-				displayToast("Erro ao gerar PDF: conteúdo não encontrado", "error");
+				displayToast(
+					"Erro ao gerar PDF: conteúdo não encontrado",
+					"error",
+				);
 				return;
 			}
 
@@ -557,11 +753,24 @@
 				if (tempCtx) {
 					tempCtx.drawImage(
 						canvas,
-						0, sourceY, canvas.width, sourceHeight,
-						0, 0, canvas.width, sourceHeight
+						0,
+						sourceY,
+						canvas.width,
+						sourceHeight,
+						0,
+						0,
+						canvas.width,
+						sourceHeight,
 					);
 					const sliceData = tempCanvas.toDataURL("image/png");
-					pdf.addImage(sliceData, "PNG", margin, yPosition, imgWidth, heightToDraw);
+					pdf.addImage(
+						sliceData,
+						"PNG",
+						margin,
+						yPosition,
+						imgWidth,
+						heightToDraw,
+					);
 				}
 
 				remainingHeight -= heightToDraw;
@@ -582,7 +791,7 @@
 				pdf.text(
 					`Gerado em ${new Date().toLocaleString("pt-BR")} - Página ${i} de ${totalPages}`,
 					margin,
-					pageHeight - 5
+					pageHeight - 5,
 				);
 			}
 
@@ -590,7 +799,10 @@
 			displayToast("Relatório PDF exportado com sucesso!", "success");
 		} catch (error) {
 			console.error("Erro ao gerar PDF:", error);
-			displayToast("Erro ao gerar PDF. Verifique se as dependências estão instaladas.", "error");
+			displayToast(
+				"Erro ao gerar PDF. Verifique se as dependências estão instaladas.",
+				"error",
+			);
 		}
 	}
 </script>
@@ -603,7 +815,9 @@
 	<div class="flex items-center justify-between mb-6">
 		<div>
 			<h2 class="text-2xl font-bold text-slate-900 mb-1">Relatórios</h2>
-			<p class="text-slate-500">Gere e exporte relatórios de frequência</p>
+			<p class="text-slate-500">
+				Gere e exporte relatórios de frequência
+			</p>
 		</div>
 		<div class="flex gap-2">
 			<button
@@ -669,7 +883,12 @@
 			bind:value={turmaId}
 			options={[
 				{ value: "", label: "Todas" },
-				...turmas.map(t => ({ value: String(t.id_turma), label: t.nome_turma + (t.unidade_turma ? ` - ${t.unidade_turma}` : "") }))
+				...turmas.map((t) => ({
+					value: String(t.id_turma),
+					label:
+						t.nome_turma +
+						(t.unidade_turma ? ` - ${t.unidade_turma}` : ""),
+				})),
 			]}
 		/>
 		{#if showAlunoFilter}
@@ -680,7 +899,10 @@
 				bind:value={alunoId}
 				options={[
 					{ value: "", label: "Selecione um aluno" },
-					...alunos.map(a => ({ value: String(a.id_aluno), label: a.nome_aluno }))
+					...alunos.map((a) => ({
+						value: String(a.id_aluno),
+						label: a.nome_aluno,
+					})),
 				]}
 			/>
 		{/if}
@@ -690,17 +912,26 @@
 	<div id="report-content">
 		{#if isLoading}
 			<div class="text-center py-12 text-slate-500">
-				<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900 mx-auto mb-4"></div>
+				<div
+					class="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900 mx-auto mb-4"
+				></div>
 				Carregando relatório...
 			</div>
 		{:else if !reportGenerated}
-			<div class="text-center py-12 text-slate-500 bg-slate-50 rounded-xl border border-dashed border-slate-300">
-				<p class="text-lg">📊 Selecione os filtros e clique em "Gerar" para visualizar o relatório</p>
+			<div
+				class="text-center py-12 text-slate-500 bg-slate-50 rounded-xl border border-dashed border-slate-300"
+			>
+				<p class="text-lg">
+					📊 Selecione os filtros e clique em "Gerar" para visualizar
+					o relatório
+				</p>
 			</div>
 		{:else if currentReportData}
 			<!-- Report Header -->
 			<div class="mb-6 pb-4 border-b-2 border-slate-200">
-				<h3 class="text-xl font-semibold text-slate-900">{reportTitle}</h3>
+				<h3 class="text-xl font-semibold text-slate-900">
+					{reportTitle}
+				</h3>
 				<p class="text-slate-500">{reportInfo}</p>
 			</div>
 
@@ -710,7 +941,9 @@
 				<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
 					<!-- Chart -->
 					<div class="bg-slate-50 rounded-xl p-4">
-						<h4 class="text-sm font-semibold mb-4">Distribuição de Frequência</h4>
+						<h4 class="text-sm font-semibold mb-4">
+							Distribuição de Frequência
+						</h4>
 						<div class="h-64">
 							<canvas id="individual-distribution-chart"></canvas>
 						</div>
@@ -719,33 +952,62 @@
 					<!-- Stats Cards -->
 					<div class="grid grid-cols-2 gap-4">
 						<div class="bg-blue-50 rounded-xl p-4 text-center">
-							<p class="text-sm text-blue-600 font-medium">Taxa de Presença</p>
-							<p class="text-3xl font-bold text-blue-700">{stats.presenca?.taxaPresenca || 0}%</p>
+							<p class="text-sm text-blue-600 font-medium">
+								Taxa de Presença
+							</p>
+							<p class="text-3xl font-bold text-blue-700">
+								{stats.presenca?.taxaPresenca || 0}%
+							</p>
 						</div>
 						<div class="bg-green-50 rounded-xl p-4 text-center">
-							<p class="text-sm text-green-600 font-medium">Presenças</p>
-							<p class="text-3xl font-bold text-green-700">{stats.presenca?.presentes || 0}</p>
+							<p class="text-sm text-green-600 font-medium">
+								Presenças
+							</p>
+							<p class="text-3xl font-bold text-green-700">
+								{stats.presenca?.presentes || 0}
+							</p>
 						</div>
 						<div class="bg-orange-50 rounded-xl p-4 text-center">
-							<p class="text-sm text-orange-600 font-medium">Atrasos</p>
-							<p class="text-3xl font-bold text-orange-700">{stats.presenca?.atrasos || 0}</p>
+							<p class="text-sm text-orange-600 font-medium">
+								Atrasos
+							</p>
+							<p class="text-3xl font-bold text-orange-700">
+								{stats.presenca?.atrasos || 0}
+							</p>
 						</div>
 						<div class="bg-red-50 rounded-xl p-4 text-center">
-							<p class="text-sm text-red-600 font-medium">Faltas</p>
-							<p class="text-3xl font-bold text-red-700">{stats.presenca?.faltas || 0}</p>
+							<p class="text-sm text-red-600 font-medium">
+								Faltas
+							</p>
+							<p class="text-3xl font-bold text-red-700">
+								{stats.presenca?.faltas || 0}
+							</p>
 						</div>
 					</div>
 				</div>
 
 				<!-- Additional Info -->
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-					<div class="bg-purple-50 rounded-xl p-4 border-l-4 border-purple-500">
-						<h4 class="text-sm font-semibold text-purple-700 mb-1">📄 Justificativas</h4>
-						<p class="text-slate-600">Total: {stats.justificativas?.total || 0} | Aprovadas: {stats.justificativas?.aprovadas || 0}</p>
+					<div
+						class="bg-purple-50 rounded-xl p-4 border-l-4 border-purple-500"
+					>
+						<h4 class="text-sm font-semibold text-purple-700 mb-1">
+							📄 Justificativas
+						</h4>
+						<p class="text-slate-600">
+							Total: {stats.justificativas?.total || 0} | Aprovadas:
+							{stats.justificativas?.aprovadas || 0}
+						</p>
 					</div>
-					<div class="bg-red-50 rounded-xl p-4 border-l-4 border-red-500">
-						<h4 class="text-sm font-semibold text-red-700 mb-1">⚠️ Advertências</h4>
-						<p class="text-slate-600">Total: {stats.advertencias?.total || 0}</p>
+					<div
+						class="bg-red-50 rounded-xl p-4 border-l-4 border-red-500"
+					>
+						<h4 class="text-sm font-semibold text-red-700 mb-1">
+							⚠️ Advertências
+						</h4>
+						<p class="text-slate-600">
+							Total: {stats.advertencias?.total || 0}
+						</p>
 					</div>
 				</div>
 			{:else if currentReportData.estatisticas}
@@ -753,7 +1015,9 @@
 				<!-- Charts Grid -->
 				<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
 					<div class="bg-slate-50 rounded-xl p-4">
-						<h4 class="text-sm font-semibold mb-4">Distribuição Geral</h4>
+						<h4 class="text-sm font-semibold mb-4">
+							Distribuição Geral
+						</h4>
 						<div class="h-64">
 							<canvas id="distribution-chart"></canvas>
 						</div>
@@ -761,7 +1025,9 @@
 
 					{#if (tipoRelatorio === "presencas-turma" || tipoRelatorio === "frequencia-geral") && currentReportData.porTurma?.length > 0}
 						<div class="bg-slate-50 rounded-xl p-4">
-							<h4 class="text-sm font-semibold mb-4">Comparativo por Turma</h4>
+							<h4 class="text-sm font-semibold mb-4">
+								Comparativo por Turma
+							</h4>
 							<div class="h-64">
 								<canvas id="turma-chart"></canvas>
 							</div>
@@ -770,7 +1036,9 @@
 
 					{#if currentReportData.topAlunos?.length > 0}
 						<div class="bg-slate-50 rounded-xl p-4">
-							<h4 class="text-sm font-semibold mb-4">Top 10 Alunos por Frequência</h4>
+							<h4 class="text-sm font-semibold mb-4">
+								Top 10 Alunos por Frequência
+							</h4>
 							<div class="h-64">
 								<canvas id="top-alunos-chart"></canvas>
 							</div>
@@ -780,7 +1048,9 @@
 
 				{#if currentReportData.tendencia?.length > 1}
 					<div class="bg-slate-50 rounded-xl p-4 mb-6">
-						<h4 class="text-sm font-semibold mb-4">Tendência de Frequência no Período</h4>
+						<h4 class="text-sm font-semibold mb-4">
+							Tendência de Frequência no Período
+						</h4>
 						<div class="h-72">
 							<canvas id="trend-chart"></canvas>
 						</div>
@@ -790,7 +1060,9 @@
 				<!-- Details Table -->
 				{#if detalhesRows.length > 0}
 					<div class="mt-6">
-						<h4 class="text-lg font-semibold mb-4">Detalhamento por Aluno</h4>
+						<h4 class="text-lg font-semibold mb-4">
+							Detalhamento por Aluno
+						</h4>
 						<DataTable
 							columns={detalhesColumns}
 							rows={detalhesRows}
@@ -809,7 +1081,9 @@
 
 <style>
 	.soft-shadow {
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 6px 10px rgba(0, 0, 0, 0.06);
+		box-shadow:
+			0 10px 30px rgba(0, 0, 0, 0.08),
+			0 6px 10px rgba(0, 0, 0, 0.06);
 	}
 
 	.filters-row {
@@ -838,19 +1112,21 @@
 
 	.form-input {
 		padding: 0.75rem;
-		border: 1px solid var(--border-color, #CBD5E0);
+		border: 1px solid var(--border-color, #cbd5e0);
 		border-radius: 6px;
 		font-size: 1rem;
-		color: var(--text-color, #2D3748);
-		background-color: #FDFDFD;
-		transition: border-color 0.2s, box-shadow 0.2s;
+		color: var(--text-color, #2d3748);
+		background-color: #fdfdfd;
+		transition:
+			border-color 0.2s,
+			box-shadow 0.2s;
 		height: 46px;
 		box-sizing: border-box;
 	}
 
 	.form-input:focus {
 		outline: none;
-		border-color: #3182CE;
+		border-color: #3182ce;
 		box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
 	}
 
