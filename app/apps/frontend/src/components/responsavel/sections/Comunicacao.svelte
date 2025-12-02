@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import { authStore } from "../../../stores/auth";
     import { apiFetch } from "../../../lib/api";
     import Toast from "../../ui/Toast.svelte";
@@ -59,6 +58,15 @@
 
     $: currentUser = $authStore.currentUser;
 
+    // Track if we've already initiated loading
+    let hasInitiatedLoad = false;
+
+    // Watch for currentUser changes and load when available
+    $: if (currentUser?.email && !hasInitiatedLoad) {
+        hasInitiatedLoad = true;
+        loadResponsavelData();
+    }
+
     const tipoColors: Record<string, string> = {
         informativo: "bg-blue-100 text-blue-700",
         importante: "bg-yellow-100 text-yellow-700",
@@ -83,7 +91,7 @@
             );
 
             if (respResponse.success && respResponse.data) {
-                responsavelId = (respResponse.data as any).id_responsavel;
+                responsavelId = (respResponse.data as any).data.id_responsavel;
 
                 // Get children for this responsável
                 const childrenResponse = await apiFetch<{
@@ -230,9 +238,7 @@
         activeTab = "enviar";
     }
 
-    onMount(() => {
-        loadResponsavelData();
-    });
+    // onMount is no longer needed - reactive statement handles loading when currentUser is available
 </script>
 
 <section

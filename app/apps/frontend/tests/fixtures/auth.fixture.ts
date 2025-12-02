@@ -2,11 +2,18 @@ import { test as base, expect, type Page } from '@playwright/test';
 
 /**
  * Test credentials for admin user
- * These should match a valid admin user in the test database
+ * 
+ * These credentials must exist in your Supabase Auth AND in the database:
+ * 1. Create a user in Supabase Dashboard → Authentication → Users
+ * 2. Add the email to the 'admins' table in your database
+ * 
+ * Configure via environment variables or .env.test file:
+ * - TEST_ADMIN_EMAIL: Admin user email
+ * - TEST_ADMIN_PASSWORD: Admin user password
  */
 export const TEST_ADMIN = {
-  email: 'admin@bombeiroMirim.com',
-  password: 'admin123',
+  email: process.env.TEST_ADMIN_EMAIL || 'admin@bombeiroMirim.com',
+  password: process.env.TEST_ADMIN_PASSWORD || 'admin123',
 };
 
 /**
@@ -49,8 +56,27 @@ export async function loginAsAdmin(page: Page): Promise<void> {
   // Submit the form
   await page.click('button[type="submit"]');
 
-  // Wait for redirect to admin area
-  await page.waitForURL(/\/admin/, { timeout: 10000 });
+  // Wait for either redirect to admin or error message
+  try {
+    await page.waitForURL(/\/admin/, { timeout: 15000 });
+  } catch (error) {
+    // Check if there's an error message on the page
+    const errorEl = page.locator('.bg-red-50, [class*="error"], [class*="alert"]');
+    if (await errorEl.isVisible()) {
+      const errorText = await errorEl.textContent();
+      throw new Error(
+        `Login failed: ${errorText}\n\n` +
+        `Make sure the test credentials are valid:\n` +
+        `  Email: ${TEST_ADMIN.email}\n` +
+        `  Password: ${TEST_ADMIN.password}\n\n` +
+        `To fix this:\n` +
+        `1. Create a user in Supabase Dashboard → Authentication → Users\n` +
+        `2. Add the email to the 'admins' table in your database\n` +
+        `3. Or set TEST_ADMIN_EMAIL and TEST_ADMIN_PASSWORD environment variables`
+      );
+    }
+    throw error;
+  }
 
   // Verify we're on an admin page
   await expect(page).toHaveURL(/\/admin/);

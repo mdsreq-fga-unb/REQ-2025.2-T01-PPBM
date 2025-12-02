@@ -23,6 +23,15 @@ export interface Responsavel {
     update_at?: string;
 }
 
+export interface ResponsavelInput {
+    id_responsavel?: number;
+    nome_responsavel?: string;
+    telefone_responsavel?: string;
+    email_responsavel?: string;
+    cpf_responsavel?: string;
+    parentesco?: string;
+}
+
 export interface CadastroAlunoRequest {
     aluno: {
         nome_aluno: string;
@@ -42,7 +51,9 @@ export interface CadastroAlunoRequest {
         telefone_responsavel?: string;
         email_responsavel?: string;
         cpf_responsavel?: string;
+        parentesco?: string;
     };
+    responsaveisAdicionais?: ResponsavelInput[];
 }
 
 export interface CadastroAlunoResponse {

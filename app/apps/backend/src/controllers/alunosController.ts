@@ -190,7 +190,8 @@ export class AlunosController implements EndpointController {
                     .from('responsaveis_por_alunos')
                     .insert({
                         id_aluno: alunoInserido.id_aluno,
-                        id_responsavel: responsavel.id_responsavel
+                        id_responsavel: responsavel.id_responsavel,
+                        parentesco: requestData.responsavel.parentesco || null
                     });
 
                 if (errorVinculo) {
@@ -204,6 +205,7 @@ export class AlunosController implements EndpointController {
                         error: 'Erro ao vincular aluno ao responsável'
                     } as CadastroAlunoResponse);
                 }
+                log.info('cadastrarAluno', 'Vínculo criado com parentesco:', requestData.responsavel.parentesco);
             } else {
                 log.info('cadastrarAluno', 'Vínculo aluno-responsável já existe, pulando criação');
             }
@@ -222,6 +224,104 @@ export class AlunosController implements EndpointController {
                     // Não falha o cadastro, apenas loga o warning
                 } else {
                     log.info('cadastrarAluno', 'Aluno vinculado à turma:', requestData.aluno.turma_id);
+                }
+            }
+
+            // Criar vínculos para responsáveis adicionais (se houver)
+            if (requestData.responsaveisAdicionais && requestData.responsaveisAdicionais.length > 0) {
+                log.info('cadastrarAluno', 'Processando responsáveis adicionais:', requestData.responsaveisAdicionais.length);
+
+                for (const respAdicional of requestData.responsaveisAdicionais) {
+                    // Skip if no valid identifier
+                    if (!respAdicional.id_responsavel && !respAdicional.nome_responsavel) {
+                        log.warn('cadastrarAluno', 'Responsável adicional sem identificação, ignorando');
+                        continue;
+                    }
+
+                    let responsavelAdicional: Responsavel | null = null;
+
+                    // If ID was provided, use it directly
+                    if (respAdicional.id_responsavel) {
+                        const { data: respExistente, error: respError } = await supabase
+                            .from('responsaveis')
+                            .select('*')
+                            .eq('id_responsavel', respAdicional.id_responsavel)
+                            .maybeSingle();
+
+                        if (respError) {
+                            log.error('cadastrarAluno', 'Erro ao buscar responsável adicional:', respError);
+                            continue;
+                        }
+
+                        if (respExistente) {
+                            responsavelAdicional = respExistente;
+                        } else {
+                            log.warn('cadastrarAluno', 'Responsável adicional não encontrado:', respAdicional.id_responsavel);
+                            continue;
+                        }
+                    } else if (respAdicional.cpf_responsavel) {
+                        // Try to find by CPF
+                        const cpfNormalizado = normalizeCPF(respAdicional.cpf_responsavel);
+                        const { data: respExistente, error: respError } = await supabase
+                            .from('responsaveis')
+                            .select('*')
+                            .eq('cpf_responsavel', cpfNormalizado)
+                            .maybeSingle();
+
+                        if (respError) {
+                            log.error('cadastrarAluno', 'Erro ao buscar responsável adicional por CPF:', respError);
+                            continue;
+                        }
+
+                        if (respExistente) {
+                            responsavelAdicional = respExistente;
+                        } else {
+                            // Create new responsavel
+                            responsavelAdicional = await this.criarResponsavel(respAdicional, cpfNormalizado);
+                        }
+                    } else {
+                        // Create new responsavel without CPF
+                        responsavelAdicional = await this.criarResponsavel(respAdicional, null);
+                    }
+
+                    if (!responsavelAdicional) {
+                        log.warn('cadastrarAluno', 'Não foi possível obter/criar responsável adicional');
+                        continue;
+                    }
+
+                    // Check if link already exists
+                    const { data: linkExistente, error: linkCheckError } = await supabase
+                        .from('responsaveis_por_alunos')
+                        .select('id_responsaveis_por_alunos')
+                        .eq('id_aluno', alunoInserido.id_aluno)
+                        .eq('id_responsavel', responsavelAdicional.id_responsavel)
+                        .maybeSingle();
+
+                    if (linkCheckError) {
+                        log.error('cadastrarAluno', 'Erro ao verificar vínculo adicional:', linkCheckError);
+                        continue;
+                    }
+
+                    if (!linkExistente) {
+                        const { error: errorVinculoAdicional } = await supabase
+                            .from('responsaveis_por_alunos')
+                            .insert({
+                                id_aluno: alunoInserido.id_aluno,
+                                id_responsavel: responsavelAdicional.id_responsavel,
+                                parentesco: respAdicional.parentesco || null
+                            });
+
+                        if (errorVinculoAdicional) {
+                            log.error('cadastrarAluno', 'Erro ao criar vínculo adicional:', errorVinculoAdicional);
+                        } else {
+                            log.info('cadastrarAluno', 'Responsável adicional vinculado:', {
+                                responsavelId: responsavelAdicional.id_responsavel,
+                                parentesco: respAdicional.parentesco
+                            });
+                        }
+                    } else {
+                        log.info('cadastrarAluno', 'Vínculo adicional já existe, pulando');
+                    }
                 }
             }
 
