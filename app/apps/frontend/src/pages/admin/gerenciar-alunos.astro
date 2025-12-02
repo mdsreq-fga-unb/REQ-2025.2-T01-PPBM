@@ -1,829 +1,222 @@
 ---
-import Header from "../../components/Header.astro";
-import Sidebar from "../../components/Sidebar.astro";
-import FormSelect from "../../components/ui/FormSelect.astro";
+import Header from '../../components/Header.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import AlunosTable from '../../components/admin/AlunosTable.svelte';
+
+const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000';
 ---
 
 <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Gerenciar Alunos - Programa Bombeiro Mirim</title>
-        <style>
-            :root {
-                --primary-color: #4a5568;
-                --secondary-color: #e2e8f0;
-                --accent-color: #3182ce;
-                --danger-color: #e53e3e;
-                --bg-color: #f7fafc;
-                --text-color: #2d3748;
-                --label-color: #718096;
-                --border-color: #cbd5e0;
-                --white: #ffffff;
-                --success-color: #48bb78;
-                --warning-color: #ed8936;
-                --info-color: #4299e1;
-                --purple-color: #9f7aea;
-            }
-            body {
-                font-family: "Inter", sans-serif;
-                background-color: var(--bg-color);
-                color: var(--text-color);
-                margin: 0;
-                padding: 0;
-            }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Alunos - Programa Bombeiro Mirim</title>
+    <style>
+        :root {
+            --primary-color: #4A5568;
+            --secondary-color: #E2E8F0;
+            --accent-color: #3182CE;
+            --danger-color: #E53E3E;
+            --bg-color: #F7FAFC;
+            --text-color: #2D3748;
+            --label-color: #718096;
+            --border-color: #CBD5E0;
+            --white: #FFFFFF;
+            --success-color: #48BB78;
+            --warning-color: #ED8936;
+            --info-color: #4299E1;
+            --purple-color: #9F7AEA;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+        .main-content {
+            padding: 120px 1.5rem 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+        .content-wrapper {
+            width: 100%;
+            max-width: 1280px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .container {
+            flex: 1;
+            max-width: 100%;
+            background-color: var(--white);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        .page-header .title h1 {
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--text-color);
+        }
+        .page-header .title p {
+            font-size: 1rem;
+            margin: 0;
+            color: var(--label-color);
+        }
+        .btn-export {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background-color: var(--primary-color);
+            color: var(--white);
+            white-space: nowrap;
+        }
+        .btn-export:hover {
+            background-color: #2D3748;
+        }
+        .btn-cadastrar {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background-color: var(--accent-color);
+            color: var(--white);
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-cadastrar:hover {
+            background-color: #2C5282;
+        }
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
             .main-content {
-                padding: 120px 1.5rem 40px;
-                min-height: 100vh;
-                display: flex;
-                justify-content: center;
+                padding: 100px 1rem 20px;
             }
+
             .content-wrapper {
-                width: 100%;
-                max-width: 1280px;
-                display: flex;
-                gap: 20px;
-                align-items: flex-start;
+                flex-direction: column;
+                gap: 15px;
             }
+
             .container {
-                flex: 1;
-                max-width: 100%;
-                background-color: var(--white);
-                padding: 2.5rem;
-                border-radius: 1.5rem;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                padding: 1.5rem;
+                border-radius: 1rem;
             }
+
             .page-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                margin-bottom: 2rem;
-                padding-bottom: 1.5rem;
-                border-bottom: 2px solid var(--secondary-color);
+                flex-direction: column;
+                gap: 1rem;
             }
+
             .page-header .title h1 {
-                font-size: 1.8rem;
-                margin: 0 0 0.5rem 0;
-                color: var(--text-color);
+                font-size: 1.5rem;
             }
-            .page-header .title p {
-                font-size: 1rem;
-                margin: 0;
-                color: var(--label-color);
-            }
-            .btn-export {
-                padding: 0.75rem 1.5rem;
-                border-radius: 6px;
-                border: none;
-                font-size: 1rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: background-color 0.3s;
-                background-color: var(--primary-color);
-                color: var(--white);
-                white-space: nowrap;
-            }
-            .btn-export:hover {
-                background-color: #2d3748;
-            }
-            .btn-export:disabled {
-                background-color: var(--border-color);
-                cursor: not-allowed;
-            }
-            .btn-cadastrar {
-                padding: 0.75rem 1.5rem;
-                border-radius: 6px;
-                border: none;
-                font-size: 1rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: background-color 0.3s;
-                background-color: var(--accent-color);
-                color: var(--white);
-                white-space: nowrap;
-                text-decoration: none;
-                display: inline-flex;
-                align-items: center;
-                gap: 0.5rem;
-            }
-            .btn-cadastrar:hover {
-                background-color: #2c5282;
-            }
+
             .header-buttons {
-                display: flex;
-                gap: 1rem;
-                align-items: center;
-            }
-            .filters-section {
-                display: flex;
-                gap: 1rem;
-                margin-bottom: 2rem;
-                flex-wrap: wrap;
-            }
-            .filter-group {
-                display: flex;
-                flex-direction: column;
-                flex: 1;
-                min-width: 200px;
-            }
-            .filter-group.full-width {
-                flex: 2;
-            }
-            .filter-group label {
-                font-size: 0.9rem;
-                margin-bottom: 0.5rem;
-                color: var(--label-color);
-                font-weight: 500;
-            }
-            .filter-group input,
-            .filter-group select {
-                padding: 0.75rem;
-                border: 1px solid var(--border-color);
-                border-radius: 6px;
-                font-size: 1rem;
-                color: var(--text-color);
-                background-color: #fdfdfd;
-            }
-            .filter-group input:focus,
-            .filter-group select:focus {
-                outline: none;
-                border-color: var(--accent-color);
-                box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
-            }
-            .stats-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 1rem;
-                margin-bottom: 2rem;
-            }
-            .stat-card {
-                padding: 1rem;
-                border-radius: 8px;
-                text-align: center;
-                background-color: var(--secondary-color);
-            }
-            .stat-card.total {
-                background: linear-gradient(
-                    135deg,
-                    var(--info-color) 0%,
-                    #2b6cb0 100%
-                );
-                color: white;
-            }
-            .stat-card.neurodivergente {
-                background: linear-gradient(
-                    135deg,
-                    var(--purple-color) 0%,
-                    #6b46c1 100%
-                );
-                color: white;
-            }
-            .stat-card h3 {
-                font-size: 0.8rem;
-                margin: 0 0 0.25rem 0;
-                font-weight: 500;
-                opacity: 0.9;
-            }
-            .stat-card .value {
-                font-size: 1.75rem;
-                font-weight: 700;
-                margin: 0;
-            }
-            .table-container {
-                overflow-x: auto;
-                margin-top: 1rem;
-            }
-            .table {
                 width: 100%;
-                border-collapse: collapse;
-                background-color: var(--white);
-            }
-            .table thead {
-                background-color: var(--secondary-color);
-            }
-            .table th {
-                padding: 1rem;
-                text-align: left;
-                font-weight: 600;
-                color: var(--text-color);
-                font-size: 0.9rem;
-                border-bottom: 2px solid var(--border-color);
-            }
-            .table td {
-                padding: 1rem;
-                border-bottom: 1px solid var(--border-color);
-                font-size: 0.95rem;
-            }
-            .table tbody tr:hover {
-                background-color: #f7fafc;
-            }
-            .table tbody tr:last-child td {
-                border-bottom: none;
-            }
-            .student-info {
-                display: flex;
                 flex-direction: column;
             }
-            .student-name {
-                font-weight: 600;
-                color: var(--text-color);
-                margin-bottom: 0.25rem;
-            }
-            .student-id {
-                font-size: 0.85rem;
-                color: var(--label-color);
-            }
-            .status-badge {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.5rem;
-                padding: 0.5rem 1rem;
-                border-radius: 20px;
-                font-size: 0.85rem;
-                font-weight: 500;
-            }
-            .status-badge.neurodivergente {
-                background-color: #e9d8fd;
-                color: #6b46c1;
-            }
-            .status-badge.normal {
-                background-color: #c6f6d5;
-                color: #2f855a;
-            }
-            .status-icon {
-                font-size: 1rem;
-            }
-            .actions-group {
-                display: flex;
-                gap: 0.5rem;
-            }
-            .btn-action {
-                padding: 0.5rem 1rem;
-                border-radius: 6px;
-                border: none;
-                font-size: 0.9rem;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 0.3s;
-            }
-            .btn-edit {
-                background-color: var(--accent-color);
-                color: var(--white);
-            }
-            .btn-edit:hover {
-                background-color: #2c5282;
-            }
-            .btn-remove {
-                background-color: var(--danger-color);
-                color: var(--white);
-            }
-            .btn-remove:hover {
-                background-color: #c53030;
-            }
-            .btn-remove:disabled {
-                background-color: var(--border-color);
-                cursor: not-allowed;
-            }
-            .empty-state {
-                text-align: center;
-                padding: 3rem 1rem;
-                color: var(--label-color);
-                font-size: 1rem;
-            }
-            .loading-state {
-                text-align: center;
-                padding: 3rem 1rem;
-                color: var(--label-color);
-                font-size: 1rem;
-            }
-            .loading-spinner {
-                display: inline-block;
-                width: 24px;
-                height: 24px;
-                border: 3px solid var(--secondary-color);
-                border-top-color: var(--accent-color);
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
-                margin-right: 0.5rem;
-            }
-            @keyframes spin {
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-            .pagination {
-                display: flex;
+
+            .btn-cadastrar,
+            .btn-export {
+                width: 100%;
                 justify-content: center;
-                align-items: center;
-                gap: 0.5rem;
-                margin-top: 1.5rem;
             }
-            .pagination button {
-                padding: 0.5rem 1rem;
-                border: 1px solid var(--border-color);
-                background-color: var(--white);
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 0.9rem;
-            }
-            .pagination button:hover:not(:disabled) {
-                background-color: var(--secondary-color);
-            }
-            .pagination button:disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-            }
-            .pagination span {
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
-                color: var(--label-color);
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 80px 0.5rem 20px;
             }
 
-            @media (max-width: 768px) {
-                .main-content {
-                    padding: 100px 1rem 20px;
-                }
-                .content-wrapper {
-                    flex-direction: column;
-                    gap: 15px;
-                }
-                .container {
-                    padding: 1.5rem;
-                    border-radius: 1rem;
-                }
-                .page-header {
-                    flex-direction: column;
-                    gap: 1rem;
-                }
-                .page-header .title h1 {
-                    font-size: 1.5rem;
-                }
-                .header-buttons {
-                    width: 100%;
-                    flex-direction: column;
-                }
-                .btn-cadastrar,
-                .btn-export {
-                    width: 100%;
-                    justify-content: center;
-                }
-                .filters-section {
-                    flex-direction: column;
-                }
-                .filter-group {
-                    width: 100%;
-                }
-                .table-container {
-                    overflow-x: scroll;
-                }
-                .table {
-                    min-width: 800px;
-                }
-                .actions-group {
-                    flex-direction: column;
-                }
-                .btn-action {
-                    width: 100%;
-                }
+            .container {
+                padding: 1rem;
+                border-radius: 0.75rem;
             }
-            @media (max-width: 480px) {
-                .main-content {
-                    padding: 80px 0.5rem 20px;
-                }
-                .container {
-                    padding: 1rem;
-                    border-radius: 0.75rem;
-                }
-                .page-header .title h1 {
-                    font-size: 1.25rem;
-                }
-                .table th,
-                .table td {
-                    padding: 0.75rem 0.5rem;
-                    font-size: 0.85rem;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <Header />
 
-        <main class="main-content">
-            <div class="content-wrapper">
-                <Sidebar />
-                <div class="container">
-                    <div class="page-header">
-                        <div class="title">
-                            <h1>Gerenciar Alunos</h1>
-                            <p>Busque, edite e remova alunos do sistema</p>
-                        </div>
-                        <div class="header-buttons">
-                            <a
-                                href="/admin/cadastrar-alunos"
-                                class="btn-cadastrar"
-                            >
-                                <span>+</span> Cadastrar Aluno
-                            </a>
-                            <button
-                                type="button"
-                                class="btn-export"
-                                id="btn-export">Exportar Lista</button
-                            >
-                        </div>
+            .page-header .title h1 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <Header />
+    
+    <main class="main-content">
+        <div class="content-wrapper">
+            <Sidebar />
+            <div class="container">
+                <div class="page-header">
+                    <div class="title">
+                        <h1>Gerenciar Alunos</h1>
+                        <p>Busque, edite e remova alunos do sistema</p>
                     </div>
-
-                    <div class="stats-grid">
-                        <div class="stat-card total">
-                            <h3>Total de Alunos</h3>
-                            <p class="value" id="stat-total">-</p>
-                        </div>
-                        <div class="stat-card neurodivergente">
-                            <h3>Acompanhamento Especial</h3>
-                            <p class="value" id="stat-neurodivergente">-</p>
-                        </div>
-                    </div>
-
-                    <div class="filters-section">
-                        <div class="filter-group full-width">
-                            <label for="buscar">Buscar aluno</label>
-                            <input
-                                type="text"
-                                id="buscar"
-                                name="buscar"
-                                placeholder="Nome do aluno..."
-                            />
-                        </div>
-                        <div class="filter-group">
-                            <label for="turma">Filtrar por turma</label>
-                            <select id="turma" name="turma">
-                                <option value="">Todas as turmas</option>
-                            </select>
-                        </div>
-                        <FormSelect
-                            id="status"
-                            name="status"
-                            label="Status especial"
-                        >
-                            <option value="">Todos</option>
-                            <option value="true">Neurodivergente</option>
-                            <option value="false">Sem acompanhamento</option>
-                        </FormSelect>
-                    </div>
-
-                    <div class="table-container">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Aluno</th>
-                                    <th>CPF</th>
-                                    <th>Escola/Unidade</th>
-                                    <th>Cidade</th>
-                                    <th>Status</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="table-body"> </tbody>
-                        </table>
-                        <div
-                            id="loading-state"
-                            class="loading-state"
-                            style="display: none;"
-                        >
-                            <span class="loading-spinner"></span> Carregando alunos...
-                        </div>
-                        <div
-                            id="empty-state"
-                            class="empty-state"
-                            style="display: none;"
-                        >
-                            Nenhum aluno encontrado com os filtros selecionados.
-                        </div>
-                    </div>
-
-                    <div
-                        class="pagination"
-                        id="pagination"
-                        style="display: none;"
-                    >
-                        <button id="btn-prev" disabled>← Anterior</button>
-                        <span id="page-info">Página 1 de 1</span>
-                        <button id="btn-next" disabled>Próxima →</button>
+                    <div class="header-buttons">
+                        <a href="/admin/cadastrar-alunos" class="btn-cadastrar">
+                            <span>+</span> Cadastrar Aluno
+                        </a>
+                        <button type="button" class="btn-export" id="btn-export">Exportar Lista</button>
                     </div>
                 </div>
+
+                <AlunosTable client:load apiUrl={apiUrl} />
             </div>
-        </main>
+        </div>
+    </main>
 
-        <script>
-            const backendUrl =
-                import.meta.env.PUBLIC_BACKEND_URL || "http://localhost:3000";
+    <script>
+        import { authStore } from "../../stores/auth";
 
-            let alunos = [];
-            let turmas = [];
-            let currentPage = 1;
-            let totalPages = 1;
-            let totalAlunos = 0;
-            const pageSize = 20;
+        // Check authentication
+        document.addEventListener("DOMContentLoaded", async () => {
+            const isAuthenticated = await authStore.checkAuth();
 
-            const tableBody = document.getElementById("table-body");
-            const emptyState = document.getElementById("empty-state");
-            const loadingState = document.getElementById("loading-state");
-            const pagination = document.getElementById("pagination");
-            const btnPrev = document.getElementById("btn-prev");
-            const btnNext = document.getElementById("btn-next");
-            const pageInfo = document.getElementById("page-info");
-
-            function formatCPF(cpf) {
-                if (!cpf) return "-";
-                const cleaned = cpf.replace(/\D/g, "");
-                if (cleaned.length !== 11) return cpf;
-                return cleaned.replace(
-                    /(\d{3})(\d{3})(\d{3})(\d{2})/,
-                    "$1.$2.$3-$4",
-                );
+            if (!isAuthenticated) {
+                window.location.href = "/login";
+                return;
             }
 
-            function showLoading() {
-                tableBody.innerHTML = "";
-                emptyState.style.display = "none";
-                loadingState.style.display = "block";
-                pagination.style.display = "none";
+            // Check if user is admin
+            const user = authStore.getUser();
+            if (!user || user.tipo !== "admin") {
+                alert("Acesso negado. Apenas administradores podem gerenciar alunos.");
+                window.location.href = "/login";
+                return;
             }
+        });
 
-            function hideLoading() {
-                loadingState.style.display = "none";
+        // Export button handler
+        document.getElementById('btn-export')?.addEventListener('click', function() {
+            if (typeof (window as any).exportarAlunos === 'function') {
+                (window as any).exportarAlunos();
             }
-
-            function renderTable() {
-                hideLoading();
-
-                if (alunos.length === 0) {
-                    tableBody.innerHTML = "";
-                    emptyState.style.display = "block";
-                    pagination.style.display = "none";
-                    return;
-                }
-
-                emptyState.style.display = "none";
-                tableBody.innerHTML = "";
-
-                alunos.forEach((aluno) => {
-                    const row = document.createElement("tr");
-
-                    const isNeurodivergente = aluno.neurodivergente === true;
-                    const statusClass = isNeurodivergente
-                        ? "neurodivergente"
-                        : "normal";
-                    const statusText = isNeurodivergente
-                        ? "Acomp. Especial"
-                        : "Normal";
-                    const statusIcon = isNeurodivergente ? "📚" : "";
-
-                    row.innerHTML = `
-                    <td>
-                        <div class="student-info">
-                            <span class="student-name">${aluno.nome_aluno || "-"}</span>
-                            <span class="student-id">ID: ${aluno.id_aluno}</span>
-                        </div>
-                    </td>
-                    <td>${formatCPF(aluno.cpf_aluno)}</td>
-                    <td>${aluno.escola_unidade || "-"}</td>
-                    <td>${aluno.cidade || "-"}</td>
-                    <td>
-                        <span class="status-badge ${statusClass}">
-                            ${statusIcon ? `<span class="status-icon">${statusIcon}</span>` : ""}
-                            ${statusText}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="actions-group">
-                            <button class="btn-action btn-edit" onclick="editarAluno(${aluno.id_aluno})">Editar</button>
-                            <button class="btn-action btn-remove" onclick="removerAluno(${aluno.id_aluno}, '${(aluno.nome_aluno || "").replace(/'/g, "\\\\'")}')">Remover</button>
-                        </div>
-                    </td>
-                `;
-                    tableBody.appendChild(row);
-                });
-
-                updatePagination();
-            }
-
-            function updatePagination() {
-                if (totalPages <= 1) {
-                    pagination.style.display = "none";
-                    return;
-                }
-
-                pagination.style.display = "flex";
-                btnPrev.disabled = currentPage <= 1;
-                btnNext.disabled = currentPage >= totalPages;
-                pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
-            }
-
-            function updateStats() {
-                document.getElementById("stat-total").textContent = totalAlunos;
-                const neuroCount = alunos.filter(
-                    (a) => a.neurodivergente === true,
-                ).length;
-                document.getElementById("stat-neurodivergente").textContent =
-                    neuroCount;
-            }
-
-            async function carregarTurmas() {
-                try {
-                    const response = await fetch(
-                        `${backendUrl}/turmas/listar?pageSize=100`,
-                    );
-                    if (!response.ok)
-                        throw new Error("Erro ao carregar turmas");
-
-                    const data = await response.json();
-                    turmas = data.data || [];
-
-                    const turmaSelect = document.getElementById("turma");
-                    turmaSelect.innerHTML =
-                        '<option value="">Todas as turmas</option>';
-
-                    turmas.forEach((turma) => {
-                        const option = document.createElement("option");
-                        option.value = turma.id_turma;
-                        option.textContent = `${turma.nome_turma} - ${turma.unidade_turma || "Sem unidade"}`;
-                        turmaSelect.appendChild(option);
-                    });
-                } catch (error) {
-                    console.error("Erro ao carregar turmas:", error);
-                }
-            }
-
-            async function carregarAlunos() {
-                showLoading();
-
-                try {
-                    const nome = document.getElementById("buscar").value.trim();
-                    const turmaId = document.getElementById("turma").value;
-                    const neurodivergente =
-                        document.getElementById("status").value;
-
-                    const params = new URLSearchParams();
-                    params.append("page", currentPage.toString());
-                    params.append("pageSize", pageSize.toString());
-
-                    if (nome) params.append("nome", nome);
-                    if (turmaId) params.append("turmaId", turmaId);
-                    if (neurodivergente)
-                        params.append("neurodivergente", neurodivergente);
-
-                    const response = await fetch(
-                        `${backendUrl}/alunos/listar?${params}`,
-                    );
-                    if (!response.ok)
-                        throw new Error("Erro ao carregar alunos");
-
-                    const data = await response.json();
-                    alunos = data.data || [];
-                    totalAlunos = data.total || 0;
-                    totalPages = Math.ceil(totalAlunos / pageSize);
-
-                    renderTable();
-                    updateStats();
-                } catch (error) {
-                    console.error("Erro ao carregar alunos:", error);
-                    hideLoading();
-                    tableBody.innerHTML = "";
-                    emptyState.textContent =
-                        "Erro ao carregar alunos. Tente novamente.";
-                    emptyState.style.display = "block";
-                }
-            }
-
-            function debounce(func, wait) {
-                let timeout;
-                return function executedFunction(...args) {
-                    const later = () => {
-                        clearTimeout(timeout);
-                        func(...args);
-                    };
-                    clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
-                };
-            }
-
-            const debouncedSearch = debounce(() => {
-                currentPage = 1;
-                carregarAlunos();
-            }, 300);
-
-            document
-                .getElementById("buscar")
-                .addEventListener("input", debouncedSearch);
-
-            document.getElementById("turma").addEventListener("change", () => {
-                currentPage = 1;
-                carregarAlunos();
-            });
-
-            document.getElementById("status").addEventListener("change", () => {
-                currentPage = 1;
-                carregarAlunos();
-            });
-
-            btnPrev.addEventListener("click", () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    carregarAlunos();
-                }
-            });
-
-            btnNext.addEventListener("click", () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    carregarAlunos();
-                }
-            });
-
-            document
-                .getElementById("btn-export")
-                .addEventListener("click", async function () {
-                    if (alunos.length === 0) {
-                        alert("Nenhum aluno para exportar");
-                        return;
-                    }
-
-                    const dados = alunos.map((aluno) => ({
-                        Nome: aluno.nome_aluno || "",
-                        ID: aluno.id_aluno,
-                        CPF: formatCPF(aluno.cpf_aluno),
-                        "Data Nascimento": aluno.data_nascimento_aluno || "",
-                        "Escola/Unidade": aluno.escola_unidade || "",
-                        Cidade: aluno.cidade || "",
-                        Neurodivergente: aluno.neurodivergente ? "Sim" : "Não",
-                    }));
-
-                    const headers = Object.keys(dados[0]);
-                    const csvContent = [
-                        headers.join(","),
-                        ...dados.map((row) =>
-                            headers
-                                .map((header) => `"${row[header]}"`)
-                                .join(","),
-                        ),
-                    ].join("\n");
-
-                    const blob = new Blob(["\ufeff" + csvContent], {
-                        type: "text/csv;charset=utf-8;",
-                    });
-                    const link = document.createElement("a");
-                    const url = URL.createObjectURL(blob);
-                    link.setAttribute("href", url);
-                    link.setAttribute(
-                        "download",
-                        `alunos_${new Date().toISOString().split("T")[0]}.csv`,
-                    );
-                    link.style.visibility = "hidden";
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                });
-
-            window.editarAluno = function (id) {
-                window.location.href = `/admin/cadastrar-alunos?id=${id}`;
-            };
-
-            window.removerAluno = async function (id, nome) {
-                if (
-                    !confirm(
-                        `Tem certeza que deseja remover o aluno "${nome}"?\n\nEsta ação não pode ser desfeita.`,
-                    )
-                ) {
-                    return;
-                }
-
-                try {
-                    const response = await fetch(
-                        `${backendUrl}/alunos/deletar/${id}`,
-                        {
-                            method: "DELETE",
-                        },
-                    );
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(
-                            errorData.error || "Erro ao remover aluno",
-                        );
-                    }
-
-                    alert("Aluno removido com sucesso!");
-                    carregarAlunos();
-                } catch (error) {
-                    console.error("Erro ao remover aluno:", error);
-                    alert(`Erro ao remover aluno: ${error.message}`);
-                }
-            };
-
-            document.addEventListener("DOMContentLoaded", async () => {
-                await carregarTurmas();
-                await carregarAlunos();
-            });
-        </script>
-    </body>
+        });
+    </script>
+</body>
 </html>

@@ -8,6 +8,12 @@
     export let emptyMessage: string = 'Nenhum item encontrado.';
     export let loadingMessage: string = 'Carregando...';
     export let keyField: string = 'id';
+    
+    // Pagination props
+    export let showPagination: boolean = false;
+    export let currentPage: number = 1;
+    export let totalPages: number = 1;
+    export let pageInfo: string = '';
 
     const dispatch = createEventDispatcher();
 
@@ -215,6 +221,26 @@
                 </tbody>
             </table>
         </div>
+        
+        {#if showPagination && totalPages > 1}
+            <div class="pagination">
+                <button 
+                    type="button"
+                    disabled={currentPage <= 1}
+                    on:click={() => dispatch('pageChange', currentPage - 1)}
+                >
+                    ← Anterior
+                </button>
+                <span class="page-info">{pageInfo || `Página ${currentPage} de ${totalPages}`}</span>
+                <button 
+                    type="button"
+                    disabled={currentPage >= totalPages}
+                    on:click={() => dispatch('pageChange', currentPage + 1)}
+                >
+                    Próxima →
+                </button>
+            </div>
+        {/if}
     {/if}
 </div>
 
@@ -446,6 +472,40 @@
         background-color: #f7fafc;
         border-radius: 8px;
         border: 1px dashed #cbd5e0;
+    }
+
+    /* Pagination styles */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .pagination button {
+        padding: 0.5rem 1rem;
+        border: 1px solid #cbd5e0;
+        background-color: #ffffff;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background-color 0.2s;
+    }
+
+    .pagination button:hover:not(:disabled) {
+        background-color: #e2e8f0;
+    }
+
+    .pagination button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .page-info {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        color: #718096;
     }
 
     /* Responsive styles */
