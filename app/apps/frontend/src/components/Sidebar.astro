@@ -26,6 +26,9 @@ const isActive = (path: string) => {
     if (path === "/admin/usuarios") {
         return currentPath === "/admin/usuarios";
     }
+    if (path === "/admin/comunicacao") {
+        return currentPath === "/admin/comunicacao";
+    }
     return currentPath.startsWith(path);
 };
 ---
