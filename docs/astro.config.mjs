@@ -116,6 +116,10 @@ export default defineConfig({
                         slug: "entregas/unidade-2",
                     },
                     {
+                        label: "Unidade 3",
+                        slug: "entregas/unidade-3",
+                    },
+                    {
                         label: "Unidade 3 - UC",
                         slug: "entregas/unidade-3-uc",
                     }
