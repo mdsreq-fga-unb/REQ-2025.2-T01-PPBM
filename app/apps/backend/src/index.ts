@@ -18,6 +18,7 @@ import { docenteController } from './controllers/docentes';
 import { turmaController } from './controllers/turmas';
 import { presencaController } from './controllers/presencas';
 import { authController } from './controllers/auth';
+import { notificacaoController } from './controllers/notificacoes';
 
 
 dotenv.config();
@@ -35,6 +36,7 @@ const controllers: EndpointController[] = [
     docenteController,
     turmaController,
     presencaController,
+    notificacaoController,
     new AlunosController()
 ];
 
