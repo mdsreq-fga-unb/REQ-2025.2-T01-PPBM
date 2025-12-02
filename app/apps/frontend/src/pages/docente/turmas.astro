@@ -7,7 +7,7 @@ import Sidebar from '../../components/Sidebardocente.astro';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turmas e Sessões - Programa Bombeiro Mirim</title>
+    <title>Turmas - Programa Bombeiro Mirim</title>
     <style>
         :root {
             --primary-color: #4A5568;
@@ -69,53 +69,8 @@ import Sidebar from '../../components/Sidebardocente.astro';
             margin: 0;
             color: var(--label-color);
         }
-        .btn-new-class {
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            border: none;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            background-color: var(--danger-color);
-            color: var(--white);
-            white-space: nowrap;
-        }
-        .btn-new-class:hover {
-            background-color: #C53030;
-        }
-        .tabs {
-            display: flex;
-            gap: 24px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 24px;
-        }
-        .tab {
-            padding: 12px 0;
-            font-weight: 600;
-            color: var(--label-color);
-            position: relative;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: color 0.3s;
-        }
-        .tab:hover {
-            color: var(--text-color);
-        }
-        .tab.active {
-            color: var(--danger-color);
-        }
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--danger-color);
-            border-radius: 999px;
-        }
         .tab-content {
+            margin-top: 24px;
             min-height: 300px;
         }
         .empty-state {
@@ -195,19 +150,12 @@ import Sidebar from '../../components/Sidebardocente.astro';
             font-size: 0.9rem;
             transition: all 0.3s;
         }
-        .btn-edit {
+        .btn-view {
             background-color: var(--accent-color);
             color: var(--white);
         }
-        .btn-edit:hover {
+        .btn-view:hover {
             background-color: #2C5282;
-        }
-        .btn-delete {
-            background-color: var(--danger-color);
-            color: var(--white);
-        }
-        .btn-delete:hover {
-            background-color: #C53030;
         }
 
         @media (max-width: 768px) {
@@ -233,14 +181,6 @@ import Sidebar from '../../components/Sidebardocente.astro';
 
             .page-header .title h1 {
                 font-size: 1.5rem;
-            }
-
-            .btn-new-class {
-                width: 100%;
-            }
-
-            .tabs {
-                gap: 16px;
             }
 
             .class-header {
@@ -288,29 +228,18 @@ import Sidebar from '../../components/Sidebardocente.astro';
             <div class="container">
                 <div class="page-header">
                     <div class="title">
-                        <h1>Turmas e Sessões</h1>
-                        <p>Gerencie turmas, horários e lotação</p>
+                        <h1>Turmas</h1>
+                        <p>Visualize suas turmas e horários</p>
                     </div>
-                    <button type="button" class="btn-new-class" id="btn-new-class">Nova Turma</button>
-                </div>
-
-                <div class="tabs">
-                    <div class="tab active" data-tab="turmas">Turmas</div>
-                    <div class="tab" data-tab="sessoes">Sessões</div>
                 </div>
 
                 <div class="tab-content">
                     <div id="turmas-content" class="tab-panel">
                         <div id="empty-state" class="empty-state">
-                            Nenhuma turma cadastrada
+                            Você não está associado a nenhuma turma
                         </div>
                         <div id="class-list" class="class-list" style="display: none;">
                             <!-- Turmas serão renderizadas aqui via JavaScript -->
-                        </div>
-                    </div>
-                    <div id="sessoes-content" class="tab-panel" style="display: none;">
-                        <div class="empty-state">
-                            Nenhuma sessão cadastrada
                         </div>
                     </div>
                 </div>
@@ -364,54 +293,17 @@ import Sidebar from '../../components/Sidebardocente.astro';
                         </div>
                     </div>
                     <div class="class-actions">
-                        <button class="btn-action btn-edit" onclick="editarTurma('${turma.id}')">Editar</button>
-                        <button class="btn-action btn-delete" onclick="excluirTurma('${turma.id}')">Excluir</button>
+                        <button class="btn-action btn-view" onclick="visualizarTurma('\${turma.id}')">Ver Detalhes</button>
                     </div>
                 `;
                 classList.appendChild(card);
             });
         }
 
-        // Função para alternar entre tabs
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                const tabName = this.getAttribute('data-tab');
-                
-                // Atualizar tabs
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Atualizar conteúdo
-                document.getElementById('turmas-content').style.display = tabName === 'turmas' ? 'block' : 'none';
-                document.getElementById('sessoes-content').style.display = tabName === 'sessoes' ? 'block' : 'none';
-            });
-        });
-
-        // Função para criar nova turma
-        document.getElementById('btn-new-class').addEventListener('click', function() {
-            // Aqui você pode abrir um modal ou redirecionar para página de criação
-            alert('Funcionalidade de criar nova turma será implementada');
-            // Exemplo: window.location.href = '/docente/turmas/nova';
-        });
-
         // Funções para ações
-        window.editarTurma = function(id) {
-            // Aqui você pode abrir um modal ou redirecionar para página de edição
-            alert(`Editar turma com ID: ${id}`);
-            // Exemplo: window.location.href = `/docente/turmas/${id}/editar`;
-        };
-
-        window.excluirTurma = function(id) {
-            if (confirm('Tem certeza que deseja excluir esta turma?')) {
-                // Aqui você fará a chamada à API para excluir a turma
-                // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
-                // await fetch(`${backendUrl}/turmas/${id}`, { method: 'DELETE' });
-                
-                // Por enquanto, apenas remove da lista local
-                turmas = turmas.filter(t => t.id !== id);
-                renderizarTurmas();
-                alert('Turma excluída com sucesso!');
-            }
+        window.visualizarTurma = function(id) {
+            // Redirecionar para página de detalhes da turma
+            window.location.href = `/docente/turmas/${id}`;
         };
 
         // Carregar turmas da API

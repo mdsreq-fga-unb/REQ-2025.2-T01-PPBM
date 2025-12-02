@@ -1,7 +1,6 @@
 ---
 import Header from '../../components/Header.astro';
 import Sidebar from '../../components/Sidebar.astro';
-import FormSelect from '../../components/ui/FormSelect.astro';
 ---
 
 <html lang="pt-br">
@@ -101,9 +100,6 @@ import FormSelect from '../../components/ui/FormSelect.astro';
             border-color: var(--accent-color);
             box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
         }
-        .form-group select.required {
-            border-color: var(--danger-color);
-        }
         .btn-save {
             padding: 0.75rem 1.5rem;
             border-radius: 6px;
@@ -119,14 +115,18 @@ import FormSelect from '../../components/ui/FormSelect.astro';
         .btn-save:hover {
             background-color: #C53030;
         }
+        .btn-save:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+        }
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
             margin-bottom: 2rem;
         }
         .stat-card {
-            padding: 1.5rem;
+            padding: 1.25rem;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
@@ -148,13 +148,13 @@ import FormSelect from '../../components/ui/FormSelect.astro';
             color: white;
         }
         .stat-card h3 {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin: 0 0 0.5rem 0;
             font-weight: 500;
             opacity: 0.9;
         }
         .stat-card .value {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
             margin: 0;
         }
@@ -182,6 +182,7 @@ import FormSelect from '../../components/ui/FormSelect.astro';
             gap: 1rem;
             padding: 1rem;
             border-bottom: 1px solid var(--border-color);
+            align-items: center;
         }
         .table-row:last-child {
             border-bottom: none;
@@ -195,6 +196,25 @@ import FormSelect from '../../components/ui/FormSelect.astro';
             color: var(--label-color);
             font-size: 1rem;
         }
+        .loading-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--label-color);
+            font-size: 1rem;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--secondary-color);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
         .student-info {
             display: flex;
             flex-direction: column;
@@ -207,69 +227,49 @@ import FormSelect from '../../components/ui/FormSelect.astro';
         .student-id {
             font-size: 0.85rem;
             color: var(--label-color);
-            margin-bottom: 0.5rem;
         }
-        .medical-warning {
-            display: flex;
+        .neurodivergente-badge {
+            display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            color: #C05621;
-            margin-top: 0.5rem;
-        }
-        .medical-warning-icon {
-            font-size: 1rem;
-        }
-        .status-select-wrapper {
-            position: relative;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            color: #6B46C1;
+            margin-top: 0.25rem;
         }
         .status-select {
             width: 100%;
-            padding: 0.75rem;
-            padding-right: 2.5rem;
+            padding: 0.6rem;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--text-color);
             background-color: #FDFDFD;
-            appearance: none;
             cursor: pointer;
-            background-image: none;
         }
         .status-select:focus {
             outline: none;
             border-color: var(--accent-color);
             box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
         }
-        .status-select-wrapper::after {
-            content: '▼';
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: var(--label-color);
-            font-size: 0.75rem;
-        }
-        .status-select[value="present"],
-        .status-select option[value="present"]:checked {
+        .status-select.presente {
             background-color: #C6F6D5;
+            border-color: var(--success-color);
         }
-        .status-select[value="late"],
-        .status-select option[value="late"]:checked {
+        .status-select.atraso {
             background-color: #FEEBC8;
+            border-color: var(--warning-color);
         }
-        .status-select[value="absent"],
-        .status-select option[value="absent"]:checked {
+        .status-select.falta {
             background-color: #FED7D7;
+            border-color: var(--danger-color);
         }
         .observations-textarea {
             width: 100%;
-            min-height: 80px;
-            padding: 0.75rem;
+            min-height: 60px;
+            padding: 0.6rem;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--text-color);
             background-color: #FDFDFD;
             font-family: inherit;
@@ -283,99 +283,86 @@ import FormSelect from '../../components/ui/FormSelect.astro';
         .observations-textarea::placeholder {
             color: var(--label-color);
         }
-        .date-input-wrapper {
-            position: relative;
+        .success-message {
+            background-color: #C6F6D5;
+            color: #2F855A;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
         }
-        .date-icon {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: var(--label-color);
+        .error-message {
+            background-color: #FED7D7;
+            color: #C53030;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
         }
 
         @media (max-width: 768px) {
             .main-content {
                 padding: 100px 1rem 20px;
             }
-
             .content-wrapper {
                 flex-direction: column;
                 gap: 15px;
             }
-
             .container {
                 padding: 1.5rem;
                 border-radius: 1rem;
                 max-width: 100%;
             }
-
             .page-header h1 {
                 font-size: 1.5rem;
             }
-
             .form-controls {
                 flex-direction: column;
             }
-
             .form-group {
                 width: 100%;
             }
-
             .btn-save {
                 width: 100%;
             }
-
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
             }
-
             .table-header,
             .table-row {
                 grid-template-columns: 1fr;
-                gap: 0.5rem;
+                gap: 0.75rem;
             }
-
             .table-header {
                 display: none;
             }
-
             .table-row {
                 border: 1px solid var(--border-color);
                 border-radius: 8px;
-                margin-bottom: 1rem;
-            }
-
-            .table-row::before {
-                content: attr(data-label);
-                font-weight: 600;
-                color: var(--label-color);
-                font-size: 0.85rem;
+                margin-bottom: 0.75rem;
+                padding: 1rem;
             }
         }
-
         @media (max-width: 480px) {
             .main-content {
                 padding: 80px 0.5rem 20px;
             }
-
             .container {
                 padding: 1rem;
                 border-radius: 0.75rem;
             }
-
             .page-header h1 {
                 font-size: 1.25rem;
             }
-
             .stats-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
             }
-
+            .stat-card {
+                padding: 1rem;
+            }
             .stat-card .value {
-                font-size: 2rem;
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -392,28 +379,28 @@ import FormSelect from '../../components/ui/FormSelect.astro';
                     <p>Registre presença, falta ou atraso por turma</p>
                 </div>
 
+                <div id="success-message" class="success-message"></div>
+                <div id="error-message" class="error-message"></div>
+
                 <form id="presenca-form">
                     <div class="form-controls">
-                        <FormSelect id="turma" name="turma" label="Turma" required>
-                            <option value="">Selecione uma turma</option>
-                            <option value="1">Turma A - Manhã</option>
-                            <option value="2">Turma B - Tarde</option>
-                            <option value="3">Turma C - Manhã</option>
-                        </FormSelect>
                         <div class="form-group">
-                            <label for="data">Data</label>
-                            <div class="date-input-wrapper">
-                                <input type="date" id="data" name="data" value="2025-11-10">
-                                <span class="date-icon">📅</span>
-                            </div>
+                            <label for="turma">Turma *</label>
+                            <select id="turma" name="turma" required>
+                                <option value="">Selecione uma turma</option>
+                            </select>
                         </div>
-                        <button type="submit" class="btn-save">Salvar Presenças</button>
+                        <div class="form-group">
+                            <label for="data">Data *</label>
+                            <input type="date" id="data" name="data" required>
+                        </div>
+                        <button type="submit" class="btn-save" id="btn-save" disabled>Salvar Presenças</button>
                     </div>
                 </form>
 
                 <div class="stats-grid">
                     <div class="stat-card total">
-                        <h3>Total Hoje</h3>
+                        <h3>Total</h3>
                         <p class="value" id="total-hoje">0</p>
                     </div>
                     <div class="stat-card present">
@@ -432,16 +419,18 @@ import FormSelect from '../../components/ui/FormSelect.astro';
 
                 <div class="table-container">
                     <div id="empty-state" class="empty-state">
-                        Selecione uma turma para visualizar as crianças
+                        Selecione uma turma para visualizar os alunos
+                    </div>
+                    <div id="loading-state" class="loading-state" style="display: none;">
+                        <span class="loading-spinner"></span> Carregando alunos...
                     </div>
                     <div id="table-content" style="display: none;">
                         <div class="table-header">
-                            <div>Criança</div>
+                            <div>Aluno</div>
                             <div>Status</div>
                             <div>Observações</div>
                         </div>
                         <div class="table-body" id="table-body">
-                            <!-- Conteúdo será preenchido via JavaScript -->
                         </div>
                     </div>
                 </div>
@@ -450,29 +439,153 @@ import FormSelect from '../../components/ui/FormSelect.astro';
     </main>
 
     <script>
+        const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
+        
         const turmaSelect = document.getElementById('turma');
         const dataInput = document.getElementById('data');
         const emptyState = document.getElementById('empty-state');
+        const loadingState = document.getElementById('loading-state');
         const tableContent = document.getElementById('table-content');
         const tableBody = document.getElementById('table-body');
+        const btnSave = document.getElementById('btn-save');
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
 
         let alunosAtuais = [];
+        let presencasExistentes = {};
+        let turmaAtual = null;
 
-        // Função para atualizar estatísticas
+        // Set today's date as default
+        const hoje = new Date();
+        dataInput.value = hoje.toISOString().split('T')[0];
+
+        // Load turmas on page load
+        async function carregarTurmas() {
+            try {
+                const response = await fetch(`${backendUrl}/turmas/listar?pageSize=100`);
+                if (!response.ok) throw new Error('Erro ao carregar turmas');
+                
+                const data = await response.json();
+                const turmas = data.data || [];
+
+                turmaSelect.innerHTML = '<option value="">Selecione uma turma</option>';
+                
+                turmas.forEach(turma => {
+                    const option = document.createElement('option');
+                    option.value = turma.id_turma;
+                    option.textContent = `${turma.nome_turma} - ${turma.unidade_turma || 'Sem unidade'}`;
+                    turmaSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar turmas:', error);
+                showError('Erro ao carregar turmas. Verifique a conexão com o servidor.');
+            }
+        }
+
+        // Load students by turma
+        async function carregarAlunosDaTurma(turmaId) {
+            showLoading();
+            
+            try {
+                const response = await fetch(`${backendUrl}/turmas/${turmaId}/alunos`);
+                if (!response.ok) throw new Error('Erro ao carregar alunos');
+                
+                const data = await response.json();
+                alunosAtuais = data.alunos || [];
+                turmaAtual = data.turma;
+
+                // Now load existing presences for this date
+                await carregarPresencasExistentes(turmaId, dataInput.value);
+
+                renderizarTabela();
+                btnSave.disabled = alunosAtuais.length === 0;
+            } catch (error) {
+                console.error('Erro ao carregar alunos:', error);
+                hideLoading();
+                showEmpty('Erro ao carregar alunos da turma.');
+            }
+        }
+
+        // Load existing presences for the selected date
+        async function carregarPresencasExistentes(turmaId, data) {
+            try {
+                const dataInicio = `${data}T00:00:00`;
+                const dataFim = `${data}T23:59:59`;
+                
+                const response = await fetch(
+                    `${backendUrl}/presencas/listar?turmaId=${turmaId}&from=${dataInicio}&to=${dataFim}&pageSize=100`
+                );
+                
+                if (!response.ok) throw new Error('Erro ao carregar presenças');
+                
+                const result = await response.json();
+                const presencas = result.data || [];
+                
+                // Create a map of aluno_id -> presence record
+                presencasExistentes = {};
+                presencas.forEach(p => {
+                    presencasExistentes[p.id_aluno] = p;
+                });
+            } catch (error) {
+                console.error('Erro ao carregar presenças existentes:', error);
+                presencasExistentes = {};
+            }
+        }
+
+        function showLoading() {
+            emptyState.style.display = 'none';
+            loadingState.style.display = 'block';
+            tableContent.style.display = 'none';
+        }
+
+        function hideLoading() {
+            loadingState.style.display = 'none';
+        }
+
+        function showEmpty(message = 'Selecione uma turma para visualizar os alunos') {
+            emptyState.textContent = message;
+            emptyState.style.display = 'block';
+            tableContent.style.display = 'none';
+            loadingState.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
         function atualizarEstatisticas() {
             const total = alunosAtuais.length;
-            const presentes = alunosAtuais.filter(a => {
-                const select = document.querySelector(`select[data-aluno-id="${a.id}"]`);
-                return select && select.value === 'present';
-            }).length;
-            const atrasos = alunosAtuais.filter(a => {
-                const select = document.querySelector(`select[data-aluno-id="${a.id}"]`);
-                return select && select.value === 'late';
-            }).length;
-            const faltas = alunosAtuais.filter(a => {
-                const select = document.querySelector(`select[data-aluno-id="${a.id}"]`);
-                return select && select.value === 'absent';
-            }).length;
+            let presentes = 0;
+            let atrasos = 0;
+            let faltas = 0;
+
+            tableBody.querySelectorAll('.status-select').forEach(select => {
+                switch (select.value) {
+                    case 'Presente':
+                        presentes++;
+                        break;
+                    case 'Atraso':
+                        atrasos++;
+                        break;
+                    case 'Falta':
+                        faltas++;
+                        break;
+                }
+            });
 
             document.getElementById('total-hoje').textContent = total;
             document.getElementById('presentes').textContent = presentes;
@@ -480,13 +593,26 @@ import FormSelect from '../../components/ui/FormSelect.astro';
             document.getElementById('faltas').textContent = faltas;
         }
 
-        // Função para renderizar tabela
-        function renderizarTabela(alunos) {
-            alunosAtuais = alunos;
+        function updateSelectStyle(select) {
+            select.classList.remove('presente', 'atraso', 'falta');
+            switch (select.value) {
+                case 'Presente':
+                    select.classList.add('presente');
+                    break;
+                case 'Atraso':
+                    select.classList.add('atraso');
+                    break;
+                case 'Falta':
+                    select.classList.add('falta');
+                    break;
+            }
+        }
+
+        function renderizarTabela() {
+            hideLoading();
             
-            if (alunos.length === 0) {
-                emptyState.style.display = 'block';
-                tableContent.style.display = 'none';
+            if (alunosAtuais.length === 0) {
+                showEmpty('Nenhum aluno matriculado nesta turma.');
                 atualizarEstatisticas();
                 return;
             }
@@ -495,92 +621,80 @@ import FormSelect from '../../components/ui/FormSelect.astro';
             tableContent.style.display = 'block';
             tableBody.innerHTML = '';
 
-            alunos.forEach(aluno => {
+            alunosAtuais.forEach(aluno => {
                 const row = document.createElement('div');
                 row.className = 'table-row';
                 
-                const medicalWarning = aluno.condicao_medica ? `
-                    <div class="medical-warning">
-                        <span class="medical-warning-icon">⚠️</span>
-                        <span>Condição médica especial</span>
-                    </div>
-                ` : '';
+                // Check if there's an existing presence record
+                const presencaExistente = presencasExistentes[aluno.id_aluno];
+                const statusAtual = presencaExistente?.status_presenca || 'Presente';
+                
+                const neurodivergenteBadge = aluno.neurodivergente 
+                    ? '<span class="neurodivergente-badge">📚 Acomp. Especial</span>' 
+                    : '';
 
                 row.innerHTML = `
                     <div class="student-info">
-                        <div class="student-name">${aluno.nome}</div>
-                        <div class="student-id">ID: ${aluno.id}</div>
-                        ${medicalWarning}
+                        <div class="student-name">${aluno.nome_aluno || '-'}</div>
+                        <div class="student-id">ID: ${aluno.id_aluno}</div>
+                        ${neurodivergenteBadge}
                     </div>
-                    <div class="status-select-wrapper">
-                        <select class="status-select" data-aluno-id="${aluno.id}" data-aluno-nome="${aluno.nome}">
-                            <option value="present" ${aluno.status === 'present' ? 'selected' : ''}>✓ Presente</option>
-                            <option value="late" ${aluno.status === 'late' ? 'selected' : ''}>⚠ Atraso</option>
-                            <option value="absent" ${aluno.status === 'absent' ? 'selected' : ''}>✗ Falta</option>
+                    <div>
+                        <select class="status-select" 
+                                data-aluno-id="${aluno.id_aluno}" 
+                                data-presenca-id="${presencaExistente?.id_presenca || ''}">
+                            <option value="Presente" ${statusAtual === 'Presente' ? 'selected' : ''}>✓ Presente</option>
+                            <option value="Atraso" ${statusAtual === 'Atraso' ? 'selected' : ''}>⏰ Atraso</option>
+                            <option value="Falta" ${statusAtual === 'Falta' ? 'selected' : ''}>✗ Falta</option>
                         </select>
                     </div>
                     <div>
                         <textarea 
                             class="observations-textarea" 
-                            data-aluno-id="${aluno.id}"
-                            placeholder="Observações sobre a presença...">${aluno.observacoes || ''}</textarea>
+                            data-aluno-id="${aluno.id_aluno}"
+                            placeholder="Observações..."
+                        ></textarea>
                     </div>
                 `;
                 tableBody.appendChild(row);
             });
 
-            // Adicionar event listeners aos selects
+            // Add event listeners
             tableBody.querySelectorAll('.status-select').forEach(select => {
-                select.addEventListener('change', atualizarEstatisticas);
+                updateSelectStyle(select);
+                select.addEventListener('change', function() {
+                    updateSelectStyle(this);
+                    atualizarEstatisticas();
+                });
             });
 
             atualizarEstatisticas();
         }
 
-        // Event listener para mudança de turma
-        turmaSelect.addEventListener('change', async function() {
+        // Event listeners
+        turmaSelect.addEventListener('change', function() {
             const turmaId = this.value;
             
             if (!turmaId) {
-                emptyState.style.display = 'block';
-                tableContent.style.display = 'none';
+                showEmpty();
                 alunosAtuais = [];
+                presencasExistentes = {};
+                btnSave.disabled = true;
                 atualizarEstatisticas();
                 return;
             }
 
-            // Aqui você fará a chamada à API para buscar os alunos da turma
-            try {
-                // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
-                // const response = await fetch(`${backendUrl}/turmas/${turmaId}/alunos?data=${dataInput.value}`);
-                // const data = await response.json();
-                // 
-                // // Mapear dados da API para o formato esperado
-                // const alunos = data.alunos.map(aluno => ({
-                //     id: aluno.id_aluno || aluno.id,
-                //     nome: aluno.nome_aluno || aluno.nome,
-                //     status: aluno.status_presenca || 'present',
-                //     observacoes: aluno.observacoes || '',
-                //     condicao_medica: aluno.condicao_medica || false
-                // }));
-                // 
-                // renderizarTabela(alunos);
-                
-                // Por enquanto, não carregar dados de exemplo
-                emptyState.style.display = 'block';
-                tableContent.style.display = 'none';
-                alunosAtuais = [];
-                atualizarEstatisticas();
-            } catch (error) {
-                console.error('Erro ao carregar alunos:', error);
-                emptyState.style.display = 'block';
-                tableContent.style.display = 'none';
-                alunosAtuais = [];
-                atualizarEstatisticas();
+            carregarAlunosDaTurma(turmaId);
+        });
+
+        dataInput.addEventListener('change', function() {
+            const turmaId = turmaSelect.value;
+            if (turmaId) {
+                carregarAlunosDaTurma(turmaId);
             }
         });
 
-        // Event listener para o formulário
+        // Form submission
         document.getElementById('presenca-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             
@@ -588,63 +702,96 @@ import FormSelect from '../../components/ui/FormSelect.astro';
             const data = dataInput.value;
 
             if (!turmaId) {
-                alert('Por favor, selecione uma turma');
+                showError('Por favor, selecione uma turma');
                 return;
             }
 
             if (alunosAtuais.length === 0) {
-                alert('Nenhum aluno encontrado para esta turma');
+                showError('Nenhum aluno encontrado para esta turma');
                 return;
             }
 
-            // Coletar dados das presenças
-            const presencas = [];
-            tableBody.querySelectorAll('.table-row').forEach(row => {
-                const select = row.querySelector('.status-select');
-                const textarea = row.querySelector('.observations-textarea');
-                
-                if (select) {
-                    presencas.push({
-                        aluno_id: select.getAttribute('data-aluno-id'),
-                        status: select.value,
-                        observacoes: textarea ? textarea.value.trim() : ''
-                    });
-                }
-            });
+            btnSave.disabled = true;
+            btnSave.textContent = 'Salvando...';
 
-            // Aqui você fará a chamada à API para salvar as presenças
             try {
-                // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
-                // const response = await fetch(`${backendUrl}/presencas`, {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json'
-                //     },
-                //     body: JSON.stringify({
-                //         turma_id: turmaId,
-                //         data: data,
-                //         presencas: presencas
-                //     })
-                // });
-                // 
-                // if (!response.ok) {
-                //     throw new Error('Erro ao salvar presenças');
-                // }
-                // 
-                // const result = await response.json();
+                const presencas = [];
                 
-                alert('Presenças salvas com sucesso!');
+                tableBody.querySelectorAll('.table-row').forEach(row => {
+                    const select = row.querySelector('.status-select');
+                    const textarea = row.querySelector('.observations-textarea');
+                    
+                    if (select) {
+                        presencas.push({
+                            id_aluno: parseInt(select.getAttribute('data-aluno-id')),
+                            id_presenca: select.getAttribute('data-presenca-id') || null,
+                            status_presenca: select.value,
+                            observacoes: textarea ? textarea.value.trim() : ''
+                        });
+                    }
+                });
+
+                // Process each presence record
+                let successCount = 0;
+                let errorCount = 0;
+
+                for (const presenca of presencas) {
+                    try {
+                        const payload = {
+                            id_aluno: presenca.id_aluno,
+                            id_turma: parseInt(turmaId),
+                            status_presenca: presenca.status_presenca,
+                            data_time_presenca: `${data}T08:00:00`
+                        };
+
+                        if (presenca.id_presenca) {
+                            // Update existing
+                            const response = await fetch(`${backendUrl}/presencas/atualizar/${presenca.id_presenca}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            });
+                            
+                            if (response.ok) successCount++;
+                            else errorCount++;
+                        } else {
+                            // Create new
+                            const response = await fetch(`${backendUrl}/presencas/criar`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            });
+                            
+                            if (response.ok) successCount++;
+                            else errorCount++;
+                        }
+                    } catch (err) {
+                        console.error('Erro ao salvar presença:', err);
+                        errorCount++;
+                    }
+                }
+
+                if (errorCount === 0) {
+                    showSuccess(`Presenças salvas com sucesso! (${successCount} registros)`);
+                } else {
+                    showError(`Algumas presenças não foram salvas. Sucesso: ${successCount}, Erros: ${errorCount}`);
+                }
+
+                // Reload presences to get updated IDs
+                await carregarAlunosDaTurma(turmaId);
             } catch (error) {
                 console.error('Erro ao salvar presenças:', error);
-                alert('Erro ao salvar presenças. Tente novamente.');
+                showError('Erro ao salvar presenças. Tente novamente.');
+            } finally {
+                btnSave.disabled = false;
+                btnSave.textContent = 'Salvar Presenças';
             }
         });
 
-        // Definir data padrão como hoje
-        const hoje = new Date();
-        const dataFormatada = hoje.toISOString().split('T')[0];
-        dataInput.value = dataFormatada;
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await carregarTurmas();
+        });
     </script>
 </body>
 </html>
-

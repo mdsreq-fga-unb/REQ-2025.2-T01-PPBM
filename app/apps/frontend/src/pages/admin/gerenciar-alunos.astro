@@ -86,6 +86,10 @@ import FormSelect from '../../components/ui/FormSelect.astro';
         .btn-export:hover {
             background-color: #2D3748;
         }
+        .btn-export:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+        }
         .btn-cadastrar {
             padding: 0.75rem 1.5rem;
             border-radius: 6px;
@@ -146,6 +150,37 @@ import FormSelect from '../../components/ui/FormSelect.astro';
             border-color: var(--accent-color);
             box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
         }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            background-color: var(--secondary-color);
+        }
+        .stat-card.total {
+            background: linear-gradient(135deg, var(--info-color) 0%, #2B6CB0 100%);
+            color: white;
+        }
+        .stat-card.neurodivergente {
+            background: linear-gradient(135deg, var(--purple-color) 0%, #6B46C1 100%);
+            color: white;
+        }
+        .stat-card h3 {
+            font-size: 0.8rem;
+            margin: 0 0 0.25rem 0;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        .stat-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0;
+        }
         .table-container {
             overflow-x: auto;
             margin-top: 1rem;
@@ -199,11 +234,7 @@ import FormSelect from '../../components/ui/FormSelect.astro';
             font-size: 0.85rem;
             font-weight: 500;
         }
-        .status-badge.medico {
-            background-color: #FED7D7;
-            color: #C53030;
-        }
-        .status-badge.pedagogico {
+        .status-badge.neurodivergente {
             background-color: #E9D8FD;
             color: #6B46C1;
         }
@@ -241,87 +272,121 @@ import FormSelect from '../../components/ui/FormSelect.astro';
         .btn-remove:hover {
             background-color: #C53030;
         }
+        .btn-remove:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+        }
         .empty-state {
             text-align: center;
             padding: 3rem 1rem;
             color: var(--label-color);
             font-size: 1rem;
         }
+        .loading-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--label-color);
+            font-size: 1rem;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--secondary-color);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--white);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .pagination button:hover:not(:disabled) {
+            background-color: var(--secondary-color);
+        }
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .pagination span {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            color: var(--label-color);
+        }
 
         @media (max-width: 768px) {
             .main-content {
                 padding: 100px 1rem 20px;
             }
-
             .content-wrapper {
                 flex-direction: column;
                 gap: 15px;
             }
-
             .container {
                 padding: 1.5rem;
                 border-radius: 1rem;
             }
-
             .page-header {
                 flex-direction: column;
                 gap: 1rem;
             }
-
             .page-header .title h1 {
                 font-size: 1.5rem;
             }
-
             .header-buttons {
                 width: 100%;
                 flex-direction: column;
             }
-
             .btn-cadastrar,
             .btn-export {
                 width: 100%;
                 justify-content: center;
             }
-
             .filters-section {
                 flex-direction: column;
             }
-
             .filter-group {
                 width: 100%;
             }
-
             .table-container {
                 overflow-x: scroll;
             }
-
             .table {
                 min-width: 800px;
             }
-
             .actions-group {
                 flex-direction: column;
             }
-
             .btn-action {
                 width: 100%;
             }
         }
-
         @media (max-width: 480px) {
             .main-content {
                 padding: 80px 0.5rem 20px;
             }
-
             .container {
                 padding: 1rem;
                 border-radius: 0.75rem;
             }
-
             .page-header .title h1 {
                 font-size: 1.25rem;
             }
-
             .table th,
             .table td {
                 padding: 0.75rem 0.5rem;
@@ -350,6 +415,17 @@ import FormSelect from '../../components/ui/FormSelect.astro';
                     </div>
                 </div>
 
+                <div class="stats-grid">
+                    <div class="stat-card total">
+                        <h3>Total de Alunos</h3>
+                        <p class="value" id="stat-total">-</p>
+                    </div>
+                    <div class="stat-card neurodivergente">
+                        <h3>Acompanhamento Especial</h3>
+                        <p class="value" id="stat-neurodivergente">-</p>
+                    </div>
+                </div>
+
                 <div class="filters-section">
                     <div class="filter-group full-width">
                         <label for="buscar">Buscar aluno</label>
@@ -357,20 +433,19 @@ import FormSelect from '../../components/ui/FormSelect.astro';
                             type="text" 
                             id="buscar" 
                             name="buscar" 
-                            placeholder="Nome, CPF ou responsável..."
+                            placeholder="Nome do aluno..."
                         >
                     </div>
-                    <FormSelect id="turma" name="turma" label="Filtrar por turma">
-                        <option value="">Todas as turmas</option>
-                        <option value="1">Turma A - Manhã</option>
-                        <option value="2">Turma B - Tarde</option>
-                        <option value="3">Turma C - Manhã</option>
-                    </FormSelect>
+                    <div class="filter-group">
+                        <label for="turma">Filtrar por turma</label>
+                        <select id="turma" name="turma">
+                            <option value="">Todas as turmas</option>
+                        </select>
+                    </div>
                     <FormSelect id="status" name="status" label="Status especial">
                         <option value="">Todos</option>
-                        <option value="medico">Médico</option>
-                        <option value="pedagogico">Pedagógico</option>
-                        <option value="normal">Normal</option>
+                        <option value="true">Neurodivergente</option>
+                        <option value="false">Sem acompanhamento</option>
                     </FormSelect>
                 </div>
 
@@ -380,36 +455,75 @@ import FormSelect from '../../components/ui/FormSelect.astro';
                             <tr>
                                 <th>Aluno</th>
                                 <th>CPF</th>
-                                <th>Turma</th>
-                                <th>Responsável</th>
-                                <th>Contato</th>
+                                <th>Escola/Unidade</th>
+                                <th>Cidade</th>
                                 <th>Status</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">
-                            <!-- Conteúdo será preenchido via JavaScript -->
                         </tbody>
                     </table>
+                    <div id="loading-state" class="loading-state" style="display: none;">
+                        <span class="loading-spinner"></span> Carregando alunos...
+                    </div>
                     <div id="empty-state" class="empty-state" style="display: none;">
                         Nenhum aluno encontrado com os filtros selecionados.
                     </div>
+                </div>
+
+                <div class="pagination" id="pagination" style="display: none;">
+                    <button id="btn-prev" disabled>← Anterior</button>
+                    <span id="page-info">Página 1 de 1</span>
+                    <button id="btn-next" disabled>Próxima →</button>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        let alunosFiltrados = [...alunosExemplo];
+        const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
+        
+        let alunos = [];
+        let turmas = [];
+        let currentPage = 1;
+        let totalPages = 1;
+        let totalAlunos = 0;
+        const pageSize = 20;
 
-        // Função para renderizar a tabela
-        function renderizarTabela(alunos) {
-            const tableBody = document.getElementById('table-body');
-            const emptyState = document.getElementById('empty-state');
+        const tableBody = document.getElementById('table-body');
+        const emptyState = document.getElementById('empty-state');
+        const loadingState = document.getElementById('loading-state');
+        const pagination = document.getElementById('pagination');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const pageInfo = document.getElementById('page-info');
+
+        function formatCPF(cpf) {
+            if (!cpf) return '-';
+            const cleaned = cpf.replace(/\D/g, '');
+            if (cleaned.length !== 11) return cpf;
+            return cleaned.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        }
+
+        function showLoading() {
+            tableBody.innerHTML = '';
+            emptyState.style.display = 'none';
+            loadingState.style.display = 'block';
+            pagination.style.display = 'none';
+        }
+
+        function hideLoading() {
+            loadingState.style.display = 'none';
+        }
+
+        function renderTable() {
+            hideLoading();
 
             if (alunos.length === 0) {
                 tableBody.innerHTML = '';
                 emptyState.style.display = 'block';
+                pagination.style.display = 'none';
                 return;
             }
 
@@ -419,140 +533,222 @@ import FormSelect from '../../components/ui/FormSelect.astro';
             alunos.forEach(aluno => {
                 const row = document.createElement('tr');
                 
-                const statusClass = aluno.status === 'medico' ? 'medico' : 
-                                   aluno.status === 'pedagogico' ? 'pedagogico' : 'normal';
-                const statusText = aluno.status === 'medico' ? 'Médico' : 
-                                   aluno.status === 'pedagogico' ? 'Pedagógico' : 'Normal';
-                const statusIcon = aluno.status === 'medico' ? '⚠️' : 
-                                  aluno.status === 'pedagogico' ? '📚' : '';
+                const isNeurodivergente = aluno.neurodivergente === true;
+                const statusClass = isNeurodivergente ? 'neurodivergente' : 'normal';
+                const statusText = isNeurodivergente ? 'Acomp. Especial' : 'Normal';
+                const statusIcon = isNeurodivergente ? '📚' : '';
 
-                row.innerHTML = `
+                row.innerHTML = \`
                     <td>
                         <div class="student-info">
-                            <span class="student-name">${aluno.nome}</span>
-                            <span class="student-id">ID: ${aluno.id}</span>
+                            <span class="student-name">\${aluno.nome_aluno || '-'}</span>
+                            <span class="student-id">ID: \${aluno.id_aluno}</span>
                         </div>
                     </td>
-                    <td>${aluno.cpf}</td>
-                    <td>${aluno.turma}</td>
-                    <td>${aluno.responsavel}</td>
-                    <td>${aluno.contato}</td>
+                    <td>\${formatCPF(aluno.cpf_aluno)}</td>
+                    <td>\${aluno.escola_unidade || '-'}</td>
+                    <td>\${aluno.cidade || '-'}</td>
                     <td>
-                        <span class="status-badge ${statusClass}">
-                            ${statusIcon ? `<span class="status-icon">${statusIcon}</span>` : ''}
-                            ${statusText}
+                        <span class="status-badge \${statusClass}">
+                            \${statusIcon ? \`<span class="status-icon">\${statusIcon}</span>\` : ''}
+                            \${statusText}
                         </span>
                     </td>
                     <td>
                         <div class="actions-group">
-                            <button class="btn-action btn-edit" onclick="editarAluno('${aluno.id}')">Editar</button>
-                            <button class="btn-action btn-remove" onclick="removerAluno('${aluno.id}')">Remover</button>
+                            <button class="btn-action btn-edit" onclick="editarAluno(\${aluno.id_aluno})">Editar</button>
+                            <button class="btn-action btn-remove" onclick="removerAluno(\${aluno.id_aluno}, '\${(aluno.nome_aluno || '').replace(/'/g, "\\\\'")}')">Remover</button>
                         </div>
                     </td>
-                `;
+                \`;
                 tableBody.appendChild(row);
             });
+
+            updatePagination();
         }
 
-        // Função para filtrar alunos
-        function filtrarAlunos() {
-            const busca = document.getElementById('buscar').value.toLowerCase();
-            const turma = document.getElementById('turma').value;
-            const status = document.getElementById('status').value;
+        function updatePagination() {
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
 
-            alunosFiltrados = alunosExemplo.filter(aluno => {
-                const matchBusca = !busca || 
-                    aluno.nome.toLowerCase().includes(busca) ||
-                    aluno.cpf.includes(busca) ||
-                    aluno.responsavel.toLowerCase().includes(busca) ||
-                    aluno.id.toLowerCase().includes(busca);
+            pagination.style.display = 'flex';
+            btnPrev.disabled = currentPage <= 1;
+            btnNext.disabled = currentPage >= totalPages;
+            pageInfo.textContent = \`Página \${currentPage} de \${totalPages}\`;
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').textContent = totalAlunos;
+            const neuroCount = alunos.filter(a => a.neurodivergente === true).length;
+            document.getElementById('stat-neurodivergente').textContent = neuroCount;
+        }
+
+        async function carregarTurmas() {
+            try {
+                const response = await fetch(\`\${backendUrl}/turmas/listar?pageSize=100\`);
+                if (!response.ok) throw new Error('Erro ao carregar turmas');
                 
-                const matchTurma = !turma || aluno.turma.includes(turma);
-                const matchStatus = !status || aluno.status === status;
+                const data = await response.json();
+                turmas = data.data || [];
 
-                return matchBusca && matchTurma && matchStatus;
-            });
-
-            renderizarTabela(alunosFiltrados);
+                const turmaSelect = document.getElementById('turma');
+                turmaSelect.innerHTML = '<option value="">Todas as turmas</option>';
+                
+                turmas.forEach(turma => {
+                    const option = document.createElement('option');
+                    option.value = turma.id_turma;
+                    option.textContent = \`\${turma.nome_turma} - \${turma.unidade_turma || 'Sem unidade'}\`;
+                    turmaSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar turmas:', error);
+            }
         }
 
-        // Event listeners para filtros
-        document.getElementById('buscar').addEventListener('input', filtrarAlunos);
-        document.getElementById('turma').addEventListener('change', filtrarAlunos);
-        document.getElementById('status').addEventListener('change', filtrarAlunos);
+        async function carregarAlunos() {
+            showLoading();
 
-        // Função para exportar lista
-        document.getElementById('btn-export').addEventListener('click', function() {
-            // Aqui você pode implementar a exportação para CSV, Excel, etc.
-            const dados = alunosFiltrados.map(aluno => ({
-                Nome: aluno.nome,
-                ID: aluno.id,
-                CPF: aluno.cpf,
-                Turma: aluno.turma,
-                Responsável: aluno.responsavel,
-                Contato: aluno.contato,
-                Status: aluno.status === 'medico' ? 'Médico' : 
-                       aluno.status === 'pedagogico' ? 'Pedagógico' : 'Normal'
+            try {
+                const nome = document.getElementById('buscar').value.trim();
+                const turmaId = document.getElementById('turma').value;
+                const neurodivergente = document.getElementById('status').value;
+
+                const params = new URLSearchParams();
+                params.append('page', currentPage.toString());
+                params.append('pageSize', pageSize.toString());
+                
+                if (nome) params.append('nome', nome);
+                if (turmaId) params.append('turmaId', turmaId);
+                if (neurodivergente) params.append('neurodivergente', neurodivergente);
+
+                const response = await fetch(\`\${backendUrl}/alunos/listar?\${params}\`);
+                if (!response.ok) throw new Error('Erro ao carregar alunos');
+
+                const data = await response.json();
+                alunos = data.data || [];
+                totalAlunos = data.total || 0;
+                totalPages = Math.ceil(totalAlunos / pageSize);
+
+                renderTable();
+                updateStats();
+            } catch (error) {
+                console.error('Erro ao carregar alunos:', error);
+                hideLoading();
+                tableBody.innerHTML = '';
+                emptyState.textContent = 'Erro ao carregar alunos. Tente novamente.';
+                emptyState.style.display = 'block';
+            }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        const debouncedSearch = debounce(() => {
+            currentPage = 1;
+            carregarAlunos();
+        }, 300);
+
+        document.getElementById('buscar').addEventListener('input', debouncedSearch);
+
+        document.getElementById('turma').addEventListener('change', () => {
+            currentPage = 1;
+            carregarAlunos();
+        });
+
+        document.getElementById('status').addEventListener('change', () => {
+            currentPage = 1;
+            carregarAlunos();
+        });
+
+        btnPrev.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                carregarAlunos();
+            }
+        });
+
+        btnNext.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                carregarAlunos();
+            }
+        });
+
+        document.getElementById('btn-export').addEventListener('click', async function() {
+            if (alunos.length === 0) {
+                alert('Nenhum aluno para exportar');
+                return;
+            }
+
+            const dados = alunos.map(aluno => ({
+                Nome: aluno.nome_aluno || '',
+                ID: aluno.id_aluno,
+                CPF: formatCPF(aluno.cpf_aluno),
+                'Data Nascimento': aluno.data_nascimento_aluno || '',
+                'Escola/Unidade': aluno.escola_unidade || '',
+                Cidade: aluno.cidade || '',
+                Neurodivergente: aluno.neurodivergente ? 'Sim' : 'Não'
             }));
 
-            // Converter para CSV
             const headers = Object.keys(dados[0]);
             const csvContent = [
                 headers.join(','),
-                ...dados.map(row => headers.map(header => `"${row[header]}"`).join(','))
-            ].join('\n');
+                ...dados.map(row => headers.map(header => \`"\${row[header]}"\`).join(','))
+            ].join('\\n');
 
-            // Criar e baixar arquivo
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob(['\\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', `alunos_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute('download', \`alunos_\${new Date().toISOString().split('T')[0]}.csv\`);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         });
 
-        // Funções para ações
         window.editarAluno = function(id) {
-            // Aqui você pode redirecionar para a página de edição ou abrir um modal
-            alert(`Editar aluno com ID: ${id}`);
-            // Exemplo: window.location.href = `/alunos/editar/${id}`;
+            alert(\`Funcionalidade de edição será implementada em breve.\\nID do aluno: \${id}\`);
         };
 
-        window.removerAluno = function(id) {
-            if (confirm('Tem certeza que deseja remover este aluno?')) {
-                // Aqui você fará a chamada à API para remover o aluno
-                // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
-                // await fetch(`${backendUrl}/alunos/${id}`, { method: 'DELETE' });
-                
-                // Por enquanto, apenas remove da lista local
-                alunosExemplo.splice(alunosExemplo.findIndex(a => a.id === id), 1);
-                filtrarAlunos();
-                alert('Aluno removido com sucesso!');
+        window.removerAluno = async function(id, nome) {
+            if (!confirm(\`Tem certeza que deseja remover o aluno "\${nome}"?\\n\\nEsta ação não pode ser desfeita.\`)) {
+                return;
             }
-        };
 
-        // Carregar dados iniciais
-        renderizarTabela(alunosFiltrados);
-
-        // Carregar dados da API quando disponível
-        async function carregarAlunos() {
             try {
-                // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
-                // const response = await fetch(`${backendUrl}/alunos`);
-                // const data = await response.json();
-                // alunosExemplo = data.alunos;
-                // alunosFiltrados = [...alunosExemplo];
-                // renderizarTabela(alunosFiltrados);
-            } catch (error) {
-                console.error('Erro ao carregar alunos:', error);
-            }
-        }
+                const response = await fetch(\`\${backendUrl}/alunos/deletar/\${id}\`, {
+                    method: 'DELETE'
+                });
 
-        // carregarAlunos();
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Erro ao remover aluno');
+                }
+
+                alert('Aluno removido com sucesso!');
+                carregarAlunos();
+            } catch (error) {
+                console.error('Erro ao remover aluno:', error);
+                alert(\`Erro ao remover aluno: \${error.message}\`);
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await carregarTurmas();
+            await carregarAlunos();
+        });
     </script>
 </body>
 </html>
-

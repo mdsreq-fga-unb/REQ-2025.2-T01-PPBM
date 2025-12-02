@@ -744,6 +744,88 @@ export default class TurmaController {
             });
         }
     }
+
+    // ============ ALUNOS POR TURMA ============
+
+    static async getAlunosByTurma(req: Request, res: Response): Promise<Response | void> {
+        try {
+            const { id } = req.params;
+
+            if (!isPositiveInteger(id)) {
+                return res.status(400).json({
+                    error: 'ID de turma inválido'
+                });
+            }
+
+            log.info('getAlunosByTurma', 'Buscando alunos da turma', { turmaId: id });
+
+            // Verify turma exists
+            const { data: turma, error: turmaError } = await SupabaseWrapper.get()
+                .from('turmas')
+                .select('id_turma, nome_turma')
+                .eq('id_turma', Number(id))
+                .maybeSingle();
+
+            if (turmaError) {
+                log.error('getAlunosByTurma', 'Erro ao verificar turma', turmaError);
+                return res.status(500).json({
+                    error: 'Erro interno do servidor',
+                    details: turmaError.message
+                });
+            }
+
+            if (!turma) {
+                return res.status(404).json({
+                    error: 'Turma não encontrada'
+                });
+            }
+
+            // Get alunos for this turma
+            const { data, error } = await SupabaseWrapper.get()
+                .from('alunos_por_turma')
+                .select(`
+                    id_aluno_por_turma,
+                    id_aluno,
+                    alunos (
+                        id_aluno,
+                        nome_aluno,
+                        cpf_aluno,
+                        data_nascimento_aluno,
+                        escola_unidade,
+                        cidade,
+                        neurodivergente
+                    )
+                `)
+                .eq('id_turma', Number(id));
+
+            if (error) {
+                log.error('getAlunosByTurma', 'Erro ao buscar alunos', error);
+                return res.status(500).json({
+                    error: 'Erro interno do servidor',
+                    details: error.message
+                });
+            }
+
+            // Flatten the response
+            const alunos = (data || []).map((item: any) => ({
+                id_aluno_por_turma: item.id_aluno_por_turma,
+                id_aluno: item.id_aluno,
+                ...item.alunos
+            }));
+
+            return res.status(200).json({
+                success: true,
+                turma: turma,
+                alunos: alunos,
+                total: alunos.length
+            });
+        } catch (error) {
+            log.error('getAlunosByTurma', 'Erro inesperado', error as Error);
+            return res.status(500).json({
+                error: 'Erro interno do servidor'
+            });
+        }
+    }
 }
 
 const turmaController: EndpointController = {
@@ -771,6 +853,9 @@ const turmaController: EndpointController = {
         ],
         ':id/docentes/:docenteId': [
             { key: RequestType.DELETE, value: TurmaController.removeDocenteFromTurma }
+        ],
+        ':id/alunos': [
+            { key: RequestType.GET, value: TurmaController.getAlunosByTurma }
         ]
     }
 };
