@@ -355,6 +355,14 @@ import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
                                     <option value="">Selecione a turma</option>
                                     <!-- Turmas serão carregadas dinamicamente -->
                                 </FormSelect>
+                                <div class="form-group">
+                                    <label>Cidade</label>
+                                    <input
+                                        type="text"
+                                        name="cidade"
+                                        placeholder="Ex: Brasília"
+                                    />
+                                </div>
                             </div>
                         </section>
 
@@ -563,7 +571,8 @@ import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
                         cpf_aluno: formData.get("cpf")?.replace(/\D/g, ""),
                         sexo: formData.get("sexo"),
                         serie: formData.get("serie"),
-                        unidade: formData.get("unidade"),
+                        escola_unidade: formData.get("unidade"),
+                        cidade: formData.get("cidade") || null,
                         turma_id: formData.get("turma") || null,
                         tipo_sanguineo: formData.get("tipo_sanguineo") || null,
                         alergias: formData.get("alergias") || null,

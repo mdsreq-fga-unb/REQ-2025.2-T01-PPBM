@@ -34,6 +34,7 @@ export interface CadastroAlunoRequest {
         escola_unidade?: string;
         cidade?: string;
         neurodivergente?: boolean;
+        turma_id?: number | string;
     };
     responsavel: {
         nome_responsavel: string;

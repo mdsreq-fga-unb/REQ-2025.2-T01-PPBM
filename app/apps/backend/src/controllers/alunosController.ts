@@ -163,6 +163,23 @@ export class AlunosController implements EndpointController {
                 } as CadastroAlunoResponse);
             }
 
+            // Criar vínculo entre aluno e turma (se turma_id foi informado)
+            if (requestData.aluno.turma_id) {
+                const { error: errorVinculoTurma } = await supabase
+                    .from('alunos_por_turma')
+                    .insert({
+                        id_aluno: alunoInserido.id_aluno,
+                        id_turma: Number(requestData.aluno.turma_id)
+                    });
+
+                if (errorVinculoTurma) {
+                    log.warn('cadastrarAluno', 'Erro ao vincular aluno à turma:', errorVinculoTurma);
+                    // Não falha o cadastro, apenas loga o warning
+                } else {
+                    log.info('cadastrarAluno', 'Aluno vinculado à turma:', requestData.aluno.turma_id);
+                }
+            }
+
             log.info('cadastrarAluno', 'Aluno cadastrado com sucesso:', alunoInserido.id_aluno);
 
             return res.status(201).json({
