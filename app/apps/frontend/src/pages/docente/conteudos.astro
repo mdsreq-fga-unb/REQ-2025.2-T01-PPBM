@@ -1,6 +1,7 @@
 ---
 import Header from '../../components/Headerdocente.astro';
 import Sidebar from '../../components/Sidebardocente.astro';
+import FormSelect from '../../components/ui/FormSelect.astro';
 
 const contents = [
   {
@@ -256,11 +257,11 @@ const contents = [
                 </div>
 
                 <div class="filters">
-                    <select aria-label="Filtrar por tipo">
+                    <FormSelect ariaLabel="Filtrar por tipo" inline>
                         <option>Todos os tipos</option>
                         <option>Regras de Vestimenta</option>
                         <option>Normas Disciplinares</option>
-                    </select>
+                    </FormSelect>
                     <input type="text" placeholder="Buscar conteúdo..." aria-label="Buscar conteúdo" />
                 </div>
 

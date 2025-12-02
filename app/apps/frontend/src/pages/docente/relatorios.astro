@@ -1,6 +1,7 @@
 ---
 import Header from '../../components/Headerdocente.astro';
 import Sidebar from '../../components/Sidebardocente.astro';
+import FormSelect from '../../components/ui/FormSelect.astro';
 ---
 
 <html lang="pt-br">
@@ -287,23 +288,17 @@ import Sidebar from '../../components/Sidebardocente.astro';
                 </div>
 
                 <div class="filters-section">
-                    <div class="filter-group">
-                        <label for="tipo-relatorio">Tipo de Relatório</label>
-                        <select id="tipo-relatorio">
-                            <option>Frequência por Turma</option>
-                            <option>Desempenho</option>
-                            <option>Frequência Geral</option>
-                        </select>
-                    </div>
+                    <FormSelect id="tipo-relatorio" label="Tipo de Relatório">
+                        <option>Frequência por Turma</option>
+                        <option>Desempenho</option>
+                        <option>Frequência Geral</option>
+                    </FormSelect>
 
-                    <div class="filter-group">
-                        <label for="turma">Turma</label>
-                        <select id="turma">
-                            <option>Todas as turmas</option>
-                            <option>Turma A</option>
-                            <option>Turma B</option>
-                        </select>
-                    </div>
+                    <FormSelect id="turma" label="Turma">
+                        <option>Todas as turmas</option>
+                        <option>Turma A</option>
+                        <option>Turma B</option>
+                    </FormSelect>
 
                     <div class="filter-group">
                         <label for="data-inicial">Data Inicial</label>

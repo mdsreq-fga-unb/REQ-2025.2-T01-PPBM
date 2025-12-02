@@ -1,6 +1,7 @@
 ---
 import Header from '../../components/Header.astro';
 import Sidebar from '../../components/Sidebar.astro';
+import FormSelect from '../../components/ui/FormSelect.astro';
 ---
 
 <html lang="pt-br">
@@ -393,15 +394,12 @@ import Sidebar from '../../components/Sidebar.astro';
 
                 <form id="presenca-form">
                     <div class="form-controls">
-                        <div class="form-group">
-                            <label for="turma">Turma</label>
-                            <select id="turma" name="turma" class="required">
-                                <option value="">Selecione uma turma</option>
-                                <option value="1">Turma A - Manhã</option>
-                                <option value="2">Turma B - Tarde</option>
-                                <option value="3">Turma C - Manhã</option>
-                            </select>
-                        </div>
+                        <FormSelect id="turma" name="turma" label="Turma" required>
+                            <option value="">Selecione uma turma</option>
+                            <option value="1">Turma A - Manhã</option>
+                            <option value="2">Turma B - Tarde</option>
+                            <option value="3">Turma C - Manhã</option>
+                        </FormSelect>
                         <div class="form-group">
                             <label for="data">Data</label>
                             <div class="date-input-wrapper">

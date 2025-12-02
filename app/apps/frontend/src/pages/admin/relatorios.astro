@@ -1,6 +1,7 @@
 ---
 import Header from '../../components/Header.astro';
 import Sidebar from '../../components/Sidebar.astro';
+import FormSelect from '../../components/ui/FormSelect.astro';
 ---
 
 <html lang="pt-br">
@@ -322,16 +323,13 @@ import Sidebar from '../../components/Sidebar.astro';
                 </div>
 
                 <div class="filters-section">
-                    <div class="filter-group">
-                        <label for="tipo-relatorio">Tipo de relatório</label>
-                        <select id="tipo-relatorio" name="tipo-relatorio">
-                            <option value="presencas-periodo">Presenças por período</option>
-                            <option value="presencas-turma">Presenças por turma</option>
-                            <option value="faltas-aluno">Faltas por aluno</option>
-                            <option value="atrasos-aluno">Atrasos por aluno</option>
-                            <option value="frequencia-geral">Frequência geral</option>
-                        </select>
-                    </div>
+                    <FormSelect id="tipo-relatorio" name="tipo-relatorio" label="Tipo de relatório">
+                        <option value="presencas-periodo">Presenças por período</option>
+                        <option value="presencas-turma">Presenças por turma</option>
+                        <option value="faltas-aluno">Faltas por aluno</option>
+                        <option value="atrasos-aluno">Atrasos por aluno</option>
+                        <option value="frequencia-geral">Frequência geral</option>
+                    </FormSelect>
                     <div class="filter-group">
                         <label for="data-inicial">Data inicial</label>
                         <div class="date-input-wrapper">
@@ -346,15 +344,12 @@ import Sidebar from '../../components/Sidebar.astro';
                             <span class="date-icon">📅</span>
                         </div>
                     </div>
-                    <div class="filter-group">
-                        <label for="turma">Turma</label>
-                        <select id="turma" name="turma">
-                            <option value="">Todas</option>
-                            <option value="1">Turma A - Manhã</option>
-                            <option value="2">Turma B - Tarde</option>
-                            <option value="3">Turma C - Manhã</option>
-                        </select>
-                    </div>
+                    <FormSelect id="turma" name="turma" label="Turma">
+                        <option value="">Todas</option>
+                        <option value="1">Turma A - Manhã</option>
+                        <option value="2">Turma B - Tarde</option>
+                        <option value="3">Turma C - Manhã</option>
+                    </FormSelect>
                 </div>
 
                 <div class="instruction-text">

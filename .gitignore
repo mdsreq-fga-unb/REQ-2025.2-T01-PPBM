@@ -7,6 +7,8 @@ pnpm-debug.log*
 lerna-debug.log*
 .specstory/
 
+*/.env
+
 # Runtime data
 pids
 *.pid

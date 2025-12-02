@@ -1,0 +1,478 @@
+---
+import Header from '../../components/Header.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import FormSelect from '../../components/ui/FormSelect.astro';
+---
+
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Turma - Programa Bombeiro Mirim</title>
+    <style>
+        :root {
+            --primary-color: #4A5568;
+            --secondary-color: #E2E8F0;
+            --accent-color: #3182CE;
+            --danger-color: #E53E3E;
+            --bg-color: #F7FAFC;
+            --text-color: #2D3748;
+            --label-color: #718096;
+            --border-color: #CBD5E0;
+            --white: #FFFFFF;
+            --success-color: #48BB78;
+            --warning-color: #ED8936;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+        .main-content {
+            padding: 120px 1.5rem 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+        .content-wrapper {
+            width: 100%;
+            max-width: 1280px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .container {
+            flex: 1;
+            max-width: 100%;
+            background-color: var(--white);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        .page-header .title h1 {
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--text-color);
+        }
+        .page-header .title p {
+            font-size: 1rem;
+            margin: 0;
+            color: var(--label-color);
+        }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--white);
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .btn-back:hover {
+            background-color: var(--secondary-color);
+        }
+        .form-section {
+            margin-bottom: 2rem;
+        }
+        .form-section h2 {
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--secondary-color);
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        .form-group label {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--label-color);
+            font-weight: 500;
+        }
+        .form-group label .required {
+            color: var(--danger-color);
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            color: var(--text-color);
+            background-color: #FDFDFD;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+        }
+        .form-group input:disabled {
+            background-color: #EDF2F7;
+            cursor: not-allowed;
+        }
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--secondary-color);
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--white);
+        }
+        .btn-primary:hover {
+            background-color: #2C5282;
+        }
+        .btn-primary:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+        }
+        .btn-secondary:hover {
+            background-color: #CBD5E0;
+        }
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        .alert-success {
+            background-color: #C6F6D5;
+            color: #2F855A;
+            border: 1px solid #9AE6B4;
+        }
+        .alert-error {
+            background-color: #FED7D7;
+            color: #C53030;
+            border: 1px solid #FEB2B2;
+        }
+        .info-box {
+            background-color: #EBF8FF;
+            border: 1px solid #90CDF4;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .info-box p {
+            margin: 0;
+            color: #2B6CB0;
+            font-size: 0.9rem;
+        }
+        .info-box strong {
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 100px 1rem 20px;
+            }
+
+            .content-wrapper {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .container {
+                padding: 1.5rem;
+                border-radius: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .page-header .title h1 {
+                font-size: 1.5rem;
+            }
+
+            .btn-back {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 80px 0.5rem 20px;
+            }
+
+            .container {
+                padding: 1rem;
+                border-radius: 0.75rem;
+            }
+
+            .page-header .title h1 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <Header />
+    
+    <main class="main-content">
+        <div class="content-wrapper">
+            <Sidebar />
+            <div class="container">
+                <div class="page-header">
+                    <div class="title">
+                        <h1>Cadastrar Turma</h1>
+                        <p>Crie uma nova turma para o programa</p>
+                    </div>
+                    <a href="/admin/gerenciar-turmas" class="btn-back">
+                        <span>←</span> Voltar
+                    </a>
+                </div>
+
+                <div id="alert-success" class="alert alert-success">
+                    Turma cadastrada com sucesso!
+                </div>
+                <div id="alert-error" class="alert alert-error">
+                    Erro ao cadastrar turma. Por favor, tente novamente.
+                </div>
+
+                <div class="info-box">
+                    <p><strong>Campos obrigatórios:</strong> Nome da turma, limite de alunos e unidade são obrigatórios para criar uma turma.</p>
+                </div>
+
+                <form id="form-cadastro">
+                    <div class="form-section">
+                        <h2>Informações da Turma</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="nome_turma">
+                                    Nome da Turma <span class="required">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="nome_turma" 
+                                    name="nome_turma" 
+                                    placeholder="Ex: Turma A - Manhã"
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="limite_alunos_turma">
+                                    Limite de Alunos <span class="required">*</span>
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="limite_alunos_turma" 
+                                    name="limite_alunos_turma" 
+                                    placeholder="Ex: 30"
+                                    min="1"
+                                    max="100"
+                                    required
+                                >
+                            </div>
+                            <FormSelect 
+                                id="unidade_turma" 
+                                name="unidade_turma" 
+                                label="Unidade" 
+                                required={true}
+                            >
+                                <option value="">Selecione uma unidade</option>
+                                <option value="gama">Gama</option>
+                                <option value="santa_maria">Santa Maria</option>
+                                <option value="recanto">Recanto das Emas</option>
+                                <option value="samambaia">Samambaia</option>
+                                <option value="nucleo_bandeirante">Núcleo Bandeirante</option>
+                                <option value="estrutural">Cidade Estrutural</option>
+                                <option value="ceilandia">Ceilândia</option>
+                                <option value="brazlandia">Brazlândia</option>
+                                <option value="sobradinho">Sobradinho</option>
+                                <option value="planaltina">Planaltina</option>
+                                <option value="paranoa">Paranoá</option>
+                                <option value="sao_sebastiao">São Sebastião</option>
+                            </FormSelect>
+                            <div class="form-group">
+                                <label for="cidade_turma">
+                                    Cidade
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="cidade_turma" 
+                                    name="cidade_turma" 
+                                    placeholder="Ex: Brasília"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="limparFormulario()">
+                            Limpar
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="btn-submit">
+                            Cadastrar Turma
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        import { authStore } from "../../stores/auth";
+        import { apiFetch } from "../../lib/api";
+
+        // Check authentication
+        document.addEventListener("DOMContentLoaded", async () => {
+            const isAuthenticated = await authStore.checkAuth();
+
+            if (!isAuthenticated) {
+                window.location.href = "/login";
+                return;
+            }
+
+            // Check if user is admin
+            const user = authStore.getUser();
+            if (!user || user.tipo !== "admin") {
+                alert("Acesso negado. Apenas administradores podem cadastrar turmas.");
+                window.location.href = "/login";
+                return;
+            }
+        });
+
+        // Form submission
+        const form = document.getElementById('form-cadastro') as HTMLFormElement;
+        const btnSubmit = document.getElementById('btn-submit') as HTMLButtonElement;
+        const alertSuccess = document.getElementById('alert-success') as HTMLDivElement;
+        const alertError = document.getElementById('alert-error') as HTMLDivElement;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Hide previous alerts
+            alertSuccess.style.display = 'none';
+            alertError.style.display = 'none';
+
+            // Get form data
+            const nomeTurma = (document.getElementById('nome_turma') as HTMLInputElement).value.trim();
+            const limiteAlunos = (document.getElementById('limite_alunos_turma') as HTMLInputElement).value;
+            const unidadeTurma = (document.getElementById('unidade_turma') as HTMLSelectElement).value;
+            const cidadeTurma = (document.getElementById('cidade_turma') as HTMLInputElement).value.trim();
+
+            // Validate required fields
+            if (!nomeTurma || !limiteAlunos || !unidadeTurma) {
+                alertError.textContent = 'Por favor, preencha todos os campos obrigatórios.';
+                alertError.style.display = 'block';
+                return;
+            }
+
+            // Validate limite_alunos is a positive integer
+            const limiteNum = parseInt(limiteAlunos, 10);
+            if (isNaN(limiteNum) || limiteNum < 1) {
+                alertError.textContent = 'O limite de alunos deve ser um número inteiro positivo.';
+                alertError.style.display = 'block';
+                return;
+            }
+
+            // Disable submit button
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = 'Cadastrando...';
+
+            try {
+                const payload = {
+                    nome_turma: nomeTurma,
+                    limite_alunos_turma: limiteNum,
+                    unidade_turma: unidadeTurma,
+                    cidade_turma: cidadeTurma || null
+                };
+
+                const response = await apiFetch('/turmas/criar', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.success) {
+                    alertSuccess.style.display = 'block';
+                    form.reset();
+                    
+                    // Scroll to top to show success message
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                    // Redirect after a short delay
+                    setTimeout(() => {
+                        window.location.href = '/admin/gerenciar-turmas';
+                    }, 2000);
+                } else {
+                    throw new Error(response.error || 'Erro ao cadastrar turma');
+                }
+            } catch (error) {
+                console.error('Erro ao cadastrar turma:', error);
+                alertError.textContent = error instanceof Error ? error.message : 'Erro ao cadastrar turma. Por favor, tente novamente.';
+                alertError.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = 'Cadastrar Turma';
+            }
+        });
+
+        // Clear form function
+        (window as any).limparFormulario = function() {
+            form.reset();
+            alertSuccess.style.display = 'none';
+            alertError.style.display = 'none';
+        };
+    </script>
+</body>
+</html>

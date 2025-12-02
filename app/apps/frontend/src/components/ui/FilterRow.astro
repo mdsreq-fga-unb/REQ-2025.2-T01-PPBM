@@ -1,0 +1,34 @@
+---
+/**
+ * FilterRow component - A container for filter controls
+ * Usage:
+ * <FilterRow>
+ *   <FormInput ... />
+ *   <FormSelect ... />
+ * </FilterRow>
+ */
+interface Props {
+    class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={["filters-row", className]}>
+    <slot />
+</div>
+
+<style>
+    .filters-row {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+        .filters-row {
+            flex-direction: column;
+        }
+    }
+</style>

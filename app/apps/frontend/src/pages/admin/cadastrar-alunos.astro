@@ -1,6 +1,7 @@
 ---
 import Header from "../../components/Header.astro";
 import Sidebar from "../../components/Sidebar.astro";
+import FormSelect from "../../components/ui/FormSelect.astro";
 ---
 
 <html lang="pt-br">
@@ -231,6 +232,202 @@ import Sidebar from "../../components/Sidebar.astro";
                 background-color: rgba(49, 130, 206, 0.1);
             }
 
+            /* Search Dialog Styles */
+            .search-dialog-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            }
+            .search-dialog-overlay.active {
+                display: flex;
+            }
+            .search-dialog {
+                background-color: var(--white);
+                border-radius: 12px;
+                width: 90%;
+                max-width: 600px;
+                max-height: 80vh;
+                display: flex;
+                flex-direction: column;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            }
+            .search-dialog-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1.25rem 1.5rem;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .search-dialog-header h3 {
+                margin: 0;
+                font-size: 1.25rem;
+                color: var(--text-color);
+            }
+            .btn-close-dialog {
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                cursor: pointer;
+                color: var(--label-color);
+                padding: 0.25rem;
+                line-height: 1;
+            }
+            .btn-close-dialog:hover {
+                color: var(--text-color);
+            }
+            .search-dialog-body {
+                padding: 1.5rem;
+                flex: 1;
+                overflow-y: auto;
+            }
+            .search-input-wrapper {
+                position: relative;
+                margin-bottom: 1rem;
+            }
+            .search-input-wrapper input {
+                width: 100%;
+                padding: 0.875rem 1rem 0.875rem 2.75rem;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                font-size: 1rem;
+                color: var(--text-color);
+                background-color: #fdfdfd;
+                box-sizing: border-box;
+            }
+            .search-input-wrapper input:focus {
+                outline: none;
+                border-color: var(--accent-color);
+                box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+            }
+            .search-input-wrapper .search-icon {
+                position: absolute;
+                left: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--label-color);
+            }
+            .search-results {
+                max-height: 300px;
+                overflow-y: auto;
+            }
+            .search-result-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                margin-bottom: 0.5rem;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            .search-result-item:hover {
+                background-color: #f7fafc;
+                border-color: var(--accent-color);
+            }
+            .result-info {
+                flex: 1;
+            }
+            .result-name {
+                font-weight: 600;
+                color: var(--text-color);
+                margin-bottom: 0.25rem;
+            }
+            .result-details {
+                font-size: 0.85rem;
+                color: var(--label-color);
+            }
+            .result-role {
+                display: inline-block;
+                padding: 0.25rem 0.5rem;
+                border-radius: 4px;
+                font-size: 0.75rem;
+                font-weight: 500;
+                text-transform: uppercase;
+            }
+            .result-role.responsavel {
+                background-color: #e9d8fd;
+                color: #6b46c1;
+            }
+            .result-role.docente {
+                background-color: #c6f6d5;
+                color: #2f855a;
+            }
+            .result-role.admin {
+                background-color: #fed7d7;
+                color: #c53030;
+            }
+            .btn-select-user {
+                padding: 0.5rem 1rem;
+                background-color: var(--accent-color);
+                color: var(--white);
+                border: none;
+                border-radius: 6px;
+                font-size: 0.85rem;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
+            .btn-select-user:hover {
+                background-color: #2c5282;
+            }
+            .search-loading,
+            .search-empty {
+                text-align: center;
+                padding: 2rem;
+                color: var(--label-color);
+            }
+            .btn-search-responsavel {
+                background: none;
+                border: 1px solid var(--accent-color);
+                color: var(--accent-color);
+                padding: 0.5rem 1rem;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 0.85rem;
+                font-weight: 500;
+                transition: all 0.2s;
+            }
+            .btn-search-responsavel:hover {
+                background-color: rgba(49, 130, 206, 0.1);
+            }
+            .responsavel-search-row {
+                display: flex;
+                gap: 0.5rem;
+                align-items: flex-end;
+            }
+            .responsavel-search-row .form-group {
+                flex: 1;
+            }
+            .selected-user-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.5rem 0.75rem;
+                background-color: #e6fffa;
+                border: 1px solid #81e6d9;
+                color: #234e52;
+                border-radius: 6px;
+                font-size: 0.85rem;
+                margin-top: 0.5rem;
+            }
+            .selected-user-badge .btn-clear {
+                background: none;
+                border: none;
+                color: #c53030;
+                cursor: pointer;
+                padding: 0;
+                font-size: 1rem;
+                line-height: 1;
+            }
+
             @media (max-width: 768px) {
                 .main-content {
                     padding: 100px 1rem 20px;
@@ -327,17 +524,11 @@ import Sidebar from "../../components/Sidebar.astro";
                                         maxlength="14"
                                     />
                                 </div>
-                                <div class="form-group">
-                                    <label
-                                        >Sexo <span class="required">*</span
-                                        ></label
-                                    >
-                                    <select name="sexo" required>
-                                        <option value="">Selecione</option>
-                                        <option value="M">Masculino</option>
-                                        <option value="F">Feminino</option>
-                                    </select>
-                                </div>
+                                <FormSelect name="sexo" label="Sexo" required>
+                                    <option value="">Selecione</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Feminino</option>
+                                </FormSelect>
                             </div>
                         </section>
 
@@ -370,59 +561,25 @@ import Sidebar from "../../components/Sidebar.astro";
                                         placeholder="Ex: 5º Ano"
                                     />
                                 </div>
-                                <div class="form-group">
-                                    <label
-                                        >Unidade do PBM <span class="required"
-                                            >*</span
-                                        ></label
-                                    >
-                                    <select name="unidade" required>
-                                        <option value=""
-                                            >Selecione a unidade</option
-                                        >
-                                        <option value="gama">Gama</option>
-                                        <option value="santa_maria"
-                                            >Santa Maria</option
-                                        >
-                                        <option value="recanto"
-                                            >Recanto das Emas</option
-                                        >
-                                        <option value="samambaia"
-                                            >Samambaia</option
-                                        >
-                                        <option value="nucleo_bandeirante"
-                                            >Núcleo Bandeirante</option
-                                        >
-                                        <option value="estrutural"
-                                            >Cidade Estrutural</option
-                                        >
-                                        <option value="ceilandia"
-                                            >Ceilândia</option
-                                        >
-                                        <option value="brazlandia"
-                                            >Brazlândia</option
-                                        >
-                                        <option value="sobradinho"
-                                            >Sobradinho</option
-                                        >
-                                        <option value="planaltina"
-                                            >Planaltina</option
-                                        >
-                                        <option value="paranoa">Paranoá</option>
-                                        <option value="sao_sebastiao"
-                                            >São Sebastião</option
-                                        >
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Turma</label>
-                                    <select name="turma">
-                                        <option value=""
-                                            >Selecione a turma</option
-                                        >
-                                        <!-- Turmas serão carregadas dinamicamente -->
-                                    </select>
-                                </div>
+                                <FormSelect name="unidade" label="Unidade do PBM" required>
+                                    <option value="">Selecione a unidade</option>
+                                    <option value="gama">Gama</option>
+                                    <option value="santa_maria">Santa Maria</option>
+                                    <option value="recanto">Recanto das Emas</option>
+                                    <option value="samambaia">Samambaia</option>
+                                    <option value="nucleo_bandeirante">Núcleo Bandeirante</option>
+                                    <option value="estrutural">Cidade Estrutural</option>
+                                    <option value="ceilandia">Ceilândia</option>
+                                    <option value="brazlandia">Brazlândia</option>
+                                    <option value="sobradinho">Sobradinho</option>
+                                    <option value="planaltina">Planaltina</option>
+                                    <option value="paranoa">Paranoá</option>
+                                    <option value="sao_sebastiao">São Sebastião</option>
+                                </FormSelect>
+                                <FormSelect name="turma" label="Turma">
+                                    <option value="">Selecione a turma</option>
+                                    <!-- Turmas serão carregadas dinamicamente -->
+                                </FormSelect>
                             </div>
                         </section>
 
@@ -430,20 +587,17 @@ import Sidebar from "../../components/Sidebar.astro";
                         <section class="form-section">
                             <h2>🏥 Informações Médicas</h2>
                             <div class="form-grid">
-                                <div class="form-group">
-                                    <label>Tipo Sanguíneo</label>
-                                    <select name="tipo_sanguineo">
-                                        <option value="">Selecione</option>
-                                        <option value="A+">A+</option>
-                                        <option value="A-">A-</option>
-                                        <option value="B+">B+</option>
-                                        <option value="B-">B-</option>
-                                        <option value="AB+">AB+</option>
-                                        <option value="AB-">AB-</option>
-                                        <option value="O+">O+</option>
-                                        <option value="O-">O-</option>
-                                    </select>
-                                </div>
+                                <FormSelect name="tipo_sanguineo" label="Tipo Sanguíneo">
+                                    <option value="">Selecione</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                </FormSelect>
                                 <div class="form-group full-width">
                                     <label>Alergias</label>
                                     <textarea
@@ -494,7 +648,15 @@ import Sidebar from "../../components/Sidebar.astro";
                                 <div class="responsavel-section" data-index="0">
                                     <div class="responsavel-header">
                                         <h3>Responsável 1 (Principal)</h3>
+                                        <button type="button" class="btn-search-responsavel" data-index="0">
+                                            🔍 Buscar usuário existente
+                                        </button>
                                     </div>
+                                    <div id="selected-user-0" class="selected-user-badge" style="display: none;">
+                                        <span class="selected-user-name"></span>
+                                        <button type="button" class="btn-clear" title="Remover seleção">&times;</button>
+                                    </div>
+                                    <input type="hidden" name="responsavel_id_0" />
                                     <div class="form-grid">
                                         <div class="form-group">
                                             <label
@@ -524,32 +686,14 @@ import Sidebar from "../../components/Sidebar.astro";
                                                 class="cpf-input"
                                             />
                                         </div>
-                                        <div class="form-group">
-                                            <label
-                                                >Parentesco <span
-                                                    class="required">*</span
-                                                ></label
-                                            >
-                                            <select
-                                                name="responsavel_parentesco_0"
-                                                required
-                                            >
-                                                <option value=""
-                                                    >Selecione</option
-                                                >
-                                                <option value="pai">Pai</option>
-                                                <option value="mae">Mãe</option>
-                                                <option value="avo"
-                                                    >Avô/Avó</option
-                                                >
-                                                <option value="tio"
-                                                    >Tio/Tia</option
-                                                >
-                                                <option value="outro"
-                                                    >Outro</option
-                                                >
-                                            </select>
-                                        </div>
+                                        <FormSelect name="responsavel_parentesco_0" label="Parentesco" required>
+                                            <option value="">Selecione</option>
+                                            <option value="pai">Pai</option>
+                                            <option value="mae">Mãe</option>
+                                            <option value="avo">Avô/Avó</option>
+                                            <option value="tio">Tio/Tia</option>
+                                            <option value="outro">Outro</option>
+                                        </FormSelect>
                                         <div class="form-group">
                                             <label
                                                 >Telefone <span class="required"
@@ -584,6 +728,30 @@ import Sidebar from "../../components/Sidebar.astro";
                             </button>
                         </section>
 
+                        <!-- Search Dialog -->
+                        <div id="search-dialog-overlay" class="search-dialog-overlay">
+                            <div class="search-dialog">
+                                <div class="search-dialog-header">
+                                    <h3>Buscar Responsável</h3>
+                                    <button type="button" class="btn-close-dialog" id="btn-close-dialog">&times;</button>
+                                </div>
+                                <div class="search-dialog-body">
+                                    <div class="search-input-wrapper">
+                                        <span class="search-icon">🔍</span>
+                                        <input 
+                                            type="text" 
+                                            id="search-user-input" 
+                                            placeholder="Buscar por nome, email ou CPF..."
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                    <div id="search-results" class="search-results">
+                                        <div class="search-empty">Digite para buscar usuários cadastrados</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Botões de Ação -->
                         <div class="btn-group">
                             <button
@@ -607,27 +775,26 @@ import Sidebar from "../../components/Sidebar.astro";
         </div>
 
         <script>
+            import { authStore } from "../../stores/auth";
+            import { apiFetch } from "../../lib/api";
+
             // Check authentication
             document.addEventListener("DOMContentLoaded", async () => {
-                const token = localStorage.getItem("bm_token");
-                const user = localStorage.getItem("bm_user");
+                const isAuthenticated = await authStore.checkAuth();
 
-                if (!token || !user) {
+                if (!isAuthenticated) {
                     window.location.href = "/login";
                     return;
                 }
 
-                try {
-                    const userData = JSON.parse(user);
-                    if (userData.userType !== "admin") {
-                        alert(
-                            "Acesso negado. Apenas administradores podem cadastrar alunos.",
-                        );
-                        window.location.href = "/login";
-                        return;
-                    }
-                } catch {
+                // Check if user is admin
+                const user = authStore.getUser();
+                if (!user || user.tipo !== "admin") {
+                    alert(
+                        "Acesso negado. Apenas administradores podem cadastrar alunos.",
+                    );
                     window.location.href = "/login";
+                    return;
                 }
             });
 
@@ -693,8 +860,18 @@ import Sidebar from "../../components/Sidebar.astro";
                     newSection.innerHTML = `
                 <div class="responsavel-header">
                     <h3>Responsável ${responsavelCount + 1}</h3>
-                    <button type="button" class="btn-remove-responsavel">Remover</button>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <button type="button" class="btn-search-responsavel" data-index="${responsavelCount}">
+                            🔍 Buscar usuário existente
+                        </button>
+                        <button type="button" class="btn-remove-responsavel">Remover</button>
+                    </div>
                 </div>
+                <div id="selected-user-${responsavelCount}" class="selected-user-badge" style="display: none;">
+                    <span class="selected-user-name"></span>
+                    <button type="button" class="btn-clear" title="Remover seleção">&times;</button>
+                </div>
+                <input type="hidden" name="responsavel_id_${responsavelCount}" />
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Nome Completo</label>
@@ -792,6 +969,7 @@ import Sidebar from "../../components/Sidebar.astro";
                         const nome = formData.get(`responsavel_nome_${i}`);
                         if (nome) {
                             alunoData.responsaveis.push({
+                                id: formData.get(`responsavel_id_${i}`) || null,
                                 nome: nome,
                                 cpf: formData
                                     .get(`responsavel_cpf_${i}`)
@@ -810,21 +988,12 @@ import Sidebar from "../../components/Sidebar.astro";
                     }
 
                     try {
-                        const token = localStorage.getItem("bm_token");
-                        const API_URL =
-                            import.meta.env.PUBLIC_API_URL ||
-                            "http://localhost:3000";
-
-                        const response = await fetch(`${API_URL}/alunos`, {
+                        const response = await apiFetch("/alunos", {
                             method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                Authorization: `Bearer ${token}`,
-                            },
                             body: JSON.stringify(alunoData),
                         });
 
-                        if (response.ok) {
+                        if (response.success) {
                             alertSuccess.style.display = "block";
                             form.reset();
                             window.scrollTo({ top: 0, behavior: "smooth" });
@@ -834,9 +1003,8 @@ import Sidebar from "../../components/Sidebar.astro";
                                     "/admin/gerenciar-alunos";
                             }, 2000);
                         } else {
-                            const error = await response.json();
                             alertError.textContent =
-                                error.message || "Erro ao cadastrar aluno";
+                                response.error || "Erro ao cadastrar aluno";
                             alertError.style.display = "block";
                             window.scrollTo({ top: 0, behavior: "smooth" });
                         }
@@ -851,6 +1019,186 @@ import Sidebar from "../../components/Sidebar.astro";
                         submitBtn.textContent = "Cadastrar Aluno";
                     }
                 });
+
+            // =====================================================
+            // Search Dialog for Responsável
+            // =====================================================
+            
+            let currentSearchIndex = 0;
+            let allUsers = [];
+            let searchTimeout = null;
+            
+            const searchDialogOverlay = document.getElementById('search-dialog-overlay');
+            const searchInput = document.getElementById('search-user-input');
+            const searchResults = document.getElementById('search-results');
+            const btnCloseDialog = document.getElementById('btn-close-dialog');
+            
+            // Load users from API
+            async function loadUsers() {
+                try {
+                    const response = await apiFetch('/usuarios/todos-com-roles');
+                    console.log('Users API response:', response);
+                    if (response.success && response.data) {
+                        // The API returns { success: true, data: { success: true, data: [...], total: n } }
+                        // apiFetch wraps the backend response in its own { success, data } structure
+                        const backendData = response.data;
+                        if (backendData.data && Array.isArray(backendData.data)) {
+                            allUsers = backendData.data;
+                        } else if (Array.isArray(backendData)) {
+                            allUsers = backendData;
+                        } else {
+                            console.warn('Unexpected users data format:', backendData);
+                            allUsers = [];
+                        }
+                    }
+                    console.log('Loaded users:', allUsers);
+                } catch (error) {
+                    console.error('Erro ao carregar usuários:', error);
+                }
+            }
+            
+            // Load users on page load
+            loadUsers();
+            
+            // Open search dialog
+            function openSearchDialog(index) {
+                currentSearchIndex = index;
+                searchDialogOverlay.classList.add('active');
+                searchInput.value = '';
+                searchInput.focus();
+                renderSearchResults('');
+            }
+            
+            // Close search dialog
+            function closeSearchDialog() {
+                searchDialogOverlay.classList.remove('active');
+                searchInput.value = '';
+            }
+            
+            // Render search results
+            function renderSearchResults(query) {
+                const normalizedQuery = query.toLowerCase().trim();
+                
+                if (!normalizedQuery) {
+                    searchResults.innerHTML = '<div class="search-empty">Digite para buscar usuários cadastrados</div>';
+                    return;
+                }
+                
+                const filtered = allUsers.filter(user => {
+                    const nome = (user.nome || '').toLowerCase();
+                    const email = (user.email || '').toLowerCase();
+                    return nome.includes(normalizedQuery) || email.includes(normalizedQuery);
+                });
+                
+                if (filtered.length === 0) {
+                    searchResults.innerHTML = '<div class="search-empty">Nenhum usuário encontrado</div>';
+                    return;
+                }
+                
+                searchResults.innerHTML = filtered.map(user => `
+                    <div class="search-result-item" data-user-id="${user.id}" data-user-name="${user.nome}" data-user-email="${user.email || ''}">
+                        <div class="result-info">
+                            <div class="result-name">${user.nome}</div>
+                            <div class="result-details">${user.email || 'Sem email'}</div>
+                        </div>
+                        <span class="result-role ${user.role}">${user.role}</span>
+                        <button type="button" class="btn-select-user">Selecionar</button>
+                    </div>
+                `).join('');
+                
+                // Add click handlers to select buttons
+                searchResults.querySelectorAll('.btn-select-user').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const item = e.target.closest('.search-result-item');
+                        selectUser(item.dataset.userId, item.dataset.userName, item.dataset.userEmail);
+                    });
+                });
+                
+                // Add click handler to entire result item
+                searchResults.querySelectorAll('.search-result-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        if (!e.target.classList.contains('btn-select-user')) {
+                            selectUser(item.dataset.userId, item.dataset.userName, item.dataset.userEmail);
+                        }
+                    });
+                });
+            }
+            
+            // Select a user and fill the form
+            function selectUser(userId, userName, userEmail) {
+                const index = currentSearchIndex;
+                
+                // Set hidden id field
+                const idInput = document.querySelector(`input[name="responsavel_id_${index}"]`);
+                if (idInput) idInput.value = userId;
+                
+                // Fill form fields
+                const nomeInput = document.querySelector(`input[name="responsavel_nome_${index}"]`);
+                if (nomeInput) nomeInput.value = userName;
+                
+                const emailInput = document.querySelector(`input[name="responsavel_email_${index}"]`);
+                if (emailInput) emailInput.value = userEmail || '';
+                
+                // Show selected user badge
+                const badge = document.getElementById(`selected-user-${index}`);
+                if (badge) {
+                    badge.style.display = 'inline-flex';
+                    badge.querySelector('.selected-user-name').textContent = `Usuário selecionado: ${userName}`;
+                }
+                
+                closeSearchDialog();
+            }
+            
+            // Clear selected user
+            function clearSelectedUser(index) {
+                const badge = document.getElementById(`selected-user-${index}`);
+                if (badge) {
+                    badge.style.display = 'none';
+                }
+                
+                const idInput = document.querySelector(`input[name="responsavel_id_${index}"]`);
+                if (idInput) idInput.value = '';
+            }
+            
+            // Event listeners for search dialog
+            btnCloseDialog.addEventListener('click', closeSearchDialog);
+            
+            searchDialogOverlay.addEventListener('click', (e) => {
+                if (e.target === searchDialogOverlay) {
+                    closeSearchDialog();
+                }
+            });
+            
+            // Debounced search input
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    renderSearchResults(e.target.value);
+                }, 200);
+            });
+            
+            // Handle ESC key to close dialog
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && searchDialogOverlay.classList.contains('active')) {
+                    closeSearchDialog();
+                }
+            });
+            
+            // Event delegation for search buttons
+            document.addEventListener('click', (e) => {
+                // Search button click
+                if (e.target.classList.contains('btn-search-responsavel')) {
+                    const index = parseInt(e.target.dataset.index, 10);
+                    openSearchDialog(index);
+                }
+                
+                // Clear badge button click
+                if (e.target.classList.contains('btn-clear') && e.target.closest('.selected-user-badge')) {
+                    const badge = e.target.closest('.selected-user-badge');
+                    const index = badge.id.replace('selected-user-', '');
+                    clearSelectedUser(index);
+                }
+            });
         </script>
     </body>
 </html>

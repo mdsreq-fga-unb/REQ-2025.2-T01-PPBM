@@ -1,4 +1,5 @@
 ---
+
 ---
 
 <header class="header">
@@ -11,7 +12,11 @@
         </div>
         <div class="header-right">
             <span class="status-badge status-user">Usuário: Docente</span>
-            <button class="btn-logout">Sair</button>
+            <button
+                onclick="localStorage.removeItem('bm_auth'); window.location.href='/login';"
+                class="px-3 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-sm transition"
+                >Sair</button
+            >
         </div>
     </div>
 </header>
@@ -25,7 +30,7 @@
         z-index: 1000;
         background-color: #fff;
         border-bottom: 1px solid #eee;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         display: flex;
         justify-content: center;
         padding: 0 1.5rem;

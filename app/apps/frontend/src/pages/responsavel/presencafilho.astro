@@ -1,6 +1,7 @@
 ---
 import Header from '../../components/Headerusuario.astro';
 import Sidebar from '../../components/Sidebarusuario.astro';
+import FormSelect from '../../components/ui/FormSelect.astro';
 ---
 
 <html lang="pt-br">
@@ -395,12 +396,11 @@ import Sidebar from '../../components/Sidebarusuario.astro';
                             <p>Ana Pereira Silva - Turma A - Manhã</p>
                         </div>
                         <div style="min-width:180px;">
-                            <label for="periodo" style="display:block; font-size:0.9rem; color:var(--label-color); margin-bottom:0.5rem; text-align:right;">Período</label>
-                            <select id="periodo" style="width:100%; padding:0.6rem; border:1px solid var(--border-color); border-radius:6px; background:#FDFDFD;">
+                            <FormSelect id="periodo" label="Período" labelAlign="right" width="100%">
                                 <option value="7">Últimos 7 dias</option>
                                 <option value="30">Últimos 30 dias</option>
                                 <option value="90">Últimos 90 dias</option>
-                            </select>
+                            </FormSelect>
                         </div>
                     </div>
 

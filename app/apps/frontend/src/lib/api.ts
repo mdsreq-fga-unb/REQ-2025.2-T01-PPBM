@@ -45,6 +45,7 @@ export interface ApiResponse<T = unknown> {
 export async function getAuthToken(): Promise<string | null> {
     if (typeof window === 'undefined') return null;
     const session = await getSession();
+    console.log('[API] getAuthToken() - current session:', session);
     return session?.access_token ?? null;
 }
 
@@ -90,7 +91,9 @@ export async function apiFetch<T = unknown>(
     endpoint: string,
     options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
+    console.log('[API] apiFetch() called for:', endpoint);
     const token = await getAuthToken();
+    console.log('[API] Token for request:', token ? `${token.substring(0, 20)}...` : 'null');
 
     const headers: HeadersInit = {
         'Content-Type': 'application/json',
@@ -102,16 +105,21 @@ export async function apiFetch<T = unknown>(
     }
 
     try {
-        const response = await fetch(`${API_URL}${endpoint}`, {
+        const url = `${API_URL}${endpoint}`;
+        console.log('[API] Making request to:', url);
+        const response = await fetch(url, {
             ...options,
             headers,
         });
 
+        console.log('[API] Response status:', response.status);
         const data = await response.json();
+        console.log('[API] Response data:', data);
 
         if (!response.ok) {
             // If unauthorized, try to refresh token
             if (response.status === 401 && getRefreshToken()) {
+                console.log('[API] Got 401, attempting token refresh...');
                 const refreshed = await refreshAuthToken();
                 if (refreshed) {
                     // Retry the request with new token
@@ -130,7 +138,7 @@ export async function apiFetch<T = unknown>(
             data: data,
         };
     } catch (error) {
-        console.error('API request failed:', error);
+        console.error('[API] Request failed:', error);
         return {
             success: false,
             error: error instanceof Error ? error.message : 'Network error',
@@ -165,28 +173,35 @@ async function refreshAuthToken(): Promise<boolean> {
  */
 export async function login(email: string, password: string): Promise<LoginResponse> {
     try {
-        console.log('Attempting login for:', email);
+        console.log('[API] login() called for:', email);
 
         // Step 1: Authenticate with Supabase directly
+        console.log('[API] Step 1: Authenticating with Supabase...');
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
             email,
             password
         });
 
         if (authError || !authData.user) {
-            console.error('Supabase auth error:', authError);
+            console.error('[API] Supabase auth error:', authError);
             return {
                 success: false,
                 error: authError?.message || 'Credenciais inválidas',
             };
         }
 
+        console.log('[API] Supabase auth successful, user ID:', authData.user.id);
+        console.log('[API] Session exists:', !!authData.session);
+
         // Store tokens as backup
         if (authData.session) {
+            console.log('[API] Storing tokens in localStorage');
             setAuthTokens(authData.session.access_token, authData.session.refresh_token ?? '');
         }
 
         // Step 2: Get user details from backend
+        console.log('[API] Step 2: Fetching user details from backend...');
+        console.log('[API] API URL:', API_URL);
         const response = await fetch(`${API_URL}/auth/user-by-email`, {
             method: 'POST',
             headers: {
@@ -196,9 +211,12 @@ export async function login(email: string, password: string): Promise<LoginRespo
             body: JSON.stringify({ email }),
         });
 
+        console.log('[API] Backend response status:', response.status);
         const userData = await response.json();
+        console.log('[API] Backend response data:', userData);
 
         if (!response.ok || !userData.success) {
+            console.error('[API] Backend error:', userData.error);
             // Auth succeeded but user not in system
             return {
                 success: false,
@@ -206,12 +224,23 @@ export async function login(email: string, password: string): Promise<LoginRespo
             };
         }
 
+        // Map backend field names to frontend field names
+        console.log('[API] Mapping backend user to frontend format');
+        const backendUser = userData.data.user;
+        console.log('[API] Backend user:', backendUser);
+        const mappedUser: AuthUser = {
+            id: backendUser.id,
+            email: backendUser.email,
+            tipo: backendUser.userType,
+            nome: backendUser.name
+        };
+
         return {
             success: true,
             data: {
                 token: authData.session?.access_token ?? '',
                 refreshToken: authData.session?.refresh_token ?? '',
-                user: userData.data.user,
+                user: mappedUser,
             },
         };
     } catch (error) {
@@ -242,7 +271,43 @@ export async function logout(): Promise<void> {
  * Get current user from token
  */
 export async function getCurrentUser(): Promise<ApiResponse<{ user: AuthUser }>> {
-    return apiFetch<{ user: AuthUser }>('/auth/me');
+    const response = await apiFetch<{ success: boolean; data: { user: { id: string; email: string; userType: UserType; name: string } } }>('/auth/me');
+    
+    console.log('[API] getCurrentUser raw response:', response);
+
+    // The backend returns { success: true, data: { user: {...} } }
+    // apiFetch wraps it as { success: true, data: backendResponse }
+    // So we need to access response.data.data.user (if backend wraps in success/data)
+    // OR response.data.user (if apiFetch already extracts it)
+    
+    // Check the actual structure
+    const backendData = response.data as any;
+    console.log('[API] getCurrentUser backendData:', backendData);
+    
+    // Backend returns { success: true, data: { user: {...} } }
+    // So backendData might be the full backend response or just the data part
+    const user = backendData?.data?.user || backendData?.user;
+    console.log('[API] getCurrentUser extracted user:', user);
+
+    if (response.success && user) {
+        // Map backend field names to frontend field names
+        return {
+            success: true,
+            data: {
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    tipo: user.userType,
+                    nome: user.name
+                }
+            }
+        };
+    }
+
+    return {
+        success: false,
+        error: response.error || 'Erro ao buscar usuário'
+    };
 }
 
 /**

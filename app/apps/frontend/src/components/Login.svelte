@@ -4,53 +4,81 @@
 
 	let loginEmail = "";
 	let loginPassword = "";
-	let rememberMe = false;
 	let errorMessage = "";
 	let isLoading = false;
 
 	onMount(async () => {
+		console.log("[Login] Component mounted, checking auth status...");
 		// Verificar se já está logado
 		const isAuth = await authStore.checkAuth();
+		console.log("[Login] Auth check result:", isAuth);
 		if (isAuth) {
+			console.log("[Login] User already authenticated, redirecting...");
 			// Redirecionar para página apropriada
 			redirectToUserPage();
+		} else {
+			console.log("[Login] User not authenticated, showing login form");
 		}
 	});
 
 	async function handleSubmit(event: Event) {
 		event.preventDefault();
+		console.log("[Login] Form submitted, email:", loginEmail.trim());
 		errorMessage = "";
 		isLoading = true;
 
+		console.log("[Login] Calling authStore.login...");
 		const result = await authStore.login(
 			loginEmail.trim(),
 			loginPassword.trim(),
 		);
 
+		console.log("[Login] Login result:", result);
 		isLoading = false;
 
 		if (result.success) {
+			console.log("[Login] Login successful, redirecting user...");
 			// Redirecionar baseado no tipo de usuário
 			redirectToUserPage();
 		} else {
+			console.log("[Login] Login failed:", result.error);
 			errorMessage = result.error || "Email ou senha incorretos!";
 		}
 	}
 
 	function redirectToUserPage() {
+		console.log("[Login] redirectToUserPage called");
 		authStore.subscribe((state) => {
+			console.log("[Login] Current auth state:", state);
 			if (state.currentUser) {
-				switch (state.currentUser.userType) {
+				console.log(
+					"[Login] User type:",
+					state.currentUser.tipo,
+					"| userType:",
+					(state.currentUser as any).userType,
+				);
+				const userType =
+					state.currentUser.tipo ||
+					(state.currentUser as any).userType;
+				console.log("[Login] Resolved userType:", userType);
+				switch (userType) {
 					case "admin":
+						console.log("[Login] Redirecting to /admin");
 						window.location.href = "/admin";
 						break;
 					case "docente":
+						console.log("[Login] Redirecting to /docente");
 						window.location.href = "/docente";
 						break;
 					case "responsavel":
+						console.log("[Login] Redirecting to /responsavel");
 						window.location.href = "/responsavel";
 						break;
+					default:
+						console.log("[Login] Unknown user type, no redirect");
 				}
+			} else {
+				console.log("[Login] No current user in state");
 			}
 		})();
 	}
@@ -129,19 +157,6 @@
 						class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition disabled:opacity-50 disabled:cursor-not-allowed"
 						placeholder="Digite sua senha"
 					/>
-				</div>
-
-				<div class="flex items-center">
-					<input
-						bind:checked={rememberMe}
-						id="rememberMe"
-						type="checkbox"
-						disabled={isLoading}
-						class="w-4 h-4 accent-primary"
-					/>
-					<label for="rememberMe" class="ml-2 text-sm text-slate-600"
-						>Lembrar de mim</label
-					>
 				</div>
 
 				{#if errorMessage}

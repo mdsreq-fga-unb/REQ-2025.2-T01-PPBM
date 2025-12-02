@@ -5,17 +5,20 @@ const isActive = (path: string) => {
     if (path === "/admin/presencas") {
         return currentPath === "/admin/presencas";
     }
-    if (path === "/admin/cadastrar-alunos") {
-        return currentPath === "/admin/cadastrar-alunos";
-    }
     if (path === "/admin/gerenciar-alunos") {
-        return currentPath === "/admin/gerenciar-alunos";
+        return currentPath === "/admin/gerenciar-alunos" || currentPath === "/admin/cadastrar-alunos";
+    }
+    if (path === "/admin/gerenciar-turmas") {
+        return currentPath === "/admin/gerenciar-turmas" || currentPath === "/admin/cadastrar-turmas";
     }
     if (path === "/admin/relatorios") {
         return currentPath === "/admin/relatorios";
     }
     if (path === "/admin/dashboard") {
         return currentPath === "/admin/dashboard";
+    }
+    if (path === "/admin/usuarios") {
+        return currentPath === "/admin/usuarios";
     }
     return currentPath.startsWith(path);
 };
@@ -33,19 +36,19 @@ const isActive = (path: string) => {
                 </a>
             </li>
             <li
-                class={`nav-item ${isActive("/admin/cadastrar-alunos") ? "active" : ""}`}
-            >
-                <a href="/admin/cadastrar-alunos" class="nav-link">
-                    <span class="nav-icon">😀</span>
-                    <span class="nav-text">Cadastrar Aluno</span>
-                </a>
-            </li>
-            <li
                 class={`nav-item ${isActive("/admin/gerenciar-alunos") ? "active" : ""}`}
             >
                 <a href="/admin/gerenciar-alunos" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Gerenciar Alunos</span>
+                </a>
+            </li>
+            <li
+                class={`nav-item ${isActive("/admin/gerenciar-turmas") ? "active" : ""}`}
+            >
+                <a href="/admin/gerenciar-turmas" class="nav-link">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">Gerenciar Turmas</span>
                 </a>
             </li>
             <li
@@ -70,6 +73,14 @@ const isActive = (path: string) => {
                 <a href="/admin/dashboard" class="nav-link">
                     <span class="nav-icon">📈</span>
                     <span class="nav-text">Dashboard</span>
+                </a>
+            </li>
+            <li
+                class={`nav-item ${isActive("/admin/usuarios") ? "active" : ""}`}
+            >
+                <a href="/admin/usuarios" class="nav-link">
+                    <span class="nav-icon">🔐</span>
+                    <span class="nav-text">Usuários</span>
                 </a>
             </li>
         </ul>

@@ -12,7 +12,11 @@
         </div>
         <div class="header-right">
             <span class="status-badge status-user">Usuário: Admin</span>
-            <button class="btn-logout">Sair</button>
+            <button
+                onclick="localStorage.removeItem('bm_auth'); window.location.href='/login';"
+                class="px-3 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-sm transition"
+                >Sair</button
+            >
         </div>
     </div>
 </header>

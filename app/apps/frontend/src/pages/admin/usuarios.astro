@@ -1,0 +1,137 @@
+---
+import Header from '../../components/Header.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import UsersTable from '../../components/ui/UsersTable.svelte';
+
+const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000';
+---
+
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuários - Programa Bombeiro Mirim</title>
+    <style>
+        :root {
+            --primary-color: #4A5568;
+            --secondary-color: #E2E8F0;
+            --accent-color: #3182CE;
+            --danger-color: #E53E3E;
+            --bg-color: #F7FAFC;
+            --text-color: #2D3748;
+            --label-color: #718096;
+            --border-color: #CBD5E0;
+            --white: #FFFFFF;
+            --success-color: #48BB78;
+            --warning-color: #ED8936;
+            --info-color: #4299E1;
+            --purple-color: #9F7AEA;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+        .main-content {
+            padding: 120px 1.5rem 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+        .content-wrapper {
+            width: 100%;
+            max-width: 1280px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .container {
+            flex: 1;
+            max-width: 100%;
+            background-color: var(--white);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        .page-header .title h1 {
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--text-color);
+        }
+        .page-header .title p {
+            font-size: 1rem;
+            margin: 0;
+            color: var(--label-color);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 100px 1rem 20px;
+            }
+
+            .content-wrapper {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .container {
+                padding: 1.5rem;
+                border-radius: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .page-header .title h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 80px 0.5rem 20px;
+            }
+
+            .container {
+                padding: 1rem;
+                border-radius: 0.75rem;
+            }
+
+            .page-header .title h1 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <Header />
+    
+    <main class="main-content">
+        <div class="content-wrapper">
+            <Sidebar />
+            <div class="container">
+                <div class="page-header">
+                    <div class="title">
+                        <h1>Gerenciar Usuários</h1>
+                        <p>Visualize e gerencie os papéis dos usuários do sistema</p>
+                    </div>
+                </div>
+
+                <UsersTable client:load apiUrl={apiUrl} />
+            </div>
+        </div>
+    </main>
+</body>
+</html>

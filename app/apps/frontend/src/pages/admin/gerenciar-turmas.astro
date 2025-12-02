@@ -1,0 +1,709 @@
+---
+import Header from '../../components/Header.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import FormSelect from '../../components/ui/FormSelect.astro';
+---
+
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Turmas - Programa Bombeiro Mirim</title>
+    <style>
+        :root {
+            --primary-color: #4A5568;
+            --secondary-color: #E2E8F0;
+            --accent-color: #3182CE;
+            --danger-color: #E53E3E;
+            --bg-color: #F7FAFC;
+            --text-color: #2D3748;
+            --label-color: #718096;
+            --border-color: #CBD5E0;
+            --white: #FFFFFF;
+            --success-color: #48BB78;
+            --warning-color: #ED8936;
+            --info-color: #4299E1;
+            --purple-color: #9F7AEA;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+        .main-content {
+            padding: 120px 1.5rem 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+        .content-wrapper {
+            width: 100%;
+            max-width: 1280px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .container {
+            flex: 1;
+            max-width: 100%;
+            background-color: var(--white);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        .page-header .title h1 {
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--text-color);
+        }
+        .page-header .title p {
+            font-size: 1rem;
+            margin: 0;
+            color: var(--label-color);
+        }
+        .btn-export {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background-color: var(--primary-color);
+            color: var(--white);
+            white-space: nowrap;
+        }
+        .btn-export:hover {
+            background-color: #2D3748;
+        }
+        .btn-cadastrar {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background-color: var(--accent-color);
+            color: var(--white);
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-cadastrar:hover {
+            background-color: #2C5282;
+        }
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .filters-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 200px;
+        }
+        .filter-group.full-width {
+            flex: 2;
+        }
+        .filter-group label {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--label-color);
+            font-weight: 500;
+        }
+        .filter-group input,
+        .filter-group select {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            color: var(--text-color);
+            background-color: #FDFDFD;
+        }
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--white);
+        }
+        .table thead {
+            background-color: var(--secondary-color);
+        }
+        .table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+        .table tbody tr:hover {
+            background-color: #F7FAFC;
+        }
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .turma-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .turma-name {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.25rem;
+        }
+        .turma-id {
+            font-size: 0.85rem;
+            color: var(--label-color);
+        }
+        .capacity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .capacity-badge.disponivel {
+            background-color: #C6F6D5;
+            color: #2F855A;
+        }
+        .capacity-badge.quase-cheio {
+            background-color: #FEFCBF;
+            color: #B7791F;
+        }
+        .capacity-badge.cheio {
+            background-color: #FED7D7;
+            color: #C53030;
+        }
+        .actions-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-edit {
+            background-color: var(--accent-color);
+            color: var(--white);
+        }
+        .btn-edit:hover {
+            background-color: #2C5282;
+        }
+        .btn-remove {
+            background-color: var(--danger-color);
+            color: var(--white);
+        }
+        .btn-remove:hover {
+            background-color: #C53030;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--label-color);
+            font-size: 1rem;
+        }
+        .loading-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--label-color);
+            font-size: 1rem;
+        }
+        .error-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--danger-color);
+            background-color: #FED7D7;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, var(--accent-color), #2C5282);
+            color: white;
+            padding: 1.25rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-card.secondary {
+            background: linear-gradient(135deg, var(--success-color), #276749);
+        }
+        .stat-card.tertiary {
+            background: linear-gradient(135deg, var(--warning-color), #C05621);
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 100px 1rem 20px;
+            }
+
+            .content-wrapper {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .container {
+                padding: 1.5rem;
+                border-radius: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .page-header .title h1 {
+                font-size: 1.5rem;
+            }
+
+            .header-buttons {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .btn-cadastrar,
+            .btn-export {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .filters-section {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .table-container {
+                overflow-x: scroll;
+            }
+
+            .table {
+                min-width: 700px;
+            }
+
+            .actions-group {
+                flex-direction: column;
+            }
+
+            .btn-action {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 80px 0.5rem 20px;
+            }
+
+            .container {
+                padding: 1rem;
+                border-radius: 0.75rem;
+            }
+
+            .page-header .title h1 {
+                font-size: 1.25rem;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <Header />
+    
+    <main class="main-content">
+        <div class="content-wrapper">
+            <Sidebar />
+            <div class="container">
+                <div class="page-header">
+                    <div class="title">
+                        <h1>Gerenciar Turmas</h1>
+                        <p>Visualize, edite e gerencie as turmas do programa</p>
+                    </div>
+                    <div class="header-buttons">
+                        <a href="/admin/cadastrar-turmas" class="btn-cadastrar">
+                            <span>+</span> Cadastrar Turma
+                        </a>
+                        <button type="button" class="btn-export" id="btn-export">Exportar Lista</button>
+                    </div>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="stats-row" id="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-turmas">-</div>
+                        <div class="stat-label">Total de Turmas</div>
+                    </div>
+                    <div class="stat-card secondary">
+                        <div class="stat-value" id="total-vagas">-</div>
+                        <div class="stat-label">Total de Vagas</div>
+                    </div>
+                    <div class="stat-card tertiary">
+                        <div class="stat-value" id="total-unidades">-</div>
+                        <div class="stat-label">Unidades</div>
+                    </div>
+                </div>
+
+                <div id="error-container" class="error-state" style="display: none;">
+                    Erro ao carregar turmas. Por favor, tente novamente.
+                </div>
+
+                <div class="filters-section">
+                    <div class="filter-group full-width">
+                        <label for="buscar">Buscar turma</label>
+                        <input 
+                            type="text" 
+                            id="buscar" 
+                            name="buscar" 
+                            placeholder="Nome da turma..."
+                        >
+                    </div>
+                    <FormSelect id="unidade" name="unidade" label="Filtrar por unidade">
+                        <option value="">Todas as unidades</option>
+                        <option value="gama">Gama</option>
+                        <option value="santa_maria">Santa Maria</option>
+                        <option value="recanto">Recanto das Emas</option>
+                        <option value="samambaia">Samambaia</option>
+                        <option value="nucleo_bandeirante">Núcleo Bandeirante</option>
+                        <option value="estrutural">Cidade Estrutural</option>
+                        <option value="ceilandia">Ceilândia</option>
+                        <option value="brazlandia">Brazlândia</option>
+                        <option value="sobradinho">Sobradinho</option>
+                        <option value="planaltina">Planaltina</option>
+                        <option value="paranoa">Paranoá</option>
+                        <option value="sao_sebastiao">São Sebastião</option>
+                    </FormSelect>
+                    <div class="filter-group">
+                        <label for="cidade">Filtrar por cidade</label>
+                        <input 
+                            type="text" 
+                            id="cidade" 
+                            name="cidade" 
+                            placeholder="Nome da cidade..."
+                        >
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div id="loading-state" class="loading-state">
+                        Carregando turmas...
+                    </div>
+                    <table class="table" id="turmas-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Turma</th>
+                                <th>Unidade</th>
+                                <th>Cidade</th>
+                                <th>Capacidade</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Conteúdo será preenchido via JavaScript -->
+                        </tbody>
+                    </table>
+                    <div id="empty-state" class="empty-state" style="display: none;">
+                        Nenhuma turma encontrada com os filtros selecionados.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        import { authStore } from "../../stores/auth";
+        import { apiFetch } from "../../lib/api";
+
+        let turmasData = [];
+        let turmasFiltradas = [];
+
+        // Check authentication
+        document.addEventListener("DOMContentLoaded", async () => {
+            const isAuthenticated = await authStore.checkAuth();
+
+            if (!isAuthenticated) {
+                window.location.href = "/login";
+                return;
+            }
+
+            // Check if user is admin
+            const user = authStore.getUser();
+            if (!user || user.tipo !== "admin") {
+                alert("Acesso negado. Apenas administradores podem gerenciar turmas.");
+                window.location.href = "/login";
+                return;
+            }
+
+            // Load turmas from API
+            await carregarTurmas();
+        });
+
+        async function carregarTurmas() {
+            const loadingState = document.getElementById('loading-state');
+            const errorContainer = document.getElementById('error-container');
+            const turmasTable = document.getElementById('turmas-table');
+            const emptyState = document.getElementById('empty-state');
+
+            loadingState.style.display = 'block';
+            errorContainer.style.display = 'none';
+            turmasTable.style.display = 'none';
+            emptyState.style.display = 'none';
+
+            try {
+                const response = await apiFetch('/turmas/listar?pageSize=100');
+
+                if (response.success && response.data) {
+                    // Handle nested data structure
+                    const apiData = response.data as any;
+                    turmasData = apiData.data || apiData || [];
+                    turmasFiltradas = [...turmasData];
+                    
+                    loadingState.style.display = 'none';
+                    atualizarEstatisticas();
+                    renderizarTabela(turmasFiltradas);
+                } else {
+                    throw new Error(response.error || 'Erro ao carregar turmas');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar turmas:', error);
+                loadingState.style.display = 'none';
+                errorContainer.style.display = 'block';
+                errorContainer.textContent = 'Erro ao carregar turmas. Por favor, tente novamente.';
+            }
+        }
+
+        function atualizarEstatisticas() {
+            const totalTurmas = turmasData.length;
+            const totalVagas = turmasData.reduce((acc: number, turma: any) => acc + (turma.limite_alunos_turma || 0), 0);
+            const unidadesSet = new Set(turmasData.map((t: any) => t.unidade_turma).filter(Boolean));
+
+            document.getElementById('total-turmas')!.textContent = String(totalTurmas);
+            document.getElementById('total-vagas')!.textContent = String(totalVagas);
+            document.getElementById('total-unidades')!.textContent = String(unidadesSet.size);
+        }
+
+        function renderizarTabela(turmas: any[]) {
+            const tableBody = document.getElementById('table-body');
+            const emptyState = document.getElementById('empty-state');
+            const turmasTable = document.getElementById('turmas-table');
+
+            if (!turmas || turmas.length === 0) {
+                tableBody!.innerHTML = '';
+                turmasTable!.style.display = 'none';
+                emptyState!.style.display = 'block';
+                return;
+            }
+
+            emptyState!.style.display = 'none';
+            turmasTable!.style.display = 'table';
+            tableBody!.innerHTML = '';
+
+            turmas.forEach((turma: any) => {
+                const row = document.createElement('tr');
+                
+                const limite = turma.limite_alunos_turma || 0;
+                // For now, we don't have current count, so just show capacity
+                const capacityClass = 'disponivel';
+                const capacityText = `${limite} vagas`;
+
+                const unidadeFormatted = formatUnidade(turma.unidade_turma);
+                const cidadeFormatted = turma.cidade_turma || '-';
+
+                row.innerHTML = `
+                    <td>
+                        <div class="turma-info">
+                            <span class="turma-name">${turma.nome_turma || 'Sem nome'}</span>
+                            <span class="turma-id">ID: ${turma.id_turma}</span>
+                        </div>
+                    </td>
+                    <td>${unidadeFormatted}</td>
+                    <td>${cidadeFormatted}</td>
+                    <td>
+                        <span class="capacity-badge ${capacityClass}">
+                            ${capacityText}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="actions-group">
+                            <button class="btn-action btn-edit" onclick="editarTurma(${turma.id_turma})">Editar</button>
+                            <button class="btn-action btn-remove" onclick="removerTurma(${turma.id_turma})">Remover</button>
+                        </div>
+                    </td>
+                `;
+                tableBody!.appendChild(row);
+            });
+        }
+
+        function formatUnidade(unidade: string | null): string {
+            if (!unidade) return '-';
+            
+            const unidadeMap: Record<string, string> = {
+                'gama': 'Gama',
+                'santa_maria': 'Santa Maria',
+                'recanto': 'Recanto das Emas',
+                'samambaia': 'Samambaia',
+                'nucleo_bandeirante': 'Núcleo Bandeirante',
+                'estrutural': 'Cidade Estrutural',
+                'ceilandia': 'Ceilândia',
+                'brazlandia': 'Brazlândia',
+                'sobradinho': 'Sobradinho',
+                'planaltina': 'Planaltina',
+                'paranoa': 'Paranoá',
+                'sao_sebastiao': 'São Sebastião'
+            };
+
+            return unidadeMap[unidade.toLowerCase()] || unidade;
+        }
+
+        function filtrarTurmas() {
+            const busca = (document.getElementById('buscar') as HTMLInputElement).value.toLowerCase();
+            const unidade = (document.getElementById('unidade') as HTMLSelectElement).value;
+            const cidade = (document.getElementById('cidade') as HTMLInputElement).value.toLowerCase();
+
+            turmasFiltradas = turmasData.filter((turma: any) => {
+                const matchBusca = !busca || 
+                    (turma.nome_turma && turma.nome_turma.toLowerCase().includes(busca)) ||
+                    String(turma.id_turma).includes(busca);
+                
+                const matchUnidade = !unidade || 
+                    (turma.unidade_turma && turma.unidade_turma.toLowerCase().includes(unidade.toLowerCase()));
+                
+                const matchCidade = !cidade || 
+                    (turma.cidade_turma && turma.cidade_turma.toLowerCase().includes(cidade));
+
+                return matchBusca && matchUnidade && matchCidade;
+            });
+
+            renderizarTabela(turmasFiltradas);
+        }
+
+        // Event listeners para filtros
+        document.getElementById('buscar')?.addEventListener('input', filtrarTurmas);
+        document.getElementById('unidade')?.addEventListener('change', filtrarTurmas);
+        document.getElementById('cidade')?.addEventListener('input', filtrarTurmas);
+
+        // Função para exportar lista
+        document.getElementById('btn-export')?.addEventListener('click', function() {
+            if (turmasFiltradas.length === 0) {
+                alert('Nenhuma turma para exportar.');
+                return;
+            }
+
+            const dados = turmasFiltradas.map((turma: any) => ({
+                ID: turma.id_turma,
+                Nome: turma.nome_turma || '',
+                Unidade: formatUnidade(turma.unidade_turma),
+                Cidade: turma.cidade_turma || '',
+                'Limite de Alunos': turma.limite_alunos_turma || 0
+            }));
+
+            // Converter para CSV
+            const headers = Object.keys(dados[0]);
+            const csvContent = [
+                headers.join(','),
+                ...dados.map((row: any) => headers.map(header => `"${row[header]}"`).join(','))
+            ].join('\n');
+
+            // Criar e baixar arquivo
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `turmas_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        // Placeholder functions for actions
+        (window as any).editarTurma = function(id: number) {
+            alert(`Funcionalidade de editar turma (ID: ${id}) ainda não implementada.`);
+            // TODO: Implementar edição de turma
+        };
+
+        (window as any).removerTurma = async function(id: number) {
+            if (!confirm('Tem certeza que deseja remover esta turma? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+
+            try {
+                const response = await apiFetch(`/turmas/deletar/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.success) {
+                    alert('Turma removida com sucesso!');
+                    await carregarTurmas();
+                } else {
+                    alert(response.error || 'Erro ao remover turma.');
+                }
+            } catch (error) {
+                console.error('Erro ao remover turma:', error);
+                alert('Erro ao remover turma. Por favor, tente novamente.');
+            }
+        };
+    </script>
+</body>
+</html>

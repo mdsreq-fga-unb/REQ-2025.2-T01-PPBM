@@ -1,6 +1,7 @@
 ---
 import Header from '../../components/Header.astro';
 import Sidebar from '../../components/Sidebar.astro';
+import FormSelect from '../../components/ui/FormSelect.astro';
 ---
 
 <html lang="pt-br">
@@ -84,6 +85,30 @@ import Sidebar from '../../components/Sidebar.astro';
         }
         .btn-export:hover {
             background-color: #2D3748;
+        }
+        .btn-cadastrar {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background-color: var(--accent-color);
+            color: var(--white);
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-cadastrar:hover {
+            background-color: #2C5282;
+        }
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
         .filters-section {
             display: flex;
@@ -247,6 +272,17 @@ import Sidebar from '../../components/Sidebar.astro';
                 font-size: 1.5rem;
             }
 
+            .header-buttons {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .btn-cadastrar,
+            .btn-export {
+                width: 100%;
+                justify-content: center;
+            }
+
             .filters-section {
                 flex-direction: column;
             }
@@ -306,7 +342,12 @@ import Sidebar from '../../components/Sidebar.astro';
                         <h1>Gerenciar Alunos</h1>
                         <p>Busque, edite e remova alunos do sistema</p>
                     </div>
-                    <button type="button" class="btn-export" id="btn-export">Exportar Lista</button>
+                    <div class="header-buttons">
+                        <a href="/admin/cadastrar-alunos" class="btn-cadastrar">
+                            <span>+</span> Cadastrar Aluno
+                        </a>
+                        <button type="button" class="btn-export" id="btn-export">Exportar Lista</button>
+                    </div>
                 </div>
 
                 <div class="filters-section">
@@ -319,24 +360,18 @@ import Sidebar from '../../components/Sidebar.astro';
                             placeholder="Nome, CPF ou responsável..."
                         >
                     </div>
-                    <div class="filter-group">
-                        <label for="turma">Filtrar por turma</label>
-                        <select id="turma" name="turma">
-                            <option value="">Todas as turmas</option>
-                            <option value="1">Turma A - Manhã</option>
-                            <option value="2">Turma B - Tarde</option>
-                            <option value="3">Turma C - Manhã</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label for="status">Status especial</label>
-                        <select id="status" name="status">
-                            <option value="">Todos</option>
-                            <option value="medico">Médico</option>
-                            <option value="pedagogico">Pedagógico</option>
-                            <option value="normal">Normal</option>
-                        </select>
-                    </div>
+                    <FormSelect id="turma" name="turma" label="Filtrar por turma">
+                        <option value="">Todas as turmas</option>
+                        <option value="1">Turma A - Manhã</option>
+                        <option value="2">Turma B - Tarde</option>
+                        <option value="3">Turma C - Manhã</option>
+                    </FormSelect>
+                    <FormSelect id="status" name="status" label="Status especial">
+                        <option value="">Todos</option>
+                        <option value="medico">Médico</option>
+                        <option value="pedagogico">Pedagógico</option>
+                        <option value="normal">Normal</option>
+                    </FormSelect>
                 </div>
 
                 <div class="table-container">
