@@ -231,6 +231,12 @@ GET    /turmas/detalhe/:id
 POST   /turmas/criar
 PUT    /turmas/atualizar/:id
 DELETE /turmas/deletar/:id
+
+# Docentes por Turma
+GET    /turmas/:id/docentes           # List docentes assigned to a turma
+POST   /turmas/:id/docentes           # Add a docente to a turma (body: { id_docente })
+PUT    /turmas/:id/docentes           # Update all docentes for a turma (body: { docente_ids: [] })
+DELETE /turmas/:id/docentes/:docenteId # Remove a docente from a turma
 ```
 
 ### Presencas (Attendance)

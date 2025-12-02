@@ -29,7 +29,7 @@ CREATE TABLE public.alunos (
   escola_unidade text,
   cidade text,
   neurodivergente boolean,
-  updated_at timestamp without time zone,
+  updated_at timestamp with time zone,
   CONSTRAINT alunos_pkey PRIMARY KEY (id_aluno)
 );
 CREATE TABLE public.alunos_por_turma (

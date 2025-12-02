@@ -6,10 +6,16 @@ const isActive = (path: string) => {
         return currentPath === "/admin/presencas";
     }
     if (path === "/admin/gerenciar-alunos") {
-        return currentPath === "/admin/gerenciar-alunos" || currentPath === "/admin/cadastrar-alunos";
+        return (
+            currentPath === "/admin/gerenciar-alunos" ||
+            currentPath === "/admin/cadastrar-alunos"
+        );
     }
     if (path === "/admin/gerenciar-turmas") {
-        return currentPath === "/admin/gerenciar-turmas" || currentPath === "/admin/cadastrar-turmas";
+        return (
+            currentPath === "/admin/gerenciar-turmas" ||
+            currentPath === "/admin/cadastrar-turmas"
+        );
     }
     if (path === "/admin/relatorios") {
         return currentPath === "/admin/relatorios";
@@ -52,6 +58,14 @@ const isActive = (path: string) => {
                 </a>
             </li>
             <li
+                class={`nav-item ${isActive("/admin/usuarios") ? "active" : ""}`}
+            >
+                <a href="/admin/usuarios" class="nav-link">
+                    <span class="nav-icon">🔐</span>
+                    <span class="nav-text">Usuários</span>
+                </a>
+            </li>
+            <li
                 class={`nav-item ${isActive("/admin/comunicacao") ? "active" : ""}`}
             >
                 <a href="/admin/comunicacao" class="nav-link">
@@ -73,14 +87,6 @@ const isActive = (path: string) => {
                 <a href="/admin/dashboard" class="nav-link">
                     <span class="nav-icon">📈</span>
                     <span class="nav-text">Dashboard</span>
-                </a>
-            </li>
-            <li
-                class={`nav-item ${isActive("/admin/usuarios") ? "active" : ""}`}
-            >
-                <a href="/admin/usuarios" class="nav-link">
-                    <span class="nav-icon">🔐</span>
-                    <span class="nav-text">Usuários</span>
                 </a>
             </li>
         </ul>

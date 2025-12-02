@@ -401,6 +401,349 @@ export default class TurmaController {
             });
         }
     }
+
+    // ============ DOCENTES POR TURMA ============
+
+    static async getDocentesByTurma(req: Request, res: Response): Promise<Response | void> {
+        try {
+            const { id } = req.params;
+
+            if (!isPositiveInteger(id)) {
+                return res.status(400).json({
+                    error: 'ID da turma inválido'
+                });
+            }
+
+            log.info('getDocentesByTurma', 'Buscando docentes da turma', { turmaId: id });
+
+            // First check if turma exists
+            const { data: turma, error: turmaError } = await SupabaseWrapper.get()
+                .from('turmas')
+                .select('id_turma')
+                .eq('id_turma', Number(id))
+                .maybeSingle();
+
+            if (turmaError) {
+                log.error('getDocentesByTurma', 'Erro ao verificar turma', turmaError);
+                return res.status(500).json({
+                    error: 'Erro interno do servidor',
+                    details: turmaError.message
+                });
+            }
+
+            if (!turma) {
+                return res.status(404).json({
+                    error: 'Turma não encontrada'
+                });
+            }
+
+            // Get docentes for this turma
+            const { data, error } = await SupabaseWrapper.get()
+                .from('docentes_por_turma')
+                .select(`
+                    id_docentes_por_turma,
+                    id_docente,
+                    id_turma,
+                    created_at,
+                    docentes (
+                        id_docente,
+                        nome_docente,
+                        email_docente,
+                        cpf_docente,
+                        unidade_docente,
+                        cidade_docente
+                    )
+                `)
+                .eq('id_turma', Number(id));
+
+            if (error) {
+                log.error('getDocentesByTurma', 'Erro ao buscar docentes', error);
+                return res.status(500).json({
+                    error: 'Erro interno do servidor',
+                    details: error.message
+                });
+            }
+
+            // Flatten the response to return docente data directly
+            const docentes = (data || []).map((item: any) => ({
+                id_docentes_por_turma: item.id_docentes_por_turma,
+                id_docente: item.id_docente,
+                id_turma: item.id_turma,
+                ...item.docentes
+            }));
+
+            return res.status(200).json({
+                success: true,
+                data: docentes
+            });
+        } catch (error) {
+            log.error('getDocentesByTurma', 'Erro inesperado', error as Error);
+            return res.status(500).json({
+                error: 'Erro interno do servidor'
+            });
+        }
+    }
+
+    static async addDocenteToTurma(req: Request, res: Response): Promise<Response | void> {
+        try {
+            const { id } = req.params;
+            const { id_docente } = req.body ?? {};
+
+            if (!isPositiveInteger(id)) {
+                return res.status(400).json({
+                    error: 'ID da turma inválido'
+                });
+            }
+
+            if (!id_docente || !isPositiveInteger(id_docente)) {
+                return res.status(400).json({
+                    error: 'ID do docente inválido ou ausente'
+                });
+            }
+
+            log.info('addDocenteToTurma', 'Adicionando docente à turma', { turmaId: id, docenteId: id_docente });
+
+            // Check if turma exists
+            const { data: turma, error: turmaError } = await SupabaseWrapper.get()
+                .from('turmas')
+                .select('id_turma')
+                .eq('id_turma', Number(id))
+                .maybeSingle();
+
+            if (turmaError || !turma) {
+                return res.status(404).json({
+                    error: 'Turma não encontrada'
+                });
+            }
+
+            // Check if docente exists
+            const { data: docente, error: docenteError } = await SupabaseWrapper.get()
+                .from('docentes')
+                .select('id_docente')
+                .eq('id_docente', Number(id_docente))
+                .maybeSingle();
+
+            if (docenteError || !docente) {
+                return res.status(404).json({
+                    error: 'Docente não encontrado'
+                });
+            }
+
+            // Check if association already exists
+            const { data: existing } = await SupabaseWrapper.get()
+                .from('docentes_por_turma')
+                .select('id_docentes_por_turma')
+                .eq('id_turma', Number(id))
+                .eq('id_docente', Number(id_docente))
+                .maybeSingle();
+
+            if (existing) {
+                return res.status(409).json({
+                    error: 'Docente já está associado a esta turma'
+                });
+            }
+
+            // Add docente to turma
+            const { data, error } = await SupabaseWrapper.get()
+                .from('docentes_por_turma')
+                .insert([{
+                    id_turma: Number(id),
+                    id_docente: Number(id_docente)
+                }])
+                .select()
+                .single();
+
+            if (error) {
+                log.error('addDocenteToTurma', 'Erro ao adicionar docente', error);
+                return res.status(500).json({
+                    error: 'Erro interno do servidor',
+                    details: error.message
+                });
+            }
+
+            return res.status(201).json({
+                success: true,
+                data,
+                message: 'Docente adicionado à turma com sucesso'
+            });
+        } catch (error) {
+            log.error('addDocenteToTurma', 'Erro inesperado', error as Error);
+            return res.status(500).json({
+                error: 'Erro interno do servidor'
+            });
+        }
+    }
+
+    static async removeDocenteFromTurma(req: Request, res: Response): Promise<Response | void> {
+        try {
+            const { id, docenteId } = req.params;
+
+            if (!isPositiveInteger(id)) {
+                return res.status(400).json({
+                    error: 'ID da turma inválido'
+                });
+            }
+
+            if (!isPositiveInteger(docenteId)) {
+                return res.status(400).json({
+                    error: 'ID do docente inválido'
+                });
+            }
+
+            log.info('removeDocenteFromTurma', 'Removendo docente da turma', { turmaId: id, docenteId });
+
+            // Check if association exists
+            const { data: existing } = await SupabaseWrapper.get()
+                .from('docentes_por_turma')
+                .select('id_docentes_por_turma')
+                .eq('id_turma', Number(id))
+                .eq('id_docente', Number(docenteId))
+                .maybeSingle();
+
+            if (!existing) {
+                return res.status(404).json({
+                    error: 'Docente não está associado a esta turma'
+                });
+            }
+
+            // Remove association
+            const { error } = await SupabaseWrapper.get()
+                .from('docentes_por_turma')
+                .delete()
+                .eq('id_turma', Number(id))
+                .eq('id_docente', Number(docenteId));
+
+            if (error) {
+                log.error('removeDocenteFromTurma', 'Erro ao remover docente', error);
+                return res.status(500).json({
+                    error: 'Erro interno do servidor',
+                    details: error.message
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: 'Docente removido da turma com sucesso'
+            });
+        } catch (error) {
+            log.error('removeDocenteFromTurma', 'Erro inesperado', error as Error);
+            return res.status(500).json({
+                error: 'Erro interno do servidor'
+            });
+        }
+    }
+
+    static async updateDocentesForTurma(req: Request, res: Response): Promise<Response | void> {
+        try {
+            const { id } = req.params;
+            const { docente_ids } = req.body ?? {};
+
+            if (!isPositiveInteger(id)) {
+                return res.status(400).json({
+                    error: 'ID da turma inválido'
+                });
+            }
+
+            if (!Array.isArray(docente_ids)) {
+                return res.status(400).json({
+                    error: 'docente_ids deve ser um array de IDs'
+                });
+            }
+
+            // Validate all IDs are positive integers
+            const validIds = docente_ids.every((dId: any) => isPositiveInteger(dId) || (typeof dId === 'number' && dId > 0));
+            if (!validIds) {
+                return res.status(400).json({
+                    error: 'Todos os IDs de docentes devem ser números inteiros positivos'
+                });
+            }
+
+            log.info('updateDocentesForTurma', 'Atualizando docentes da turma', { turmaId: id, docenteIds: docente_ids });
+
+            // Check if turma exists
+            const { data: turma, error: turmaError } = await SupabaseWrapper.get()
+                .from('turmas')
+                .select('id_turma')
+                .eq('id_turma', Number(id))
+                .maybeSingle();
+
+            if (turmaError || !turma) {
+                return res.status(404).json({
+                    error: 'Turma não encontrada'
+                });
+            }
+
+            // Verify all docentes exist
+            if (docente_ids.length > 0) {
+                const { data: existingDocentes, error: docentesError } = await SupabaseWrapper.get()
+                    .from('docentes')
+                    .select('id_docente')
+                    .in('id_docente', docente_ids.map(Number));
+
+                if (docentesError) {
+                    log.error('updateDocentesForTurma', 'Erro ao verificar docentes', docentesError);
+                    return res.status(500).json({
+                        error: 'Erro interno do servidor'
+                    });
+                }
+
+                const foundIds = (existingDocentes || []).map((d: any) => d.id_docente);
+                const missingIds = docente_ids.filter((dId: any) => !foundIds.includes(Number(dId)));
+
+                if (missingIds.length > 0) {
+                    return res.status(404).json({
+                        error: 'Alguns docentes não foram encontrados',
+                        missingIds
+                    });
+                }
+            }
+
+            // Delete all current associations
+            const { error: deleteError } = await SupabaseWrapper.get()
+                .from('docentes_por_turma')
+                .delete()
+                .eq('id_turma', Number(id));
+
+            if (deleteError) {
+                log.error('updateDocentesForTurma', 'Erro ao remover associações existentes', deleteError);
+                return res.status(500).json({
+                    error: 'Erro interno do servidor',
+                    details: deleteError.message
+                });
+            }
+
+            // Insert new associations if any
+            if (docente_ids.length > 0) {
+                const insertData = docente_ids.map((dId: any) => ({
+                    id_turma: Number(id),
+                    id_docente: Number(dId)
+                }));
+
+                const { error: insertError } = await SupabaseWrapper.get()
+                    .from('docentes_por_turma')
+                    .insert(insertData);
+
+                if (insertError) {
+                    log.error('updateDocentesForTurma', 'Erro ao inserir novas associações', insertError);
+                    return res.status(500).json({
+                        error: 'Erro interno do servidor',
+                        details: insertError.message
+                    });
+                }
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: 'Docentes da turma atualizados com sucesso',
+                docenteCount: docente_ids.length
+            });
+        } catch (error) {
+            log.error('updateDocentesForTurma', 'Erro inesperado', error as Error);
+            return res.status(500).json({
+                error: 'Erro interno do servidor'
+            });
+        }
+    }
 }
 
 const turmaController: EndpointController = {
@@ -420,6 +763,14 @@ const turmaController: EndpointController = {
         ],
         'deletar/:id': [
             { key: RequestType.DELETE, value: TurmaController.deleteTurma }
+        ],
+        ':id/docentes': [
+            { key: RequestType.GET, value: TurmaController.getDocentesByTurma },
+            { key: RequestType.POST, value: TurmaController.addDocenteToTurma },
+            { key: RequestType.PUT, value: TurmaController.updateDocentesForTurma }
+        ],
+        ':id/docentes/:docenteId': [
+            { key: RequestType.DELETE, value: TurmaController.removeDocenteFromTurma }
         ]
     }
 };
