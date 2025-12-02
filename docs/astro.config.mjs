@@ -98,6 +98,10 @@ export default defineConfig({
                         label: "Unidade 2",
                         slug: "licoes/unidade-2",
                     },
+                    {
+                        label: "Unidade 3",
+                        slug: "licoes/unidade-3",
+                    }
                 ],
             },
             {
@@ -110,7 +114,7 @@ export default defineConfig({
                         {
                             label: "Unidade 2",
                             slug: "entregas/unidade-2",
-                        },
+                        }
                 ],
             },
             {
@@ -123,6 +127,26 @@ export default defineConfig({
                     {
                         label: "Sprint 1",
                         slug: "evidencias/sprint-1",
+                    },
+                    {
+                        label: "Sprint 2",
+                        slug: "evidencias/sprint-2",
+                    },
+                    {
+                        label: "Sprint 3",
+                        slug: "evidencias/sprint-3",
+                    },
+                    {
+                        label: "Sprint 4",
+                        slug: "evidencias/sprint-4",
+                    },
+                    {
+                        label: "Sprint 5",
+                        slug: "evidencias/sprint-5",
+                    },
+                    {
+                        label: "Sprint 6",
+                        slug: "evidencias/sprint-6",
                     },
                 ],
             },
@@ -150,8 +174,44 @@ export default defineConfig({
                         slug: "atas/ata5",
                     },
                     {
-                        label: "08/10/2025",
-                        link: "/custom/",
+                        label: "09/10/2025",
+                        slug: "atas/ata6",
+                    },
+                    {
+                        label: "13/10/2025",
+                        slug: "atas/ata7",
+                    },
+                    {
+                        label: "15/10/2025",
+                        slug: "atas/ata8",
+                    },
+                    {
+                        label: "27/10/2025",
+                        slug: "atas/ata9",
+                    },
+                    {
+                        label: "29/10/2025",
+                        slug: "atas/ata10",
+                    },
+                    {
+                        label: "10/11/2025",
+                        slug: "atas/ata11",
+                    },
+                    {
+                        label: "12/11/2025",
+                        slug: "atas/ata12",
+                    },
+                    {
+                        label: "24/11/2025",
+                        slug: "atas/ata13",
+                    },
+                    {
+                        label: "06/11/2025",
+                        slug: "atas/ata14",
+                    },
+                    {
+                        label: "01/12/2025",
+                        slug: "atas/ata15",
                     }
                 ],
             },
