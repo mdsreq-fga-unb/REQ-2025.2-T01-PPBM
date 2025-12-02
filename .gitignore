@@ -181,4 +181,3 @@ ssl/*.pfx
 # Keep the README
 !ssl/README.md
 .github/
-docs/
