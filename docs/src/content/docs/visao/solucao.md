@@ -7,16 +7,27 @@ description: Descrição detalhada da solução proposta para o projeto PPBM.
 
 O sistema tem como objetivo *centralizar e simplificar a gestão das crianças atendidas*, garantindo eficiência administrativa, segurança e qualidade no acompanhamento pedagógico e social.
 
+## Objetivos Específicos e seus indicadores
+
+| Código | Objetivo Específico | Descrição |
+|--------|---------------------|-----------|
+| **OE01** | Melhorar a eficiência e confiabilidade no controle de frequência | Reduzir o retrabalho e a dependência de registros manuais, garantindo precisão das informações de presença e maior agilidade no acompanhamento dos alunos. |
+| **OE02** | Apoiar intervenções pedagógicas por meio do monitoramento comportamental | Disponibilizar dados consolidados de comportamento e assiduidade para auxiliar a equipe escolar na identificação antecipada de riscos e na tomada de decisões preventivas. |
+| **OE03** | Fortalecer a segurança e organização da gestão acadêmica | Centralizar o controle de acesso e o cadastro de usuários, docentes e turmas para minimizar falhas operacionais e assegurar que cada perfil tenha permissões adequadas. |
+| **OE04** | Ampliar a personalização do acompanhamento estudantil | Fornecer informações pedagógicas estruturadas e histórico individual para que docentes e responsáveis possam acompanhar o progresso e realizar intervenções mais assertivas. |
+| **OE05** | Melhorar a comunicação institucional e o acesso a informações oficiais | Garantir que normas, comunicados e documentos da escola sejam disponibilizados de forma padronizada e acessível, reduzindo ruídos e falhas de comunicação com a comunidade escolar. |
+
+
 ## Características da Solução
 
-•⁠  ⁠Cadastro completo da criança (nome, data de nascimento, CPF, responsável, contato, escola).  
-•⁠  ⁠Registro de presença com destaque para faltas justificadas.  
-•⁠  ⁠Consulta rápida de histórico de faltas por aluno.  
-•⁠  ⁠Emissão de relatórios e exportação em Excel/PDF.  
-•⁠  ⁠Ficha médica com observações (asma, alergias, etc.).  
-•⁠  ⁠Cadastro diferenciado para crianças neurodivergentes, com acompanhamento de desenvolvimento.  
-•⁠  ⁠Área de comunicação entre equipe e responsáveis.  
-•⁠  ⁠Ferramenta de análise gráfica de frequência e faltas.  
+- ⁠Cadastro completo da criança (nome, data de nascimento, CPF, responsável, contato, escola). Tem relação com o Objetivo Específico OE03.
+- ⁠Registro de presença com destaque para faltas justificadas. Tem relação com o Objetivo Específico OE01.
+- ⁠Consulta rápida de histórico de faltas por aluno. Tem relação com o Objetivo Específico OE01.
+- ⁠Emissão de relatórios e exportação em Excel/PDF. Tem relação com o Objetivo Específico OE05.
+- ⁠Ficha médica com observações (asma, alergias, etc.). Tem relação com o Objetivo Específico OE02 e OE04.
+- ⁠Cadastro diferenciado para crianças neurodivergentes, com acompanhamento de desenvolvimento. Tem relação com o Objetivo Específico OE02 e 04.
+- ⁠Área de comunicação entre equipe e responsáveis. Tem relação com o Objetivo Específico OE05.
+- ⁠Ferramenta de análise gráfica de frequência e faltas. Tem relação com o Objetivo Específico OE01.
 
 ## Tecnologias a serem utilizadas
 
@@ -59,13 +70,15 @@ Assim, o projeto apresenta *alta viabilidade técnica, financeira e de mercado*,
 A plataforma trará *eficiência administrativa*, reduzindo tarefas que antes levavam horas para poucos minutos e diminuindo custos ao centralizar presença, comunicação e relatórios em um único sistema.  
 
 Também melhora a *experiência de usuários*:  
-•⁠  ⁠Responsáveis terão acesso rápido a informações.  
-•⁠  ⁠Educadores contarão com relatórios detalhados e acompanhamento individualizado, inclusive para crianças neurodivergentes.  
+- ⁠Responsáveis terão acesso rápido a informações.  
+- ⁠Educadores contarão com relatórios detalhados e acompanhamento individualizado, inclusive para crianças neurodivergentes.  
 
-*Em resumo:* gera *agilidade, economia, aumento de receita e melhor atendimento*, fortalecendo a atuação da empresa no setor educacional.
+**Em resumo:** gera *agilidade, economia, aumento de receita e melhor atendimento*, fortalecendo a atuação da empresa no setor educacional.
 
 ## Histórico de Versão
 
 | Data | Versão | Descrição | Autor(es) | Revisor(es) |
 |------|--------|-----------|-----------|-------------|
 | 15/09/2025 | 1.0 | Criação inicial do documento de solução. | Lucas Oliveira | Philipe Morais |
+| 21/11/2025 | 2.0 | Update do documento de solução, adicionado objetivos específicos. | Lucas Branco | Vitor Marconi |
+| 30/11/2025 | 2.1 | Update do documento de solução, erros ortográficos. | Lucas Branco | Todos |
