@@ -1,5 +1,9 @@
 <script lang="ts">
-    import { createEventDispatcher, onMount } from "svelte";
+    import { createEventDispatcher, onMount, onDestroy } from "svelte";
+    import { Chart, registerables } from "chart.js";
+
+    // Register Chart.js components
+    Chart.register(...registerables);
 
     export let show: boolean = false;
     export let alunoId: number | null = null;
@@ -18,6 +22,8 @@
             presentes: number;
             atrasos: number;
             faltas: number;
+            faltasJustificadas?: number;
+            faltasNaoJustificadas?: number;
             taxaPresenca: number;
         };
         justificativas: {
@@ -55,6 +61,320 @@
     let acompanhamentos: Acompanhamento[] = [];
     let loadingAcompanhamentos = false;
 
+    // Chart instances
+    let distributionChart: Chart | null = null;
+    let trendChart: Chart | null = null;
+
+    // Chart colors
+    const chartColors = {
+        presente: { bg: "rgba(72, 187, 120, 0.8)", border: "#48BB78" },
+        atraso: { bg: "rgba(237, 137, 54, 0.8)", border: "#ED8936" },
+        faltaJustificada: { bg: "rgba(128, 90, 213, 0.8)", border: "#805AD5" },
+        faltaNaoJustificada: {
+            bg: "rgba(229, 62, 62, 0.8)",
+            border: "#E53E3E",
+        },
+        justAprovada: { bg: "rgba(72, 187, 120, 0.8)", border: "#48BB78" },
+        justPendente: { bg: "rgba(237, 137, 54, 0.8)", border: "#ED8936" },
+        justRejeitada: { bg: "rgba(229, 62, 62, 0.8)", border: "#E53E3E" },
+    };
+
+    function destroyCharts() {
+        if (distributionChart) {
+            distributionChart.destroy();
+            distributionChart = null;
+        }
+        if (trendChart) {
+            trendChart.destroy();
+            trendChart = null;
+        }
+    }
+
+    function createDistributionChart(canvasId: string) {
+        const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+        if (!canvas || !estatisticas) return;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        // Calculate justified vs non-justified faltas from timeline
+        let faltasJustificadas = 0;
+        let faltasNaoJustificadas = 0;
+
+        // Count from timeline events
+        const presencaEvents = timeline.filter((e) => e.tipo === "presenca");
+        presencaEvents.forEach((event) => {
+            const status = String(event.detalhes.status || "").toLowerCase();
+            if (status === "falta" || status === "ausente") {
+                // Check if this absence has a justification
+                const hasJustification =
+                    event.detalhes.justificativa_id ||
+                    timeline.some(
+                        (j) =>
+                            j.tipo === "justificativa" &&
+                            new Date(j.data).toDateString() ===
+                                new Date(event.data).toDateString(),
+                    );
+                if (hasJustification) {
+                    faltasJustificadas++;
+                } else {
+                    faltasNaoJustificadas++;
+                }
+            }
+        });
+
+        // If we couldn't calculate from timeline, use the stats
+        if (
+            faltasJustificadas === 0 &&
+            faltasNaoJustificadas === 0 &&
+            estatisticas.presenca.faltas > 0
+        ) {
+            faltasJustificadas = estatisticas.justificativas.aprovadas;
+            faltasNaoJustificadas = Math.max(
+                0,
+                estatisticas.presenca.faltas - faltasJustificadas,
+            );
+        }
+
+        distributionChart = new Chart(ctx, {
+            type: "doughnut",
+            data: {
+                labels: [
+                    "Presenças",
+                    "Atrasos",
+                    "Faltas Justificadas",
+                    "Faltas Não Justificadas",
+                ],
+                datasets: [
+                    {
+                        data: [
+                            estatisticas.presenca.presentes,
+                            estatisticas.presenca.atrasos,
+                            faltasJustificadas,
+                            faltasNaoJustificadas,
+                        ],
+                        backgroundColor: [
+                            chartColors.presente.bg,
+                            chartColors.atraso.bg,
+                            chartColors.faltaJustificada.bg,
+                            chartColors.faltaNaoJustificada.bg,
+                        ],
+                        borderColor: [
+                            chartColors.presente.border,
+                            chartColors.atraso.border,
+                            chartColors.faltaJustificada.border,
+                            chartColors.faltaNaoJustificada.border,
+                        ],
+                        borderWidth: 2,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: {
+                            padding: 12,
+                            usePointStyle: true,
+                            font: { size: 11, family: "Inter" },
+                        },
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const total = context.dataset.data.reduce(
+                                    (a: number, b: number) => a + b,
+                                    0,
+                                );
+                                const percentage =
+                                    total > 0
+                                        ? Math.round(
+                                              ((context.raw as number) /
+                                                  total) *
+                                                  100,
+                                          )
+                                        : 0;
+                                return `${context.label}: ${context.raw} (${percentage}%)`;
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    }
+
+    function createTrendChart(canvasId: string) {
+        const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+        if (!canvas || timeline.length === 0) return;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        // Group timeline events by date
+        const presencaEvents = timeline
+            .filter((e) => e.tipo === "presenca")
+            .sort(
+                (a, b) =>
+                    new Date(a.data).getTime() - new Date(b.data).getTime(),
+            );
+
+        if (presencaEvents.length === 0) return;
+
+        // Aggregate by date
+        const dataByDate: Record<
+            string,
+            {
+                presente: number;
+                atraso: number;
+                faltaJust: number;
+                faltaNaoJust: number;
+            }
+        > = {};
+
+        presencaEvents.forEach((event) => {
+            const dateKey = new Date(event.data).toISOString().split("T")[0];
+            if (!dataByDate[dateKey]) {
+                dataByDate[dateKey] = {
+                    presente: 0,
+                    atraso: 0,
+                    faltaJust: 0,
+                    faltaNaoJust: 0,
+                };
+            }
+
+            const status = String(event.detalhes.status || "").toLowerCase();
+            if (status === "presente") {
+                dataByDate[dateKey].presente++;
+            } else if (status === "atraso") {
+                dataByDate[dateKey].atraso++;
+            } else if (status === "falta" || status === "ausente") {
+                const hasJustification =
+                    event.detalhes.justificativa_id ||
+                    timeline.some(
+                        (j) =>
+                            j.tipo === "justificativa" &&
+                            new Date(j.data).toDateString() ===
+                                new Date(event.data).toDateString(),
+                    );
+                if (hasJustification) {
+                    dataByDate[dateKey].faltaJust++;
+                } else {
+                    dataByDate[dateKey].faltaNaoJust++;
+                }
+            }
+        });
+
+        const sortedDates = Object.keys(dataByDate).sort();
+        const labels = sortedDates.map((d) => {
+            const date = new Date(d);
+            return date.toLocaleDateString("pt-BR", {
+                day: "2-digit",
+                month: "2-digit",
+            });
+        });
+
+        trendChart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: "Presenças",
+                        data: sortedDates.map((d) => dataByDate[d].presente),
+                        borderColor: chartColors.presente.border,
+                        backgroundColor: "rgba(72, 187, 120, 0.1)",
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                    },
+                    {
+                        label: "Atrasos",
+                        data: sortedDates.map((d) => dataByDate[d].atraso),
+                        borderColor: chartColors.atraso.border,
+                        backgroundColor: "rgba(237, 137, 54, 0.1)",
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                    },
+                    {
+                        label: "Faltas Justificadas",
+                        data: sortedDates.map((d) => dataByDate[d].faltaJust),
+                        borderColor: chartColors.faltaJustificada.border,
+                        backgroundColor: "rgba(128, 90, 213, 0.1)",
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                    },
+                    {
+                        label: "Faltas Não Justificadas",
+                        data: sortedDates.map(
+                            (d) => dataByDate[d].faltaNaoJust,
+                        ),
+                        borderColor: chartColors.faltaNaoJustificada.border,
+                        backgroundColor: "rgba(229, 62, 62, 0.1)",
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: "index",
+                },
+                plugins: {
+                    legend: {
+                        position: "top",
+                        labels: {
+                            padding: 12,
+                            usePointStyle: true,
+                            font: { size: 11, family: "Inter" },
+                        },
+                    },
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { size: 10, family: "Inter" },
+                            maxRotation: 45,
+                            minRotation: 0,
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: "rgba(0, 0, 0, 0.05)" },
+                        ticks: {
+                            font: { size: 11, family: "Inter" },
+                            stepSize: 1,
+                        },
+                    },
+                },
+            },
+        });
+    }
+
+    function initCharts() {
+        destroyCharts();
+        setTimeout(() => {
+            createDistributionChart("distribution-chart-modal");
+            createTrendChart("trend-chart-modal");
+        }, 100);
+    }
+
+    onDestroy(() => {
+        destroyCharts();
+    });
+
     // New acompanhamento form
     let showNewAcompForm = false;
     let newAcompDescricao = "";
@@ -69,8 +389,23 @@
     let dateTo = "";
 
     // Tab state
-    let activeTab: "estatisticas" | "timeline" | "acompanhamento" =
-        "estatisticas";
+    let activeTab:
+        | "estatisticas"
+        | "timeline"
+        | "acompanhamento"
+        | "documentos" = "estatisticas";
+
+    // Documents state
+    interface Documento {
+        id: number;
+        tipo: string;
+        descricao: string;
+        url: string;
+        data: string;
+        docente?: string;
+    }
+    let documentos: Documento[] = [];
+    let loadingDocumentos = false;
 
     const dispatch = createEventDispatcher<{
         close: void;
@@ -183,6 +518,11 @@
             if (statsData.aluno?.neurodivergente) {
                 await loadAcompanhamentos();
             }
+
+            // Initialize charts after data is loaded
+            if (activeTab === "estatisticas") {
+                initCharts();
+            }
         } catch (error) {
             console.error("Erro ao carregar dados do aluno:", error);
             errorMessage =
@@ -220,6 +560,50 @@
         } finally {
             loadingAcompanhamentos = false;
         }
+    }
+
+    async function loadDocumentos() {
+        if (!alunoId) return;
+
+        loadingDocumentos = true;
+        try {
+            const token = await getAuthToken();
+            const response = await fetch(
+                `${apiUrl}/documentos/aluno/${alunoId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                },
+            );
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                documentos = data.data || [];
+            }
+        } catch (error) {
+            console.error("Erro ao carregar documentos:", error);
+        } finally {
+            loadingDocumentos = false;
+        }
+    }
+
+    function getTipoDocumentoLabel(tipo: string): string {
+        const tipos: Record<string, string> = {
+            laudo_medico: "Laudo Médico",
+            identificacao: "Documento de Identificação",
+            comprovante: "Comprovante",
+            atestado: "Atestado",
+            outro: "Outro",
+            documento: "Documento",
+        };
+        return tipos[tipo] || tipo;
+    }
+
+    function handleViewDocument(url: string) {
+        window.open(url, "_blank");
     }
 
     async function saveNewAcompanhamento() {
@@ -401,10 +785,12 @@
     }
 
     $: if (!show) {
+        destroyCharts();
         aluno = null;
         estatisticas = null;
         timeline = [];
         acompanhamentos = [];
+        documentos = [];
         errorMessage = "";
         dateFrom = "";
         dateTo = "";
@@ -412,6 +798,11 @@
         showNewAcompForm = false;
         newAcompDescricao = "";
         newAcompTipo = "acompanhamento";
+    }
+
+    // Re-initialize charts when switching to statistics tab
+    $: if (activeTab === "estatisticas" && estatisticas && show) {
+        setTimeout(() => initCharts(), 100);
     }
 </script>
 
@@ -527,6 +918,17 @@
                             📋 Plano ({acompanhamentos.length})
                         </button>
                     {/if}
+                    <button
+                        type="button"
+                        class="tab"
+                        class:active={activeTab === "documentos"}
+                        on:click={() => {
+                            activeTab = "documentos";
+                            if (documentos.length === 0) loadDocumentos();
+                        }}
+                    >
+                        📎 Documentos ({documentos.length})
+                    </button>
                 </div>
 
                 <!-- Tab Content -->
@@ -583,6 +985,46 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Charts Section -->
+                            <div class="charts-section-modal">
+                                <div class="chart-container-modal">
+                                    <h5>📊 Distribuição de Frequência</h5>
+                                    <div class="chart-wrapper-modal">
+                                        <canvas id="distribution-chart-modal"
+                                        ></canvas>
+                                    </div>
+                                    <div class="chart-legend-info">
+                                        <span class="legend-item">
+                                            <span
+                                                class="legend-color"
+                                                style="background: {chartColors
+                                                    .faltaJustificada.border};"
+                                            ></span>
+                                            Faltas Justificadas
+                                        </span>
+                                        <span class="legend-item">
+                                            <span
+                                                class="legend-color"
+                                                style="background: {chartColors
+                                                    .faltaNaoJustificada
+                                                    .border};"
+                                            ></span>
+                                            Faltas Não Justificadas
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Trend Chart -->
+                            {#if timeline.filter((e) => e.tipo === "presenca").length > 1}
+                                <div class="chart-container-modal full-width">
+                                    <h5>📈 Linha do Tempo de Frequência</h5>
+                                    <div class="chart-wrapper-modal trend">
+                                        <canvas id="trend-chart-modal"></canvas>
+                                    </div>
+                                </div>
+                            {/if}
 
                             <!-- Justificativas & Advertências -->
                             <div class="secondary-stats">
@@ -874,6 +1316,93 @@
                                             {/if}
                                         </div>
                                     {/each}
+                                </div>
+                            {/if}
+                        </div>
+                    {:else if activeTab === "documentos"}
+                        <!-- Documentos -->
+                        <div class="documentos-section">
+                            <div class="docs-header">
+                                <h4>📎 Documentos do Aluno</h4>
+                                <p class="docs-hint">
+                                    Laudos médicos, documentos de identificação
+                                    e comprovantes.
+                                </p>
+                            </div>
+
+                            {#if loadingDocumentos}
+                                <div class="loading-inline">
+                                    <span class="spinner-small"></span>
+                                    Carregando documentos...
+                                </div>
+                            {:else if documentos.length === 0}
+                                <div class="empty-state">
+                                    <span class="empty-icon">📂</span>
+                                    <p>
+                                        Nenhum documento cadastrado para este
+                                        aluno.
+                                    </p>
+                                    <p class="empty-hint">
+                                        Para adicionar documentos, acesse a
+                                        página de edição do aluno.
+                                    </p>
+                                    <a
+                                        href={`/admin/cadastrar-alunos?id=${alunoId}`}
+                                        class="btn-edit-link"
+                                    >
+                                        Editar Aluno
+                                    </a>
+                                </div>
+                            {:else}
+                                <div class="docs-list">
+                                    {#each documentos as doc (doc.id)}
+                                        <div class="doc-card">
+                                            <div class="doc-icon">
+                                                {doc.tipo === "laudo_medico"
+                                                    ? "🏥"
+                                                    : doc.tipo ===
+                                                        "identificacao"
+                                                      ? "🪪"
+                                                      : doc.tipo === "atestado"
+                                                        ? "📋"
+                                                        : "📄"}
+                                            </div>
+                                            <div class="doc-info">
+                                                <span class="doc-tipo">
+                                                    {getTipoDocumentoLabel(
+                                                        doc.tipo,
+                                                    )}
+                                                </span>
+                                                <p class="doc-descricao">
+                                                    {doc.descricao ||
+                                                        "Documento"}
+                                                </p>
+                                                <span class="doc-date">
+                                                    Adicionado em {formatDate(
+                                                        doc.data,
+                                                    )}
+                                                </span>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                class="btn-view-doc"
+                                                on:click={() =>
+                                                    handleViewDocument(doc.url)}
+                                                title="Visualizar / Download"
+                                            >
+                                                📥 Ver
+                                            </button>
+                                        </div>
+                                    {/each}
+                                </div>
+
+                                <div class="docs-footer">
+                                    <a
+                                        href={`/admin/cadastrar-alunos?id=${alunoId}`}
+                                        class="btn-manage-docs"
+                                    >
+                                        Gerenciar Documentos
+                                    </a>
                                 </div>
                             {/if}
                         </div>
@@ -1270,6 +1799,69 @@
         color: #744210;
     }
 
+    /* Charts Section Styles */
+    .charts-section-modal {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .chart-container-modal {
+        background: #f7fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1rem;
+    }
+
+    .chart-container-modal h5 {
+        margin: 0 0 0.75rem 0;
+        font-size: 0.9rem;
+        color: #4a5568;
+        font-weight: 600;
+    }
+
+    .chart-container-modal.full-width {
+        margin-bottom: 1.5rem;
+    }
+
+    .chart-wrapper-modal {
+        position: relative;
+        height: 200px;
+        width: 100%;
+    }
+
+    .chart-wrapper-modal.trend {
+        height: 220px;
+    }
+
+    .chart-wrapper-modal canvas {
+        max-height: 100%;
+    }
+
+    .chart-legend-info {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        color: #4a5568;
+    }
+
+    .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+    }
+
     .empty-state {
         text-align: center;
         padding: 3rem 1rem;
@@ -1610,6 +2202,126 @@
         margin: 0;
     }
 
+    /* Documentos section styles */
+    .documentos-section {
+        width: 100%;
+    }
+
+    .docs-header {
+        margin-bottom: 1rem;
+    }
+
+    .docs-header h4 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1rem;
+        color: #2d3748;
+    }
+
+    .docs-hint {
+        font-size: 0.85rem;
+        color: #718096;
+        margin: 0;
+    }
+
+    .docs-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .doc-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: #f7fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        transition: border-color 0.2s;
+    }
+
+    .doc-card:hover {
+        border-color: #3182ce;
+    }
+
+    .doc-icon {
+        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .doc-info {
+        flex: 1;
+    }
+
+    .doc-tipo {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #3182ce;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .doc-descricao {
+        font-size: 0.9rem;
+        color: #2d3748;
+        margin: 0.25rem 0;
+    }
+
+    .doc-date {
+        font-size: 0.75rem;
+        color: #718096;
+    }
+
+    .btn-view-doc {
+        padding: 0.5rem 1rem;
+        background: #3182ce;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+        white-space: nowrap;
+    }
+
+    .btn-view-doc:hover {
+        background: #2c5282;
+    }
+
+    .docs-footer {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e2e8f0;
+        text-align: center;
+    }
+
+    .btn-edit-link,
+    .btn-manage-docs {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background: #805ad5;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .btn-edit-link:hover,
+    .btn-manage-docs:hover {
+        background: #6b46c1;
+    }
+
     @media (max-width: 640px) {
         .modal {
             max-height: 100vh;
@@ -1639,6 +2351,20 @@
         .btn-filter,
         .btn-filter-clear {
             flex: 1;
+        }
+
+        .chart-wrapper-modal {
+            height: 180px;
+        }
+
+        .chart-wrapper-modal.trend {
+            height: 200px;
+        }
+
+        .chart-legend-info {
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: center;
         }
     }
 </style>

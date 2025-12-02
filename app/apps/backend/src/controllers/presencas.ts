@@ -526,6 +526,187 @@ export default class PresencaController {
             });
         }
     }
+
+    /**
+     * GET /presencas/estatisticas
+     * Get aggregated attendance statistics for reports
+     */
+    static async getEstatisticas(req: Request<unknown, unknown, unknown, PresencasListQuery>, res: Response): Promise<Response | void> {
+        try {
+            const { turmaId, from, to } = req.query;
+
+            log.info('getEstatisticas', 'Buscando estatísticas de presenças', { turmaId, from, to });
+
+            // Build query for all attendance records in the period
+            let query = SupabaseWrapper.get()
+                .from('presencas')
+                .select(`
+                    id_presenca,
+                    data_time_presenca,
+                    status_presenca,
+                    id_turma,
+                    id_aluno,
+                    turmas ( id_turma, nome_turma ),
+                    alunos ( id_aluno, nome_aluno )
+                `);
+
+            if (turmaId && isPositiveInteger(turmaId)) {
+                query = query.eq('id_turma', Number(turmaId));
+            }
+
+            if (from && isValidDateString(from)) {
+                query = query.gte('data_time_presenca', new Date(from).toISOString());
+            }
+
+            if (to && isValidDateString(to)) {
+                query = query.lte('data_time_presenca', new Date(to).toISOString());
+            }
+
+            const { data: presencas, error } = await query;
+
+            if (error) {
+                log.error('getEstatisticas', 'Erro ao buscar presenças', error);
+                return res.status(500).json({
+                    error: 'Erro interno do servidor',
+                    details: error.message
+                });
+            }
+
+            const records = presencas || [];
+
+            // Calculate statistics by status
+            const porStatus = {
+                presente: 0,
+                atraso: 0,
+                falta: 0
+            };
+
+            // Calculate statistics by turma
+            const porTurma: Record<string, { nome: string; presente: number; atraso: number; falta: number; total: number }> = {};
+
+            // Calculate statistics by date (for trend chart)
+            const porData: Record<string, { presente: number; atraso: number; falta: number }> = {};
+
+            // Calculate statistics by aluno
+            const porAluno: Record<string, { nome: string; presente: number; atraso: number; falta: number; total: number }> = {};
+
+            records.forEach((record: any) => {
+                const status = record.status_presenca?.toLowerCase() || 'falta';
+                const turmaId = record.id_turma?.toString() || 'sem_turma';
+                const turmaNome = record.turmas?.nome_turma || 'Sem turma';
+                const alunoId = record.id_aluno?.toString() || 'sem_aluno';
+                const alunoNome = record.alunos?.nome_aluno || 'Desconhecido';
+                const dataPresenca = record.data_time_presenca
+                    ? (new Date(record.data_time_presenca).toISOString().split('T')[0] ?? 'sem_data')
+                    : 'sem_data';
+
+                // Count by status
+                if (status === 'presente') {
+                    porStatus.presente++;
+                } else if (status === 'atraso') {
+                    porStatus.atraso++;
+                } else {
+                    porStatus.falta++;
+                }
+
+                // Count by turma
+                if (!porTurma[turmaId]) {
+                    porTurma[turmaId] = { nome: turmaNome, presente: 0, atraso: 0, falta: 0, total: 0 };
+                }
+                porTurma[turmaId].total++;
+                if (status === 'presente') {
+                    porTurma[turmaId].presente++;
+                } else if (status === 'atraso') {
+                    porTurma[turmaId].atraso++;
+                } else {
+                    porTurma[turmaId].falta++;
+                }
+
+                // Count by date
+                if (!porData[dataPresenca]) {
+                    porData[dataPresenca] = { presente: 0, atraso: 0, falta: 0 };
+                }
+                if (status === 'presente') {
+                    porData[dataPresenca].presente++;
+                } else if (status === 'atraso') {
+                    porData[dataPresenca].atraso++;
+                } else {
+                    porData[dataPresenca].falta++;
+                }
+
+                // Count by aluno
+                if (!porAluno[alunoId]) {
+                    porAluno[alunoId] = { nome: alunoNome, presente: 0, atraso: 0, falta: 0, total: 0 };
+                }
+                porAluno[alunoId].total++;
+                if (status === 'presente') {
+                    porAluno[alunoId].presente++;
+                } else if (status === 'atraso') {
+                    porAluno[alunoId].atraso++;
+                } else {
+                    porAluno[alunoId].falta++;
+                }
+            });
+
+            // Convert porTurma to array and calculate rates
+            const turmasArray = Object.entries(porTurma).map(([id, stats]) => ({
+                id,
+                nome: stats.nome,
+                presente: stats.presente,
+                atraso: stats.atraso,
+                falta: stats.falta,
+                total: stats.total,
+                taxaPresenca: stats.total > 0 ? Math.round(((stats.presente + stats.atraso) / stats.total) * 100) : 0
+            })).sort((a, b) => b.total - a.total);
+
+            // Convert porData to sorted array for trend chart
+            const tendencia = Object.entries(porData)
+                .map(([data, stats]) => ({
+                    data,
+                    ...stats,
+                    total: stats.presente + stats.atraso + stats.falta
+                }))
+                .sort((a, b) => a.data.localeCompare(b.data));
+
+            // Convert porAluno to array and get top 10 by attendance rate
+            const alunosArray = Object.entries(porAluno).map(([id, stats]) => ({
+                id,
+                nome: stats.nome,
+                presente: stats.presente,
+                atraso: stats.atraso,
+                falta: stats.falta,
+                total: stats.total,
+                taxaPresenca: stats.total > 0 ? Math.round(((stats.presente + stats.atraso) / stats.total) * 100) : 0
+            })).sort((a, b) => b.taxaPresenca - a.taxaPresenca);
+
+            const totalRegistros = records.length;
+            const taxaGeralPresenca = totalRegistros > 0
+                ? Math.round(((porStatus.presente + porStatus.atraso) / totalRegistros) * 100)
+                : 0;
+
+            return res.status(200).json({
+                success: true,
+                data: {
+                    resumo: {
+                        totalRegistros,
+                        presente: porStatus.presente,
+                        atraso: porStatus.atraso,
+                        falta: porStatus.falta,
+                        taxaPresenca: taxaGeralPresenca
+                    },
+                    porTurma: turmasArray,
+                    tendencia,
+                    topAlunos: alunosArray.slice(0, 10),
+                    todosAlunos: alunosArray
+                }
+            });
+        } catch (error) {
+            log.error('getEstatisticas', 'Erro inesperado', error as Error);
+            return res.status(500).json({
+                error: 'Erro interno do servidor'
+            });
+        }
+    }
 }
 
 const presencaController: EndpointController = {
@@ -533,6 +714,9 @@ const presencaController: EndpointController = {
     routes: {
         'listar': [
             { key: RequestType.GET, value: PresencaController.getPresencas }
+        ],
+        'estatisticas': [
+            { key: RequestType.GET, value: PresencaController.getEstatisticas }
         ],
         'detalhe/:id': [
             { key: RequestType.GET, value: PresencaController.getPresencaById }

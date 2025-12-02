@@ -1,9 +1,8 @@
 ---
 import Header from "../../components/docente/DocenteHeader.svelte";
 import Sidebar from "../../components/Sidebardocente.astro";
-import FormSelect from "../../components/ui/FormSelect.astro";
-
-const contents = [{}, {}];
+import ConteudosList from "../../components/docente/ConteudosList.svelte";
+import PageToast from "../../components/ui/PageToast.astro";
 ---
 
 <html lang="pt-br">
@@ -11,6 +10,12 @@ const contents = [{}, {}];
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Conteúdos Institucionais - Programa Bombeiro Mirim</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
         <style>
             :root {
                 --primary-color: #4a5568;
@@ -54,138 +59,6 @@ const contents = [{}, {}];
                 border-radius: 1.5rem;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             }
-            .page-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                margin-bottom: 2rem;
-                padding-bottom: 1.5rem;
-                border-bottom: 2px solid var(--secondary-color);
-            }
-            .page-header h1 {
-                margin: 0 0 0.5rem 0;
-                font-size: 1.8rem;
-            }
-            .page-header p {
-                margin: 0;
-                color: var(--label-color);
-                font-size: 1rem;
-            }
-            .btn-new-content {
-                padding: 0.75rem 1.5rem;
-                border-radius: 6px;
-                border: none;
-                font-size: 1rem;
-                font-weight: 600;
-                cursor: pointer;
-                background-color: var(--danger-color);
-                color: var(--white);
-                white-space: nowrap;
-                transition: background-color 0.3s;
-            }
-            .btn-new-content:hover {
-                background-color: #c53030;
-            }
-            .filters {
-                display: flex;
-                gap: 1rem;
-                flex-wrap: wrap;
-                margin-bottom: 1.5rem;
-            }
-            .filters select,
-            .filters input {
-                flex: 1;
-                min-width: 220px;
-                padding: 0.85rem 1rem;
-                border: 1px solid var(--border-color);
-                border-radius: 12px;
-                font-size: 0.95rem;
-                font-family: inherit;
-                background-color: #fff;
-            }
-            .filters input {
-                flex: 2;
-            }
-            .content-list {
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-            }
-            .content-card {
-                border: 1px solid var(--border-color);
-                border-radius: 18px;
-                padding: 1.5rem;
-                background-color: var(--white);
-                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-            }
-            .content-card h2 {
-                margin: 0 0 0.75rem 0;
-                font-size: 1.2rem;
-                color: var(--text-color);
-            }
-            .content-card p {
-                margin: 0 0 1rem 0;
-                color: var(--text-color);
-                line-height: 1.5;
-            }
-            .tag-group {
-                display: flex;
-                gap: 0.5rem;
-                flex-wrap: wrap;
-                margin-bottom: 0.75rem;
-            }
-            .tag {
-                padding: 0.3rem 0.8rem;
-                border-radius: 999px;
-                font-size: 0.85rem;
-                font-weight: 600;
-                text-transform: capitalize;
-            }
-            .tag-category {
-                background-color: rgba(65, 105, 225, 0.12);
-                color: #1a4dbf;
-            }
-            .tag-priority {
-                background-color: rgba(237, 137, 54, 0.15);
-                color: #c05621;
-            }
-            .tag-status {
-                background-color: rgba(72, 187, 120, 0.15);
-                color: #2f855a;
-            }
-            .content-footer {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-top: 1rem;
-                padding-top: 1rem;
-                border-top: 1px solid var(--secondary-color);
-                color: var(--label-color);
-                font-size: 0.9rem;
-            }
-            .content-actions {
-                display: flex;
-                gap: 0.5rem;
-            }
-            .btn-action {
-                padding: 0.5rem 1.2rem;
-                border-radius: 8px;
-                border: none;
-                font-size: 0.95rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: opacity 0.2s;
-                color: #fff;
-            }
-            .btn-edit {
-                background-color: var(--accent-color);
-            }
-            .btn-delete {
-                background-color: var(--danger-color);
-            }
-            .btn-action:hover {
-                opacity: 0.9;
-            }
 
             @media (max-width: 768px) {
                 .main-content {
@@ -199,25 +72,6 @@ const contents = [{}, {}];
                     padding: 1.5rem;
                     border-radius: 1rem;
                 }
-                .page-header {
-                    flex-direction: column;
-                    gap: 1rem;
-                }
-                .btn-new-content {
-                    width: 100%;
-                }
-                .filters {
-                    flex-direction: column;
-                }
-                .filters select,
-                .filters input {
-                    width: 100%;
-                }
-                .content-footer {
-                    flex-direction: column;
-                    gap: 0.75rem;
-                    align-items: flex-start;
-                }
             }
 
             @media (max-width: 480px) {
@@ -227,9 +81,6 @@ const contents = [{}, {}];
                 .container {
                     padding: 1rem;
                     border-radius: 0.75rem;
-                }
-                .page-header h1 {
-                    font-size: 1.25rem;
                 }
             }
         </style>
@@ -241,65 +92,39 @@ const contents = [{}, {}];
             <div class="content-wrapper">
                 <Sidebar />
                 <div class="container">
-                    <div class="page-header">
-                        <div>
-                            <h1>Conteúdos Institucionais</h1>
-                            <p>Gerencie regras, normas e documentos oficiais</p>
-                        </div>
-                        <button type="button" class="btn-new-content"
-                            >Novo Conteúdo</button
-                        >
-                    </div>
-
-                    <div class="filters">
-                        <FormSelect ariaLabel="Filtrar por tipo" inline>
-                            <option>Todos os tipos</option>
-                            <option>Regras de Vestimenta</option>
-                            <option>Normas Disciplinares</option>
-                        </FormSelect>
-                        <input
-                            type="text"
-                            placeholder="Buscar conteúdo..."
-                            aria-label="Buscar conteúdo"
-                        />
-                    </div>
-
-                    <div class="content-list">
-                        {
-                            contents.map((conteudo) => (
-                                <article class="content-card">
-                                    <h2>{conteudo.titulo}</h2>
-                                    <div class="tag-group">
-                                        <span class="tag tag-category">
-                                            {conteudo.categoria}
-                                        </span>
-                                        <span class="tag tag-priority">
-                                            {conteudo.prioridade}
-                                        </span>
-                                        <span class="tag tag-status">
-                                            {conteudo.status}
-                                        </span>
-                                    </div>
-                                    <p>{conteudo.descricao}</p>
-                                    <div class="content-footer">
-                                        <span>
-                                            Criado em {conteudo.criadoEm}
-                                        </span>
-                                        <div class="content-actions">
-                                            <button class="btn-action btn-edit">
-                                                Editar
-                                            </button>
-                                            <button class="btn-action btn-delete">
-                                                Excluir
-                                            </button>
-                                        </div>
-                                    </div>
-                                </article>
-                            ))
-                        }
-                    </div>
+                    <ConteudosList client:load />
                 </div>
             </div>
         </main>
+
+        <script>
+            import { authStore } from "../../stores/auth";
+
+            // Check authentication
+            document.addEventListener("DOMContentLoaded", async () => {
+                const isAuthenticated = await authStore.checkAuth();
+
+                if (!isAuthenticated) {
+                    window.location.href = "/login";
+                    return;
+                }
+
+                // Check if user is docente or admin
+                const user = authStore.getUser();
+                if (!user || (user.tipo !== "docente" && user.tipo !== "admin")) {
+                    if (typeof window.showPageToast === "function") {
+                        window.showPageToast(
+                            "Acesso negado. Apenas docentes podem acessar esta página.",
+                            "error",
+                        );
+                    }
+                    setTimeout(() => {
+                        window.location.href = "/login";
+                    }, 2000);
+                    return;
+                }
+            });
+        </script>
+        <PageToast />
     </body>
 </html>

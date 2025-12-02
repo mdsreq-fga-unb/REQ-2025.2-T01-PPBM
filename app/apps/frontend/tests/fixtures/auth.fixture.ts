@@ -38,20 +38,20 @@ export const test = base.extend<{
  */
 export async function loginAsAdmin(page: Page): Promise<void> {
   await page.goto('/login');
-  
+
   // Wait for the login form to be visible
   await page.waitForSelector('input[type="email"]', { state: 'visible' });
-  
+
   // Fill in credentials
   await page.fill('input[type="email"]', TEST_ADMIN.email);
   await page.fill('input[type="password"]', TEST_ADMIN.password);
-  
+
   // Submit the form
   await page.click('button[type="submit"]');
-  
+
   // Wait for redirect to admin area
   await page.waitForURL(/\/admin/, { timeout: 10000 });
-  
+
   // Verify we're on an admin page
   await expect(page).toHaveURL(/\/admin/);
 }
@@ -62,7 +62,7 @@ export async function loginAsAdmin(page: Page): Promise<void> {
 export async function logout(page: Page): Promise<void> {
   // Click on logout button/link (adjust selector based on actual UI)
   const logoutButton = page.locator('text=Sair').or(page.locator('[data-testid="logout"]'));
-  
+
   if (await logoutButton.isVisible()) {
     await logoutButton.click();
     await page.waitForURL('/login');
@@ -91,13 +91,13 @@ export async function isAuthenticated(page: Page): Promise<boolean> {
  * Helper to wait for toast notification
  */
 export async function waitForToast(page: Page, text?: string): Promise<void> {
-  const toastSelector = text 
-    ? `text=${text}` 
+  const toastSelector = text
+    ? `text=${text}`
     : '.toast, [role="alert"], .alert';
-  
-  await page.waitForSelector(toastSelector, { 
+
+  await page.waitForSelector(toastSelector, {
     state: 'visible',
-    timeout: 5000 
+    timeout: 5000
   });
 }
 

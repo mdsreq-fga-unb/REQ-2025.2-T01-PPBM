@@ -16,15 +16,15 @@ test.describe('Admin Dashboard', () => {
     // Check for Total de Alunos card
     const totalAlunosCard = adminPage.locator('.metric-card').filter({ hasText: 'Total de Alunos' });
     await expect(totalAlunosCard).toBeVisible();
-    
+
     // Check for Taxa de Presença card
     const taxaPresencaCard = adminPage.locator('.metric-card').filter({ hasText: 'Taxa de Presença' });
     await expect(taxaPresencaCard).toBeVisible();
-    
+
     // Check for Alertas Médicos card
     const alertasMedicosCard = adminPage.locator('.metric-card').filter({ hasText: 'Alertas Médicos' });
     await expect(alertasMedicosCard).toBeVisible();
-    
+
     // Check for Acompanhamento Especial card
     const acompanhamentoCard = adminPage.locator('.metric-card').filter({ hasText: 'Acompanhamento Especial' });
     await expect(acompanhamentoCard).toBeVisible();
@@ -36,15 +36,15 @@ test.describe('Admin Dashboard', () => {
     await expect(totalAlunos).toBeVisible();
     const totalAlunosValue = await totalAlunos.textContent();
     expect(totalAlunosValue).toBeTruthy();
-    
+
     const taxaPresenca = adminPage.locator('#taxa-presenca');
     await expect(taxaPresenca).toBeVisible();
     const taxaPresencaValue = await taxaPresenca.textContent();
     expect(taxaPresencaValue).toContain('%');
-    
+
     const alertasMedicos = adminPage.locator('#alertas-medicos');
     await expect(alertasMedicos).toBeVisible();
-    
+
     const acompanhamentoEspecial = adminPage.locator('#acompanhamento-especial');
     await expect(acompanhamentoEspecial).toBeVisible();
   });
@@ -53,14 +53,14 @@ test.describe('Admin Dashboard', () => {
     const updateButton = adminPage.locator('#btn-update');
     await expect(updateButton).toBeVisible();
     await expect(updateButton).toHaveText('Atualizar');
-    
+
     // Click update button
     await updateButton.click();
-    
+
     // Button should show loading state
     await expect(updateButton).toHaveText('Atualizando...');
     await expect(updateButton).toBeDisabled();
-    
+
     // Wait for update to complete
     await expect(updateButton).toHaveText('Atualizar', { timeout: 5000 });
     await expect(updateButton).toBeEnabled();
@@ -115,10 +115,10 @@ test.describe('Admin Dashboard', () => {
   test('should be responsive on mobile viewport', async ({ adminPage }) => {
     // Set mobile viewport
     await adminPage.setViewportSize({ width: 375, height: 667 });
-    
+
     // Dashboard should still be visible
     await expect(adminPage.locator('h1')).toContainText('Dashboard');
-    
+
     // Metric cards should stack
     const metricsGrid = adminPage.locator('.metrics-grid');
     await expect(metricsGrid).toBeVisible();

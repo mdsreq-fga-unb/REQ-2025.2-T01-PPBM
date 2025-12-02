@@ -30,7 +30,7 @@ test.describe('Admin - Cadastrar Alunos', () => {
   test('should display cadastro form correctly', async ({ adminPage }) => {
     // Check page header
     await expect(adminPage.locator('h1')).toContainText('Cadastrar');
-    
+
     // Check form sections
     await expect(adminPage.locator('text=Dados Pessoais')).toBeVisible();
     await expect(adminPage.locator('text=Dados Escolares')).toBeVisible();
@@ -40,13 +40,13 @@ test.describe('Admin - Cadastrar Alunos', () => {
   test('should have all required personal data fields', async ({ adminPage }) => {
     // Nome completo
     await expect(adminPage.locator('input[name="nome"]')).toBeVisible();
-    
+
     // Data de nascimento
     await expect(adminPage.locator('input[name="data_nascimento"]')).toBeVisible();
-    
+
     // CPF
     await expect(adminPage.locator('input[name="cpf"]')).toBeVisible();
-    
+
     // Sexo
     await expect(adminPage.locator('select[name="sexo"]')).toBeVisible();
   });
@@ -54,7 +54,7 @@ test.describe('Admin - Cadastrar Alunos', () => {
   test('should have school data fields', async ({ adminPage }) => {
     // Série
     await expect(adminPage.locator('select[name="serie"]')).toBeVisible();
-    
+
     // Turma
     await expect(adminPage.locator('select[name="turma"]')).toBeVisible();
   });
@@ -62,23 +62,23 @@ test.describe('Admin - Cadastrar Alunos', () => {
   test('should have medical information fields', async ({ adminPage }) => {
     // Tipo sanguíneo
     await expect(adminPage.locator('select[name="tipo_sanguineo"]')).toBeVisible();
-    
+
     // Alergias
     await expect(adminPage.locator('textarea[name="alergias"]')).toBeVisible();
-    
+
     // Condições médicas
     await expect(adminPage.locator('textarea[name="condicoes_medicas"]')).toBeVisible();
-    
+
     // Neurodivergente checkbox
     await expect(adminPage.locator('input[name="neurodivergente"]')).toBeVisible();
   });
 
   test('should apply CPF mask on input', async ({ adminPage }) => {
     const cpfInput = adminPage.locator('input[name="cpf"]');
-    
+
     // Type raw CPF numbers
     await cpfInput.fill('12345678901');
-    
+
     // Check that mask is applied
     const value = await cpfInput.inputValue();
     expect(value).toMatch(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/);
@@ -88,10 +88,10 @@ test.describe('Admin - Cadastrar Alunos', () => {
     // Initially observations field should be hidden
     const observacoesNeuro = adminPage.locator('#observacoes-neuro');
     await expect(observacoesNeuro).toBeHidden();
-    
+
     // Check the neurodivergente checkbox
     await adminPage.locator('#neurodivergente').check();
-    
+
     // Observations field should now be visible
     await expect(observacoesNeuro).toBeVisible();
   });
@@ -99,7 +99,7 @@ test.describe('Admin - Cadastrar Alunos', () => {
   test('should have back button to gerenciar-alunos', async ({ adminPage }) => {
     const backButton = adminPage.locator('a[href*="gerenciar-alunos"]').first();
     await expect(backButton).toBeVisible();
-    
+
     await backButton.click();
     await expect(adminPage).toHaveURL(/\/admin\/gerenciar-alunos/);
   });
@@ -108,7 +108,7 @@ test.describe('Admin - Cadastrar Alunos', () => {
     // Try to submit empty form
     const submitButton = adminPage.locator('#btn-submit');
     await submitButton.click();
-    
+
     // Form should not submit (HTML5 validation)
     await expect(adminPage).toHaveURL(/\/admin\/cadastrar-alunos/);
   });
@@ -116,16 +116,16 @@ test.describe('Admin - Cadastrar Alunos', () => {
   test('should successfully create a new student', async ({ adminPage }) => {
     const testCPF = generateTestCPF();
     const testName = `Aluno Teste ${Date.now()}`;
-    
+
     // Fill personal data
     await adminPage.fill('input[name="nome"]', testName);
     await adminPage.fill('input[name="data_nascimento"]', generateChildBirthDate());
     await adminPage.fill('input[name="cpf"]', testCPF.replace(/\D/g, ''));
     await adminPage.selectOption('select[name="sexo"]', 'M');
-    
+
     // Fill school data
     await adminPage.selectOption('select[name="serie"]', '5º Ano');
-    
+
     // Wait for turmas to load and select first available
     await adminPage.waitForSelector('select[name="turma"] option:not([value=""])');
     const turmaOptions = await adminPage.locator('select[name="turma"] option:not([value=""])').all();
@@ -135,16 +135,16 @@ test.describe('Admin - Cadastrar Alunos', () => {
         await adminPage.selectOption('select[name="turma"]', firstTurmaValue);
       }
     }
-    
+
     // Fill responsible data
     await adminPage.fill('input[name="responsavel_nome_0"]', 'Responsável Teste');
     await adminPage.fill('input[name="responsavel_cpf_0"]', '98765432100');
     await adminPage.selectOption('select[name="responsavel_parentesco_0"]', 'Pai');
     await adminPage.fill('input[name="responsavel_telefone_0"]', '61999999999');
-    
+
     // Submit the form
     await adminPage.click('#btn-submit');
-    
+
     // Wait for success message or redirect
     await Promise.race([
       adminPage.waitForSelector('.alert-success', { state: 'visible', timeout: 10000 }),
@@ -171,35 +171,35 @@ test.describe('Admin - Gerenciar Alunos', () => {
   test('should display students table or list', async ({ adminPage }) => {
     // Wait for data to load
     await adminPage.waitForTimeout(2000);
-    
+
     // Look for table or list of students
     const table = adminPage.locator('table').first();
     const list = adminPage.locator('[class*="alunos"], [class*="list"]').first();
-    
+
     const hasTable = await table.isVisible().catch(() => false);
     const hasList = await list.isVisible().catch(() => false);
-    
+
     expect(hasTable || hasList).toBeTruthy();
   });
 
   test('should have link to cadastrar alunos', async ({ adminPage }) => {
     const cadastrarLink = adminPage.locator('a[href*="cadastrar-alunos"]').first();
     await expect(cadastrarLink).toBeVisible();
-    
+
     await cadastrarLink.click();
     await expect(adminPage).toHaveURL(/\/admin\/cadastrar-alunos/);
   });
 
   test('should search for students by name', async ({ adminPage }) => {
     const searchInput = adminPage.locator('input[type="search"], input[placeholder*="buscar"], input[placeholder*="pesquisar"], input[placeholder*="Buscar"]').first();
-    
+
     if (await searchInput.isVisible()) {
       // Type a search query
       await searchInput.fill('Aluno');
-      
+
       // Wait for search results
       await adminPage.waitForTimeout(1000);
-      
+
       // Page should still be visible (not broken)
       await expect(adminPage.locator('body')).toBeVisible();
     }
@@ -209,22 +209,22 @@ test.describe('Admin - Gerenciar Alunos', () => {
     // Check for turma filter
     const turmaFilter = adminPage.locator('select').filter({ hasText: /turma/i }).first();
     const hasTurmaFilter = await turmaFilter.isVisible().catch(() => false);
-    
+
     // Or check for any filter/select elements
     const anySelect = adminPage.locator('select').first();
     const hasAnySelect = await anySelect.isVisible().catch(() => false);
-    
+
     expect(hasTurmaFilter || hasAnySelect).toBeTruthy();
   });
 
   test('should have edit action for students', async ({ adminPage }) => {
     // Wait for students to load
     await adminPage.waitForTimeout(2000);
-    
+
     // Look for edit button/link
     const editButton = adminPage.locator('button:has-text("Editar"), a:has-text("Editar"), [aria-label*="editar"], [title*="Editar"]').first();
     const hasEditButton = await editButton.isVisible().catch(() => false);
-    
+
     if (hasEditButton) {
       await expect(editButton).toBeVisible();
     }
@@ -233,11 +233,11 @@ test.describe('Admin - Gerenciar Alunos', () => {
   test('should have delete action for students', async ({ adminPage }) => {
     // Wait for students to load
     await adminPage.waitForTimeout(2000);
-    
+
     // Look for delete button/link
     const deleteButton = adminPage.locator('button:has-text("Remover"), button:has-text("Excluir"), [aria-label*="remover"], [aria-label*="excluir"]').first();
     const hasDeleteButton = await deleteButton.isVisible().catch(() => false);
-    
+
     if (hasDeleteButton) {
       await expect(deleteButton).toBeVisible();
     }
@@ -246,17 +246,17 @@ test.describe('Admin - Gerenciar Alunos', () => {
   test('should open student detail modal when clicking on student', async ({ adminPage }) => {
     // Wait for students to load
     await adminPage.waitForTimeout(2000);
-    
+
     // Try to click on first student row/card
     const studentRow = adminPage.locator('tr, [class*="card"], [class*="item"]').filter({ hasText: /\d{3}\.\d{3}\.\d{3}/ }).first();
-    
+
     if (await studentRow.isVisible().catch(() => false)) {
       await studentRow.click();
-      
+
       // Check if modal opens
       const modal = adminPage.locator('[class*="modal"], [role="dialog"]').first();
       const hasModal = await modal.isVisible({ timeout: 3000 }).catch(() => false);
-      
+
       if (hasModal) {
         await expect(modal).toBeVisible();
       }
@@ -270,20 +270,20 @@ test.describe('Admin - Edit Student Flow', () => {
     await adminPage.goto('/admin/gerenciar-alunos');
     await adminPage.waitForLoadState('networkidle');
     await adminPage.waitForTimeout(2000);
-    
+
     // Look for edit button
     const editButton = adminPage.locator('button:has-text("Editar"), a:has-text("Editar"), [aria-label*="editar"]').first();
-    
+
     if (await editButton.isVisible().catch(() => false)) {
       await editButton.click();
-      
+
       // Should navigate to cadastrar-alunos with id parameter or show edit form
       await adminPage.waitForTimeout(1000);
-      
+
       // Check if we're on edit page or if modal opened
       const isOnEditPage = adminPage.url().includes('cadastrar-alunos') && adminPage.url().includes('id=');
       const hasEditModal = await adminPage.locator('[class*="modal"], [role="dialog"]').isVisible().catch(() => false);
-      
+
       expect(isOnEditPage || hasEditModal).toBeTruthy();
     }
   });
@@ -293,16 +293,16 @@ test.describe('Admin - Responsaveis Section', () => {
   test('should allow adding multiple responsaveis', async ({ adminPage }) => {
     await adminPage.goto('/admin/cadastrar-alunos');
     await adminPage.waitForLoadState('networkidle');
-    
+
     // First responsavel fields should be visible
     await expect(adminPage.locator('input[name="responsavel_nome_0"]')).toBeVisible();
-    
+
     // Look for add responsavel button
     const addButton = adminPage.locator('button:has-text("Adicionar"), button:has-text("+ Responsável")').first();
-    
+
     if (await addButton.isVisible().catch(() => false)) {
       await addButton.click();
-      
+
       // Second responsavel fields should appear
       await expect(adminPage.locator('input[name="responsavel_nome_1"]')).toBeVisible({ timeout: 3000 });
     }
@@ -311,10 +311,10 @@ test.describe('Admin - Responsaveis Section', () => {
   test('should have parentesco options for responsavel', async ({ adminPage }) => {
     await adminPage.goto('/admin/cadastrar-alunos');
     await adminPage.waitForLoadState('networkidle');
-    
+
     const parentescoSelect = adminPage.locator('select[name="responsavel_parentesco_0"]');
     await expect(parentescoSelect).toBeVisible();
-    
+
     // Check for common options
     const options = await parentescoSelect.locator('option').allTextContents();
     expect(options.some(opt => opt.includes('Pai') || opt.includes('Mãe'))).toBeTruthy();

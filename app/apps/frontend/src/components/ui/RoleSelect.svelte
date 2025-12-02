@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher } from "svelte";
 
     export let email: string;
     export let userName: string;
-    export let role: 'admin' | 'docente' | 'responsavel';
+    export let role: "admin" | "docente" | "responsavel";
     export let disabled: boolean = false;
 
     const dispatch = createEventDispatcher();
@@ -12,24 +12,24 @@
     let isLoading = false;
 
     const roleOptions = {
-        admin: { label: '🔴 Admin (protegido)', color: 'admin' },
-        docente: { label: '🔵 Docente', color: 'docente' },
-        responsavel: { label: '🟢 Responsável', color: 'responsavel' }
+        admin: { label: "🔴 Admin (protegido)", color: "admin" },
+        docente: { label: "🔵 Docente", color: "docente" },
+        responsavel: { label: "🟢 Responsável", color: "responsavel" },
     };
 
     function handleChange(event: Event) {
         const target = event.target as HTMLSelectElement;
         const newRole = target.value as typeof role;
-        
+
         if (newRole !== role) {
-            dispatch('roleChange', {
+            dispatch("roleChange", {
                 email,
                 userName,
                 originalRole: role,
                 newRole,
                 revert: () => {
                     currentRole = role;
-                }
+                },
             });
         }
         currentRole = newRole;
@@ -59,7 +59,7 @@
     bind:value={currentRole}
     on:change={handleChange}
 >
-    {#if role === 'admin'}
+    {#if role === "admin"}
         <option value="admin" selected>🔴 Admin (protegido)</option>
     {:else}
         <option value="docente">🔵 Docente</option>
@@ -69,51 +69,53 @@
 
 <style>
     .role-select {
-        padding: 0.5rem 0.75rem;
-        border: 1px solid var(--border-color, #CBD5E0);
+        padding: 0.75rem;
+        border: 1px solid var(--border-color, #cbd5e0);
         border-radius: 6px;
-        font-size: 0.9rem;
-        color: var(--text-color, #2D3748);
-        background-color: #FDFDFD;
+        font-size: 1rem;
+        color: var(--text-color, #2d3748);
+        background-color: #fdfdfd;
         cursor: pointer;
         min-width: 150px;
         font-weight: 500;
         appearance: none;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23718096' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
-        background-position: right 0.5rem center;
-        padding-right: 2rem;
-        transition: all 0.2s;
+        background-position: right 0.75rem center;
+        padding-right: 2.5rem;
+        transition:
+            border-color 0.2s,
+            box-shadow 0.2s;
     }
 
     .role-select:focus {
         outline: none;
-        border-color: var(--accent-color, #3182CE);
+        border-color: #3182ce;
         box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
     }
 
     .role-select:disabled {
-        background-color: #EDF2F7;
+        background-color: #edf2f7;
         cursor: not-allowed;
-        color: var(--label-color, #718096);
+        color: #718096;
     }
 
     .role-select.admin {
-        background-color: #FED7D7;
-        border-color: #FC8181;
-        color: #C53030;
+        background-color: #fed7d7;
+        border-color: #fc8181;
+        color: #c53030;
     }
 
     .role-select.docente {
-        background-color: #BEE3F8;
-        border-color: #63B3ED;
-        color: #2B6CB0;
+        background-color: #bee3f8;
+        border-color: #63b3ed;
+        color: #2b6cb0;
     }
 
     .role-select.responsavel {
-        background-color: #C6F6D5;
-        border-color: #68D391;
-        color: #2F855A;
+        background-color: #c6f6d5;
+        border-color: #68d391;
+        color: #2f855a;
     }
 
     .role-select.loading {

@@ -226,6 +226,41 @@ import PageToast from "../../components/ui/PageToast.astro";
                 margin: 0;
                 color: var(--text-color);
             }
+            .charts-section {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            .chart-container {
+                background-color: var(--white);
+                padding: 1.5rem;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+            .chart-container h3 {
+                font-size: 1rem;
+                margin: 0 0 1rem 0;
+                color: var(--text-color);
+                font-weight: 600;
+            }
+            .chart-wrapper {
+                position: relative;
+                width: 100%;
+                max-height: 300px;
+            }
+            .chart-wrapper canvas {
+                max-height: 300px;
+            }
+            .chart-container.full-width {
+                grid-column: 1 / -1;
+            }
+            .chart-container.full-width .chart-wrapper {
+                max-height: 350px;
+            }
+            .chart-container.full-width .chart-wrapper canvas {
+                max-height: 350px;
+            }
 
             @media (max-width: 768px) {
                 .main-content {
@@ -278,6 +313,35 @@ import PageToast from "../../components/ui/PageToast.astro";
                 .report-table td {
                     padding: 0.75rem 0.5rem;
                 }
+
+                .charts-section {
+                    grid-template-columns: 1fr;
+                    gap: 1rem;
+                }
+
+                .chart-container {
+                    padding: 1rem;
+                }
+
+                .chart-container h3 {
+                    font-size: 0.9rem;
+                }
+
+                .chart-wrapper {
+                    max-height: 250px;
+                }
+
+                .chart-wrapper canvas {
+                    max-height: 250px;
+                }
+
+                .chart-container.full-width .chart-wrapper {
+                    max-height: 280px;
+                }
+
+                .chart-container.full-width .chart-wrapper canvas {
+                    max-height: 280px;
+                }
             }
 
             @media (max-width: 480px) {
@@ -304,6 +368,22 @@ import PageToast from "../../components/ui/PageToast.astro";
 
                 .stat-card .value {
                     font-size: 2rem;
+                }
+
+                .chart-wrapper {
+                    max-height: 220px;
+                }
+
+                .chart-wrapper canvas {
+                    max-height: 220px;
+                }
+
+                .chart-container.full-width .chart-wrapper {
+                    max-height: 250px;
+                }
+
+                .chart-container.full-width .chart-wrapper canvas {
+                    max-height: 250px;
                 }
             }
         </style>
@@ -417,6 +497,10 @@ import PageToast from "../../components/ui/PageToast.astro";
         <script>
             import { apiFetch } from "../../lib/api";
             import { authStore } from "../../stores/auth";
+            import { Chart, registerables } from "chart.js";
+
+            // Register all Chart.js components
+            Chart.register(...registerables);
 
             const btnGenerate = document.getElementById("btn-generate");
             const btnExport = document.getElementById("btn-export");
@@ -432,6 +516,274 @@ import PageToast from "../../components/ui/PageToast.astro";
             let currentReportData = null;
             let turmasCache = [];
             let alunosCache = [];
+            let activeCharts = [];
+
+            // Chart color scheme
+            const chartColors = {
+                presente: { bg: 'rgba(72, 187, 120, 0.8)', border: '#48BB78' },
+                atraso: { bg: 'rgba(237, 137, 54, 0.8)', border: '#ED8936' },
+                falta: { bg: 'rgba(229, 62, 62, 0.8)', border: '#E53E3E' },
+                primary: { bg: 'rgba(49, 130, 206, 0.8)', border: '#3182CE' }
+            };
+
+            // Destroy all active charts
+            function destroyCharts() {
+                activeCharts.forEach(chart => {
+                    if (chart && typeof chart.destroy === 'function') {
+                        chart.destroy();
+                    }
+                });
+                activeCharts = [];
+            }
+
+            // Create donut chart for attendance distribution
+            function createDistributionChart(canvasId, data) {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas) return null;
+                
+                const ctx = canvas.getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Presenças', 'Atrasos', 'Faltas'],
+                        datasets: [{
+                            data: [data.presentes || 0, data.atrasos || 0, data.faltas || 0],
+                            backgroundColor: [chartColors.presente.bg, chartColors.atraso.bg, chartColors.falta.bg],
+                            borderColor: [chartColors.presente.border, chartColors.atraso.border, chartColors.falta.border],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true,
+                                    font: { size: 12, family: 'Inter' }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = total > 0 ? Math.round((context.raw / total) * 100) : 0;
+                                        return `${context.label}: ${context.raw} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                activeCharts.push(chart);
+                return chart;
+            }
+
+            // Create bar chart for turma comparison
+            function createTurmaChart(canvasId, turmas) {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas || !turmas || turmas.length === 0) return null;
+                
+                const ctx = canvas.getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: turmas.map(t => t.nome || 'Sem nome'),
+                        datasets: [
+                            {
+                                label: 'Presenças',
+                                data: turmas.map(t => t.presente || 0),
+                                backgroundColor: chartColors.presente.bg,
+                                borderColor: chartColors.presente.border,
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Atrasos',
+                                data: turmas.map(t => t.atraso || 0),
+                                backgroundColor: chartColors.atraso.bg,
+                                borderColor: chartColors.atraso.border,
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Faltas',
+                                data: turmas.map(t => t.falta || 0),
+                                backgroundColor: chartColors.falta.bg,
+                                borderColor: chartColors.falta.border,
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    padding: 15,
+                                    usePointStyle: true,
+                                    font: { size: 12, family: 'Inter' }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { font: { size: 11, family: 'Inter' } }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                                ticks: { font: { size: 11, family: 'Inter' } }
+                            }
+                        }
+                    }
+                });
+                activeCharts.push(chart);
+                return chart;
+            }
+
+            // Create line chart for trends
+            function createTrendChart(canvasId, tendencia) {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas || !tendencia || tendencia.length === 0) return null;
+                
+                const ctx = canvas.getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: tendencia.map(t => {
+                            const date = new Date(t.data);
+                            return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+                        }),
+                        datasets: [
+                            {
+                                label: 'Presenças',
+                                data: tendencia.map(t => t.presente || 0),
+                                borderColor: chartColors.presente.border,
+                                backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                                fill: true,
+                                tension: 0.3,
+                                pointRadius: 4,
+                                pointHoverRadius: 6
+                            },
+                            {
+                                label: 'Atrasos',
+                                data: tendencia.map(t => t.atraso || 0),
+                                borderColor: chartColors.atraso.border,
+                                backgroundColor: 'rgba(237, 137, 54, 0.1)',
+                                fill: true,
+                                tension: 0.3,
+                                pointRadius: 4,
+                                pointHoverRadius: 6
+                            },
+                            {
+                                label: 'Faltas',
+                                data: tendencia.map(t => t.falta || 0),
+                                borderColor: chartColors.falta.border,
+                                backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                                fill: true,
+                                tension: 0.3,
+                                pointRadius: 4,
+                                pointHoverRadius: 6
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    padding: 15,
+                                    usePointStyle: true,
+                                    font: { size: 12, family: 'Inter' }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { 
+                                    font: { size: 10, family: 'Inter' },
+                                    maxRotation: 45,
+                                    minRotation: 0
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                                ticks: { font: { size: 11, family: 'Inter' } }
+                            }
+                        }
+                    }
+                });
+                activeCharts.push(chart);
+                return chart;
+            }
+
+            // Create horizontal bar chart for top students
+            function createTopAlunosChart(canvasId, alunos) {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas || !alunos || alunos.length === 0) return null;
+                
+                const ctx = canvas.getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: alunos.map(a => a.nome || 'Desconhecido'),
+                        datasets: [{
+                            label: 'Taxa de Presença (%)',
+                            data: alunos.map(a => a.taxaPresenca || 0),
+                            backgroundColor: alunos.map(a => {
+                                const rate = a.taxaPresenca || 0;
+                                if (rate >= 75) return chartColors.presente.bg;
+                                if (rate >= 50) return chartColors.atraso.bg;
+                                return chartColors.falta.bg;
+                            }),
+                            borderColor: alunos.map(a => {
+                                const rate = a.taxaPresenca || 0;
+                                if (rate >= 75) return chartColors.presente.border;
+                                if (rate >= 50) return chartColors.atraso.border;
+                                return chartColors.falta.border;
+                            }),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                                ticks: { 
+                                    font: { size: 11, family: 'Inter' },
+                                    callback: value => `${value}%`
+                                }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: { font: { size: 11, family: 'Inter' } }
+                            }
+                        }
+                    }
+                });
+                activeCharts.push(chart);
+                return chart;
+            }
 
             // Função para formatar data
             function formatarData(data) {
@@ -567,43 +919,25 @@ import PageToast from "../../components/ui/PageToast.astro";
                 throw new Error("Falha ao carregar estatísticas do aluno");
             }
 
-            // Gerar relatório de presenças
+            // Gerar relatório de presenças usando o novo endpoint de estatísticas
             async function gerarRelatorioPresencas(tipo, dataInicial, dataFinal, turmaId) {
                 const params = new URLSearchParams();
                 params.append("from", dataInicial);
                 params.append("to", dataFinal);
-                params.append("pageSize", "500");
                 if (turmaId) params.append("turmaId", turmaId);
 
-                const response = await apiFetch(`/presencas/listar?${params}`);
+                const response = await apiFetch(`/presencas/estatisticas?${params}`);
                 if (response.success && response.data) {
-                    const presencas = response.data.data || response.data || [];
+                    const statsData = response.data.data || response.data;
                     
-                    // Processar dados por aluno
-                    const porAluno = {};
-                    presencas.forEach(p => {
-                        const alunoNome = p.alunos?.nome_aluno || "Desconhecido";
-                        if (!porAluno[alunoNome]) {
-                            porAluno[alunoNome] = { presentes: 0, faltas: 0, atrasos: 0 };
-                        }
-                        if (p.status_presenca === "presente") {
-                            porAluno[alunoNome].presentes++;
-                        } else if (p.status_presenca === "atraso") {
-                            porAluno[alunoNome].atrasos++;
-                        } else {
-                            porAluno[alunoNome].faltas++;
-                        }
-                    });
-
-                    const detalhes = Object.entries(porAluno).map(([aluno, stats]) => ({
-                        aluno,
-                        ...stats
+                    // Transform data for report rendering
+                    const detalhes = (statsData.todosAlunos || []).map(aluno => ({
+                        aluno: aluno.nome,
+                        presentes: aluno.presente,
+                        faltas: aluno.falta,
+                        atrasos: aluno.atraso,
+                        taxaPresenca: aluno.taxaPresenca
                     }));
-
-                    // Calcular totais
-                    const totalPresentes = detalhes.reduce((acc, d) => acc + d.presentes, 0);
-                    const totalFaltas = detalhes.reduce((acc, d) => acc + d.faltas, 0);
-                    const totalAtrasos = detalhes.reduce((acc, d) => acc + d.atrasos, 0);
 
                     return {
                         tipo,
@@ -611,31 +945,46 @@ import PageToast from "../../components/ui/PageToast.astro";
                         turmaId,
                         estatisticas: {
                             total_alunos: detalhes.length,
-                            presentes: totalPresentes,
-                            faltas: totalFaltas,
-                            atrasos: totalAtrasos
+                            presentes: statsData.resumo?.presente || 0,
+                            faltas: statsData.resumo?.falta || 0,
+                            atrasos: statsData.resumo?.atraso || 0,
+                            taxaPresenca: statsData.resumo?.taxaPresenca || 0
                         },
-                        detalhes
+                        detalhes,
+                        porTurma: statsData.porTurma || [],
+                        tendencia: statsData.tendencia || [],
+                        topAlunos: statsData.topAlunos || []
                     };
                 }
-                throw new Error("Falha ao carregar presenças");
+                throw new Error("Falha ao carregar estatísticas de presenças");
             }
 
             // Função para renderizar relatório
             function renderizarRelatorio(data, tipo) {
+                // Destroy any existing charts first
+                destroyCharts();
+                
                 let html = "";
 
                 if (tipo === "individual" && data.estatisticas) {
                     const stats = data.estatisticas;
                     const taxaPresenca = stats.presenca?.taxaPresenca || 0;
+                    const presentes = stats.presenca?.presentes || 0;
+                    const faltas = stats.presenca?.faltas || 0;
+                    const atrasos = stats.presenca?.atrasos || 0;
                     
                     // Estatísticas
                     html += '<div class="report-stats">';
                     html += `<div class="stat-card" style="background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Taxa de Presença</h3><p class="value" style="color: white;">${taxaPresenca}%</p></div>`;
-                    html += `<div class="stat-card" style="background: linear-gradient(135deg, #48BB78 0%, #2F855A 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Presenças</h3><p class="value" style="color: white;">${stats.presenca?.presentes || 0}</p></div>`;
-                    html += `<div class="stat-card" style="background: linear-gradient(135deg, #E53E3E 0%, #C53030 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Faltas</h3><p class="value" style="color: white;">${stats.presenca?.faltas || 0}</p></div>`;
-                    html += `<div class="stat-card" style="background: linear-gradient(135deg, #ED8936 0%, #C05621 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Atrasos</h3><p class="value" style="color: white;">${stats.presenca?.atrasos || 0}</p></div>`;
+                    html += `<div class="stat-card" style="background: linear-gradient(135deg, #48BB78 0%, #2F855A 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Presenças</h3><p class="value" style="color: white;">${presentes}</p></div>`;
+                    html += `<div class="stat-card" style="background: linear-gradient(135deg, #E53E3E 0%, #C53030 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Faltas</h3><p class="value" style="color: white;">${faltas}</p></div>`;
+                    html += `<div class="stat-card" style="background: linear-gradient(135deg, #ED8936 0%, #C05621 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Atrasos</h3><p class="value" style="color: white;">${atrasos}</p></div>`;
                     html += "</div>";
+
+                    // Charts for individual report
+                    html += '<div class="charts-section">';
+                    html += '<div class="chart-container"><h3>Distribuição de Frequência</h3><div class="chart-wrapper"><canvas id="individual-distribution-chart"></canvas></div></div>';
+                    html += '</div>';
 
                     // Resumo adicional
                     html += '<div style="margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">';
@@ -649,7 +998,17 @@ import PageToast from "../../components/ui/PageToast.astro";
                     </div>`;
                     html += "</div>";
 
+                    // Set content and create chart
+                    reportContent.innerHTML = html;
+                    
+                    // Create chart after DOM is updated
+                    setTimeout(() => {
+                        createDistributionChart('individual-distribution-chart', { presentes, atrasos, faltas });
+                    }, 50);
+
                 } else if (data.estatisticas) {
+                    const taxaPresenca = data.estatisticas.taxaPresenca || 0;
+                    
                     // Estatísticas gerais
                     html += '<div class="report-stats">';
                     html += `<div class="stat-card"><h3>Total de Alunos</h3><p class="value">${data.estatisticas.total_alunos}</p></div>`;
@@ -658,14 +1017,40 @@ import PageToast from "../../components/ui/PageToast.astro";
                     html += `<div class="stat-card" style="background: linear-gradient(135deg, #ED8936 0%, #C05621 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Atrasos</h3><p class="value" style="color: white;">${data.estatisticas.atrasos}</p></div>`;
                     html += "</div>";
 
+                    // Charts section
+                    html += '<div class="charts-section">';
+                    
+                    // Donut chart for distribution
+                    html += '<div class="chart-container"><h3>Distribuição Geral</h3><div class="chart-wrapper"><canvas id="distribution-chart"></canvas></div></div>';
+                    
+                    // Bar chart for turma comparison (if available and report type is presencas-turma or frequencia-geral)
+                    if ((tipo === "presencas-turma" || tipo === "frequencia-geral") && data.porTurma && data.porTurma.length > 0) {
+                        html += '<div class="chart-container"><h3>Comparativo por Turma</h3><div class="chart-wrapper"><canvas id="turma-chart"></canvas></div></div>';
+                    }
+                    
+                    // Top students chart
+                    if (data.topAlunos && data.topAlunos.length > 0) {
+                        html += '<div class="chart-container"><h3>Top 10 Alunos por Frequência</h3><div class="chart-wrapper"><canvas id="top-alunos-chart"></canvas></div></div>';
+                    }
+                    
+                    html += '</div>';
+                    
+                    // Trend chart (full width)
+                    if (data.tendencia && data.tendencia.length > 1) {
+                        html += '<div class="charts-section">';
+                        html += '<div class="chart-container full-width"><h3>Tendência de Frequência no Período</h3><div class="chart-wrapper"><canvas id="trend-chart"></canvas></div></div>';
+                        html += '</div>';
+                    }
+
                     // Tabela de detalhes
                     if (data.detalhes && data.detalhes.length > 0) {
+                        html += '<h3 style="margin: 2rem 0 1rem; font-size: 1.1rem; color: #2d3748;">Detalhamento por Aluno</h3>';
                         html += '<table class="report-table">';
                         html += "<thead><tr><th>Aluno</th><th>Presenças</th><th>Faltas</th><th>Atrasos</th><th>Taxa</th></tr></thead>";
                         html += "<tbody>";
                         data.detalhes.forEach((item) => {
                             const total = item.presentes + item.faltas + item.atrasos;
-                            const taxa = total > 0 ? Math.round(((item.presentes + item.atrasos) / total) * 100) : 0;
+                            const taxa = item.taxaPresenca !== undefined ? item.taxaPresenca : (total > 0 ? Math.round(((item.presentes + item.atrasos) / total) * 100) : 0);
                             html += `<tr>
                                 <td>${item.aluno}</td>
                                 <td>${item.presentes}</td>
@@ -676,6 +1061,36 @@ import PageToast from "../../components/ui/PageToast.astro";
                         });
                         html += "</tbody></table>";
                     }
+                    
+                    // Set content first, then create charts
+                    reportContent.innerHTML = html;
+                    
+                    // Create charts after DOM is updated
+                    setTimeout(() => {
+                        // Distribution chart
+                        createDistributionChart('distribution-chart', {
+                            presentes: data.estatisticas.presentes,
+                            atrasos: data.estatisticas.atrasos,
+                            faltas: data.estatisticas.faltas
+                        });
+                        
+                        // Turma chart
+                        if ((tipo === "presencas-turma" || tipo === "frequencia-geral") && data.porTurma && data.porTurma.length > 0) {
+                            createTurmaChart('turma-chart', data.porTurma);
+                        }
+                        
+                        // Trend chart
+                        if (data.tendencia && data.tendencia.length > 1) {
+                            createTrendChart('trend-chart', data.tendencia);
+                        }
+                        
+                        // Top students chart
+                        if (data.topAlunos && data.topAlunos.length > 0) {
+                            createTopAlunosChart('top-alunos-chart', data.topAlunos);
+                        }
+                    }, 50);
+                    
+                    return; // Already set innerHTML above
                 } else {
                     html = '<div style="text-align: center; padding: 2rem; color: #718096;">Nenhum dado disponível para este relatório.</div>';
                 }

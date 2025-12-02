@@ -4,6 +4,7 @@ import Sidebar from "../../components/Sidebar.astro";
 import FormSelect from "../../components/ui/FormSelect.astro";
 import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
 import PageToast from "../../components/ui/PageToast.astro";
+import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
 ---
 
 <html lang="pt-br">
@@ -208,6 +209,11 @@ import PageToast from "../../components/ui/PageToast.astro";
                 background-color: #fed7d7;
                 color: #c53030;
                 border: 1px solid #feb2b2;
+            }
+            .section-description {
+                font-size: 0.9rem;
+                color: var(--label-color);
+                margin-bottom: 1rem;
             }
 
             @media (max-width: 768px) {
@@ -426,6 +432,21 @@ import PageToast from "../../components/ui/PageToast.astro";
 
                         <!-- Responsáveis -->
                         <ResponsaveisSection client:load />
+
+                        <!-- Documentos (only in edit mode) -->
+                        <section id="documentos-section" class="form-section" style="display: none;">
+                            <h2>📎 Documentos do Aluno</h2>
+                            <p class="section-description">
+                                Faça upload de laudos médicos, documentos de identificação e outros comprovantes.
+                            </p>
+                            <div id="documentos-container">
+                                <DocumentosAluno 
+                                    client:load 
+                                    alunoId={0} 
+                                    alunoNome="" 
+                                />
+                            </div>
+                        </section>
 
                         <!-- Botões de Ação -->
                         <div class="btn-group">
@@ -649,8 +670,19 @@ import PageToast from "../../components/ui/PageToast.astro";
                     document.getElementById("header-description")!.textContent = "Atualize os dados do aluno";
                     document.getElementById("btn-submit")!.textContent = "Salvar Alterações";
                     
+                    // Show documents section in edit mode
+                    document.getElementById("documentos-section")!.style.display = "block";
+                    
                     // Load aluno data
-                    await carregarAluno(editingAlunoId);
+                    const alunoData = await carregarAluno(editingAlunoId);
+                    
+                    // Initialize documentos component with aluno data
+                    window.dispatchEvent(new CustomEvent('set-aluno-documentos', {
+                        detail: { 
+                            alunoId: editingAlunoId, 
+                            alunoNome: alunoData?.nome_aluno || '' 
+                        }
+                    }));
                 } else {
                     // Load turmas for new aluno
                     await carregarTurmas();
