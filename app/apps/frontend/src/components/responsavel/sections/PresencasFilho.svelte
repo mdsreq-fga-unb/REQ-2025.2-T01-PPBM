@@ -391,13 +391,17 @@
         <div class="bg-slate-50 rounded-xl p-4 mb-6">
             <div class="flex items-center justify-between mb-2">
                 <span class="font-medium">Taxa de Frequência</span>
-                <span class="text-2xl font-bold {getFrequencyColor(taxaFrequencia)}"
-                    >{taxaFrequencia}%</span
+                <span
+                    class="text-2xl font-bold {getFrequencyColor(
+                        taxaFrequencia,
+                    )}">{taxaFrequencia}%</span
                 >
             </div>
             <div class="w-full bg-slate-200 rounded-full h-3">
                 <div
-                    class="{getFrequencyGradient(taxaFrequencia)} h-3 rounded-full transition-all duration-500"
+                    class="{getFrequencyGradient(
+                        taxaFrequencia,
+                    )} h-3 rounded-full transition-all duration-500"
                     style="width: {taxaFrequencia}%"
                 ></div>
             </div>

@@ -523,8 +523,10 @@
                             <span class="font-semibold"
                                 >Taxa de Frequência:</span
                             >
-                            <span class="font-bold {getFrequencyColor(taxaFrequencia)}"
-                                >{taxaFrequencia}%</span
+                            <span
+                                class="font-bold {getFrequencyColor(
+                                    taxaFrequencia,
+                                )}">{taxaFrequencia}%</span
                             >
                         </div>
                     </div>
