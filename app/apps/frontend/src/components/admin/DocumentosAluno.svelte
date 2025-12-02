@@ -166,9 +166,25 @@
         }
     }
 
-    function handleDownload(url: string, nome: string) {
-        // Open in new tab for viewing/downloading
-        window.open(url, "_blank");
+    async function handleDownload(docId: number, nome: string) {
+        try {
+            // Fetch signed URL from backend
+            const response = await apiFetch<{
+                success: boolean;
+                data: { url: string; nome: string; expiresIn: number };
+            }>(`/documentos/download/${docId}`);
+
+            if (response.success && response.data) {
+                const downloadUrl = (response.data as any).url;
+                // Open in new tab for viewing/downloading
+                window.open(downloadUrl, "_blank");
+            } else {
+                displayToast("Erro ao obter link de download", "error");
+            }
+        } catch (error) {
+            console.error("Download error:", error);
+            displayToast("Erro ao obter link de download", "error");
+        }
     }
 
     function confirmDelete(id: number) {
@@ -347,7 +363,7 @@
                                     type="button"
                                     class="btn-action btn-view"
                                     on:click={() =>
-                                        handleDownload(doc.url, doc.descricao)}
+                                        handleDownload(doc.id, doc.descricao)}
                                     title="Visualizar/Download"
                                 >
                                     📥

@@ -113,13 +113,8 @@ export default class DocumentosController {
                 });
             }
 
-            // Get public URL
-            const { data: urlData } = SupabaseWrapper.get()
-                .storage
-                .from(STORAGE_BUCKET)
-                .getPublicUrl(filePath);
-
-            const publicUrl = urlData?.publicUrl || '';
+            // Store the file path (not the public URL) for later signed URL generation
+            const storedPath = filePath;
 
             // Store document metadata in database
             // Note: Using relatorios_acompanhamentos table with tipo_relatorio = 'documento'
@@ -132,7 +127,7 @@ export default class DocumentosController {
                     id_aluno: Number(alunoId),
                     descricao_relatorio_acompanhamento: descricao || `Documento: ${arquivo.name}`,
                     data_relatorio_acompanhamento: new Date().toISOString(),
-                    anexo_url: publicUrl,
+                    anexo_url: storedPath,  // Store file path for signed URL generation
                     tipo_relatorio: tipo || 'documento'
                 }])
                 .select('id_relatorios_acompanhamento, created_at, descricao_relatorio_acompanhamento, data_relatorio_acompanhamento, anexo_url, tipo_relatorio')
@@ -156,7 +151,7 @@ export default class DocumentosController {
                 success: true,
                 data: {
                     id: docData.id_relatorios_acompanhamento,
-                    url: publicUrl,
+                    filePath: storedPath,
                     nome: arquivo.name,
                     tipo: tipo || 'documento',
                     descricao: descricao
@@ -281,18 +276,28 @@ export default class DocumentosController {
                 });
             }
 
-            // Try to delete from storage if URL exists
+            // Try to delete from storage if file path exists
             if (doc.anexo_url) {
                 try {
-                    // Extract file path from URL
-                    const url = new URL(doc.anexo_url);
-                    const pathParts = url.pathname.split(`/${STORAGE_BUCKET}/`);
-                    if (pathParts.length > 1 && pathParts[1]) {
-                        const filePath = decodeURIComponent(pathParts[1]);
+                    // anexo_url now stores the file path directly
+                    const filePath = doc.anexo_url;
+                    // Check if it's a path (not a full URL from old records)
+                    if (!filePath.startsWith('http')) {
                         await SupabaseWrapper.get()
                             .storage
                             .from(STORAGE_BUCKET)
                             .remove([filePath]);
+                    } else {
+                        // Handle legacy full URLs
+                        const url = new URL(filePath);
+                        const pathParts = url.pathname.split(`/${STORAGE_BUCKET}/`);
+                        if (pathParts.length > 1 && pathParts[1]) {
+                            const extractedPath = decodeURIComponent(pathParts[1]);
+                            await SupabaseWrapper.get()
+                                .storage
+                                .from(STORAGE_BUCKET)
+                                .remove([extractedPath]);
+                        }
                     }
                 } catch (storageError) {
                     log.warn('deleteDocumento', 'Erro ao remover arquivo do storage', storageError);
@@ -363,13 +368,53 @@ export default class DocumentosController {
                 });
             }
 
-            // For public URLs, just return the URL
-            // For private buckets, we would create a signed URL here
+            // Extract file path - handle both new format (path only) and legacy (full URL)
+            let filePath = doc.anexo_url;
+            
+            if (doc.anexo_url.startsWith('http')) {
+                // Legacy full URL - extract the file path
+                try {
+                    const url = new URL(doc.anexo_url);
+                    // URL format: .../storage/v1/object/public/documentos-alunos/path/to/file
+                    const pathParts = url.pathname.split(`/${STORAGE_BUCKET}/`);
+                    if (pathParts.length > 1 && pathParts[1]) {
+                        filePath = decodeURIComponent(pathParts[1]);
+                    } else {
+                        log.error('getDownloadUrl', 'Não foi possível extrair caminho do arquivo', { url: doc.anexo_url });
+                        return res.status(500).json({
+                            error: 'Erro ao processar URL do documento'
+                        });
+                    }
+                } catch (urlError) {
+                    log.error('getDownloadUrl', 'URL inválida', { url: doc.anexo_url, error: urlError });
+                    return res.status(500).json({
+                        error: 'URL do documento inválida'
+                    });
+                }
+            }
+
+            // Generate a signed URL for private access
+            const { data: signedUrlData, error: signedUrlError } = await SupabaseWrapper.get()
+                .storage
+                .from(STORAGE_BUCKET)
+                .createSignedUrl(filePath, 3600); // URL valid for 1 hour
+
+            if (signedUrlError) {
+                log.error('getDownloadUrl', 'Erro ao gerar URL assinada', signedUrlError);
+                return res.status(500).json({
+                    error: 'Erro ao gerar link de download',
+                    details: signedUrlError.message
+                });
+            }
+
+            const downloadUrl = signedUrlData?.signedUrl || '';
+
             return res.status(200).json({
                 success: true,
                 data: {
-                    url: doc.anexo_url,
-                    nome: doc.descricao_relatorio_acompanhamento
+                    url: downloadUrl,
+                    nome: doc.descricao_relatorio_acompanhamento,
+                    expiresIn: 3600 // seconds
                 }
             });
         } catch (error) {
