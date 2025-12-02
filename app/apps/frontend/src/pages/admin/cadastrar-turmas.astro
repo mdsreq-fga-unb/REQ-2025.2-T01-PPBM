@@ -246,34 +246,56 @@ import PageToast from "../../components/ui/PageToast.astro";
                 background-color: #2c5282;
             }
             .docentes-list {
-                display: flex;
-                flex-direction: column;
-                gap: 0.75rem;
+                overflow-x: auto;
             }
-            .docente-item {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0.875rem 1rem;
+            .docentes-table {
+                width: 100%;
+                border-collapse: collapse;
                 background-color: var(--white);
-                border: 1px solid var(--border-color);
-                border-radius: 6px;
+                border-radius: 8px;
+                overflow: hidden;
             }
-            .docente-info {
-                display: flex;
-                flex-direction: column;
+            .docentes-table thead {
+                background-color: #e2e8f0;
+            }
+            .docentes-table th {
+                padding: 0.75rem 1rem;
+                text-align: left;
+                font-weight: 600;
+                font-size: 0.9rem;
+                color: var(--text-color);
+                border-bottom: 2px solid var(--border-color);
+            }
+            .docentes-table th:last-child {
+                text-align: center;
+                width: 100px;
+            }
+            .docentes-table td {
+                padding: 0.75rem 1rem;
+                border-bottom: 1px solid var(--border-color);
+                font-size: 0.95rem;
+                color: var(--text-color);
+                vertical-align: middle;
+            }
+            .docentes-table td:last-child {
+                text-align: center;
+            }
+            .docentes-table tbody tr:hover {
+                background-color: #f7fafc;
+            }
+            .docentes-table tbody tr:last-child td {
+                border-bottom: none;
             }
             .docente-nome {
                 font-weight: 600;
                 color: var(--text-color);
-                margin-bottom: 0.25rem;
             }
             .docente-email {
                 font-size: 0.85rem;
                 color: var(--label-color);
             }
             .btn-remove-docente {
-                padding: 0.375rem 0.75rem;
+                padding: 0.5rem 1rem;
                 background-color: #fed7d7;
                 color: #c53030;
                 border: none;
@@ -290,6 +312,9 @@ import PageToast from "../../components/ui/PageToast.astro";
                 padding: 1.5rem;
                 color: var(--label-color);
                 font-size: 0.9rem;
+                background-color: var(--white);
+                border-radius: 8px;
+                border: 1px dashed var(--border-color);
             }
 
             @media (max-width: 768px) {
@@ -678,34 +703,48 @@ import PageToast from "../../components/ui/PageToast.astro";
 
             function renderDocentesList() {
                 const docentesList = document.getElementById("docentes-list");
-                const docentesEmpty = document.getElementById("docentes-empty");
 
                 if (!docentesList) return;
 
                 if (selectedDocentes.length === 0) {
                     docentesList.innerHTML = `
-                    <div class="docentes-empty" id="docentes-empty">
+                    <div class="docentes-empty">
                         Nenhum docente adicionado. Clique em "Adicionar Docente" para selecionar.
                     </div>
                 `;
                     return;
                 }
 
-                docentesList.innerHTML = selectedDocentes
+                const tableRows = selectedDocentes
                     .map(
                         (docente) => `
-                <div class="docente-item" data-docente-id="${docente.id}">
-                    <div class="docente-info">
-                        <span class="docente-nome">${docente.nome}</span>
-                        <span class="docente-email">${docente.email || "Sem email"}</span>
-                    </div>
-                    <button type="button" class="btn-remove-docente" onclick="removeDocente(${docente.id})">
-                        Remover
-                    </button>
-                </div>
-            `,
+                    <tr data-docente-id="${docente.id}">
+                        <td><span class="docente-nome">${docente.nome}</span></td>
+                        <td><span class="docente-email">${docente.email || "Sem email"}</span></td>
+                        <td>
+                            <button type="button" class="btn-remove-docente" onclick="removeDocente(${docente.id})">
+                                Remover
+                            </button>
+                        </td>
+                    </tr>
+                `,
                     )
                     .join("");
+
+                docentesList.innerHTML = `
+                    <table class="docentes-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                `;
             }
 
             (window as any).removeDocente = function (id: number) {

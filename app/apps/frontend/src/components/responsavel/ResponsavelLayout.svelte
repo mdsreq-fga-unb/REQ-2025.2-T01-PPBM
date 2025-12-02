@@ -5,6 +5,7 @@
     import ResponsavelHeader from "./ResponsavelHeader.svelte";
     import ResponsavelSidebar from "./ResponsavelSidebar.svelte";
     import PresencasFilho from "./sections/PresencasFilho.svelte";
+    import AdvertenciasFilho from "./sections/AdvertenciasFilho.svelte";
     import Comunicacao from "./sections/Comunicacao.svelte";
     import RelatorioIndividual from "./sections/RelatorioIndividual.svelte";
 
@@ -45,6 +46,8 @@
         <main class="w-full h-full">
             {#if currentSection === "presencas"}
                 <PresencasFilho />
+            {:else if currentSection === "advertencias"}
+                <AdvertenciasFilho />
             {:else if currentSection === "comunicacao"}
                 <Comunicacao />
             {:else if currentSection === "relatorio"}

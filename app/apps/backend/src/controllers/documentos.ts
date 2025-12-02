@@ -124,6 +124,8 @@ export default class DocumentosController {
             // Store document metadata in database
             // Note: Using relatorios_acompanhamentos table with tipo_relatorio = 'documento'
             // or we could create a dedicated documentos table
+            // Using explicit column selection to avoid PostgREST relationship ambiguity
+            // (table has duplicate FK constraints for id_aluno and id_docente)
             const { data: docData, error: docError } = await SupabaseWrapper.get()
                 .from('relatorios_acompanhamentos')
                 .insert([{
@@ -133,7 +135,7 @@ export default class DocumentosController {
                     anexo_url: publicUrl,
                     tipo_relatorio: tipo || 'documento'
                 }])
-                .select()
+                .select('id_relatorios_acompanhamento, created_at, descricao_relatorio_acompanhamento, data_relatorio_acompanhamento, anexo_url, tipo_relatorio')
                 .single();
 
             if (docError) {
@@ -186,6 +188,8 @@ export default class DocumentosController {
 
             log.info('getDocumentosAluno', 'Listando documentos do aluno', { alunoId, tipo });
 
+            // Use explicit foreign key hint to avoid ambiguity
+            // (table has duplicate FK constraints for id_docente)
             let queryBuilder = SupabaseWrapper.get()
                 .from('relatorios_acompanhamentos')
                 .select(`
@@ -196,7 +200,7 @@ export default class DocumentosController {
                     anexo_url,
                     tipo_relatorio,
                     id_docente,
-                    docentes ( nome_docente )
+                    docentes!relatorios_acompanhamentos_id_docente_fkey ( nome_docente )
                 `)
                 .eq('id_aluno', Number(alunoId))
                 .not('anexo_url', 'is', null)

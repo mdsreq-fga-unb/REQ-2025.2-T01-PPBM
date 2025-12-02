@@ -12,7 +12,7 @@ import { test as base, expect, type Page } from '@playwright/test';
  * - TEST_ADMIN_PASSWORD: Admin user password
  */
 export const TEST_ADMIN = {
-  email: process.env.TEST_ADMIN_EMAIL || 'admin@bombeiroMirim.com',
+  email: process.env.TEST_ADMIN_EMAIL || 'admin@bombeiromirim.com',
   password: process.env.TEST_ADMIN_PASSWORD || 'admin123',
 };
 
@@ -60,9 +60,9 @@ export async function loginAsAdmin(page: Page): Promise<void> {
   try {
     await page.waitForURL(/\/admin/, { timeout: 15000 });
   } catch (error) {
-    // Check if there's an error message on the page
-    const errorEl = page.locator('.bg-red-50, [class*="error"], [class*="alert"]');
-    if (await errorEl.isVisible()) {
+    // Check if there's an error message on the page (use .first() to avoid strict mode violation)
+    const errorEl = page.locator('.bg-red-50, .alert-error, .login-error, [role="alert"]').first();
+    if (await errorEl.isVisible().catch(() => false)) {
       const errorText = await errorEl.textContent();
       throw new Error(
         `Login failed: ${errorText}\n\n` +

@@ -178,9 +178,37 @@ export default class TurmaController {
                 });
             }
 
+            // Fetch associated docentes
+            const { data: docentesData, error: docentesError } = await SupabaseWrapper.get()
+                .from('docentes_por_turma')
+                .select(`
+                    id_docente,
+                    docentes (
+                        id_docente,
+                        nome_docente,
+                        email_docente
+                    )
+                `)
+                .eq('id_turma', Number(id));
+
+            if (docentesError) {
+                log.error('getTurmaById', 'Erro ao buscar docentes da turma', docentesError);
+                // Don't fail the request, just log the error and return turma without docentes
+            }
+
+            // Flatten docentes data
+            const docentes = (docentesData || []).map((item: any) => ({
+                id_docente: item.id_docente,
+                nome_docente: item.docentes?.nome_docente,
+                email_docente: item.docentes?.email_docente
+            }));
+
             return res.status(200).json({
                 success: true,
-                data
+                data: {
+                    ...data,
+                    docentes
+                }
             });
         } catch (error) {
             log.error('getTurmaById', 'Erro inesperado', error as Error);

@@ -229,10 +229,12 @@
     });
 
     onDestroy(() => {
-        window.removeEventListener(
-            "set-aluno-documentos",
-            handleSetAlunoId as EventListener,
-        );
+        if (typeof window !== "undefined") {
+            window.removeEventListener(
+                "set-aluno-documentos",
+                handleSetAlunoId as EventListener,
+            );
+        }
     });
 </script>
 

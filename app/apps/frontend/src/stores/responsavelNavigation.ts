@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-export type ResponsavelSection = 'presencas' | 'comunicacao' | 'relatorio';
+export type ResponsavelSection = 'presencas' | 'advertencias' | 'comunicacao' | 'relatorio';
 
 function createNavigationStore() {
     const { subscribe, set } = writable<ResponsavelSection>('presencas');

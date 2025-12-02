@@ -10,6 +10,7 @@
         section: ResponsavelSection;
     }[] = [
         { icon: "📅", label: "Presenças do Meu Filho", section: "presencas" },
+        { icon: "⚠️", label: "Advertências", section: "advertencias" },
         { icon: "💬", label: "Comunicação", section: "comunicacao" },
         { icon: "📊", label: "Relatório Individual", section: "relatorio" },
     ];

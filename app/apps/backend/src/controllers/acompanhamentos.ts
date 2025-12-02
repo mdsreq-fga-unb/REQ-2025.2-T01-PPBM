@@ -70,6 +70,8 @@ export default class AcompanhamentoController {
             const start = (page - 1) * pageSize;
             const end = start + pageSize - 1;
 
+            // Use explicit foreign key hints to avoid PostgREST ambiguity
+            // (table has duplicate FK constraints for id_aluno and id_docente)
             let query = SupabaseWrapper.get()
                 .from('relatorios_acompanhamentos')
                 .select(`
@@ -82,8 +84,8 @@ export default class AcompanhamentoController {
                     anexo_url,
                     tipo_relatorio,
                     id_responsavel,
-                    alunos ( id_aluno, nome_aluno ),
-                    docentes ( id_docente, nome_docente ),
+                    alunos!relatorios_acompanhamentos_id_aluno_fkey ( id_aluno, nome_aluno ),
+                    docentes!relatorios_acompanhamentos_id_docente_fkey ( id_docente, nome_docente ),
                     responsaveis ( id_responsavel, nome_responsavel )
                 `, { count: 'exact' })
                 .order('data_relatorio_acompanhamento', { ascending: false })
@@ -148,6 +150,7 @@ export default class AcompanhamentoController {
                 });
             }
 
+            // Use explicit foreign key hints to avoid PostgREST ambiguity
             const { data, error } = await SupabaseWrapper.get()
                 .from('relatorios_acompanhamentos')
                 .select(`
@@ -160,8 +163,8 @@ export default class AcompanhamentoController {
                     anexo_url,
                     tipo_relatorio,
                     id_responsavel,
-                    alunos ( id_aluno, nome_aluno ),
-                    docentes ( id_docente, nome_docente ),
+                    alunos!relatorios_acompanhamentos_id_aluno_fkey ( id_aluno, nome_aluno ),
+                    docentes!relatorios_acompanhamentos_id_docente_fkey ( id_docente, nome_docente ),
                     responsaveis ( id_responsavel, nome_responsavel )
                 `)
                 .eq('id_relatorios_acompanhamento', Number(id))
@@ -231,6 +234,7 @@ export default class AcompanhamentoController {
             }
 
             // Get accompaniment reports
+            // Use explicit foreign key hint to avoid PostgREST ambiguity
             const { data, error } = await SupabaseWrapper.get()
                 .from('relatorios_acompanhamentos')
                 .select(`
@@ -243,7 +247,7 @@ export default class AcompanhamentoController {
                     anexo_url,
                     tipo_relatorio,
                     id_responsavel,
-                    docentes ( id_docente, nome_docente )
+                    docentes!relatorios_acompanhamentos_id_docente_fkey ( id_docente, nome_docente )
                 `)
                 .eq('id_aluno', Number(id))
                 .order('data_relatorio_acompanhamento', { ascending: false });
@@ -345,10 +349,11 @@ export default class AcompanhamentoController {
 
             log.info('createAcompanhamento', 'Criando acompanhamento', { alunoId: insertPayload.id_aluno });
 
+            // Use explicit column selection to avoid PostgREST relationship ambiguity
             const { data, error } = await SupabaseWrapper.get()
                 .from('relatorios_acompanhamentos')
                 .insert([insertPayload])
-                .select()
+                .select('id_relatorios_acompanhamento, created_at, id_aluno, id_docente, descricao_relatorio_acompanhamento, data_relatorio_acompanhamento, anexo_url, tipo_relatorio, id_responsavel')
                 .single();
 
             if (error) {
@@ -438,11 +443,12 @@ export default class AcompanhamentoController {
                 });
             }
 
+            // Use explicit column selection to avoid PostgREST relationship ambiguity
             const { data, error } = await SupabaseWrapper.get()
                 .from('relatorios_acompanhamentos')
                 .update(updates)
                 .eq('id_relatorios_acompanhamento', Number(id))
-                .select()
+                .select('id_relatorios_acompanhamento, created_at, id_aluno, id_docente, descricao_relatorio_acompanhamento, data_relatorio_acompanhamento, anexo_url, tipo_relatorio, id_responsavel')
                 .single();
 
             if (error) {
