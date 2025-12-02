@@ -670,7 +670,8 @@
     }
 
     function getStatusIcon(status: string): string {
-        switch (status) {
+        const normalizedStatus = status?.toLowerCase() || "";
+        switch (normalizedStatus) {
             case "presente":
                 return "✅";
             case "atraso":
@@ -1124,9 +1125,11 @@
                                                     )}</span
                                                 >
                                             </div>
-                                            <p class="event-description">
-                                                {event.descricao}
-                                            </p>
+                                            {#if event.tipo !== "presenca"}
+                                                <p class="event-description">
+                                                    {event.descricao}
+                                                </p>
+                                            {/if}
                                             {#if event.docente}
                                                 <p class="event-docente">
                                                     Docente: {event.docente}
@@ -1139,18 +1142,13 @@
                                                 </p>
                                             {/if}
                                             {#if event.tipo === "presenca" && event.detalhes.status}
+                                                {@const statusLower = String(event.detalhes.status).toLowerCase()}
                                                 <span
                                                     class="event-status"
-                                                    class:presente={event
-                                                        .detalhes.status ===
-                                                        "presente"}
-                                                    class:atraso={event.detalhes
-                                                        .status === "atraso"}
-                                                    class:falta={event.detalhes
-                                                        .status === "falta" ||
-                                                        event.detalhes
-                                                            .status ===
-                                                            "ausente"}
+                                                    class:presente={statusLower === "presente"}
+                                                    class:atraso={statusLower === "atraso"}
+                                                    class:falta={statusLower === "falta" ||
+                                                        statusLower === "ausente"}
                                                 >
                                                     {getStatusIcon(
                                                         String(

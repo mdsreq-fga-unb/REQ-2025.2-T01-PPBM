@@ -360,7 +360,9 @@ import PageToast from "../../components/ui/PageToast.astro";
                     <div class="page-header">
                         <div class="title">
                             <h1 id="page-title">Cadastrar Turma</h1>
-                            <p id="page-description">Crie uma nova turma para o programa</p>
+                            <p id="page-description">
+                                Crie uma nova turma para o programa
+                            </p>
                         </div>
                         <a href="/admin/gerenciar-turmas" class="btn-back">
                             <span>←</span> Voltar
@@ -368,7 +370,9 @@ import PageToast from "../../components/ui/PageToast.astro";
                     </div>
 
                     <div id="alert-success" class="alert alert-success">
-                        <span id="success-message">Turma cadastrada com sucesso!</span>
+                        <span id="success-message"
+                            >Turma cadastrada com sucesso!</span
+                        >
                     </div>
                     <div id="alert-error" class="alert alert-error">
                         Erro ao cadastrar turma. Por favor, tente novamente.
@@ -495,7 +499,8 @@ import PageToast from "../../components/ui/PageToast.astro";
                                 class="btn btn-primary"
                                 id="btn-submit"
                             >
-                                <span id="btn-submit-text">Cadastrar Turma</span>
+                                <span id="btn-submit-text">Cadastrar Turma</span
+                                >
                             </button>
                         </div>
                     </form>
@@ -525,7 +530,7 @@ import PageToast from "../../components/ui/PageToast.astro";
             }
 
             let selectedDocentes: Docente[] = [];
-            
+
             // Edit mode variables
             let isEditMode = false;
             let turmaId: string | null = null;
@@ -556,7 +561,7 @@ import PageToast from "../../components/ui/PageToast.astro";
 
                 // Check for edit mode (id in URL params)
                 const urlParams = new URLSearchParams(window.location.search);
-                turmaId = urlParams.get('id');
+                turmaId = urlParams.get("id");
                 isEditMode = !!turmaId;
 
                 if (isEditMode && turmaId) {
@@ -571,38 +576,55 @@ import PageToast from "../../components/ui/PageToast.astro";
             async function carregarDadosTurma(id: string) {
                 try {
                     const response = await apiFetch(`/turmas/detalhe/${id}`);
-                    
+
                     if (response.success && response.data) {
-                        const turma = (response.data as any).data || response.data;
-                        
+                        const turma =
+                            (response.data as any).data || response.data;
+
                         // Populate form fields
-                        const nomeTurmaInput = document.getElementById("nome_turma") as HTMLInputElement;
-                        const limiteAlunosInput = document.getElementById("limite_alunos_turma") as HTMLInputElement;
-                        const unidadeTurmaSelect = document.getElementById("unidade_turma") as HTMLSelectElement;
-                        
-                        if (nomeTurmaInput) nomeTurmaInput.value = turma.nome_turma || '';
-                        if (limiteAlunosInput) limiteAlunosInput.value = turma.limite_alunos_turma?.toString() || '';
-                        if (unidadeTurmaSelect) unidadeTurmaSelect.value = turma.unidade_turma || '';
-                        
+                        const nomeTurmaInput = document.getElementById(
+                            "nome_turma",
+                        ) as HTMLInputElement;
+                        const limiteAlunosInput = document.getElementById(
+                            "limite_alunos_turma",
+                        ) as HTMLInputElement;
+                        const unidadeTurmaSelect = document.getElementById(
+                            "unidade_turma",
+                        ) as HTMLSelectElement;
+
+                        if (nomeTurmaInput)
+                            nomeTurmaInput.value = turma.nome_turma || "";
+                        if (limiteAlunosInput)
+                            limiteAlunosInput.value =
+                                turma.limite_alunos_turma?.toString() || "";
+                        if (unidadeTurmaSelect)
+                            unidadeTurmaSelect.value =
+                                turma.unidade_turma || "";
+
                         // Load associated docentes if available
                         if (turma.docentes && Array.isArray(turma.docentes)) {
                             selectedDocentes = turma.docentes.map((d: any) => ({
                                 id: d.id_docente || d.id,
-                                nome: d.nome_docente || d.nome || 'Docente',
-                                email: d.email_docente || d.email || '',
-                                role: 'docente'
+                                nome: d.nome_docente || d.nome || "Docente",
+                                email: d.email_docente || d.email || "",
+                                role: "docente",
                             }));
                             renderDocentesList();
                         }
                     } else {
-                        throw new Error(response.error || 'Erro ao carregar dados da turma');
+                        throw new Error(
+                            response.error || "Erro ao carregar dados da turma",
+                        );
                     }
                 } catch (error) {
-                    console.error('Erro ao carregar turma:', error);
-                    const alertError = document.getElementById("alert-error") as HTMLDivElement;
+                    console.error("Erro ao carregar turma:", error);
+                    const alertError = document.getElementById(
+                        "alert-error",
+                    ) as HTMLDivElement;
                     if (alertError) {
-                        alertError.textContent = 'Erro ao carregar dados da turma. Verifique se a turma existe.';
-                        alertError.style.display = 'block';
+                        alertError.textContent =
+                            "Erro ao carregar dados da turma. Verifique se a turma existe.";
+                        alertError.style.display = "block";
                     }
                 }
             }
@@ -610,15 +632,23 @@ import PageToast from "../../components/ui/PageToast.astro";
             function updateUIForEditMode() {
                 // Update page title
                 const pageTitle = document.getElementById("page-title");
-                const pageDescription = document.getElementById("page-description");
-                const btnSubmitText = document.getElementById("btn-submit-text");
-                const successMessage = document.getElementById("success-message");
-                
+                const pageDescription =
+                    document.getElementById("page-description");
+                const btnSubmitText =
+                    document.getElementById("btn-submit-text");
+                const successMessage =
+                    document.getElementById("success-message");
+
                 if (pageTitle) pageTitle.textContent = "Editar Turma";
-                if (pageDescription) pageDescription.textContent = "Atualize as informações da turma";
-                if (btnSubmitText) btnSubmitText.textContent = "Salvar Alterações";
-                if (successMessage) successMessage.textContent = "Turma atualizada com sucesso!";
-                
+                if (pageDescription)
+                    pageDescription.textContent =
+                        "Atualize as informações da turma";
+                if (btnSubmitText)
+                    btnSubmitText.textContent = "Salvar Alterações";
+                if (successMessage)
+                    successMessage.textContent =
+                        "Turma atualizada com sucesso!";
+
                 // Update document title
                 document.title = "Editar Turma - Programa Bombeiro Mirim";
             }
@@ -738,10 +768,14 @@ import PageToast from "../../components/ui/PageToast.astro";
 
                 // Disable submit button
                 btnSubmit.disabled = true;
-                const btnSubmitText = document.getElementById("btn-submit-text");
-                const originalButtonText = btnSubmitText?.textContent || "Cadastrar Turma";
+                const btnSubmitText =
+                    document.getElementById("btn-submit-text");
+                const originalButtonText =
+                    btnSubmitText?.textContent || "Cadastrar Turma";
                 if (btnSubmitText) {
-                    btnSubmitText.textContent = isEditMode ? "Salvando..." : "Cadastrando...";
+                    btnSubmitText.textContent = isEditMode
+                        ? "Salvando..."
+                        : "Cadastrando...";
                 }
 
                 try {
@@ -752,7 +786,7 @@ import PageToast from "../../components/ui/PageToast.astro";
                     };
 
                     // Create or update turma based on mode
-                    const endpoint = isEditMode 
+                    const endpoint = isEditMode
                         ? `/turmas/atualizar/${turmaId}`
                         : "/turmas/criar";
                     const method = isEditMode ? "PUT" : "POST";
@@ -773,24 +807,30 @@ import PageToast from "../../components/ui/PageToast.astro";
                                 (d) => d.id,
                             );
 
-                            await apiFetch(`/turmas/${resultTurmaId}/docentes`, {
-                                method: "PUT",
-                                body: JSON.stringify({
-                                    docente_ids: docenteIds,
-                                }),
-                            });
+                            await apiFetch(
+                                `/turmas/${resultTurmaId}/docentes`,
+                                {
+                                    method: "PUT",
+                                    body: JSON.stringify({
+                                        docente_ids: docenteIds,
+                                    }),
+                                },
+                            );
                         } else if (isEditMode && resultTurmaId) {
                             // If in edit mode and no docentes selected, clear the association
-                            await apiFetch(`/turmas/${resultTurmaId}/docentes`, {
-                                method: "PUT",
-                                body: JSON.stringify({
-                                    docente_ids: [],
-                                }),
-                            });
+                            await apiFetch(
+                                `/turmas/${resultTurmaId}/docentes`,
+                                {
+                                    method: "PUT",
+                                    body: JSON.stringify({
+                                        docente_ids: [],
+                                    }),
+                                },
+                            );
                         }
 
                         alertSuccess.style.display = "block";
-                        
+
                         if (!isEditMode) {
                             form.reset();
                             selectedDocentes = [];
@@ -806,15 +846,26 @@ import PageToast from "../../components/ui/PageToast.astro";
                         }, 2000);
                     } else {
                         throw new Error(
-                            response.error || (isEditMode ? "Erro ao atualizar turma" : "Erro ao cadastrar turma"),
+                            response.error ||
+                                (isEditMode
+                                    ? "Erro ao atualizar turma"
+                                    : "Erro ao cadastrar turma"),
                         );
                     }
                 } catch (error) {
-                    console.error(isEditMode ? "Erro ao atualizar turma:" : "Erro ao cadastrar turma:", error);
+                    console.error(
+                        isEditMode
+                            ? "Erro ao atualizar turma:"
+                            : "Erro ao cadastrar turma:",
+                        error,
+                    );
                     alertError.textContent =
                         error instanceof Error
                             ? error.message
-                            : (isEditMode ? "Erro ao atualizar turma." : "Erro ao cadastrar turma.") + " Por favor, tente novamente.";
+                            : (isEditMode
+                                  ? "Erro ao atualizar turma."
+                                  : "Erro ao cadastrar turma.") +
+                              " Por favor, tente novamente.";
                     alertError.style.display = "block";
                     window.scrollTo({ top: 0, behavior: "smooth" });
                 } finally {

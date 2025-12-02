@@ -208,10 +208,7 @@
 		if (!cpf) return "-";
 		const cleaned = cpf.replace(/\D/g, "");
 		if (cleaned.length !== 11) return cpf;
-		return cleaned.replace(
-			/(\d{3})(\d{3})(\d{3})(\d{2})/,
-			"$1.$2.$3-$4",
-		);
+		return cleaned.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 	}
 
 	// Reactive search with debounce
@@ -259,7 +256,9 @@
 	<!-- Filtros de Busca -->
 	<div class="grid md:grid-cols-4 gap-4 mb-6">
 		<div class="md:col-span-2">
-			<label for="busca-aluno" class="block text-sm font-medium mb-1">Buscar aluno</label>
+			<label for="busca-aluno" class="block text-sm font-medium mb-1"
+				>Buscar aluno</label
+			>
 			<input
 				id="busca-aluno"
 				bind:value={buscaGerenciar}
@@ -286,7 +285,9 @@
 			</select>
 		</div>
 		<div>
-			<label for="filtro-status" class="block text-sm font-medium mb-1">Status especial</label>
+			<label for="filtro-status" class="block text-sm font-medium mb-1"
+				>Status especial</label
+			>
 			<select
 				id="filtro-status"
 				bind:value={filtroStatus}

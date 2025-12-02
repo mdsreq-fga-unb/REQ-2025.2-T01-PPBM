@@ -336,9 +336,13 @@ export default class ResponsavelController {
             // Calculate statistics
             const registros = presencas || [];
             const totalDias = registros.length;
-            const presentes = registros.filter(p => p.status_presenca === 'presente').length;
-            const atrasos = registros.filter(p => p.status_presenca === 'atraso').length;
-            const faltas = registros.filter(p => p.status_presenca === 'falta' || p.status_presenca === 'ausente').length;
+            // Normalize status to lowercase for comparison (database may store as 'Presente', 'Atraso', 'Falta')
+            const presentes = registros.filter(p => String(p.status_presenca || '').toLowerCase() === 'presente').length;
+            const atrasos = registros.filter(p => String(p.status_presenca || '').toLowerCase() === 'atraso').length;
+            const faltas = registros.filter(p => {
+                const status = String(p.status_presenca || '').toLowerCase();
+                return status === 'falta' || status === 'ausente';
+            }).length;
             const taxaFrequencia = totalDias > 0 ? Math.round((presentes / totalDias) * 100) : 0;
 
             // Get turma name
@@ -368,7 +372,7 @@ export default class ResponsavelController {
                 registros: registros.map(r => ({
                     id: r.id_presenca,
                     data: r.data_time_presenca,
-                    status: r.status_presenca,
+                    status: String(r.status_presenca || '').toLowerCase(),
                     justificativa: r.justificativa ? {
                         id: (r.justificativa as any).id_justificativa,
                         motivo: (r.justificativa as any).motivo_justificativa,
@@ -665,12 +669,17 @@ export default class ResponsavelController {
             // Calculate statistics
             const registros = presencas || [];
             const totalDias = registros.length;
-            const presentes = registros.filter(p => p.status_presenca === 'presente').length;
-            const atrasos = registros.filter(p => p.status_presenca === 'atraso').length;
-            const faltas = registros.filter(p => p.status_presenca === 'falta' || p.status_presenca === 'ausente').length;
-            const faltasJustificadas = registros.filter(p =>
-                (p.status_presenca === 'falta' || p.status_presenca === 'ausente') && p.id_justificativa
-            ).length;
+            // Normalize status to lowercase for comparison (database may store as 'Presente', 'Atraso', 'Falta')
+            const presentes = registros.filter(p => String(p.status_presenca || '').toLowerCase() === 'presente').length;
+            const atrasos = registros.filter(p => String(p.status_presenca || '').toLowerCase() === 'atraso').length;
+            const faltas = registros.filter(p => {
+                const status = String(p.status_presenca || '').toLowerCase();
+                return status === 'falta' || status === 'ausente';
+            }).length;
+            const faltasJustificadas = registros.filter(p => {
+                const status = String(p.status_presenca || '').toLowerCase();
+                return (status === 'falta' || status === 'ausente') && p.id_justificativa;
+            }).length;
             const faltasNaoJustificadas = faltas - faltasJustificadas;
             const taxaFrequencia = totalDias > 0 ? Math.round((presentes / totalDias) * 100) : 0;
 
@@ -703,7 +712,7 @@ export default class ResponsavelController {
                     id: r.id_presenca,
                     data: r.data_time_presenca,
                     diaSemana: data.toLocaleDateString('pt-BR', { weekday: 'long' }),
-                    status: r.status_presenca,
+                    status: String(r.status_presenca || '').toLowerCase(),
                     justificada: !!r.id_justificativa
                 };
             });

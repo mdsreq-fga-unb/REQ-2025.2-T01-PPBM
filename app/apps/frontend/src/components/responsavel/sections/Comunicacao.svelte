@@ -18,16 +18,9 @@
     }
 
     // State
-    let activeTab: "mensagens" | "avisos" | "enviar" = "mensagens";
+    let activeTab: "mensagens" | "avisos" = "mensagens";
     let isLoading = false;
     let responsavelId: number | null = null;
-    let selectedChildId: number | null = null;
-
-    // Children (for context in messages)
-    let children: Array<{
-        id_aluno: number;
-        nome_aluno: string;
-    }> = [];
 
     // Messages
     let mensagens: {
@@ -49,12 +42,6 @@
         timestamp: string;
         ativo: boolean;
     }[] = [];
-
-    // Send message form
-    let destinatario = "coordenacao";
-    let assunto = "";
-    let conteudo = "";
-    let isSending = false;
 
     $: currentUser = $authStore.currentUser;
 
@@ -93,20 +80,6 @@
             if (respResponse.success && respResponse.data) {
                 responsavelId = (respResponse.data as any).data.id_responsavel;
 
-                // Get children for this responsável
-                const childrenResponse = await apiFetch<{
-                    success: boolean;
-                    data: Array<{ id_aluno: number; nome_aluno: string }>;
-                }>(`/responsaveis/meus-filhos/${responsavelId}`);
-
-                if (childrenResponse.success && childrenResponse.data) {
-                    const responseData = childrenResponse.data as any;
-                    children = responseData.data || [];
-                    if (children.length > 0) {
-                        selectedChildId = children[0].id_aluno;
-                    }
-                }
-
                 // Load messages and notices
                 await Promise.all([loadMessages(), loadNotices()]);
             }
@@ -136,7 +109,7 @@
             }>(`/responsaveis/mensagens/${responsavelId}`);
 
             if (response.success && response.data) {
-                mensagens = (response.data as any) || [];
+                mensagens = (response.data as any)?.data || [];
             }
         } catch (error) {
             console.error("Error loading messages:", error);
@@ -163,63 +136,13 @@
             }>("/responsaveis/avisos");
 
             if (response.success && response.data) {
-                avisos = (response.data as any) || [];
+                avisos = (response.data as any)?.data || [];
             }
         } catch (error) {
             console.error("Error loading notices:", error);
             displayToast("Erro ao carregar avisos", "error");
         } finally {
             isLoading = false;
-        }
-    }
-
-    async function handleSendMessage() {
-        if (!assunto.trim() || !conteudo.trim()) {
-            displayToast("Preencha o assunto e a mensagem", "warning");
-            return;
-        }
-
-        if (!responsavelId) {
-            displayToast("Erro: responsável não identificado", "error");
-            return;
-        }
-
-        isSending = true;
-
-        try {
-            const response = await apiFetch<{ success: boolean }>(
-                "/responsaveis/enviar-mensagem",
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        id_responsavel: responsavelId,
-                        id_aluno: selectedChildId,
-                        destinatario,
-                        assunto,
-                        conteudo,
-                    }),
-                },
-            );
-
-            if (response.success) {
-                // Clear form
-                assunto = "";
-                conteudo = "";
-                destinatario = "coordenacao";
-
-                displayToast("Mensagem enviada com sucesso!", "success");
-
-                // Switch to messages tab and reload
-                activeTab = "mensagens";
-                await loadMessages();
-            } else {
-                displayToast("Erro ao enviar mensagem", "error");
-            }
-        } catch (error) {
-            console.error("Error sending message:", error);
-            displayToast("Erro ao enviar mensagem", "error");
-        } finally {
-            isSending = false;
         }
     }
 
@@ -232,10 +155,6 @@
                 minute: "2-digit",
             }),
         };
-    }
-
-    function goToSendTab() {
-        activeTab = "enviar";
     }
 
     // onMount is no longer needed - reactive statement handles loading when currentUser is available
@@ -251,12 +170,6 @@
             <h2 class="text-2xl font-bold text-slate-900 mb-1">Comunicação</h2>
             <p class="text-slate-500">Mensagens e avisos da escola</p>
         </div>
-        <button
-            on:click={goToSendTab}
-            class="px-4 py-2 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition"
-        >
-            Enviar Mensagem
-        </button>
     </div>
 
     <!-- Tabs -->
@@ -278,15 +191,6 @@
                 : 'border-transparent text-slate-500 hover:text-slate-700'}"
         >
             Avisos Gerais
-        </button>
-        <button
-            on:click={() => setTab("enviar")}
-            class="px-4 py-2 border-b-2 font-medium transition {activeTab ===
-            'enviar'
-                ? 'border-[#E11D48] text-[#E11D48]'
-                : 'border-transparent text-slate-500 hover:text-slate-700'}"
-        >
-            Enviar Mensagem
         </button>
     </div>
 
@@ -368,87 +272,6 @@
                     </div>
                 {/each}
             {/if}
-        </div>
-    {/if}
-
-    <!-- Tab Content: Enviar -->
-    {#if activeTab === "enviar"}
-        <div class="max-w-2xl">
-            <form
-                on:submit|preventDefault={handleSendMessage}
-                class="space-y-4"
-            >
-                <div>
-                    <label
-                        for="destinatario"
-                        class="block text-sm font-medium mb-1">Para</label
-                    >
-                    <select
-                        id="destinatario"
-                        bind:value={destinatario}
-                        class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
-                    >
-                        <option value="coordenacao">Coordenação</option>
-                        <option value="professor">Professor da Turma</option>
-                        <option value="administracao">Administração</option>
-                    </select>
-                </div>
-
-                {#if children.length > 1}
-                    <div>
-                        <label
-                            for="childSelect"
-                            class="block text-sm font-medium mb-1"
-                            >Referente a</label
-                        >
-                        <select
-                            id="childSelect"
-                            bind:value={selectedChildId}
-                            class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
-                        >
-                            {#each children as child}
-                                <option value={child.id_aluno}
-                                    >{child.nome_aluno}</option
-                                >
-                            {/each}
-                        </select>
-                    </div>
-                {/if}
-
-                <div>
-                    <label for="assunto" class="block text-sm font-medium mb-1"
-                        >Assunto</label
-                    >
-                    <input
-                        id="assunto"
-                        type="text"
-                        bind:value={assunto}
-                        placeholder="Ex: Dúvida sobre atividade, Justificativa de falta..."
-                        class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
-                    />
-                </div>
-
-                <div>
-                    <label for="conteudo" class="block text-sm font-medium mb-1"
-                        >Mensagem</label
-                    >
-                    <textarea
-                        id="conteudo"
-                        bind:value={conteudo}
-                        rows="6"
-                        placeholder="Digite sua mensagem aqui..."
-                        class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
-                    ></textarea>
-                </div>
-
-                <button
-                    type="submit"
-                    disabled={isSending}
-                    class="w-full py-3 px-4 rounded-lg bg-[#E11D48] hover:bg-[#BE123C] text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    {isSending ? "Enviando..." : "Enviar Mensagem"}
-                </button>
-            </form>
         </div>
     {/if}
 </section>

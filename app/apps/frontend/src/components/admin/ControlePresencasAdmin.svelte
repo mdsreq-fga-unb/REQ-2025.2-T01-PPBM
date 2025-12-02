@@ -219,7 +219,10 @@
         }
     }
 
-    function openJustificativaDialog(aluno: Aluno, presenca: PresencaStatus | undefined) {
+    function openJustificativaDialog(
+        aluno: Aluno,
+        presenca: PresencaStatus | undefined,
+    ) {
         selectedAlunoId = aluno.id_aluno;
         selectedAlunoNome = aluno.nome_aluno;
         selectedPresencaId = presenca?.presencaId || null;
@@ -227,9 +230,11 @@
         showJustificativaDialog = true;
     }
 
-    function handleJustificativaSave(event: CustomEvent<{ justificativaId: number }>) {
+    function handleJustificativaSave(
+        event: CustomEvent<{ justificativaId: number }>,
+    ) {
         const { justificativaId } = event.detail;
-        
+
         // Update the presenca in the map with the new justificativaId
         if (selectedAlunoId) {
             const current = presencas.get(selectedAlunoId);
@@ -241,7 +246,7 @@
                 presencas = presencas; // Trigger reactivity
             }
         }
-        
+
         displayToast("Justificativa salva com sucesso!", "success");
     }
 
@@ -468,7 +473,11 @@
                                         <button
                                             type="button"
                                             class="btn-justificativa view"
-                                            on:click={() => openJustificativaDialog(aluno, presenca)}
+                                            on:click={() =>
+                                                openJustificativaDialog(
+                                                    aluno,
+                                                    presenca,
+                                                )}
                                         >
                                             📄 Ver Justificativa
                                         </button>
@@ -476,7 +485,11 @@
                                         <button
                                             type="button"
                                             class="btn-justificativa add"
-                                            on:click={() => openJustificativaDialog(aluno, presenca)}
+                                            on:click={() =>
+                                                openJustificativaDialog(
+                                                    aluno,
+                                                    presenca,
+                                                )}
                                         >
                                             ➕ Justificar
                                         </button>
@@ -773,7 +786,9 @@
         font-size: 0.85rem;
         font-weight: 600;
         cursor: pointer;
-        transition: background-color 0.2s, transform 0.1s;
+        transition:
+            background-color 0.2s,
+            transform 0.1s;
         white-space: nowrap;
     }
 

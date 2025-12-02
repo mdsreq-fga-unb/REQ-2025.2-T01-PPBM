@@ -846,9 +846,10 @@ export default class AlunoController {
 
                     switch (result.type) {
                         case 'presenca':
+                            const statusNormalized = String(item.status_presenca || '').toLowerCase();
                             event.id = item.id_presenca;
                             event.data = item.data_time_presenca || item.created_at;
-                            event.descricao = `${item.status_presenca === 'presente' ? 'Presença' : item.status_presenca === 'atraso' ? 'Atraso' : 'Falta'} registrada`;
+                            event.descricao = `${statusNormalized === 'presente' ? 'Presença' : statusNormalized === 'atraso' ? 'Atraso' : 'Falta'} registrada`;
                             event.docente = item.docentes?.nome_docente || null;
                             event.detalhes = {
                                 status: item.status_presenca,
@@ -1020,9 +1021,13 @@ export default class AlunoController {
             const advertenciasList = advertencias || [];
 
             const totalAulas = presencasList.length;
-            const presentes = presencasList.filter(p => p.status_presenca === 'presente').length;
-            const atrasos = presencasList.filter(p => p.status_presenca === 'atraso').length;
-            const faltas = presencasList.filter(p => p.status_presenca === 'falta' || p.status_presenca === 'ausente').length;
+            // Normalize status to lowercase for comparison (database may store as 'Presente', 'Atraso', 'Falta')
+            const presentes = presencasList.filter(p => String(p.status_presenca || '').toLowerCase() === 'presente').length;
+            const atrasos = presencasList.filter(p => String(p.status_presenca || '').toLowerCase() === 'atraso').length;
+            const faltas = presencasList.filter(p => {
+                const status = String(p.status_presenca || '').toLowerCase();
+                return status === 'falta' || status === 'ausente';
+            }).length;
 
             const taxaPresenca = totalAulas > 0
                 ? Math.round(((presentes + atrasos) / totalAulas) * 100)

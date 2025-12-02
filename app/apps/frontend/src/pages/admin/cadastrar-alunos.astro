@@ -434,16 +434,21 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
                         <ResponsaveisSection client:load />
 
                         <!-- Documentos (only in edit mode) -->
-                        <section id="documentos-section" class="form-section" style="display: none;">
+                        <section
+                            id="documentos-section"
+                            class="form-section"
+                            style="display: none;"
+                        >
                             <h2>📎 Documentos do Aluno</h2>
                             <p class="section-description">
-                                Faça upload de laudos médicos, documentos de identificação e outros comprovantes.
+                                Faça upload de laudos médicos, documentos de
+                                identificação e outros comprovantes.
                             </p>
                             <div id="documentos-container">
-                                <DocumentosAluno 
-                                    client:load 
-                                    alunoId={0} 
-                                    alunoNome="" 
+                                <DocumentosAluno
+                                    client:load
+                                    alunoId={0}
+                                    alunoNome=""
                                 />
                             </div>
                         </section>
@@ -480,8 +485,8 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
 
             // Format CPF for display
             function formatCpf(cpf: string): string {
-                if (!cpf) return '';
-                const digits = cpf.replace(/\D/g, '');
+                if (!cpf) return "";
+                const digits = cpf.replace(/\D/g, "");
                 if (digits.length !== 11) return cpf;
                 return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9, 11)}`;
             }
@@ -493,7 +498,10 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
                         "/turmas/listar?pageSize=100",
                     );
                     if (response.success && response.data) {
-                        const responseData = response.data as { data?: any[]; [key: string]: any };
+                        const responseData = response.data as {
+                            data?: any[];
+                            [key: string]: any;
+                        };
                         const turmas = responseData.data || response.data || [];
                         const turmaSelect = document.querySelector(
                             'select[name="turma"]',
@@ -506,7 +514,10 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
                                 const option = document.createElement("option");
                                 option.value = turma.id_turma;
                                 option.textContent = `${turma.nome_turma} - ${turma.unidade_turma || "Sem unidade"}`;
-                                if (selectedTurmaId && turma.id_turma === selectedTurmaId) {
+                                if (
+                                    selectedTurmaId &&
+                                    turma.id_turma === selectedTurmaId
+                                ) {
                                     option.selected = true;
                                 }
                                 turmaSelect.appendChild(option);
@@ -542,72 +553,124 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
             async function carregarAluno(id: number) {
                 try {
                     const response = await apiFetch(`/alunos/detalhe/${id}`);
-                    console.log('[Edit] Full response:', response);
-                    
+                    console.log("[Edit] Full response:", response);
+
                     // The API returns { success, data: { success, data: aluno } }
                     // apiFetch wraps it as { success, data: serverResponse }
                     const serverResponse = response.data as any;
-                    const aluno = (serverResponse?.data || serverResponse) as AlunoData;
-                    
-                    console.log('[Edit] Aluno data:', aluno);
-                    
+                    const aluno = (serverResponse?.data ||
+                        serverResponse) as AlunoData;
+
+                    console.log("[Edit] Aluno data:", aluno);
+
                     if (response.success && aluno) {
                         // Fill form fields
-                        const form = document.getElementById("cadastro-form") as HTMLFormElement;
-                        
+                        const form = document.getElementById(
+                            "cadastro-form",
+                        ) as HTMLFormElement;
+
                         // Personal data
-                        (form.querySelector('input[name="nome"]') as HTMLInputElement).value = aluno.nome_aluno || '';
-                        (form.querySelector('input[name="data_nascimento"]') as HTMLInputElement).value = aluno.data_nascimento_aluno || '';
-                        (form.querySelector('input[name="cpf"]') as HTMLInputElement).value = formatCpf(aluno.cpf_aluno || '');
-                        
+                        (
+                            form.querySelector(
+                                'input[name="nome"]',
+                            ) as HTMLInputElement
+                        ).value = aluno.nome_aluno || "";
+                        (
+                            form.querySelector(
+                                'input[name="data_nascimento"]',
+                            ) as HTMLInputElement
+                        ).value = aluno.data_nascimento_aluno || "";
+                        (
+                            form.querySelector(
+                                'input[name="cpf"]',
+                            ) as HTMLInputElement
+                        ).value = formatCpf(aluno.cpf_aluno || "");
+
                         // Sexo
-                        const sexoSelect = form.querySelector('select[name="sexo"]') as HTMLSelectElement;
+                        const sexoSelect = form.querySelector(
+                            'select[name="sexo"]',
+                        ) as HTMLSelectElement;
                         if (aluno.sexo) {
                             sexoSelect.value = aluno.sexo;
                         }
-                        
+
                         // Nome de guerra and cidade
-                        (form.querySelector('input[name="nome_guerra"]') as HTMLInputElement).value = aluno.nome_guerra || '';
-                        (form.querySelector('input[name="cidade"]') as HTMLInputElement).value = aluno.cidade || '';
-                        
+                        (
+                            form.querySelector(
+                                'input[name="nome_guerra"]',
+                            ) as HTMLInputElement
+                        ).value = aluno.nome_guerra || "";
+                        (
+                            form.querySelector(
+                                'input[name="cidade"]',
+                            ) as HTMLInputElement
+                        ).value = aluno.cidade || "";
+
                         // Serie/Ano
-                        const serieSelect = form.querySelector('select[name="serie"]') as HTMLSelectElement;
+                        const serieSelect = form.querySelector(
+                            'select[name="serie"]',
+                        ) as HTMLSelectElement;
                         if (aluno.serie) {
                             serieSelect.value = aluno.serie;
                         }
-                        
+
                         // Turma - get from alunos_por_turma relationship
                         let turmaId: number | undefined;
-                        if (aluno.alunos_por_turma && aluno.alunos_por_turma.length > 0) {
+                        if (
+                            aluno.alunos_por_turma &&
+                            aluno.alunos_por_turma.length > 0
+                        ) {
                             turmaId = aluno.alunos_por_turma[0].id_turma;
                         }
                         await carregarTurmas(turmaId);
-                        
+
                         // Medical info
-                        const tipoSanguineoSelect = form.querySelector('select[name="tipo_sanguineo"]') as HTMLSelectElement;
+                        const tipoSanguineoSelect = form.querySelector(
+                            'select[name="tipo_sanguineo"]',
+                        ) as HTMLSelectElement;
                         if (aluno.tipo_sanguineo) {
                             tipoSanguineoSelect.value = aluno.tipo_sanguineo;
                         }
-                        
-                        (form.querySelector('textarea[name="alergias"]') as HTMLTextAreaElement).value = aluno.alergias || '';
-                        (form.querySelector('textarea[name="condicoes_medicas"]') as HTMLTextAreaElement).value = aluno.condicoes_medicas || '';
-                        
-                        const neurodivergente = form.querySelector('input[name="neurodivergente"]') as HTMLInputElement;
-                        neurodivergente.checked = aluno.neurodivergente || false;
+
+                        (
+                            form.querySelector(
+                                'textarea[name="alergias"]',
+                            ) as HTMLTextAreaElement
+                        ).value = aluno.alergias || "";
+                        (
+                            form.querySelector(
+                                'textarea[name="condicoes_medicas"]',
+                            ) as HTMLTextAreaElement
+                        ).value = aluno.condicoes_medicas || "";
+
+                        const neurodivergente = form.querySelector(
+                            'input[name="neurodivergente"]',
+                        ) as HTMLInputElement;
+                        neurodivergente.checked =
+                            aluno.neurodivergente || false;
                         if (aluno.neurodivergente) {
-                            document.getElementById("observacoes-neuro")!.style.display = "block";
-                            (form.querySelector('textarea[name="observacoes_neuro"]') as HTMLTextAreaElement).value = aluno.observacoes_neuro || '';
+                            document.getElementById(
+                                "observacoes-neuro",
+                            )!.style.display = "block";
+                            (
+                                form.querySelector(
+                                    'textarea[name="observacoes_neuro"]',
+                                ) as HTMLTextAreaElement
+                            ).value = aluno.observacoes_neuro || "";
                         }
-                        
+
                         // Load responsáveis
                         await carregarResponsaveis(id);
-                        
+
                         return aluno;
                     }
                 } catch (error) {
                     console.error("Erro ao carregar aluno:", error);
                     if (typeof window.showPageToast === "function") {
-                        window.showPageToast("Erro ao carregar dados do aluno", "error");
+                        window.showPageToast(
+                            "Erro ao carregar dados do aluno",
+                            "error",
+                        );
                     }
                 }
                 return null;
@@ -616,16 +679,21 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
             // Load responsáveis for the aluno
             async function carregarResponsaveis(alunoId: number) {
                 try {
-                    const response = await apiFetch(`/notificacoes/responsaveis-aluno/${alunoId}`);
-                    console.log('[Edit] Responsaveis response:', response);
+                    const response = await apiFetch(
+                        `/notificacoes/responsaveis-aluno/${alunoId}`,
+                    );
+                    console.log("[Edit] Responsaveis response:", response);
                     if (response.success && response.data) {
                         const serverResponse = response.data as any;
-                        const responsaveis = serverResponse?.data || serverResponse;
-                        console.log('[Edit] Responsaveis data:', responsaveis);
+                        const responsaveis =
+                            serverResponse?.data || serverResponse;
+                        console.log("[Edit] Responsaveis data:", responsaveis);
                         // Dispatch event to ResponsaveisSection to load the data
-                        window.dispatchEvent(new CustomEvent('load-responsaveis', {
-                            detail: { responsaveis }
-                        }));
+                        window.dispatchEvent(
+                            new CustomEvent("load-responsaveis", {
+                                detail: { responsaveis },
+                            }),
+                        );
                     }
                 } catch (error) {
                     console.error("Erro ao carregar responsáveis:", error);
@@ -658,31 +726,39 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
 
                 // Check if we're in edit mode (URL has ?id=X)
                 const urlParams = new URLSearchParams(window.location.search);
-                const alunoId = urlParams.get('id');
-                
+                const alunoId = urlParams.get("id");
+
                 if (alunoId) {
                     isEditMode = true;
                     editingAlunoId = parseInt(alunoId, 10);
-                    
+
                     // Update page title and header
-                    document.getElementById("page-title")!.textContent = "Editar Aluno - Programa Bombeiro Mirim";
-                    document.getElementById("header-title")!.textContent = "Editar Aluno";
-                    document.getElementById("header-description")!.textContent = "Atualize os dados do aluno";
-                    document.getElementById("btn-submit")!.textContent = "Salvar Alterações";
-                    
+                    document.getElementById("page-title")!.textContent =
+                        "Editar Aluno - Programa Bombeiro Mirim";
+                    document.getElementById("header-title")!.textContent =
+                        "Editar Aluno";
+                    document.getElementById("header-description")!.textContent =
+                        "Atualize os dados do aluno";
+                    document.getElementById("btn-submit")!.textContent =
+                        "Salvar Alterações";
+
                     // Show documents section in edit mode
-                    document.getElementById("documentos-section")!.style.display = "block";
-                    
+                    document.getElementById(
+                        "documentos-section",
+                    )!.style.display = "block";
+
                     // Load aluno data
                     const alunoData = await carregarAluno(editingAlunoId);
-                    
+
                     // Initialize documentos component with aluno data
-                    window.dispatchEvent(new CustomEvent('set-aluno-documentos', {
-                        detail: { 
-                            alunoId: editingAlunoId, 
-                            alunoNome: alunoData?.nome_aluno || '' 
-                        }
-                    }));
+                    window.dispatchEvent(
+                        new CustomEvent("set-aluno-documentos", {
+                            detail: {
+                                alunoId: editingAlunoId,
+                                alunoNome: alunoData?.nome_aluno || "",
+                            },
+                        }),
+                    );
                 } else {
                     // Load turmas for new aluno
                     await carregarTurmas();
@@ -731,8 +807,9 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
                 .getElementById("neurodivergente")!
                 .addEventListener("change", (e) => {
                     const target = e.target as HTMLInputElement;
-                    document.getElementById("observacoes-neuro")!.style.display =
-                        target.checked ? "block" : "none";
+                    document.getElementById(
+                        "observacoes-neuro",
+                    )!.style.display = target.checked ? "block" : "none";
                 });
 
             // Form submit
@@ -742,7 +819,9 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
                     e.preventDefault();
 
                     const form = e.target as HTMLFormElement;
-                    const submitBtn = document.getElementById("btn-submit") as HTMLButtonElement;
+                    const submitBtn = document.getElementById(
+                        "btn-submit",
+                    ) as HTMLButtonElement;
                     const alertSuccess =
                         document.getElementById("alert-success")!;
                     const alertError = document.getElementById("alert-error")!;
@@ -750,7 +829,9 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
                     alertSuccess.style.display = "none";
                     alertError.style.display = "none";
                     submitBtn.disabled = true;
-                    submitBtn.textContent = isEditMode ? "Salvando..." : "Cadastrando...";
+                    submitBtn.textContent = isEditMode
+                        ? "Salvando..."
+                        : "Cadastrando...";
 
                     const formData = new FormData(form);
 
@@ -758,7 +839,10 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
                     const aluno = {
                         nome_aluno: formData.get("nome"),
                         data_nascimento_aluno: formData.get("data_nascimento"),
-                        cpf_aluno: formData.get("cpf")?.toString().replace(/\D/g, ""),
+                        cpf_aluno: formData
+                            .get("cpf")
+                            ?.toString()
+                            .replace(/\D/g, ""),
                         sexo: formData.get("sexo") || null,
                         nome_guerra: formData.get("nome_guerra") || null,
                         cidade: formData.get("cidade") || null,
@@ -766,9 +850,12 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
                         turma_id: formData.get("turma") || null,
                         tipo_sanguineo: formData.get("tipo_sanguineo") || null,
                         alergias: formData.get("alergias") || null,
-                        condicoes_medicas: formData.get("condicoes_medicas") || null,
-                        neurodivergente: formData.get("neurodivergente") === "on",
-                        observacoes_neuro: formData.get("observacoes_neuro") || null,
+                        condicoes_medicas:
+                            formData.get("condicoes_medicas") || null,
+                        neurodivergente:
+                            formData.get("neurodivergente") === "on",
+                        observacoes_neuro:
+                            formData.get("observacoes_neuro") || null,
                     };
 
                     // Collect first responsável (backend expects single responsavel object)
@@ -803,9 +890,13 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
                         const nome = formData.get(`responsavel_nome_${i}`);
                         if (!nome) break;
 
-                        const idRespAdicional = formData.get(`responsavel_id_${i}`);
+                        const idRespAdicional = formData.get(
+                            `responsavel_id_${i}`,
+                        );
                         responsaveisAdicionais.push({
-                            id_responsavel: idRespAdicional ? Number(idRespAdicional) : null,
+                            id_responsavel: idRespAdicional
+                                ? Number(idRespAdicional)
+                                : null,
                             nome_responsavel: nome,
                             cpf_responsavel:
                                 formData
@@ -828,44 +919,63 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
 
                     try {
                         let response;
-                        
+
                         if (isEditMode && editingAlunoId) {
                             // Collect all responsaveis for update
-                            const responsaveisParaAtualizar: Array<{ id_responsavel: number; parentesco?: string }> = [];
-                            
+                            const responsaveisParaAtualizar: Array<{
+                                id_responsavel: number;
+                                parentesco?: string;
+                            }> = [];
+
                             // Collect primary responsavel
-                            const idRespPrimary = formData.get("responsavel_id_0");
-                            const parentescoPrimary = formData.get("responsavel_parentesco_0");
+                            const idRespPrimary =
+                                formData.get("responsavel_id_0");
+                            const parentescoPrimary = formData.get(
+                                "responsavel_parentesco_0",
+                            );
                             if (idRespPrimary) {
                                 responsaveisParaAtualizar.push({
                                     id_responsavel: Number(idRespPrimary),
-                                    parentesco: parentescoPrimary?.toString() || null
+                                    parentesco:
+                                        parentescoPrimary?.toString() || null,
                                 });
                             }
-                            
+
                             // Collect additional responsaveis
                             let idx = 1;
                             while (true) {
-                                const idRespAdditional = formData.get(`responsavel_id_${idx}`);
+                                const idRespAdditional = formData.get(
+                                    `responsavel_id_${idx}`,
+                                );
                                 if (!idRespAdditional) break;
-                                const parentescoAdditional = formData.get(`responsavel_parentesco_${idx}`);
+                                const parentescoAdditional = formData.get(
+                                    `responsavel_parentesco_${idx}`,
+                                );
                                 responsaveisParaAtualizar.push({
                                     id_responsavel: Number(idRespAdditional),
-                                    parentesco: parentescoAdditional?.toString() || null
+                                    parentesco:
+                                        parentescoAdditional?.toString() ||
+                                        null,
                                 });
                                 idx++;
                             }
-                            
-                            console.log('[Edit] Responsáveis para atualizar:', responsaveisParaAtualizar);
-                            
+
+                            console.log(
+                                "[Edit] Responsáveis para atualizar:",
+                                responsaveisParaAtualizar,
+                            );
+
                             // Update existing aluno with responsaveis
-                            response = await apiFetch(`/alunos/atualizar/${editingAlunoId}`, {
-                                method: "PUT",
-                                body: JSON.stringify({
-                                    ...aluno,
-                                    responsaveis: responsaveisParaAtualizar
-                                }),
-                            });
+                            response = await apiFetch(
+                                `/alunos/atualizar/${editingAlunoId}`,
+                                {
+                                    method: "PUT",
+                                    body: JSON.stringify({
+                                        ...aluno,
+                                        responsaveis: responsaveisParaAtualizar,
+                                    }),
+                                },
+                            );
                         } else {
                             // Build request body for new aluno in backend expected format
                             const requestBody = {
@@ -884,15 +994,15 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
                         }
 
                         if (response.success) {
-                            alertSuccess.textContent = isEditMode 
-                                ? "Aluno atualizado com sucesso!" 
+                            alertSuccess.textContent = isEditMode
+                                ? "Aluno atualizado com sucesso!"
                                 : "Aluno cadastrado com sucesso!";
                             alertSuccess.style.display = "block";
-                            
+
                             if (!isEditMode) {
                                 form.reset();
                             }
-                            
+
                             window.scrollTo({ top: 0, behavior: "smooth" });
 
                             setTimeout(() => {
@@ -901,7 +1011,10 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
                             }, 2000);
                         } else {
                             alertError.textContent =
-                                response.error || (isEditMode ? "Erro ao atualizar aluno" : "Erro ao cadastrar aluno");
+                                response.error ||
+                                (isEditMode
+                                    ? "Erro ao atualizar aluno"
+                                    : "Erro ao cadastrar aluno");
                             alertError.style.display = "block";
                             window.scrollTo({ top: 0, behavior: "smooth" });
                         }
@@ -913,7 +1026,9 @@ import DocumentosAluno from "../../components/admin/DocumentosAluno.svelte";
                         window.scrollTo({ top: 0, behavior: "smooth" });
                     } finally {
                         submitBtn.disabled = false;
-                        submitBtn.textContent = isEditMode ? "Salvar Alterações" : "Cadastrar Aluno";
+                        submitBtn.textContent = isEditMode
+                            ? "Salvar Alterações"
+                            : "Cadastrar Aluno";
                     }
                 });
         </script>

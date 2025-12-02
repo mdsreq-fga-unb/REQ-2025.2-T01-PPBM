@@ -12,7 +12,9 @@
         telefone_responsavel?: string;
     }
 
-    let responsaveis: Array<{ id: number; data?: LoadedResponsavel }> = [{ id: 0 }];
+    let responsaveis: Array<{ id: number; data?: LoadedResponsavel }> = [
+        { id: 0 },
+    ];
     let nextId = 1;
 
     // Toast state
@@ -47,21 +49,29 @@
 
     // Listen for load-responsaveis event from parent page (edit mode)
     onMount(() => {
-        const handleLoadResponsaveis = (event: CustomEvent<{ responsaveis: LoadedResponsavel[] }>) => {
+        const handleLoadResponsaveis = (
+            event: CustomEvent<{ responsaveis: LoadedResponsavel[] }>,
+        ) => {
             const loadedResponsaveis = event.detail.responsaveis;
             if (loadedResponsaveis && loadedResponsaveis.length > 0) {
                 responsaveis = loadedResponsaveis.map((resp, index) => ({
                     id: index,
-                    data: resp
+                    data: resp,
                 }));
                 nextId = loadedResponsaveis.length;
             }
         };
 
-        window.addEventListener('load-responsaveis', handleLoadResponsaveis as EventListener);
+        window.addEventListener(
+            "load-responsaveis",
+            handleLoadResponsaveis as EventListener,
+        );
 
         return () => {
-            window.removeEventListener('load-responsaveis', handleLoadResponsaveis as EventListener);
+            window.removeEventListener(
+                "load-responsaveis",
+                handleLoadResponsaveis as EventListener,
+            );
         };
     });
 </script>

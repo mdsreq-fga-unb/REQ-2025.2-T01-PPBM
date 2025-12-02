@@ -81,6 +81,13 @@
 
     const diasSemana = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
+    // Dynamic color based on frequency rate
+    function getFrequencyColor(rate: number): string {
+        if (rate >= 75) return "text-green-600";
+        if (rate >= 50) return "text-yellow-600";
+        return "text-red-600";
+    }
+
     function handlePeriodoChange() {
         showCustomDates = periodo === "custom";
         if (!showCustomDates && selectedChildId) {
@@ -516,7 +523,7 @@
                             <span class="font-semibold"
                                 >Taxa de Frequência:</span
                             >
-                            <span class="font-bold text-[#E11D48]"
+                            <span class="font-bold {getFrequencyColor(taxaFrequencia)}"
                                 >{taxaFrequencia}%</span
                             >
                         </div>

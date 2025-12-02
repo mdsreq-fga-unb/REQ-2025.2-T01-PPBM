@@ -62,7 +62,8 @@
     const pageSize = 20;
 
     // Stats cache for students
-    let statsCache: Map<number, EstatisticasResponse['estatisticas']> = new Map();
+    let statsCache: Map<number, EstatisticasResponse["estatisticas"]> =
+        new Map();
     let loadingStats: Set<number> = new Set();
 
     // Toast state
@@ -88,18 +89,23 @@
 
     async function loadStats(alunoId: number): Promise<void> {
         if (statsCache.has(alunoId) || loadingStats.has(alunoId)) return;
-        
+
         loadingStats.add(alunoId);
         loadingStats = loadingStats;
-        
+
         try {
-            const response = await apiFetch<EstatisticasResponse>(`/alunos/estatisticas/${alunoId}`);
+            const response = await apiFetch<EstatisticasResponse>(
+                `/alunos/estatisticas/${alunoId}`,
+            );
             if (response.success && response.data) {
                 statsCache.set(alunoId, response.data.estatisticas);
                 statsCache = statsCache;
             }
         } catch (error) {
-            console.error(`Erro ao carregar estatísticas do aluno ${alunoId}:`, error);
+            console.error(
+                `Erro ao carregar estatísticas do aluno ${alunoId}:`,
+                error,
+            );
         } finally {
             loadingStats.delete(alunoId);
             loadingStats = loadingStats;
@@ -124,7 +130,7 @@
                     html: `
                         <div class="student-info">
                             <span class="student-name">${row.nome_aluno || "-"}</span>
-                            ${row.neurodivergente ? '<span class="badge-neuro">📚 Acomp. Especial</span>' : ''}
+                            ${row.neurodivergente ? '<span class="badge-neuro">📚 Acomp. Especial</span>' : ""}
                         </div>
                     `,
                 },
@@ -158,7 +164,12 @@
                 return {
                     component: "badge",
                     props: {
-                        variant: taxa >= 75 ? "success" : taxa >= 50 ? "warning" : "danger",
+                        variant:
+                            taxa >= 75
+                                ? "success"
+                                : taxa >= 50
+                                  ? "warning"
+                                  : "danger",
                         text: `${taxa}%`,
                     },
                 };
@@ -189,7 +200,9 @@
 
     async function loadTurmas() {
         try {
-            const response = await apiFetch<{ data: Turma[] }>("/turmas/listar?pageSize=100");
+            const response = await apiFetch<{ data: Turma[] }>(
+                "/turmas/listar?pageSize=100",
+            );
             if (response.success && response.data) {
                 turmas = response.data.data || [];
             }
@@ -210,21 +223,25 @@
             if (searchTerm) params.append("nome", searchTerm);
             if (turmaFilter) params.append("turmaId", turmaFilter);
 
-            const response = await apiFetch<{ data: Aluno[]; total: number }>(`/alunos/listar?${params}`);
+            const response = await apiFetch<{ data: Aluno[]; total: number }>(
+                `/alunos/listar?${params}`,
+            );
 
             if (response.success && response.data) {
                 const rawAlunos = response.data.data || [];
-                
+
                 // Add turma_info to each aluno based on their alunos_por_turma relationship
                 alunosData = rawAlunos.map((aluno: Aluno) => {
                     const turmaId = aluno.alunos_por_turma?.[0]?.id_turma;
-                    const turmaInfo = turmaId ? turmas.find(t => t.id_turma === turmaId) : undefined;
+                    const turmaInfo = turmaId
+                        ? turmas.find((t) => t.id_turma === turmaId)
+                        : undefined;
                     return {
                         ...aluno,
-                        turma_info: turmaInfo
+                        turma_info: turmaInfo,
                     };
                 });
-                
+
                 totalAlunos = response.data.total || 0;
                 totalPages = Math.ceil(totalAlunos / pageSize);
             } else {
@@ -232,7 +249,10 @@
             }
         } catch (error) {
             console.error("Erro ao carregar alunos:", error);
-            errorMessage = error instanceof Error ? error.message : "Erro ao carregar alunos";
+            errorMessage =
+                error instanceof Error
+                    ? error.message
+                    : "Erro ao carregar alunos";
         } finally {
             loading = false;
         }
@@ -304,7 +324,7 @@
             <option value="">Todas as turmas</option>
             {#each turmas as turma}
                 <option value={turma.id_turma}>
-                    {turma.nome_turma} - {turma.unidade_turma || 'Sem unidade'}
+                    {turma.nome_turma} - {turma.unidade_turma || "Sem unidade"}
                 </option>
             {/each}
         </FormSelect>
