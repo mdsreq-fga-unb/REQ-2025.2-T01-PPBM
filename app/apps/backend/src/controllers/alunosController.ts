@@ -33,6 +33,7 @@ export class AlunosController implements EndpointController {
     async cadastrarAluno(req: Request, res: Response): Promise<Response> {
         try {
             log.info('cadastrarAluno', 'Iniciando cadastro de aluno');
+            log.info('cadastrarAluno', 'Request body recebido:', JSON.stringify(req.body, null, 2));
 
             const requestData: CadastroAlunoRequest = req.body;
 
@@ -40,6 +41,7 @@ export class AlunosController implements EndpointController {
             const validationResult = this.validateCadastroRequest(requestData);
             if (!validationResult.isValid) {
                 log.warn('cadastrarAluno', 'Dados inválidos:', validationResult.errors);
+                log.warn('cadastrarAluno', 'Request data keys:', Object.keys(requestData || {}));
                 return res.status(400).json({
                     success: false,
                     message: 'Dados inválidos',

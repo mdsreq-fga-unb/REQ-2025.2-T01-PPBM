@@ -310,19 +310,21 @@ import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
                                         placeholder="Nome da escola"
                                     />
                                 </div>
-                                <div class="form-group">
-                                    <label
-                                        >Série/Ano <span class="required"
-                                            >*</span
-                                        ></label
-                                    >
-                                    <input
-                                        type="text"
-                                        name="serie"
-                                        required
-                                        placeholder="Ex: 5º Ano"
-                                    />
-                                </div>
+                                <FormSelect name="serie" label="Série/Ano" required>
+                                    <option value="">Selecione a série</option>
+                                    <option value="Maternal">Maternal</option>
+                                    <option value="Jardim I">Jardim I</option>
+                                    <option value="Jardim II">Jardim II</option>
+                                    <option value="1º Ano">1º Ano</option>
+                                    <option value="2º Ano">2º Ano</option>
+                                    <option value="3º Ano">3º Ano</option>
+                                    <option value="4º Ano">4º Ano</option>
+                                    <option value="5º Ano">5º Ano</option>
+                                    <option value="6º Ano">6º Ano</option>
+                                    <option value="7º Ano">7º Ano</option>
+                                    <option value="8º Ano">8º Ano</option>
+                                    <option value="9º Ano">9º Ano</option>
+                                </FormSelect>
                                 <FormSelect
                                     name="unidade"
                                     label="Unidade do PBM"
@@ -456,6 +458,29 @@ import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
             import { authStore } from "../../stores/auth";
             import { apiFetch } from "../../lib/api";
 
+            // Load turmas from API
+            async function carregarTurmas() {
+                try {
+                    const response = await apiFetch('/turmas/listar?pageSize=100');
+                    if (response.success && response.data) {
+                        const turmas = response.data.data || response.data || [];
+                        const turmaSelect = document.querySelector('select[name="turma"]');
+                        if (turmaSelect) {
+                            // Keep the first option
+                            turmaSelect.innerHTML = '<option value="">Selecione a turma</option>';
+                            turmas.forEach((turma: any) => {
+                                const option = document.createElement('option');
+                                option.value = turma.id_turma;
+                                option.textContent = `${turma.nome_turma} - ${turma.unidade_turma || 'Sem unidade'}`;
+                                turmaSelect.appendChild(option);
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar turmas:', error);
+                }
+            }
+
             // Check authentication
             document.addEventListener("DOMContentLoaded", async () => {
                 const isAuthenticated = await authStore.checkAuth();
@@ -474,6 +499,9 @@ import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
                     window.location.href = "/login";
                     return;
                 }
+
+                // Load turmas after authentication check
+                await carregarTurmas();
             });
 
             // CPF mask
@@ -538,11 +566,11 @@ import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
 
                     const formData = new FormData(form);
 
-                    // Build aluno data
-                    const alunoData = {
-                        nome: formData.get("nome"),
-                        data_nascimento: formData.get("data_nascimento"),
-                        cpf: formData.get("cpf")?.replace(/\D/g, ""),
+                    // Build aluno data in the format expected by backend
+                    const aluno = {
+                        nome_aluno: formData.get("nome"),
+                        data_nascimento_aluno: formData.get("data_nascimento"),
+                        cpf_aluno: formData.get("cpf")?.replace(/\D/g, ""),
                         sexo: formData.get("sexo"),
                         escola: formData.get("escola"),
                         serie: formData.get("serie"),
@@ -556,42 +584,64 @@ import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
                             formData.get("neurodivergente") === "on",
                         observacoes_neuro:
                             formData.get("observacoes_neuro") || null,
-                        responsaveis: [],
                     };
 
-                    // Collect responsáveis dynamically
-                    // The Svelte component creates form fields with names like responsavel_nome_0, responsavel_nome_1, etc.
-                    let i = 0;
+                    // Collect first responsável (backend expects single responsavel object)
+                    const nomeResp = formData.get("responsavel_nome_0");
+                    const responsavel = nomeResp ? {
+                        nome_responsavel: nomeResp,
+                        cpf_responsavel:
+                            formData
+                                .get("responsavel_cpf_0")
+                                ?.toString()
+                                .replace(/\D/g, "") || null,
+                        parentesco: formData.get("responsavel_parentesco_0"),
+                        telefone_responsavel:
+                            formData
+                                .get("responsavel_telefone_0")
+                                ?.toString()
+                                .replace(/\D/g, "") || null,
+                        email_responsavel:
+                            formData.get("responsavel_email_0") || null,
+                    } : null;
+
+                    // Collect additional responsáveis if any
+                    const responsaveisAdicionais = [];
+                    let i = 1;
                     while (true) {
                         const nome = formData.get(`responsavel_nome_${i}`);
                         if (!nome) break;
 
-                        alunoData.responsaveis.push({
-                            id: formData.get(`responsavel_id_${i}`) || null,
-                            nome: nome,
-                            cpf:
+                        responsaveisAdicionais.push({
+                            nome_responsavel: nome,
+                            cpf_responsavel:
                                 formData
                                     .get(`responsavel_cpf_${i}`)
                                     ?.toString()
                                     .replace(/\D/g, "") || null,
-                            parentesco: formData.get(
-                                `responsavel_parentesco_${i}`,
-                            ),
-                            telefone:
+                            parentesco: formData.get(`responsavel_parentesco_${i}`),
+                            telefone_responsavel:
                                 formData
                                     .get(`responsavel_telefone_${i}`)
                                     ?.toString()
                                     .replace(/\D/g, "") || null,
-                            email:
+                            email_responsavel:
                                 formData.get(`responsavel_email_${i}`) || null,
                         });
                         i++;
                     }
 
+                    // Build request body in backend expected format
+                    const requestBody = {
+                        aluno,
+                        responsavel,
+                        responsaveisAdicionais: responsaveisAdicionais.length > 0 ? responsaveisAdicionais : undefined,
+                    };
+
                     try {
                         const response = await apiFetch("/alunos", {
                             method: "POST",
-                            body: JSON.stringify(alunoData),
+                            body: JSON.stringify(requestBody),
                         });
 
                         if (response.success) {
