@@ -14,60 +14,44 @@ Este caso de uso inicia quando um refugiado deseja começar a usar a plataforma 
 ##### 1.2 - Atores
 **Refugiado**: usuário final que acessa a plataforma para buscar apoio, serviços e oportunidades.​
 
-#### 5 - Pré-condições
-O usuário tem acesso a um dispositivo com o aplicativo ou site HopeBridge disponível.​
-
-A plataforma está operacional e conectada ao módulo de autenticação (quando o registro exigir credenciais).​
-
-#### 6 - Pós-condições
-Um novo perfil de refugiado é criado e marcado como ativo no sistema.​
-
-Os dados básicos e preferências registradas ficam disponíveis para outros casos de uso que dependem do perfil (por exemplo, Solicitar Benefício, Localizar Serviços Básicos, Buscar Cursos).​
-
 #### 2 - Fluxo de Eventos (Fluxo Básico)
- O refugiado seleciona a opção “Registrar Perfil” na tela inicial.
+ ##### 2.1.1 - O refugiado seleciona a opção “Registrar Perfil” na tela inicial.
 
- O sistema exibe o formulário de registro com campos mínimos obrigatórios (nome, país de origem, idioma principal, contato, documento ou identificação alternativa, localização aproximada, aceitação de termos).
+ ##### 2.1.2 - O sistema exibe o formulário de registro com campos mínimos obrigatórios (nome, país de origem, idioma principal, contato, documento ou identificação alternativa, localização aproximada, aceitação de termos).
 
- O refugiado preenche os campos obrigatórios e, opcionalmente, adiciona informações complementares (habilidades, formação, situação familiar, necessidades prioritárias).
+ ##### 2.1.3 -O refugiado preenche os campos obrigatórios e, opcionalmente, adiciona informações complementares (habilidades, formação, situação familiar, necessidades prioritárias).
 
- O refugiado confirma o envio dos dados.
+ ##### 2.1.4 -O refugiado confirma o envio dos dados.
 
- O sistema valida os campos obrigatórios e verifica se contato (e‑mail/telefone) já não está cadastrado.
+ ##### 2.1.5 -O sistema valida os campos obrigatórios e verifica se contato (e‑mail/telefone) já não está cadastrado.
 
- Em caso de sucesso na validação, o sistema registra o perfil do refugiado e, se aplicável, cria as credenciais de acesso (login/senha ou outro mecanismo).
+ ##### 2.1.6 -Em caso de sucesso na validação, o sistema registra o perfil do refugiado e, se aplicável, cria as credenciais de acesso (login/senha ou outro mecanismo).
 
- O sistema apresenta mensagem de sucesso e, opcionalmente, direciona o usuário para completar informações adicionais ou para a tela inicial após login.
+ ##### 2.1.7 -O sistema apresenta mensagem de sucesso e, opcionalmente, direciona o usuário para completar informações adicionais ou para a tela inicial após login.
 
 ##### 2.2 - Fluxos Alternativos
 
-##### 5A – Dados obrigatórios incompletos
-O sistema identifica campos obrigatórios não preenchidos ou inválidos.
+##### FA01 – Dados obrigatórios incompletos
+##### 2.2.1.1 - O sistema identifica campos obrigatórios não preenchidos ou inválidos.
 
-O sistema destaca os campos com problema e informa ao refugiado que é necessário corrigi-los.
+##### 2.2.1.2 - O sistema destaca os campos com problema e informa ao refugiado que é necessário corrigi-los.
 
-O fluxo retorna ao passo 3 do fluxo básico.
+##### 2.2.1.3 - O fluxo retorna ao passo 3 do fluxo básico.
 
-##### 5B – Contato já cadastrado
-O sistema identifica que o e‑mail ou telefone informado já está associado a outro perfil.
+##### FA02 – Contato já cadastrado
+##### 2.2.2.1 - O sistema identifica que o e‑mail ou telefone informado já está associado a outro perfil.
 
-O sistema informa ao refugiado que aquele contato já está em uso e oferece opção de recuperar acesso ou usar outro contato.
+##### 2.2.2.2 - O sistema informa ao refugiado que aquele contato já está em uso e oferece opção de recuperar acesso ou usar outro contato.
 
-O fluxo retorna ao passo 3 do fluxo básico, caso o usuário forneça novo contato; se o usuário optar por recuperar acesso, ocorre desvio para o caso de uso “Recuperar Acesso” (quando existir).
+##### 2.2.2.3 - O fluxo retorna ao passo 3 do fluxo básico, caso o usuário forneça novo contato; se o usuário optar por recuperar acesso, ocorre desvio para o caso de uso “Recuperar Acesso” (quando existir).
 
 ##### 2.3 - Fluxo de Exceções
-Falha de comunicação com o módulo de autenticação ou banco de dados.
 
-Indisponibilidade temporária da plataforma.
+##### 2.3.1 - Falha de comunicação com o módulo de autenticação ou banco de dados.
 
-Em ambos os casos, o sistema exibe mensagem de erro genérica e orienta o usuário a tentar novamente mais tarde, sem criar o perfil.
+##### 2.3.2 - Indisponibilidade temporária da plataforma.
 
-#### 4 - Regras de Negócio
-**RN01** – Campos obrigatórios: nome, algum meio de contato (e‑mail ou telefone), aceitação dos termos de uso e política de privacidade devem ser informados para que o registro seja concluído.​
-
-**RN02** – Unicidade de contato: cada e‑mail ou telefone só pode estar vinculado a um perfil ativo de refugiado.​
-
-**RN03** – Privacidade e proteção de dados: informações sensíveis do refugiado devem ser armazenadas e tratadas conforme boas práticas de proteção de dados e legislação aplicável.​
+##### 2.3.3 - Em ambos os casos, o sistema exibe mensagem de erro genérica e orienta o usuário a tentar novamente mais tarde, sem criar o perfil.
 
 #### 3 - Requisitos Especiais
 **REQ01** – A interface deve ser simples, com linguagem acessível e, preferencialmente, disponível em múltiplos idiomas relevantes para o público‑alvo.​
@@ -76,16 +60,29 @@ Em ambos os casos, o sistema exibe mensagem de erro genérica e orienta o usuár
 
 **REQ03** – Deve existir opção de acessibilidade mínima (por exemplo, contraste adequado, textos legíveis).
 
+**REQ04** - O caso de uso deve ser acessível diretamente da tela inicial, sem exigir login prévio.
+
+**REQ05** - Deve existir feedback visual claro para erros de validação e para o sucesso do registro.
+
+#### 4 - Regras de Negócio
+**RN01** – Campos obrigatórios: nome, algum meio de contato (e‑mail ou telefone), aceitação dos termos de uso e política de privacidade devem ser informados para que o registro seja concluído.​
+
+**RN02** – Unicidade de contato: cada e‑mail ou telefone só pode estar vinculado a um perfil ativo de refugiado.​
+
+**RN03** – Privacidade e proteção de dados: informações sensíveis do refugiado devem ser armazenadas e tratadas conforme boas práticas de proteção de dados e legislação aplicável.​
+
+#### 5 - Pré-condições
+O usuário tem acesso a um dispositivo com o aplicativo ou site HopeBridge disponível.​
+
+A plataforma está operacional e conectada ao módulo de autenticação (quando o registro exigir credenciais).
+
+#### 6 - Pós-condições
+Um novo perfil de refugiado é criado e marcado como ativo no sistema.​
+
+Os dados básicos e preferências registradas ficam disponíveis para outros casos de uso que dependem do perfil (por exemplo, Solicitar Benefício, Localizar Serviços Básicos, Buscar Cursos).​​
+
 #### 7 - Pontos de Extensão
-Extensão para “Verificar Documentos” caso, em versões futuras, seja necessária a validação documental mais rígida (por exemplo, confirmação de status de refugiado).
-
-Extensão para “Completar Perfil Avançado”, permitindo que o refugiado adicione detalhes adicionais após o registro mínimo.
-
-##### 7.1 - Requisitos de Interface
-
-O caso de uso deve ser acessível diretamente da tela inicial, sem exigir login prévio.
-
-Deve existir feedback visual claro para erros de validação e para o sucesso do registro.
+Após o passo 2.1.7, este caso de uso pode ser estendido para o caso de uso de "Realizar Login".
 
 ## Histórico de Versão
 
