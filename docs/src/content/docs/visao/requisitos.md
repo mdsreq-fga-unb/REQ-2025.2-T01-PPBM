@@ -36,16 +36,10 @@ Permitir exportação de relatórios gerados pela plataforma para uso interno da
 **RF-008 – Exibir dashboards de frequência**
 O sistema deve exibir indicadores visuais e gráficos que mostrem a taxa média de presença e alertas de recorrência, permitindo ao usuário filtrar esses dados por unidade, posto, turma ou período.​
 
-**RF-009 – Exibir taxa média de presença**
-O sistema deve calcular e apresentar a taxa média de presença dos colaboradores em determinado período, com opção de filtros contextuais (unidade, posto, turma, data).​
-
-**RF-010 – Exibir alertas de recorrência**
-O sistema deve gerar alertas automáticos de recorrência quando os padrões de ausência ou baixa frequência forem detectados, com possibilidade de visualizar por filtros aplicáveis.​
-
-**RF-011 – Exibir histórico do aluno**  
+**RF-009 – Exibir histórico do aluno**  
 Exibir linha do tempo com presenças, faltas, justificativas, atendimentos, advertências e comunicações relacionadas.
 
-**RF-012 – Exportar relatórios administrativos padronizados do CBMDF**
+**RF-010 – Exportar relatórios administrativos padronizados do CBMDF**
 O sistema deve permitir a exportação dos seguintes relatórios em formato PDF/Excel, conforme padrões do CBMDF:​
 
 ● Relatório Mensal de Frequência por Unidade - Consolidação mensal de todas as marcações de ponto
@@ -58,40 +52,40 @@ O sistema deve permitir a exportação dos seguintes relatórios em formato PDF/
 
 ### Objetivo Específico 2 – Apoiar intervenções pedagógicas por meio do monitoramento comportamental
 
-**RF-013 – Registrar advertência para os alunos**  
+**RF-011 – Registrar advertência para os alunos**  
 Campo para anotações de comportamentos negativos de alunos.
 
-**RF-014 – Enviar notificações para os responsáveis**  
+**RF-012 – Enviar notificações para os responsáveis**  
 Bot de notificações de comunicados de faltas e advertências ou botão de redirecionamento de notificações (WhatsApp, e-mail, plataforma própria).
 
 ### Objetivo Específico 3 – Fortalecer a segurança e organização da gestão acadêmica
 
-**RF-015 – Autenticar usuários e perfis**  
+**RF-013 – Autenticar usuários e perfis**  
 Acesso com autenticação e papéis: Administrador, Gestor de Unidade, Docente, Responsável.
 
-**RF-016 – Cadastrar os docentes**  
+**RF-014 – Cadastrar os docentes**  
 Permitir cadastro com: nome, data de nascimento, CPF, escola/unidade, cidade.
 
-**RF-017 – Cadastrar turmas e sessões**  
+**RF-015 – Cadastrar turmas e sessões**  
 Cadastrar turmas, dias/horários e lotação.
 
-**RF-018 – Consultar turma**  
+**RF-016 – Consultar turma**  
 Busca dentro da turma por nome de alunos, CPF, unidade, status de justificativa, taxa de presença e período.
 
 ### Objetivo Específico 4 – Ampliar a personalização do acompanhamento estudantil
 
-**RF-019 – Registrar acompanhamento neurodivergente**  
+**RF-017 – Registrar acompanhamento neurodivergente**  
 Permitir o registro do acompanhamento pedagógico e o acompanhamento periódico com responsáveis.
 
-**RF-020 – Registrar relatórios gerados na sessão de acompanhamento com os responsáveis**  
+**RF-018 – Registrar relatórios gerados na sessão de acompanhamento com os responsáveis**  
 Permitir registro e importação de relatórios gerados na sessão de acompanhamento.
 
-**RF-021 – Gerar histórico de acompanhamento acessível a docentes e gestores**  
+**RF-019 – Gerar histórico de acompanhamento acessível a docentes e gestores**  
 Geração de histórico de relatórios de acompanhamento acessível a docentes e gestores e exportação de relatórios.
 
 ### Objetivo Específico 5 – Melhorar a comunicação institucional e o acesso a informações oficiais
 
-**RF-022 – Cadastrar conteúdos institucionais**  
+**RF-020 – Cadastrar conteúdos institucionais**  
 Permitir o cadastro de conteúdos textuais e documentais, como regras de vestimenta, normas disciplinares, legislação aplicável e comunicados oficiais.
 
 ---
