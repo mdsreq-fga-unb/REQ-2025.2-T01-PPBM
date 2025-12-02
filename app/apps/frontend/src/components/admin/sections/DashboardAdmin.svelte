@@ -1,28 +1,37 @@
 <script lang="ts">
-	import Toast from '../../ui/Toast.svelte';
+	import Toast from "../../ui/Toast.svelte";
 
 	let totalAlunos = 0;
-	let presencaMedia = '0%';
+	let presencaMedia = "0%";
 	let alertasMedicos = 0;
 	let acompanhamentoEspecial = 0;
 
 	// Toast state
-	let toastMessage = '';
-	let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+	let toastMessage = "";
+	let toastType: "success" | "error" | "warning" | "info" = "info";
 	let showToast = false;
 
-	function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+	function displayToast(
+		message: string,
+		type: "success" | "error" | "warning" | "info" = "info",
+	) {
 		toastMessage = message;
 		toastType = type;
 		showToast = true;
 	}
 
 	function handleAtualizar() {
-		displayToast('Funcionalidade em desenvolvimento. Os dados serão atualizados em breve.', 'info');
+		displayToast(
+			"Funcionalidade em desenvolvimento. Os dados serão atualizados em breve.",
+			"info",
+		);
 	}
 </script>
 
-<section id="dashboard" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200">
+<section
+	id="dashboard"
+	class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200"
+>
 	<div class="flex items-center justify-between mb-4">
 		<h2 class="text-xl font-semibold">Dashboard</h2>
 		<button
@@ -35,19 +44,27 @@
 
 	<!-- KPIs -->
 	<div class="grid md:grid-cols-4 gap-4 mb-6">
-		<div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-4 text-white">
+		<div
+			class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-4 text-white"
+		>
 			<div class="text-2xl font-bold">{totalAlunos}</div>
 			<div class="text-sm opacity-90">Total de Alunos</div>
 		</div>
-		<div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-4 text-white">
+		<div
+			class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-4 text-white"
+		>
 			<div class="text-2xl font-bold">{presencaMedia}</div>
 			<div class="text-sm opacity-90">Taxa de Presença</div>
 		</div>
-		<div class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl p-4 text-white">
+		<div
+			class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl p-4 text-white"
+		>
 			<div class="text-2xl font-bold">{alertasMedicos}</div>
 			<div class="text-sm opacity-90">Alertas Médicos</div>
 		</div>
-		<div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-4 text-white">
+		<div
+			class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-4 text-white"
+		>
 			<div class="text-2xl font-bold">{acompanhamentoEspecial}</div>
 			<div class="text-sm opacity-90">Acompanhamento Especial</div>
 		</div>
@@ -58,7 +75,9 @@
 		<div class="border rounded-2xl p-4 border-slate-200">
 			<h3 class="font-semibold mb-3">Resumo por Turma</h3>
 			<div class="space-y-3">
-				<div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+				<div
+					class="flex items-center justify-between p-3 bg-slate-50 rounded-lg"
+				>
 					<div>
 						<div class="font-medium">Turma A - Manhã</div>
 						<div class="text-sm text-slate-500">0 alunos</div>
@@ -67,7 +86,9 @@
 						<div class="text-sm text-green-600">Sem alertas</div>
 					</div>
 				</div>
-				<div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+				<div
+					class="flex items-center justify-between p-3 bg-slate-50 rounded-lg"
+				>
 					<div>
 						<div class="font-medium">Turma B - Tarde</div>
 						<div class="text-sm text-slate-500">0 alunos</div>
@@ -76,7 +97,9 @@
 						<div class="text-sm text-green-600">Sem alertas</div>
 					</div>
 				</div>
-				<div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+				<div
+					class="flex items-center justify-between p-3 bg-slate-50 rounded-lg"
+				>
 					<div>
 						<div class="font-medium">Turma C - Integral</div>
 						<div class="text-sm text-slate-500">0 alunos</div>
@@ -90,16 +113,13 @@
 		<div class="border rounded-2xl p-4 border-slate-200">
 			<h3 class="font-semibold mb-3">Últimas Atividades</h3>
 			<div class="space-y-3">
-				<div class="text-center text-slate-500 py-4">Nenhuma atividade recente</div>
+				<div class="text-center text-slate-500 py-4">
+					Nenhuma atividade recente
+				</div>
 			</div>
 		</div>
 	</div>
 </section>
 
 <!-- Toast notifications -->
-<Toast 
-	bind:show={showToast} 
-	message={toastMessage} 
-	type={toastType} 
-/>
-
+<Toast bind:show={showToast} message={toastMessage} type={toastType} />

@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { onMount, createEventDispatcher } from 'svelte';
-    import { apiFetch } from '../lib/api';
+    import { onMount, createEventDispatcher } from "svelte";
+    import { apiFetch } from "../lib/api";
 
     export let isOpen = false;
-    export let title = 'Buscar Usuário';
-    export let placeholder = 'Buscar por nome ou email...';
+    export let title = "Buscar Usuário";
+    export let placeholder = "Buscar por nome ou email...";
     export let filterRole: string | null = null; // Optional: filter by role (e.g., 'responsavel', 'docente', 'admin')
     export let multiSelect = false; // Enable multi-user selection
     export let selectedUsers: User[] = []; // Pre-selected users for multi-select mode
@@ -16,12 +16,12 @@
         id: number;
         nome: string;
         email: string;
-        role: 'admin' | 'docente' | 'responsavel';
+        role: "admin" | "docente" | "responsavel";
     }
 
     let allUsers: User[] = [];
     let filteredUsers: User[] = [];
-    let searchQuery = '';
+    let searchQuery = "";
     let isLoading = true;
     let searchTimeout: ReturnType<typeof setTimeout> | null = null;
     let dialogElement: HTMLDivElement;
@@ -38,22 +38,27 @@
         isLoading = true;
         try {
             // If filterRole is 'docente' and useDirectEndpoint is true, fetch from docentes endpoint
-            if (filterRole === 'docente' && useDirectEndpoint) {
-                const response = await apiFetch('/docentes/listar?pageSize=100');
-                console.log('UserSearchDialog - Docentes API response:', response);
+            if (filterRole === "docente" && useDirectEndpoint) {
+                const response = await apiFetch(
+                    "/docentes/listar?pageSize=100",
+                );
+                console.log(
+                    "UserSearchDialog - Docentes API response:",
+                    response,
+                );
                 if (response.success && response.data) {
                     const backendData = response.data as any;
                     const docentes = backendData.data || backendData || [];
                     allUsers = docentes.map((d: any) => ({
                         id: d.id_docente,
-                        nome: d.nome_docente || '',
-                        email: d.email_docente || '',
-                        role: 'docente' as const
+                        nome: d.nome_docente || "",
+                        email: d.email_docente || "",
+                        role: "docente" as const,
                     }));
                 }
             } else {
-                const response = await apiFetch('/usuarios/todos-com-roles');
-                console.log('UserSearchDialog - API response:', response);
+                const response = await apiFetch("/usuarios/todos-com-roles");
+                console.log("UserSearchDialog - API response:", response);
                 if (response.success && response.data) {
                     const backendData = response.data as any;
                     if (backendData.data && Array.isArray(backendData.data)) {
@@ -61,21 +66,26 @@
                     } else if (Array.isArray(backendData)) {
                         allUsers = backendData;
                     } else {
-                        console.warn('Unexpected users data format:', backendData);
+                        console.warn(
+                            "Unexpected users data format:",
+                            backendData,
+                        );
                         allUsers = [];
                     }
-                    
+
                     // Apply role filter if specified
                     if (filterRole) {
-                        allUsers = allUsers.filter(u => u.role === filterRole);
+                        allUsers = allUsers.filter(
+                            (u) => u.role === filterRole,
+                        );
                     }
                 }
             }
-            console.log('UserSearchDialog - Loaded users:', allUsers);
+            console.log("UserSearchDialog - Loaded users:", allUsers);
             // Initialize filtered users with all users
             filteredUsers = [...allUsers];
         } catch (error) {
-            console.error('Erro ao carregar usuários:', error);
+            console.error("Erro ao carregar usuários:", error);
             allUsers = [];
             filteredUsers = [];
         } finally {
@@ -86,17 +96,20 @@
     // Filter users based on search query
     function filterUsers(query: string) {
         const normalizedQuery = query.toLowerCase().trim();
-        
+
         if (!normalizedQuery) {
             // Show all users when no search query
             filteredUsers = [...allUsers];
             return;
         }
-        
-        filteredUsers = allUsers.filter(user => {
-            const nome = (user.nome || '').toLowerCase();
-            const email = (user.email || '').toLowerCase();
-            return nome.includes(normalizedQuery) || email.includes(normalizedQuery);
+
+        filteredUsers = allUsers.filter((user) => {
+            const nome = (user.nome || "").toLowerCase();
+            const email = (user.email || "").toLowerCase();
+            return (
+                nome.includes(normalizedQuery) ||
+                email.includes(normalizedQuery)
+            );
         });
     }
 
@@ -104,11 +117,11 @@
     function handleSearchInput(event: Event) {
         const target = event.target as HTMLInputElement;
         searchQuery = target.value;
-        
+
         if (searchTimeout) {
             clearTimeout(searchTimeout);
         }
-        
+
         searchTimeout = setTimeout(() => {
             filterUsers(searchQuery);
         }, 200);
@@ -116,13 +129,15 @@
 
     // Check if user is selected (for multi-select mode)
     function isUserSelected(user: User): boolean {
-        return internalSelectedUsers.some(u => u.id === user.id);
+        return internalSelectedUsers.some((u) => u.id === user.id);
     }
 
     // Toggle user selection (for multi-select mode)
     function toggleUserSelection(user: User) {
         if (isUserSelected(user)) {
-            internalSelectedUsers = internalSelectedUsers.filter(u => u.id !== user.id);
+            internalSelectedUsers = internalSelectedUsers.filter(
+                (u) => u.id !== user.id,
+            );
         } else {
             internalSelectedUsers = [...internalSelectedUsers, user];
         }
@@ -130,7 +145,9 @@
 
     // Remove user from selection
     function removeSelectedUser(user: User) {
-        internalSelectedUsers = internalSelectedUsers.filter(u => u.id !== user.id);
+        internalSelectedUsers = internalSelectedUsers.filter(
+            (u) => u.id !== user.id,
+        );
     }
 
     // Select a user (single select mode)
@@ -138,14 +155,14 @@
         if (multiSelect) {
             toggleUserSelection(user);
         } else {
-            dispatch('select', user);
+            dispatch("select", user);
             close();
         }
     }
 
     // Confirm multi-selection
     function confirmSelection() {
-        dispatch('select', internalSelectedUsers);
+        dispatch("select", internalSelectedUsers);
         dispatchDOMEvent(internalSelectedUsers);
         close();
     }
@@ -153,12 +170,12 @@
     // Close dialog
     function close() {
         isOpen = false;
-        searchQuery = '';
+        searchQuery = "";
         filteredUsers = [];
         if (!multiSelect) {
             internalSelectedUsers = [];
         }
-        dispatch('close');
+        dispatch("close");
     }
 
     // Handle overlay click
@@ -170,7 +187,7 @@
 
     // Handle escape key
     function handleKeydown(event: KeyboardEvent) {
-        if (event.key === 'Escape' && isOpen) {
+        if (event.key === "Escape" && isOpen) {
             close();
         }
     }
@@ -185,7 +202,7 @@
     // Reset filtered users to show all when dialog opens
     $: if (isOpen && allUsers.length > 0) {
         filteredUsers = [...allUsers];
-        searchQuery = '';
+        searchQuery = "";
     }
 
     // Sync internal selected users when dialog opens in multi-select mode
@@ -195,8 +212,8 @@
 
     onMount(() => {
         loadUsers();
-        document.addEventListener('keydown', handleKeydown);
-        
+        document.addEventListener("keydown", handleKeydown);
+
         // Listen for external open events (from Astro pages)
         const handleOpenEvent = (event: CustomEvent) => {
             if (event.detail?.selectedUsers && multiSelect) {
@@ -204,20 +221,28 @@
             }
             isOpen = true;
         };
-        
-        window.addEventListener('open-docente-dialog', handleOpenEvent as EventListener);
-        
+
+        window.addEventListener(
+            "open-docente-dialog",
+            handleOpenEvent as EventListener,
+        );
+
         return () => {
-            document.removeEventListener('keydown', handleKeydown);
-            window.removeEventListener('open-docente-dialog', handleOpenEvent as EventListener);
+            document.removeEventListener("keydown", handleKeydown);
+            window.removeEventListener(
+                "open-docente-dialog",
+                handleOpenEvent as EventListener,
+            );
         };
     });
 
     // Dispatch DOM event for Astro pages when selection is confirmed
     function dispatchDOMEvent(users: User[]) {
-        window.dispatchEvent(new CustomEvent('select-docentes', { 
-            detail: users 
-        }));
+        window.dispatchEvent(
+            new CustomEvent("select-docentes", {
+                detail: users,
+            }),
+        );
     }
 
     // Expose methods for external use
@@ -232,7 +257,7 @@
 
 {#if isOpen}
     <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
-    <div 
+    <div
         class="search-dialog-overlay"
         bind:this={dialogElement}
         on:click={handleOverlayClick}
@@ -244,21 +269,27 @@
         <div class="search-dialog">
             <div class="search-dialog-header">
                 <h3 id="search-dialog-title">{title}</h3>
-                <button type="button" class="btn-close-dialog" on:click={close}>&times;</button>
+                <button type="button" class="btn-close-dialog" on:click={close}
+                    >&times;</button
+                >
             </div>
             <div class="search-dialog-body">
                 {#if multiSelect && internalSelectedUsers.length > 0}
                     <div class="selected-users-section">
-                        <div class="selected-users-label">Selecionados ({internalSelectedUsers.length}):</div>
+                        <div class="selected-users-label">
+                            Selecionados ({internalSelectedUsers.length}):
+                        </div>
                         <div class="selected-users-list">
                             {#each internalSelectedUsers as user (user.id)}
                                 <div class="selected-user-chip">
                                     <span>{user.nome}</span>
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         class="btn-remove-chip"
-                                        on:click={() => removeSelectedUser(user)}
-                                    >&times;</button>
+                                        on:click={() =>
+                                            removeSelectedUser(user)}
+                                        >&times;</button
+                                    >
                                 </div>
                             {/each}
                         </div>
@@ -266,8 +297,8 @@
                 {/if}
                 <div class="search-input-wrapper">
                     <span class="search-icon">🔍</span>
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         bind:this={searchInputElement}
                         value={searchQuery}
                         on:input={handleSearchInput}
@@ -279,37 +310,47 @@
                     {#if isLoading}
                         <div class="search-loading">Carregando usuários...</div>
                     {:else if filteredUsers.length === 0}
-                        <div class="search-empty">Nenhum usuário encontrado</div>
+                        <div class="search-empty">
+                            Nenhum usuário encontrado
+                        </div>
                     {:else}
                         {#each filteredUsers as user (user.id)}
                             <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
-                            <div 
+                            <div
                                 class="search-result-item"
-                                class:selected={multiSelect && isUserSelected(user)}
+                                class:selected={multiSelect &&
+                                    isUserSelected(user)}
                                 on:click={() => selectUser(user)}
                                 role="option"
-                                aria-selected={multiSelect && isUserSelected(user)}
+                                aria-selected={multiSelect &&
+                                    isUserSelected(user)}
                                 tabindex="0"
                             >
                                 {#if multiSelect}
                                     <div class="checkbox-wrapper">
-                                        <input 
-                                            type="checkbox" 
+                                        <input
+                                            type="checkbox"
                                             checked={isUserSelected(user)}
-                                            on:click|stopPropagation={() => toggleUserSelection(user)}
+                                            on:click|stopPropagation={() =>
+                                                toggleUserSelection(user)}
                                         />
                                     </div>
                                 {/if}
                                 <div class="result-info">
                                     <div class="result-name">{user.nome}</div>
-                                    <div class="result-details">{user.email || 'Sem email'}</div>
+                                    <div class="result-details">
+                                        {user.email || "Sem email"}
+                                    </div>
                                 </div>
-                                <span class="result-role {user.role}">{user.role}</span>
+                                <span class="result-role {user.role}"
+                                    >{user.role}</span
+                                >
                                 {#if !multiSelect}
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         class="btn-select-user"
-                                        on:click|stopPropagation={() => selectUser(user)}
+                                        on:click|stopPropagation={() =>
+                                            selectUser(user)}
                                     >
                                         Selecionar
                                     </button>
@@ -321,9 +362,11 @@
             </div>
             {#if multiSelect}
                 <div class="search-dialog-footer">
-                    <button type="button" class="btn-cancel" on:click={close}>Cancelar</button>
-                    <button 
-                        type="button" 
+                    <button type="button" class="btn-cancel" on:click={close}
+                        >Cancelar</button
+                    >
+                    <button
+                        type="button"
                         class="btn-confirm"
                         on:click={confirmSelection}
                     >

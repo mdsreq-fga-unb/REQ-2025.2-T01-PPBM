@@ -1,5 +1,5 @@
 ---
-import Header from "../../components/Header.astro";
+import Header from "../../components/admin/AdminHeader.svelte";
 import Sidebar from "../../components/Sidebar.astro";
 import FormSelect from "../../components/ui/FormSelect.astro";
 import ResponsaveisSection from "../../components/ResponsaveisSection.svelte";
@@ -10,7 +10,7 @@ import PageToast from "../../components/ui/PageToast.astro";
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Cadastrar Aluno - Programa Bombeiro Mirim</title>
+        <title id="page-title">Cadastrar Aluno - Programa Bombeiro Mirim</title>
         <style>
             :root {
                 --primary-color: #4a5568;
@@ -176,6 +176,23 @@ import PageToast from "../../components/ui/PageToast.astro";
             .btn-secondary:hover {
                 background-color: #cbd5e0;
             }
+            .btn-back {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                border-radius: 6px;
+                border: 1px solid var(--border-color);
+                background-color: var(--white);
+                color: var(--text-color);
+                font-size: 1rem;
+                font-weight: 500;
+                text-decoration: none;
+                transition: all 0.3s;
+            }
+            .btn-back:hover {
+                background-color: var(--secondary-color);
+            }
             .alert {
                 padding: 1rem;
                 border-radius: 6px;
@@ -225,25 +242,28 @@ import PageToast from "../../components/ui/PageToast.astro";
         </style>
     </head>
     <body>
-        <Header />
+        <Header client:load />
         <div class="main-content">
             <div class="content-wrapper">
                 <Sidebar />
                 <main class="container">
                     <div class="page-header">
                         <div class="title">
-                            <h1>Cadastrar Novo Aluno</h1>
-                            <p>
+                            <h1 id="header-title">Cadastrar Novo Aluno</h1>
+                            <p id="header-description">
                                 Preencha os dados do aluno (brigadino/brigadina)
                             </p>
                         </div>
+                        <a href="/admin/gerenciar-alunos" class="btn-back">
+                            <span>←</span> Voltar
+                        </a>
                     </div>
 
                     <div id="alert-success" class="alert alert-success">
-                        Aluno cadastrado com sucesso!
+                        Aluno salvo com sucesso!
                     </div>
                     <div id="alert-error" class="alert alert-error">
-                        Erro ao cadastrar aluno. Por favor, tente novamente.
+                        Erro ao salvar aluno. Por favor, tente novamente.
                     </div>
 
                     <form id="cadastro-form">
@@ -294,6 +314,22 @@ import PageToast from "../../components/ui/PageToast.astro";
                                     <option value="M">Masculino</option>
                                     <option value="F">Feminino</option>
                                 </FormSelect>
+                                <div class="form-group">
+                                    <label>Nome de Guerra</label>
+                                    <input
+                                        type="text"
+                                        name="nome_guerra"
+                                        placeholder="Apelido ou nome de guerra"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label>Cidade</label>
+                                    <input
+                                        type="text"
+                                        name="cidade"
+                                        placeholder="Cidade do aluno"
+                                    />
+                                </div>
                             </div>
                         </section>
 
@@ -301,7 +337,11 @@ import PageToast from "../../components/ui/PageToast.astro";
                         <section class="form-section">
                             <h2>🏫 Dados Escolares</h2>
                             <div class="form-grid">
-                                <FormSelect name="serie" label="Série/Ano" required>
+                                <FormSelect
+                                    name="serie"
+                                    label="Série/Ano"
+                                    required
+                                >
                                     <option value="">Selecione a série</option>
                                     <option value="Maternal">Maternal</option>
                                     <option value="Jardim I">Jardim I</option>
@@ -316,54 +356,10 @@ import PageToast from "../../components/ui/PageToast.astro";
                                     <option value="8º Ano">8º Ano</option>
                                     <option value="9º Ano">9º Ano</option>
                                 </FormSelect>
-                                <FormSelect
-                                    name="unidade"
-                                    label="Unidade do PBM"
-                                    required
-                                >
-                                    <option value="">Selecione a unidade</option
-                                    >
-                                    <option value="gama">Gama</option>
-                                    <option value="santa_maria"
-                                        >Santa Maria</option
-                                    >
-                                    <option value="recanto"
-                                        >Recanto das Emas</option
-                                    >
-                                    <option value="samambaia">Samambaia</option>
-                                    <option value="nucleo_bandeirante"
-                                        >Núcleo Bandeirante</option
-                                    >
-                                    <option value="estrutural"
-                                        >Cidade Estrutural</option
-                                    >
-                                    <option value="ceilandia">Ceilândia</option>
-                                    <option value="brazlandia"
-                                        >Brazlândia</option
-                                    >
-                                    <option value="sobradinho"
-                                        >Sobradinho</option
-                                    >
-                                    <option value="planaltina"
-                                        >Planaltina</option
-                                    >
-                                    <option value="paranoa">Paranoá</option>
-                                    <option value="sao_sebastiao"
-                                        >São Sebastião</option
-                                    >
-                                </FormSelect>
-                                <FormSelect name="turma" label="Turma">
+                                <FormSelect name="turma" label="Turma" required>
                                     <option value="">Selecione a turma</option>
                                     <!-- Turmas serão carregadas dinamicamente -->
                                 </FormSelect>
-                                <div class="form-group">
-                                    <label>Cidade</label>
-                                    <input
-                                        type="text"
-                                        name="cidade"
-                                        placeholder="Ex: Brasília"
-                                    />
-                                </div>
                             </div>
                         </section>
 
@@ -457,26 +453,161 @@ import PageToast from "../../components/ui/PageToast.astro";
             import { authStore } from "../../stores/auth";
             import { apiFetch } from "../../lib/api";
 
+            // Edit mode state
+            let isEditMode = false;
+            let editingAlunoId: number | null = null;
+
+            // Format CPF for display
+            function formatCpf(cpf: string): string {
+                if (!cpf) return '';
+                const digits = cpf.replace(/\D/g, '');
+                if (digits.length !== 11) return cpf;
+                return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9, 11)}`;
+            }
+
             // Load turmas from API
-            async function carregarTurmas() {
+            async function carregarTurmas(selectedTurmaId?: number) {
                 try {
-                    const response = await apiFetch('/turmas/listar?pageSize=100');
+                    const response = await apiFetch(
+                        "/turmas/listar?pageSize=100",
+                    );
                     if (response.success && response.data) {
-                        const turmas = response.data.data || response.data || [];
-                        const turmaSelect = document.querySelector('select[name="turma"]');
+                        const responseData = response.data as { data?: any[]; [key: string]: any };
+                        const turmas = responseData.data || response.data || [];
+                        const turmaSelect = document.querySelector(
+                            'select[name="turma"]',
+                        ) as HTMLSelectElement;
                         if (turmaSelect) {
                             // Keep the first option
-                            turmaSelect.innerHTML = '<option value="">Selecione a turma</option>';
-                            turmas.forEach((turma: any) => {
-                                const option = document.createElement('option');
+                            turmaSelect.innerHTML =
+                                '<option value="">Selecione a turma</option>';
+                            (turmas as any[]).forEach((turma: any) => {
+                                const option = document.createElement("option");
                                 option.value = turma.id_turma;
-                                option.textContent = `${turma.nome_turma} - ${turma.unidade_turma || 'Sem unidade'}`;
+                                option.textContent = `${turma.nome_turma} - ${turma.unidade_turma || "Sem unidade"}`;
+                                if (selectedTurmaId && turma.id_turma === selectedTurmaId) {
+                                    option.selected = true;
+                                }
                                 turmaSelect.appendChild(option);
                             });
                         }
                     }
                 } catch (error) {
-                    console.error('Erro ao carregar turmas:', error);
+                    console.error("Erro ao carregar turmas:", error);
+                }
+            }
+
+            // Load aluno data for editing
+            interface AlunoData {
+                id_aluno: number;
+                nome_aluno?: string;
+                data_nascimento_aluno?: string;
+                cpf_aluno?: string;
+                tipo_sanguineo?: string;
+                nome_guerra?: string;
+                serie?: string;
+                escola_unidade?: string;
+                cidade?: string;
+                neurodivergente?: boolean;
+                alunos_por_turma?: Array<{ id_turma: number }>;
+                // These fields don't exist in DB yet but form has them
+                sexo?: string;
+                serie?: string;
+                alergias?: string;
+                condicoes_medicas?: string;
+                observacoes_neuro?: string;
+            }
+
+            async function carregarAluno(id: number) {
+                try {
+                    const response = await apiFetch(`/alunos/detalhe/${id}`);
+                    console.log('[Edit] Full response:', response);
+                    
+                    // The API returns { success, data: { success, data: aluno } }
+                    // apiFetch wraps it as { success, data: serverResponse }
+                    const serverResponse = response.data as any;
+                    const aluno = (serverResponse?.data || serverResponse) as AlunoData;
+                    
+                    console.log('[Edit] Aluno data:', aluno);
+                    
+                    if (response.success && aluno) {
+                        // Fill form fields
+                        const form = document.getElementById("cadastro-form") as HTMLFormElement;
+                        
+                        // Personal data
+                        (form.querySelector('input[name="nome"]') as HTMLInputElement).value = aluno.nome_aluno || '';
+                        (form.querySelector('input[name="data_nascimento"]') as HTMLInputElement).value = aluno.data_nascimento_aluno || '';
+                        (form.querySelector('input[name="cpf"]') as HTMLInputElement).value = formatCpf(aluno.cpf_aluno || '');
+                        
+                        // Sexo
+                        const sexoSelect = form.querySelector('select[name="sexo"]') as HTMLSelectElement;
+                        if (aluno.sexo) {
+                            sexoSelect.value = aluno.sexo;
+                        }
+                        
+                        // Nome de guerra and cidade
+                        (form.querySelector('input[name="nome_guerra"]') as HTMLInputElement).value = aluno.nome_guerra || '';
+                        (form.querySelector('input[name="cidade"]') as HTMLInputElement).value = aluno.cidade || '';
+                        
+                        // Serie/Ano
+                        const serieSelect = form.querySelector('select[name="serie"]') as HTMLSelectElement;
+                        if (aluno.serie) {
+                            serieSelect.value = aluno.serie;
+                        }
+                        
+                        // Turma - get from alunos_por_turma relationship
+                        let turmaId: number | undefined;
+                        if (aluno.alunos_por_turma && aluno.alunos_por_turma.length > 0) {
+                            turmaId = aluno.alunos_por_turma[0].id_turma;
+                        }
+                        await carregarTurmas(turmaId);
+                        
+                        // Medical info
+                        const tipoSanguineoSelect = form.querySelector('select[name="tipo_sanguineo"]') as HTMLSelectElement;
+                        if (aluno.tipo_sanguineo) {
+                            tipoSanguineoSelect.value = aluno.tipo_sanguineo;
+                        }
+                        
+                        (form.querySelector('textarea[name="alergias"]') as HTMLTextAreaElement).value = aluno.alergias || '';
+                        (form.querySelector('textarea[name="condicoes_medicas"]') as HTMLTextAreaElement).value = aluno.condicoes_medicas || '';
+                        
+                        const neurodivergente = form.querySelector('input[name="neurodivergente"]') as HTMLInputElement;
+                        neurodivergente.checked = aluno.neurodivergente || false;
+                        if (aluno.neurodivergente) {
+                            document.getElementById("observacoes-neuro")!.style.display = "block";
+                            (form.querySelector('textarea[name="observacoes_neuro"]') as HTMLTextAreaElement).value = aluno.observacoes_neuro || '';
+                        }
+                        
+                        // Load responsáveis
+                        await carregarResponsaveis(id);
+                        
+                        return aluno;
+                    }
+                } catch (error) {
+                    console.error("Erro ao carregar aluno:", error);
+                    if (typeof window.showPageToast === "function") {
+                        window.showPageToast("Erro ao carregar dados do aluno", "error");
+                    }
+                }
+                return null;
+            }
+
+            // Load responsáveis for the aluno
+            async function carregarResponsaveis(alunoId: number) {
+                try {
+                    const response = await apiFetch(`/notificacoes/responsaveis-aluno/${alunoId}`);
+                    console.log('[Edit] Responsaveis response:', response);
+                    if (response.success && response.data) {
+                        const serverResponse = response.data as any;
+                        const responsaveis = serverResponse?.data || serverResponse;
+                        console.log('[Edit] Responsaveis data:', responsaveis);
+                        // Dispatch event to ResponsaveisSection to load the data
+                        window.dispatchEvent(new CustomEvent('load-responsaveis', {
+                            detail: { responsaveis }
+                        }));
+                    }
+                } catch (error) {
+                    console.error("Erro ao carregar responsáveis:", error);
                 }
             }
 
@@ -492,10 +623,10 @@ import PageToast from "../../components/ui/PageToast.astro";
                 // Check if user is admin
                 const user = authStore.getUser();
                 if (!user || user.tipo !== "admin") {
-                    if (typeof window.showPageToast === 'function') {
+                    if (typeof window.showPageToast === "function") {
                         window.showPageToast(
-                            "Acesso negado. Apenas administradores podem cadastrar alunos.",
-                            "error"
+                            "Acesso negado. Apenas administradores podem gerenciar alunos.",
+                            "error",
                         );
                     }
                     setTimeout(() => {
@@ -504,26 +635,46 @@ import PageToast from "../../components/ui/PageToast.astro";
                     return;
                 }
 
-                // Load turmas after authentication check
-                await carregarTurmas();
+                // Check if we're in edit mode (URL has ?id=X)
+                const urlParams = new URLSearchParams(window.location.search);
+                const alunoId = urlParams.get('id');
+                
+                if (alunoId) {
+                    isEditMode = true;
+                    editingAlunoId = parseInt(alunoId, 10);
+                    
+                    // Update page title and header
+                    document.getElementById("page-title")!.textContent = "Editar Aluno - Programa Bombeiro Mirim";
+                    document.getElementById("header-title")!.textContent = "Editar Aluno";
+                    document.getElementById("header-description")!.textContent = "Atualize os dados do aluno";
+                    document.getElementById("btn-submit")!.textContent = "Salvar Alterações";
+                    
+                    // Load aluno data
+                    await carregarAluno(editingAlunoId);
+                } else {
+                    // Load turmas for new aluno
+                    await carregarTurmas();
+                }
             });
 
             // CPF mask
-            function applyCpfMask(input) {
+            function applyCpfMask(input: HTMLInputElement) {
                 input.addEventListener("input", (e) => {
-                    let value = e.target.value.replace(/\D/g, "");
+                    const target = e.target as HTMLInputElement;
+                    let value = target.value.replace(/\D/g, "");
                     if (value.length > 11) value = value.slice(0, 11);
                     value = value.replace(/(\d{3})(\d)/, "$1.$2");
                     value = value.replace(/(\d{3})(\d)/, "$1.$2");
                     value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-                    e.target.value = value;
+                    target.value = value;
                 });
             }
 
             // Phone mask
-            function applyPhoneMask(input) {
+            function applyPhoneMask(input: HTMLInputElement) {
                 input.addEventListener("input", (e) => {
-                    let value = e.target.value.replace(/\D/g, "");
+                    const target = e.target as HTMLInputElement;
+                    let value = target.value.replace(/\D/g, "");
                     if (value.length > 11) value = value.slice(0, 11);
                     if (value.length > 2) {
                         value = "(" + value.slice(0, 2) + ") " + value.slice(2);
@@ -531,42 +682,43 @@ import PageToast from "../../components/ui/PageToast.astro";
                     if (value.length > 10) {
                         value = value.slice(0, 10) + "-" + value.slice(10);
                     }
-                    e.target.value = value;
+                    target.value = value;
                 });
             }
 
             // Apply masks to existing inputs
             document
                 .querySelectorAll('input[name="cpf"], .cpf-input')
-                .forEach(applyCpfMask);
+                .forEach((el) => applyCpfMask(el as HTMLInputElement));
             document
                 .querySelectorAll(".telefone-input")
-                .forEach(applyPhoneMask);
+                .forEach((el) => applyPhoneMask(el as HTMLInputElement));
 
             // Toggle neurodivergente observations
             document
-                .getElementById("neurodivergente")
+                .getElementById("neurodivergente")!
                 .addEventListener("change", (e) => {
-                    document.getElementById("observacoes-neuro").style.display =
-                        e.target.checked ? "block" : "none";
+                    const target = e.target as HTMLInputElement;
+                    document.getElementById("observacoes-neuro")!.style.display =
+                        target.checked ? "block" : "none";
                 });
 
             // Form submit
             document
-                .getElementById("cadastro-form")
+                .getElementById("cadastro-form")!
                 .addEventListener("submit", async (e) => {
                     e.preventDefault();
 
-                    const form = e.target;
-                    const submitBtn = document.getElementById("btn-submit");
+                    const form = e.target as HTMLFormElement;
+                    const submitBtn = document.getElementById("btn-submit") as HTMLButtonElement;
                     const alertSuccess =
-                        document.getElementById("alert-success");
-                    const alertError = document.getElementById("alert-error");
+                        document.getElementById("alert-success")!;
+                    const alertError = document.getElementById("alert-error")!;
 
                     alertSuccess.style.display = "none";
                     alertError.style.display = "none";
                     submitBtn.disabled = true;
-                    submitBtn.textContent = "Cadastrando...";
+                    submitBtn.textContent = isEditMode ? "Salvando..." : "Cadastrando...";
 
                     const formData = new FormData(form);
 
@@ -574,56 +726,63 @@ import PageToast from "../../components/ui/PageToast.astro";
                     const aluno = {
                         nome_aluno: formData.get("nome"),
                         data_nascimento_aluno: formData.get("data_nascimento"),
-                        cpf_aluno: formData.get("cpf")?.replace(/\D/g, ""),
-                        sexo: formData.get("sexo"),
-                        serie: formData.get("serie"),
-                        escola_unidade: formData.get("unidade"),
+                        cpf_aluno: formData.get("cpf")?.toString().replace(/\D/g, ""),
+                        sexo: formData.get("sexo") || null,
+                        nome_guerra: formData.get("nome_guerra") || null,
                         cidade: formData.get("cidade") || null,
+                        serie: formData.get("serie") || null,
                         turma_id: formData.get("turma") || null,
                         tipo_sanguineo: formData.get("tipo_sanguineo") || null,
                         alergias: formData.get("alergias") || null,
-                        condicoes_medicas:
-                            formData.get("condicoes_medicas") || null,
-                        neurodivergente:
-                            formData.get("neurodivergente") === "on",
-                        observacoes_neuro:
-                            formData.get("observacoes_neuro") || null,
+                        condicoes_medicas: formData.get("condicoes_medicas") || null,
+                        neurodivergente: formData.get("neurodivergente") === "on",
+                        observacoes_neuro: formData.get("observacoes_neuro") || null,
                     };
 
                     // Collect first responsável (backend expects single responsavel object)
                     const nomeResp = formData.get("responsavel_nome_0");
-                    const responsavel = nomeResp ? {
-                        nome_responsavel: nomeResp,
-                        cpf_responsavel:
-                            formData
-                                .get("responsavel_cpf_0")
-                                ?.toString()
-                                .replace(/\D/g, "") || null,
-                        parentesco: formData.get("responsavel_parentesco_0"),
-                        telefone_responsavel:
-                            formData
-                                .get("responsavel_telefone_0")
-                                ?.toString()
-                                .replace(/\D/g, "") || null,
-                        email_responsavel:
-                            formData.get("responsavel_email_0") || null,
-                    } : null;
+                    const idResp = formData.get("responsavel_id_0");
+                    const responsavel = nomeResp
+                        ? {
+                              id_responsavel: idResp ? Number(idResp) : null,
+                              nome_responsavel: nomeResp,
+                              cpf_responsavel:
+                                  formData
+                                      .get("responsavel_cpf_0")
+                                      ?.toString()
+                                      .replace(/\D/g, "") || null,
+                              parentesco: formData.get(
+                                  "responsavel_parentesco_0",
+                              ),
+                              telefone_responsavel:
+                                  formData
+                                      .get("responsavel_telefone_0")
+                                      ?.toString()
+                                      .replace(/\D/g, "") || null,
+                              email_responsavel:
+                                  formData.get("responsavel_email_0") || null,
+                          }
+                        : null;
 
                     // Collect additional responsáveis if any
-                    const responsaveisAdicionais = [];
+                    const responsaveisAdicionais: any[] = [];
                     let i = 1;
                     while (true) {
                         const nome = formData.get(`responsavel_nome_${i}`);
                         if (!nome) break;
 
+                        const idRespAdicional = formData.get(`responsavel_id_${i}`);
                         responsaveisAdicionais.push({
+                            id_responsavel: idRespAdicional ? Number(idRespAdicional) : null,
                             nome_responsavel: nome,
                             cpf_responsavel:
                                 formData
                                     .get(`responsavel_cpf_${i}`)
                                     ?.toString()
                                     .replace(/\D/g, "") || null,
-                            parentesco: formData.get(`responsavel_parentesco_${i}`),
+                            parentesco: formData.get(
+                                `responsavel_parentesco_${i}`,
+                            ),
                             telefone_responsavel:
                                 formData
                                     .get(`responsavel_telefone_${i}`)
@@ -635,22 +794,73 @@ import PageToast from "../../components/ui/PageToast.astro";
                         i++;
                     }
 
-                    // Build request body in backend expected format
-                    const requestBody = {
-                        aluno,
-                        responsavel,
-                        responsaveisAdicionais: responsaveisAdicionais.length > 0 ? responsaveisAdicionais : undefined,
-                    };
-
                     try {
-                        const response = await apiFetch("/alunos", {
-                            method: "POST",
-                            body: JSON.stringify(requestBody),
-                        });
+                        let response;
+                        
+                        if (isEditMode && editingAlunoId) {
+                            // Collect all responsaveis for update
+                            const responsaveisParaAtualizar: Array<{ id_responsavel: number; parentesco?: string }> = [];
+                            
+                            // Collect primary responsavel
+                            const idRespPrimary = formData.get("responsavel_id_0");
+                            const parentescoPrimary = formData.get("responsavel_parentesco_0");
+                            if (idRespPrimary) {
+                                responsaveisParaAtualizar.push({
+                                    id_responsavel: Number(idRespPrimary),
+                                    parentesco: parentescoPrimary?.toString() || null
+                                });
+                            }
+                            
+                            // Collect additional responsaveis
+                            let idx = 1;
+                            while (true) {
+                                const idRespAdditional = formData.get(`responsavel_id_${idx}`);
+                                if (!idRespAdditional) break;
+                                const parentescoAdditional = formData.get(`responsavel_parentesco_${idx}`);
+                                responsaveisParaAtualizar.push({
+                                    id_responsavel: Number(idRespAdditional),
+                                    parentesco: parentescoAdditional?.toString() || null
+                                });
+                                idx++;
+                            }
+                            
+                            console.log('[Edit] Responsáveis para atualizar:', responsaveisParaAtualizar);
+                            
+                            // Update existing aluno with responsaveis
+                            response = await apiFetch(`/alunos/atualizar/${editingAlunoId}`, {
+                                method: "PUT",
+                                body: JSON.stringify({
+                                    ...aluno,
+                                    responsaveis: responsaveisParaAtualizar
+                                }),
+                            });
+                        } else {
+                            // Build request body for new aluno in backend expected format
+                            const requestBody = {
+                                aluno,
+                                responsavel,
+                                responsaveisAdicionais:
+                                    responsaveisAdicionais.length > 0
+                                        ? responsaveisAdicionais
+                                        : undefined,
+                            };
+
+                            response = await apiFetch("/alunos", {
+                                method: "POST",
+                                body: JSON.stringify(requestBody),
+                            });
+                        }
 
                         if (response.success) {
+                            alertSuccess.textContent = isEditMode 
+                                ? "Aluno atualizado com sucesso!" 
+                                : "Aluno cadastrado com sucesso!";
                             alertSuccess.style.display = "block";
-                            form.reset();
+                            
+                            if (!isEditMode) {
+                                form.reset();
+                            }
+                            
                             window.scrollTo({ top: 0, behavior: "smooth" });
 
                             setTimeout(() => {
@@ -659,7 +869,7 @@ import PageToast from "../../components/ui/PageToast.astro";
                             }, 2000);
                         } else {
                             alertError.textContent =
-                                response.error || "Erro ao cadastrar aluno";
+                                response.error || (isEditMode ? "Erro ao atualizar aluno" : "Erro ao cadastrar aluno");
                             alertError.style.display = "block";
                             window.scrollTo({ top: 0, behavior: "smooth" });
                         }
@@ -671,7 +881,7 @@ import PageToast from "../../components/ui/PageToast.astro";
                         window.scrollTo({ top: 0, behavior: "smooth" });
                     } finally {
                         submitBtn.disabled = false;
-                        submitBtn.textContent = "Cadastrar Aluno";
+                        submitBtn.textContent = isEditMode ? "Salvar Alterações" : "Cadastrar Aluno";
                     }
                 });
         </script>

@@ -1,565 +1,764 @@
 ---
-import Header from '../../components/Header.astro';
-import Sidebar from '../../components/Sidebar.astro';
-import FormSelect from '../../components/ui/FormSelect.astro';
-import PageToast from '../../components/ui/PageToast.astro';
+import Header from "../../components/admin/AdminHeader.svelte";
+import Sidebar from "../../components/Sidebar.astro";
+import FormSelect from "../../components/ui/FormSelect.astro";
+import PageToast from "../../components/ui/PageToast.astro";
 ---
 
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatórios - Programa Bombeiro Mirim</title>
-    <style>
-        :root {
-            --primary-color: #4A5568;
-            --secondary-color: #E2E8F0;
-            --accent-color: #3182CE;
-            --danger-color: #E53E3E;
-            --bg-color: #F7FAFC;
-            --text-color: #2D3748;
-            --label-color: #718096;
-            --border-color: #CBD5E0;
-            --white: #FFFFFF;
-            --success-color: #48BB78;
-            --warning-color: #ED8936;
-            --info-color: #4299E1;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-        }
-        .main-content {
-            padding: 120px 1.5rem 40px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-        }
-        .content-wrapper {
-            width: 100%;
-            max-width: 1280px;
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
-        .container {
-            flex: 1;
-            max-width: 100%;
-            background-color: var(--white);
-            padding: 2.5rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid var(--secondary-color);
-        }
-        .page-header h1 {
-            font-size: 1.8rem;
-            margin: 0;
-            color: var(--text-color);
-        }
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-        }
-        .btn-generate,
-        .btn-export {
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            border: none;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            white-space: nowrap;
-        }
-        .btn-generate {
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-        .btn-generate:hover {
-            background-color: #2D3748;
-        }
-        .btn-export {
-            background-color: var(--danger-color);
-            color: var(--white);
-        }
-        .btn-export:hover {
-            background-color: #C53030;
-        }
-        .btn-export:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        .filters-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-        }
-        .filter-group label {
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            color: var(--label-color);
-            font-weight: 500;
-        }
-        .filter-group select,
-        .filter-group input {
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 1rem;
-            color: var(--text-color);
-            background-color: #FDFDFD;
-        }
-        .filter-group select:focus,
-        .filter-group input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
-        }
-        .date-input-wrapper {
-            position: relative;
-        }
-        .date-icon {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: var(--label-color);
-        }
-        .instruction-text {
-            color: var(--label-color);
-            font-size: 0.95rem;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background-color: #F7FAFC;
-            border-radius: 6px;
-            border-left: 3px solid var(--accent-color);
-        }
-        .report-container {
-            margin-top: 2rem;
-            display: none;
-        }
-        .report-container.active {
-            display: block;
-        }
-        .report-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--secondary-color);
-        }
-        .report-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-        .report-info {
-            font-size: 0.9rem;
-            color: var(--label-color);
-        }
-        .report-content {
-            margin-top: 1.5rem;
-        }
-        .report-table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: var(--white);
-            margin-top: 1rem;
-        }
-        .report-table thead {
-            background-color: var(--secondary-color);
-        }
-        .report-table th {
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: var(--text-color);
-            font-size: 0.9rem;
-            border-bottom: 2px solid var(--border-color);
-        }
-        .report-table td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.95rem;
-        }
-        .report-table tbody tr:hover {
-            background-color: #F7FAFC;
-        }
-        .report-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .stat-card {
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .stat-card h3 {
-            font-size: 0.9rem;
-            margin: 0 0 0.5rem 0;
-            font-weight: 500;
-            color: var(--label-color);
-        }
-        .stat-card .value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 0;
-            color: var(--text-color);
-        }
-
-        @media (max-width: 768px) {
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Relatórios - Programa Bombeiro Mirim</title>
+        <style>
+            :root {
+                --primary-color: #4a5568;
+                --secondary-color: #e2e8f0;
+                --accent-color: #3182ce;
+                --danger-color: #e53e3e;
+                --bg-color: #f7fafc;
+                --text-color: #2d3748;
+                --label-color: #718096;
+                --border-color: #cbd5e0;
+                --white: #ffffff;
+                --success-color: #48bb78;
+                --warning-color: #ed8936;
+                --info-color: #4299e1;
+            }
+            body {
+                font-family: "Inter", sans-serif;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                margin: 0;
+                padding: 0;
+            }
             .main-content {
-                padding: 100px 1rem 20px;
+                padding: 120px 1.5rem 40px;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
             }
-
             .content-wrapper {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .container {
-                padding: 1.5rem;
-                border-radius: 1rem;
-            }
-
-            .page-header {
-                flex-direction: column;
+                width: 100%;
+                max-width: 1280px;
+                display: flex;
+                gap: 20px;
                 align-items: flex-start;
+            }
+            .container {
+                flex: 1;
+                max-width: 100%;
+                background-color: var(--white);
+                padding: 2.5rem;
+                border-radius: 1.5rem;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            }
+            .page-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 2rem;
+                padding-bottom: 1.5rem;
+                border-bottom: 2px solid var(--secondary-color);
+            }
+            .page-header h1 {
+                font-size: 1.8rem;
+                margin: 0;
+                color: var(--text-color);
+            }
+            .header-actions {
+                display: flex;
                 gap: 1rem;
             }
-
-            .page-header h1 {
-                font-size: 1.5rem;
-            }
-
-            .header-actions {
-                width: 100%;
-            }
-
             .btn-generate,
             .btn-export {
-                flex: 1;
+                padding: 0.75rem 1.5rem;
+                border-radius: 6px;
+                border: none;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                white-space: nowrap;
             }
-
+            .btn-generate {
+                background-color: var(--primary-color);
+                color: var(--white);
+            }
+            .btn-generate:hover {
+                background-color: #2d3748;
+            }
+            .btn-export {
+                background-color: var(--danger-color);
+                color: var(--white);
+            }
+            .btn-export:hover {
+                background-color: #c53030;
+            }
+            .btn-export:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
             .filters-section {
-                grid-template-columns: 1fr;
-            }
-
-            .report-stats {
-                grid-template-columns: repeat(2, 1fr);
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
                 gap: 1rem;
+                margin-bottom: 2rem;
             }
-
-            .report-table {
-                font-size: 0.85rem;
-            }
-
-            .report-table th,
-            .report-table td {
-                padding: 0.75rem 0.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .main-content {
-                padding: 80px 0.5rem 20px;
-            }
-
-            .container {
-                padding: 1rem;
-                border-radius: 0.75rem;
-            }
-
-            .page-header h1 {
-                font-size: 1.25rem;
-            }
-
-            .header-actions {
+            .filter-group {
+                display: flex;
                 flex-direction: column;
             }
-
+            .filter-group label {
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+                color: var(--label-color);
+                font-weight: 500;
+            }
+            .filter-group select,
+            .filter-group input {
+                padding: 0.75rem;
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                font-size: 1rem;
+                color: var(--text-color);
+                background-color: #fdfdfd;
+            }
+            .filter-group select:focus,
+            .filter-group input:focus {
+                outline: none;
+                border-color: var(--accent-color);
+                box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+            }
+            .date-input-wrapper {
+                position: relative;
+            }
+            .date-icon {
+                position: absolute;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: none;
+                color: var(--label-color);
+            }
+            .instruction-text {
+                color: var(--label-color);
+                font-size: 0.95rem;
+                margin-bottom: 2rem;
+                padding: 1rem;
+                background-color: #f7fafc;
+                border-radius: 6px;
+                border-left: 3px solid var(--accent-color);
+            }
+            .report-container {
+                margin-top: 2rem;
+                display: none;
+            }
+            .report-container.active {
+                display: block;
+            }
+            .report-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+                border-bottom: 2px solid var(--secondary-color);
+            }
+            .report-title {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: var(--text-color);
+            }
+            .report-info {
+                font-size: 0.9rem;
+                color: var(--label-color);
+            }
+            .report-content {
+                margin-top: 1.5rem;
+            }
+            .report-table {
+                width: 100%;
+                border-collapse: collapse;
+                background-color: var(--white);
+                margin-top: 1rem;
+            }
+            .report-table thead {
+                background-color: var(--secondary-color);
+            }
+            .report-table th {
+                padding: 1rem;
+                text-align: left;
+                font-weight: 600;
+                color: var(--text-color);
+                font-size: 0.9rem;
+                border-bottom: 2px solid var(--border-color);
+            }
+            .report-table td {
+                padding: 1rem;
+                border-bottom: 1px solid var(--border-color);
+                font-size: 0.95rem;
+            }
+            .report-table tbody tr:hover {
+                background-color: #f7fafc;
+            }
             .report-stats {
-                grid-template-columns: 1fr;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2rem;
             }
-
+            .stat-card {
+                padding: 1.5rem;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+            .stat-card h3 {
+                font-size: 0.9rem;
+                margin: 0 0 0.5rem 0;
+                font-weight: 500;
+                color: var(--label-color);
+            }
             .stat-card .value {
-                font-size: 2rem;
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin: 0;
+                color: var(--text-color);
             }
-        }
-    </style>
-</head>
-<body>
-    <Header />
-    
-    <main class="main-content">
-        <div class="content-wrapper">
-            <Sidebar />
-            <div class="container">
-                <div class="page-header">
-                    <h1>Relatórios</h1>
-                    <div class="header-actions">
-                        <button type="button" class="btn-generate" id="btn-generate">Gerar</button>
-                        <button type="button" class="btn-export" id="btn-export" disabled>Exportar</button>
-                    </div>
-                </div>
 
-                <div class="filters-section">
-                    <FormSelect id="tipo-relatorio" name="tipo-relatorio" label="Tipo de relatório">
-                        <option value="presencas-periodo">Presenças por período</option>
-                        <option value="presencas-turma">Presenças por turma</option>
-                        <option value="faltas-aluno">Faltas por aluno</option>
-                        <option value="atrasos-aluno">Atrasos por aluno</option>
-                        <option value="frequencia-geral">Frequência geral</option>
-                    </FormSelect>
-                    <div class="filter-group">
-                        <label for="data-inicial">Data inicial</label>
-                        <div class="date-input-wrapper">
-                            <input type="date" id="data-inicial" name="data-inicial" value="2025-11-10">
-                            <span class="date-icon">📅</span>
+            @media (max-width: 768px) {
+                .main-content {
+                    padding: 100px 1rem 20px;
+                }
+
+                .content-wrapper {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+
+                .container {
+                    padding: 1.5rem;
+                    border-radius: 1rem;
+                }
+
+                .page-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 1rem;
+                }
+
+                .page-header h1 {
+                    font-size: 1.5rem;
+                }
+
+                .header-actions {
+                    width: 100%;
+                }
+
+                .btn-generate,
+                .btn-export {
+                    flex: 1;
+                }
+
+                .filters-section {
+                    grid-template-columns: 1fr;
+                }
+
+                .report-stats {
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 1rem;
+                }
+
+                .report-table {
+                    font-size: 0.85rem;
+                }
+
+                .report-table th,
+                .report-table td {
+                    padding: 0.75rem 0.5rem;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .main-content {
+                    padding: 80px 0.5rem 20px;
+                }
+
+                .container {
+                    padding: 1rem;
+                    border-radius: 0.75rem;
+                }
+
+                .page-header h1 {
+                    font-size: 1.25rem;
+                }
+
+                .header-actions {
+                    flex-direction: column;
+                }
+
+                .report-stats {
+                    grid-template-columns: 1fr;
+                }
+
+                .stat-card .value {
+                    font-size: 2rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <Header client:load />
+
+        <main class="main-content">
+            <div class="content-wrapper">
+                <Sidebar />
+                <div class="container">
+                    <div class="page-header">
+                        <h1>Relatórios</h1>
+                        <div class="header-actions">
+                            <button
+                                type="button"
+                                class="btn-generate"
+                                id="btn-generate">Gerar</button
+                            >
+                            <button
+                                type="button"
+                                class="btn-export"
+                                id="btn-export"
+                                disabled>Exportar</button
+                            >
                         </div>
                     </div>
-                    <div class="filter-group">
-                        <label for="data-final">Data final</label>
-                        <div class="date-input-wrapper">
-                            <input type="date" id="data-final" name="data-final" value="2025-11-10">
-                            <span class="date-icon">📅</span>
+
+                    <div class="filters-section">
+                        <FormSelect
+                            id="tipo-relatorio"
+                            name="tipo-relatorio"
+                            label="Tipo de relatório"
+                        >
+                            <option value="presencas-periodo"
+                                >Presenças por período</option
+                            >
+                            <option value="presencas-turma"
+                                >Presenças por turma</option
+                            >
+                            <option value="individual"
+                                >Relatório individual</option
+                            >
+                            <option value="frequencia-geral"
+                                >Frequência geral</option
+                            >
+                        </FormSelect>
+                        <div class="filter-group">
+                            <label for="data-inicial">Data inicial</label>
+                            <div class="date-input-wrapper">
+                                <input
+                                    type="date"
+                                    id="data-inicial"
+                                    name="data-inicial"
+                                    value="2025-11-10"
+                                />
+                                <span class="date-icon">📅</span>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="data-final">Data final</label>
+                            <div class="date-input-wrapper">
+                                <input
+                                    type="date"
+                                    id="data-final"
+                                    name="data-final"
+                                    value="2025-11-10"
+                                />
+                                <span class="date-icon">📅</span>
+                            </div>
+                        </div>
+                        <FormSelect id="turma" name="turma" label="Turma">
+                            <option value="">Todas</option>
+                            <!-- Turmas serão carregadas via JavaScript -->
+                        </FormSelect>
+                        <div class="filter-group" id="aluno-filter" style="display: none;">
+                            <label for="aluno">Aluno</label>
+                            <select id="aluno" name="aluno">
+                                <option value="">Selecione um aluno</option>
+                                <!-- Alunos serão carregados via JavaScript -->
+                            </select>
                         </div>
                     </div>
-                    <FormSelect id="turma" name="turma" label="Turma">
-                        <option value="">Todas</option>
-                        <option value="1">Turma A - Manhã</option>
-                        <option value="2">Turma B - Tarde</option>
-                        <option value="3">Turma C - Manhã</option>
-                    </FormSelect>
-                </div>
 
-                <div class="instruction-text">
-                    Selecione os filtros e clique em "Gerar" para visualizar o relatório
-                </div>
-
-                <div class="report-container" id="report-container">
-                    <div class="report-header">
-                        <div>
-                            <div class="report-title" id="report-title">Relatório de Presenças por Período</div>
-                            <div class="report-info" id="report-info">Período: 10/11/2025 a 10/11/2025 | Turma: Todas</div>
-                        </div>
+                    <div class="instruction-text">
+                        Selecione os filtros e clique em "Gerar" para visualizar
+                        o relatório
                     </div>
 
-                    <div class="report-content" id="report-content">
-                        <!-- Conteúdo do relatório será inserido aqui via JavaScript -->
+                    <div class="report-container" id="report-container">
+                        <div class="report-header">
+                            <div>
+                                <div class="report-title" id="report-title">
+                                    Relatório de Presenças por Período
+                                </div>
+                                <div class="report-info" id="report-info">
+                                    Período: 10/11/2025 a 10/11/2025 | Turma:
+                                    Todas
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="report-content" id="report-content">
+                            <!-- Conteúdo do relatório será inserido aqui via JavaScript -->
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
 
-    <script>
-        const btnGenerate = document.getElementById('btn-generate');
-        const btnExport = document.getElementById('btn-export');
-        const reportContainer = document.getElementById('report-container');
-        const reportContent = document.getElementById('report-content');
-        const reportTitle = document.getElementById('report-title');
-        const reportInfo = document.getElementById('report-info');
+        <script>
+            import { apiFetch } from "../../lib/api";
+            import { authStore } from "../../stores/auth";
 
-        let currentReportData = null;
+            const btnGenerate = document.getElementById("btn-generate");
+            const btnExport = document.getElementById("btn-export");
+            const reportContainer = document.getElementById("report-container");
+            const reportContent = document.getElementById("report-content");
+            const reportTitle = document.getElementById("report-title");
+            const reportInfo = document.getElementById("report-info");
+            const tipoRelatorioSelect = document.getElementById("tipo-relatorio");
+            const alunoFilter = document.getElementById("aluno-filter");
+            const alunoSelect = document.getElementById("aluno");
+            const turmaSelect = document.getElementById("turma");
 
-        // Função para formatar data
-        function formatarData(data) {
-            const date = new Date(data);
-            return date.toLocaleDateString('pt-BR');
-        }
+            let currentReportData = null;
+            let turmasCache = [];
+            let alunosCache = [];
 
-        // Função para gerar relatório
-        async function gerarRelatorio() {
-            const tipoRelatorio = document.getElementById('tipo-relatorio').value;
-            const dataInicial = document.getElementById('data-inicial').value;
-            const dataFinal = document.getElementById('data-final').value;
-            const turma = document.getElementById('turma').value;
-
-            // Validação
-            if (!dataInicial || !dataFinal) {
-                if (typeof window.showPageToast === 'function') {
-                    window.showPageToast('Por favor, selecione as datas inicial e final', 'warning');
-                }
-                return;
+            // Função para formatar data
+            function formatarData(data) {
+                const date = new Date(data);
+                return date.toLocaleDateString("pt-BR");
             }
 
-            if (new Date(dataInicial) > new Date(dataFinal)) {
-                if (typeof window.showPageToast === 'function') {
-                    window.showPageToast('A data inicial não pode ser maior que a data final', 'warning');
-                }
-                return;
-            }
-
-            // Atualizar título e informações do relatório
-            const tipoRelatorioText = document.getElementById('tipo-relatorio').selectedOptions[0].text;
-            const turmaText = turma ? document.getElementById('turma').selectedOptions[0].text : 'Todas';
-            
-            reportTitle.textContent = `Relatório de ${tipoRelatorioText}`;
-            reportInfo.textContent = `Período: ${formatarData(dataInicial)} a ${formatarData(dataFinal)} | Turma: ${turmaText}`;
-
-            try {
-                // Aqui você fará a chamada à API para gerar o relatório
-                // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
-                // const response = await fetch(`${backendUrl}/relatorios`, {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json'
-                //     },
-                //     body: JSON.stringify({
-                //         tipo: tipoRelatorio,
-                //         data_inicial: dataInicial,
-                //         data_final: dataFinal,
-                //         turma_id: turma || null
-                //     })
-                // });
-                // const data = await response.json();
-                // currentReportData = data;
-
-                // Dados de exemplo
-                currentReportData = gerarDadosExemplo(tipoRelatorio, dataInicial, dataFinal, turma);
-                
-                // Renderizar relatório
-                renderizarRelatorio(currentReportData, tipoRelatorio);
-                
-                // Mostrar container e habilitar botão de exportar
-                reportContainer.classList.add('active');
-                btnExport.disabled = false;
-
-            } catch (error) {
-                console.error('Erro ao gerar relatório:', error);
-                if (typeof window.showPageToast === 'function') {
-                    window.showPageToast('Erro ao gerar relatório. Tente novamente.', 'error');
+            // Carregar turmas
+            async function carregarTurmas() {
+                try {
+                    const response = await apiFetch("/turmas/listar?pageSize=100");
+                    if (response.success && response.data) {
+                        turmasCache = response.data.data || response.data || [];
+                        turmaSelect.innerHTML = '<option value="">Todas</option>';
+                        turmasCache.forEach(turma => {
+                            const option = document.createElement("option");
+                            option.value = turma.id_turma;
+                            option.textContent = `${turma.nome_turma}${turma.unidade_turma ? ` - ${turma.unidade_turma}` : ''}`;
+                            turmaSelect.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    console.error("Erro ao carregar turmas:", error);
                 }
             }
-        }
 
-        // Função para gerar dados de exemplo
-        function gerarDadosExemplo(tipo, dataInicial, dataFinal, turma) {
-            // Dados de exemplo baseados no tipo de relatório
-            if (tipo === 'presencas-periodo') {
-                return {
-                    tipo: 'presencas-periodo',
-                    periodo: { inicio: dataInicial, fim: dataFinal },
-                    turma: turma || 'Todas',
-                    estatisticas: {
-                        total_alunos: 45,
-                        presentes: 38,
-                        faltas: 5,
-                        atrasos: 2
-                    },
-                    detalhes: [
-                        { aluno: 'Ana Pereira Silva', presentes: 8, faltas: 0, atrasos: 0 },
-                        { aluno: 'Bruno Santos Costa', presentes: 7, faltas: 1, atrasos: 0 },
-                        { aluno: 'Carla Oliveira Lima', presentes: 8, faltas: 0, atrasos: 1 }
-                    ]
-                };
+            // Carregar alunos
+            async function carregarAlunos() {
+                try {
+                    const response = await apiFetch("/alunos/listar?pageSize=500");
+                    if (response.success && response.data) {
+                        alunosCache = response.data.data || response.data || [];
+                        alunoSelect.innerHTML = '<option value="">Selecione um aluno</option>';
+                        alunosCache.forEach(aluno => {
+                            const option = document.createElement("option");
+                            option.value = aluno.id_aluno;
+                            option.textContent = aluno.nome_aluno;
+                            alunoSelect.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    console.error("Erro ao carregar alunos:", error);
+                }
             }
-            // Adicionar outros tipos de relatório conforme necessário
-            return { tipo, periodo: { inicio: dataInicial, fim: dataFinal }, turma: turma || 'Todas' };
-        }
 
-        // Função para renderizar relatório
-        function renderizarRelatorio(data, tipo) {
-            let html = '';
+            // Mostrar/ocultar filtro de aluno baseado no tipo
+            tipoRelatorioSelect.addEventListener("change", () => {
+                if (tipoRelatorioSelect.value === "individual") {
+                    alunoFilter.style.display = "flex";
+                } else {
+                    alunoFilter.style.display = "none";
+                }
+            });
 
-            if (tipo === 'presencas-periodo' && data.estatisticas) {
-                // Estatísticas
-                html += '<div class="report-stats">';
-                html += `<div class="stat-card"><h3>Total de Alunos</h3><p class="value">${data.estatisticas.total_alunos}</p></div>`;
-                html += `<div class="stat-card" style="background: linear-gradient(135deg, #48BB78 0%, #2F855A 100%); color: white;"><h3>Presentes</h3><p class="value" style="color: white;">${data.estatisticas.presentes}</p></div>`;
-                html += `<div class="stat-card" style="background: linear-gradient(135deg, #E53E3E 0%, #C53030 100%); color: white;"><h3>Faltas</h3><p class="value" style="color: white;">${data.estatisticas.faltas}</p></div>`;
-                html += `<div class="stat-card" style="background: linear-gradient(135deg, #ED8936 0%, #C05621 100%); color: white;"><h3>Atrasos</h3><p class="value" style="color: white;">${data.estatisticas.atrasos}</p></div>`;
-                html += '</div>';
+            // Função para gerar relatório
+            async function gerarRelatorio() {
+                const tipoRelatorio = tipoRelatorioSelect.value;
+                const dataInicial = document.getElementById("data-inicial").value;
+                const dataFinal = document.getElementById("data-final").value;
+                const turma = turmaSelect.value;
+                const aluno = alunoSelect.value;
 
-                // Tabela de detalhes
-                if (data.detalhes && data.detalhes.length > 0) {
-                    html += '<table class="report-table">';
-                    html += '<thead><tr><th>Aluno</th><th>Presentes</th><th>Faltas</th><th>Atrasos</th></tr></thead>';
-                    html += '<tbody>';
-                    data.detalhes.forEach(item => {
-                        html += `<tr>
-                            <td>${item.aluno}</td>
-                            <td>${item.presentes}</td>
-                            <td>${item.faltas}</td>
-                            <td>${item.atrasos}</td>
-                        </tr>`;
+                // Validação
+                if (!dataInicial || !dataFinal) {
+                    if (typeof window.showPageToast === "function") {
+                        window.showPageToast("Por favor, selecione as datas inicial e final", "warning");
+                    }
+                    return;
+                }
+
+                if (new Date(dataInicial) > new Date(dataFinal)) {
+                    if (typeof window.showPageToast === "function") {
+                        window.showPageToast("A data inicial não pode ser maior que a data final", "warning");
+                    }
+                    return;
+                }
+
+                if (tipoRelatorio === "individual" && !aluno) {
+                    if (typeof window.showPageToast === "function") {
+                        window.showPageToast("Por favor, selecione um aluno para o relatório individual", "warning");
+                    }
+                    return;
+                }
+
+                // Mostrar loading
+                reportContent.innerHTML = '<div style="text-align: center; padding: 2rem; color: #718096;">Carregando...</div>';
+                reportContainer.classList.add("active");
+
+                try {
+                    if (tipoRelatorio === "individual") {
+                        // Relatório individual - usa o endpoint de estatísticas do aluno
+                        currentReportData = await gerarRelatorioIndividual(aluno, dataInicial, dataFinal);
+                    } else {
+                        // Outros relatórios - usa o endpoint de presenças
+                        currentReportData = await gerarRelatorioPresencas(tipoRelatorio, dataInicial, dataFinal, turma);
+                    }
+
+                    // Atualizar título
+                    const tipoRelatorioText = tipoRelatorioSelect.selectedOptions[0].text;
+                    const turmaText = turma ? turmaSelect.selectedOptions[0].text : "Todas";
+                    
+                    reportTitle.textContent = `Relatório de ${tipoRelatorioText}`;
+                    
+                    if (tipoRelatorio === "individual" && currentReportData.aluno) {
+                        reportInfo.textContent = `Aluno: ${currentReportData.aluno.nome_aluno} | Período: ${formatarData(dataInicial)} a ${formatarData(dataFinal)}`;
+                    } else {
+                        reportInfo.textContent = `Período: ${formatarData(dataInicial)} a ${formatarData(dataFinal)} | Turma: ${turmaText}`;
+                    }
+
+                    renderizarRelatorio(currentReportData, tipoRelatorio);
+                    btnExport.disabled = false;
+                } catch (error) {
+                    console.error("Erro ao gerar relatório:", error);
+                    if (typeof window.showPageToast === "function") {
+                        window.showPageToast("Erro ao gerar relatório. Tente novamente.", "error");
+                    }
+                    reportContent.innerHTML = '<div style="text-align: center; padding: 2rem; color: #c53030;">Erro ao carregar dados do relatório.</div>';
+                }
+            }
+
+            // Gerar relatório individual
+            async function gerarRelatorioIndividual(alunoId, dataInicial, dataFinal) {
+                const response = await apiFetch(`/alunos/estatisticas/${alunoId}?from=${dataInicial}&to=${dataFinal}`);
+                if (response.success && response.data) {
+                    const serverData = response.data.data || response.data;
+                    return {
+                        tipo: "individual",
+                        aluno: serverData.aluno,
+                        estatisticas: serverData.estatisticas,
+                        periodo: { inicio: dataInicial, fim: dataFinal }
+                    };
+                }
+                throw new Error("Falha ao carregar estatísticas do aluno");
+            }
+
+            // Gerar relatório de presenças
+            async function gerarRelatorioPresencas(tipo, dataInicial, dataFinal, turmaId) {
+                const params = new URLSearchParams();
+                params.append("from", dataInicial);
+                params.append("to", dataFinal);
+                params.append("pageSize", "500");
+                if (turmaId) params.append("turmaId", turmaId);
+
+                const response = await apiFetch(`/presencas/listar?${params}`);
+                if (response.success && response.data) {
+                    const presencas = response.data.data || response.data || [];
+                    
+                    // Processar dados por aluno
+                    const porAluno = {};
+                    presencas.forEach(p => {
+                        const alunoNome = p.alunos?.nome_aluno || "Desconhecido";
+                        if (!porAluno[alunoNome]) {
+                            porAluno[alunoNome] = { presentes: 0, faltas: 0, atrasos: 0 };
+                        }
+                        if (p.status_presenca === "presente") {
+                            porAluno[alunoNome].presentes++;
+                        } else if (p.status_presenca === "atraso") {
+                            porAluno[alunoNome].atrasos++;
+                        } else {
+                            porAluno[alunoNome].faltas++;
+                        }
                     });
-                    html += '</tbody></table>';
+
+                    const detalhes = Object.entries(porAluno).map(([aluno, stats]) => ({
+                        aluno,
+                        ...stats
+                    }));
+
+                    // Calcular totais
+                    const totalPresentes = detalhes.reduce((acc, d) => acc + d.presentes, 0);
+                    const totalFaltas = detalhes.reduce((acc, d) => acc + d.faltas, 0);
+                    const totalAtrasos = detalhes.reduce((acc, d) => acc + d.atrasos, 0);
+
+                    return {
+                        tipo,
+                        periodo: { inicio: dataInicial, fim: dataFinal },
+                        turmaId,
+                        estatisticas: {
+                            total_alunos: detalhes.length,
+                            presentes: totalPresentes,
+                            faltas: totalFaltas,
+                            atrasos: totalAtrasos
+                        },
+                        detalhes
+                    };
                 }
-            } else {
-                html = '<p>Nenhum dado disponível para este relatório.</p>';
+                throw new Error("Falha ao carregar presenças");
             }
 
-            reportContent.innerHTML = html;
-        }
+            // Função para renderizar relatório
+            function renderizarRelatorio(data, tipo) {
+                let html = "";
 
-        // Função para exportar relatório
-        function exportarRelatorio() {
-            if (!currentReportData) {
-                if (typeof window.showPageToast === 'function') {
-                    window.showPageToast('Gere um relatório antes de exportar', 'warning');
+                if (tipo === "individual" && data.estatisticas) {
+                    const stats = data.estatisticas;
+                    const taxaPresenca = stats.presenca?.taxaPresenca || 0;
+                    
+                    // Estatísticas
+                    html += '<div class="report-stats">';
+                    html += `<div class="stat-card" style="background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Taxa de Presença</h3><p class="value" style="color: white;">${taxaPresenca}%</p></div>`;
+                    html += `<div class="stat-card" style="background: linear-gradient(135deg, #48BB78 0%, #2F855A 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Presenças</h3><p class="value" style="color: white;">${stats.presenca?.presentes || 0}</p></div>`;
+                    html += `<div class="stat-card" style="background: linear-gradient(135deg, #E53E3E 0%, #C53030 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Faltas</h3><p class="value" style="color: white;">${stats.presenca?.faltas || 0}</p></div>`;
+                    html += `<div class="stat-card" style="background: linear-gradient(135deg, #ED8936 0%, #C05621 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Atrasos</h3><p class="value" style="color: white;">${stats.presenca?.atrasos || 0}</p></div>`;
+                    html += "</div>";
+
+                    // Resumo adicional
+                    html += '<div style="margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">';
+                    html += `<div style="padding: 1rem; background: #f7fafc; border-radius: 8px; border-left: 3px solid #805ad5;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.9rem; color: #553c9a;">📄 Justificativas</h4>
+                        <p style="margin: 0; font-size: 0.85rem; color: #4a5568;">Total: ${stats.justificativas?.total || 0} | Aprovadas: ${stats.justificativas?.aprovadas || 0}</p>
+                    </div>`;
+                    html += `<div style="padding: 1rem; background: #f7fafc; border-radius: 8px; border-left: 3px solid #e53e3e;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.9rem; color: #c53030;">⚠️ Advertências</h4>
+                        <p style="margin: 0; font-size: 0.85rem; color: #4a5568;">Total: ${stats.advertencias?.total || 0}</p>
+                    </div>`;
+                    html += "</div>";
+
+                } else if (data.estatisticas) {
+                    // Estatísticas gerais
+                    html += '<div class="report-stats">';
+                    html += `<div class="stat-card"><h3>Total de Alunos</h3><p class="value">${data.estatisticas.total_alunos}</p></div>`;
+                    html += `<div class="stat-card" style="background: linear-gradient(135deg, #48BB78 0%, #2F855A 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Presenças</h3><p class="value" style="color: white;">${data.estatisticas.presentes}</p></div>`;
+                    html += `<div class="stat-card" style="background: linear-gradient(135deg, #E53E3E 0%, #C53030 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Faltas</h3><p class="value" style="color: white;">${data.estatisticas.faltas}</p></div>`;
+                    html += `<div class="stat-card" style="background: linear-gradient(135deg, #ED8936 0%, #C05621 100%); color: white;"><h3 style="color: rgba(255,255,255,0.9);">Atrasos</h3><p class="value" style="color: white;">${data.estatisticas.atrasos}</p></div>`;
+                    html += "</div>";
+
+                    // Tabela de detalhes
+                    if (data.detalhes && data.detalhes.length > 0) {
+                        html += '<table class="report-table">';
+                        html += "<thead><tr><th>Aluno</th><th>Presenças</th><th>Faltas</th><th>Atrasos</th><th>Taxa</th></tr></thead>";
+                        html += "<tbody>";
+                        data.detalhes.forEach((item) => {
+                            const total = item.presentes + item.faltas + item.atrasos;
+                            const taxa = total > 0 ? Math.round(((item.presentes + item.atrasos) / total) * 100) : 0;
+                            html += `<tr>
+                                <td>${item.aluno}</td>
+                                <td>${item.presentes}</td>
+                                <td>${item.faltas}</td>
+                                <td>${item.atrasos}</td>
+                                <td><span style="padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem; font-weight: 500; ${taxa >= 75 ? 'background: #c6f6d5; color: #22543d;' : taxa >= 50 ? 'background: #feebc8; color: #744210;' : 'background: #fed7d7; color: #742a2a;'}">${taxa}%</span></td>
+                            </tr>`;
+                        });
+                        html += "</tbody></table>";
+                    }
+                } else {
+                    html = '<div style="text-align: center; padding: 2rem; color: #718096;">Nenhum dado disponível para este relatório.</div>';
                 }
-                return;
+
+                reportContent.innerHTML = html;
             }
 
-            const tipoRelatorio = document.getElementById('tipo-relatorio').value;
-            const dataInicial = document.getElementById('data-inicial').value;
-            const dataFinal = document.getElementById('data-final').value;
+            // Função para exportar relatório
+            function exportarRelatorio() {
+                if (!currentReportData) {
+                    if (typeof window.showPageToast === "function") {
+                        window.showPageToast("Gere um relatório antes de exportar", "warning");
+                    }
+                    return;
+                }
 
-            // Criar conteúdo CSV
-            let csvContent = '';
-            
-            if (tipoRelatorio === 'presencas-periodo' && currentReportData.detalhes) {
-                csvContent = 'Aluno,Presentes,Faltas,Atrasos\n';
-                currentReportData.detalhes.forEach(item => {
-                    csvContent += `"${item.aluno}",${item.presentes},${item.faltas},${item.atrasos}\n`;
-                });
+                const tipoRelatorio = tipoRelatorioSelect.value;
+                const dataInicial = document.getElementById("data-inicial").value;
+                const dataFinal = document.getElementById("data-final").value;
+
+                // Criar conteúdo CSV
+                let csvContent = "";
+
+                if (tipoRelatorio === "individual" && currentReportData.estatisticas) {
+                    const stats = currentReportData.estatisticas;
+                    csvContent = "Métrica,Valor\n";
+                    csvContent += `"Aluno","${currentReportData.aluno?.nome_aluno || ''}"\n`;
+                    csvContent += `"Taxa de Presença","${stats.presenca?.taxaPresenca || 0}%"\n`;
+                    csvContent += `"Total de Aulas",${stats.presenca?.totalAulas || 0}\n`;
+                    csvContent += `"Presenças",${stats.presenca?.presentes || 0}\n`;
+                    csvContent += `"Faltas",${stats.presenca?.faltas || 0}\n`;
+                    csvContent += `"Atrasos",${stats.presenca?.atrasos || 0}\n`;
+                    csvContent += `"Justificativas",${stats.justificativas?.total || 0}\n`;
+                    csvContent += `"Advertências",${stats.advertencias?.total || 0}\n`;
+                } else if (currentReportData.detalhes) {
+                    csvContent = "Aluno,Presenças,Faltas,Atrasos,Taxa\n";
+                    currentReportData.detalhes.forEach((item) => {
+                        const total = item.presentes + item.faltas + item.atrasos;
+                        const taxa = total > 0 ? Math.round(((item.presentes + item.atrasos) / total) * 100) : 0;
+                        csvContent += `"${item.aluno}",${item.presentes},${item.faltas},${item.atrasos},${taxa}%\n`;
+                    });
+                }
+
+                // Criar e baixar arquivo
+                const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", `relatorio_${tipoRelatorio}_${dataInicial}_${dataFinal}.csv`);
+                link.style.visibility = "hidden";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                if (typeof window.showPageToast === "function") {
+                    window.showPageToast("Relatório exportado com sucesso!", "success");
+                }
             }
 
-            // Criar e baixar arquivo
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `relatorio_${tipoRelatorio}_${dataInicial}_${dataFinal}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
+            // Event listeners
+            btnGenerate.addEventListener("click", gerarRelatorio);
+            btnExport.addEventListener("click", exportarRelatorio);
 
-        // Event listeners
-        btnGenerate.addEventListener('click', gerarRelatorio);
-        btnExport.addEventListener('click', exportarRelatorio);
+            // Inicialização
+            document.addEventListener("DOMContentLoaded", async () => {
+                const isAuthenticated = await authStore.checkAuth();
+                if (!isAuthenticated) {
+                    window.location.href = "/login";
+                    return;
+                }
 
-        // Definir data padrão como hoje
-        const hoje = new Date();
-        const dataFormatada = hoje.toISOString().split('T')[0];
-        document.getElementById('data-inicial').value = dataFormatada;
-        document.getElementById('data-final').value = dataFormatada;
-    </script>
-    <PageToast />
-</body>
+                // Definir data padrão (último mês)
+                const hoje = new Date();
+                const mesPassado = new Date(hoje);
+                mesPassado.setMonth(mesPassado.getMonth() - 1);
+                
+                document.getElementById("data-inicial").value = mesPassado.toISOString().split("T")[0];
+                document.getElementById("data-final").value = hoje.toISOString().split("T")[0];
+
+                // Carregar dados
+                await Promise.all([carregarTurmas(), carregarAlunos()]);
+            });
+        </script>
+        <PageToast />
+    </body>
 </html>
-

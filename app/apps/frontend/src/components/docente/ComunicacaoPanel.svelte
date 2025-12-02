@@ -63,8 +63,8 @@
 
     // Confirm dialog state
     let showConfirmDialog = false;
-    let confirmDialogTitle = '';
-    let confirmDialogMessage = '';
+    let confirmDialogTitle = "";
+    let confirmDialogMessage = "";
     let confirmDialogAction: (() => Promise<void>) | null = null;
     let confirmLoading = false;
 
@@ -306,8 +306,9 @@
     }
 
     async function deleteNotificacao(id: number) {
-        confirmDialogTitle = 'Excluir Notificação';
-        confirmDialogMessage = 'Tem certeza que deseja excluir esta notificação?';
+        confirmDialogTitle = "Excluir Notificação";
+        confirmDialogMessage =
+            "Tem certeza que deseja excluir esta notificação?";
         confirmDialogAction = async () => {
             confirmLoading = true;
             try {
@@ -318,7 +319,8 @@
                     },
                 );
 
-                if (!response.ok) throw new Error("Erro ao excluir notificação");
+                if (!response.ok)
+                    throw new Error("Erro ao excluir notificação");
 
                 showConfirmDialog = false;
                 displayToast("Notificação excluída com sucesso", "success");

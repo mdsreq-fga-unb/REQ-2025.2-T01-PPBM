@@ -1,32 +1,44 @@
 <script lang="ts">
-	import Toast from '../../ui/Toast.svelte';
+	import Toast from "../../ui/Toast.svelte";
 
-	let tipoRelatorio = 'presencas';
-	let dataInicio = '';
-	let dataFim = '';
-	let relTurma = '';
+	let tipoRelatorio = "presencas";
+	let dataInicio = "";
+	let dataFim = "";
+	let relTurma = "";
 
 	// Toast state
-	let toastMessage = '';
-	let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+	let toastMessage = "";
+	let toastType: "success" | "error" | "warning" | "info" = "info";
 	let showToast = false;
 
-	function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+	function displayToast(
+		message: string,
+		type: "success" | "error" | "warning" | "info" = "info",
+	) {
 		toastMessage = message;
 		toastType = type;
 		showToast = true;
 	}
 
 	function handleGerarRelatorio() {
-		displayToast('Funcionalidade em desenvolvimento. O relatório será gerado em breve.', 'info');
+		displayToast(
+			"Funcionalidade em desenvolvimento. O relatório será gerado em breve.",
+			"info",
+		);
 	}
 
 	function handleExportarRelatorio() {
-		displayToast('Funcionalidade em desenvolvimento. A exportação será implementada em breve.', 'info');
+		displayToast(
+			"Funcionalidade em desenvolvimento. A exportação será implementada em breve.",
+			"info",
+		);
 	}
 </script>
 
-<section id="relatorios" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200">
+<section
+	id="relatorios"
+	class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200"
+>
 	<div class="flex items-center justify-between mb-4">
 		<h2 class="text-xl font-semibold">Relatórios</h2>
 		<div class="flex gap-2">
@@ -47,7 +59,9 @@
 
 	<div class="grid md:grid-cols-4 gap-4 mb-4">
 		<div>
-			<label class="block text-sm font-medium mb-1">Tipo de relatório</label>
+			<label class="block text-sm font-medium mb-1"
+				>Tipo de relatório</label
+			>
 			<select
 				bind:value={tipoRelatorio}
 				class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
@@ -96,9 +110,4 @@
 </section>
 
 <!-- Toast notifications -->
-<Toast 
-	bind:show={showToast} 
-	message={toastMessage} 
-	type={toastType} 
-/>
-
+<Toast bind:show={showToast} message={toastMessage} type={toastType} />

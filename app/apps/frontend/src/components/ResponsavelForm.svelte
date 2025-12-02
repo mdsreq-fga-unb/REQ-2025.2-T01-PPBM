@@ -1,9 +1,18 @@
 <script lang="ts">
-    import UserSearchDialog from './UserSearchDialog.svelte';
+    import UserSearchDialog from "./UserSearchDialog.svelte";
 
     export let index: number = 0;
     export let isPrimary: boolean = false;
     export let onRemove: (() => void) | null = null;
+
+    // Pre-loaded responsável data (for edit mode)
+    export let initialData: {
+        id_responsavel: number;
+        nome_responsavel: string;
+        email_responsavel?: string;
+        telefone_responsavel?: string;
+        parentesco?: string;
+    } | null = null;
 
     interface SelectedUser {
         id: number;
@@ -15,7 +24,19 @@
 
     let isSearchOpen = false;
     let selectedUser: SelectedUser | null = null;
-    let responsavelParentesco = '';
+    let responsavelParentesco = "";
+
+    // Initialize with pre-loaded data if available
+    $: if (initialData && !selectedUser) {
+        selectedUser = {
+            id: initialData.id_responsavel,
+            nome: initialData.nome_responsavel,
+            email: initialData.email_responsavel || "",
+            telefone: initialData.telefone_responsavel,
+            role: "responsavel",
+        };
+        responsavelParentesco = initialData.parentesco || "";
+    }
 
     function openSearch() {
         isSearchOpen = true;
@@ -28,17 +49,29 @@
 
     function clearSelection() {
         selectedUser = null;
-        responsavelParentesco = '';
+        responsavelParentesco = "";
     }
 </script>
 
 {#if selectedUser}
     <!-- Selected responsável display -->
     <div class="responsavel-item">
-        <input type="hidden" name="responsavel_id_{index}" value={selectedUser.id} />
-        <input type="hidden" name="responsavel_nome_{index}" value={selectedUser.nome} />
-        <input type="hidden" name="responsavel_email_{index}" value={selectedUser.email || ''} />
-        
+        <input
+            type="hidden"
+            name="responsavel_id_{index}"
+            value={selectedUser.id}
+        />
+        <input
+            type="hidden"
+            name="responsavel_nome_{index}"
+            value={selectedUser.nome}
+        />
+        <input
+            type="hidden"
+            name="responsavel_email_{index}"
+            value={selectedUser.email || ""}
+        />
+
         <div class="responsavel-info">
             <div class="responsavel-nome">
                 {selectedUser.nome}
@@ -47,17 +80,19 @@
                 {/if}
             </div>
             <div class="responsavel-details">
-                {selectedUser.email || 'Sem email'}
+                {selectedUser.email || "Sem email"}
             </div>
         </div>
-        
+
         <div class="responsavel-actions">
             <div class="parentesco-select">
-                <label for="responsavel_parentesco_{index}" class="sr-only">Parentesco</label>
-                <select 
-                    id="responsavel_parentesco_{index}" 
-                    name="responsavel_parentesco_{index}" 
-                    bind:value={responsavelParentesco} 
+                <label for="responsavel_parentesco_{index}" class="sr-only"
+                    >Parentesco</label
+                >
+                <select
+                    id="responsavel_parentesco_{index}"
+                    name="responsavel_parentesco_{index}"
+                    bind:value={responsavelParentesco}
                     required={isPrimary}
                     class="select-parentesco"
                 >
@@ -69,7 +104,11 @@
                     <option value="outro">Outro</option>
                 </select>
             </div>
-            <button type="button" class="btn-remove-responsavel" on:click={clearSelection}>
+            <button
+                type="button"
+                class="btn-remove-responsavel"
+                on:click={clearSelection}
+            >
                 Remover
             </button>
         </div>
@@ -79,13 +118,18 @@
     <div class="responsavel-empty">
         <div class="empty-info">
             <span class="empty-label">
-                Responsável {index + 1} {isPrimary ? '(Principal)' : ''}
+                Responsável {index + 1}
+                {isPrimary ? "(Principal)" : ""}
                 {#if isPrimary}<span class="required">*</span>{/if}
             </span>
             <span class="empty-hint">Selecione um responsável existente</span>
         </div>
         <div class="empty-actions">
-            <button type="button" class="btn-select-responsavel" on:click={openSearch}>
+            <button
+                type="button"
+                class="btn-select-responsavel"
+                on:click={openSearch}
+            >
                 🔍 Selecionar Responsável
             </button>
             {#if !isPrimary && onRemove}
@@ -186,8 +230,8 @@
 
     .btn-remove-responsavel {
         padding: 0.375rem 0.75rem;
-        background-color: #FED7D7;
-        color: #C53030;
+        background-color: #fed7d7;
+        color: #c53030;
         border: none;
         border-radius: 4px;
         font-size: 0.85rem;
@@ -196,7 +240,7 @@
     }
 
     .btn-remove-responsavel:hover {
-        background-color: #FEB2B2;
+        background-color: #feb2b2;
     }
 
     /* Empty state */

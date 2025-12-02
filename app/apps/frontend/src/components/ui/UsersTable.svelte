@@ -1,24 +1,26 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import RoleSelect from './RoleSelect.svelte';
+    import { onMount } from "svelte";
+    import RoleSelect from "./RoleSelect.svelte";
+    import DocenteEditModal from "./DocenteEditModal.svelte";
 
     interface User {
         email: string;
         nome: string | null;
-        role: 'admin' | 'docente' | 'responsavel';
+        role: "admin" | "docente" | "responsavel";
         created_at: string;
+        docente_id: number | null;
     }
 
     // Props
-    export let apiUrl: string = 'http://localhost:3000';
+    export let apiUrl: string = "http://localhost:3000";
 
     // State
     let allUsers: User[] = [];
     let filteredUsers: User[] = [];
     let isLoading = true;
-    let errorMessage = '';
-    let searchTerm = '';
-    let roleFilter = '';
+    let errorMessage = "";
+    let searchTerm = "";
+    let roleFilter = "";
 
     // Modal state
     let showModal = false;
@@ -32,23 +34,32 @@
     let isSaving = false;
 
     // Toast state
-    let toastMessage = '';
-    let toastType: 'success' | 'error' = 'success';
+    let toastMessage = "";
+    let toastType: "success" | "error" = "success";
     let showToast = false;
+
+    // Docente edit modal state
+    let showDocenteModal = false;
+    let selectedDocente: { id: number; nome: string; email: string } | null =
+        null;
 
     // Stats
     $: stats = {
         total: allUsers.length,
-        admins: allUsers.filter(u => u.role === 'admin').length,
-        docentes: allUsers.filter(u => u.role === 'docente').length,
-        responsaveis: allUsers.filter(u => u.role === 'responsavel').length
+        admins: allUsers.filter((u) => u.role === "admin").length,
+        docentes: allUsers.filter((u) => u.role === "docente").length,
+        responsaveis: allUsers.filter((u) => u.role === "responsavel").length,
     };
 
     // Filtered users
     $: {
-        filteredUsers = allUsers.filter(user => {
-            const matchSearch = !searchTerm || 
-                (user.nome && user.nome.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        filteredUsers = allUsers.filter((user) => {
+            const matchSearch =
+                !searchTerm ||
+                (user.nome &&
+                    user.nome
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())) ||
                 user.email.toLowerCase().includes(searchTerm.toLowerCase());
             const matchRole = !roleFilter || user.role === roleFilter;
             return matchSearch && matchRole;
@@ -56,10 +67,13 @@
     }
 
     async function getAuthToken(): Promise<string | null> {
-        return localStorage.getItem('bm_token');
+        return localStorage.getItem("bm_token");
     }
 
-    function displayToast(message: string, type: 'success' | 'error' = 'success') {
+    function displayToast(
+        message: string,
+        type: "success" | "error" = "success",
+    ) {
         toastMessage = message;
         toastType = type;
         showToast = true;
@@ -70,28 +84,31 @@
 
     async function loadUsers() {
         isLoading = true;
-        errorMessage = '';
+        errorMessage = "";
 
         try {
             const token = await getAuthToken();
             const response = await fetch(`${apiUrl}/usuarios/todos-com-roles`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
             });
 
             const data = await response.json();
 
             if (!response.ok || !data.success) {
-                throw new Error(data.error || 'Erro ao carregar usuários');
+                throw new Error(data.error || "Erro ao carregar usuários");
             }
 
             allUsers = data.data || [];
         } catch (error) {
-            console.error('Erro ao carregar usuários:', error);
-            errorMessage = error instanceof Error ? error.message : 'Erro ao carregar usuários';
-            displayToast(errorMessage, 'error');
+            console.error("Erro ao carregar usuários:", error);
+            errorMessage =
+                error instanceof Error
+                    ? error.message
+                    : "Erro ao carregar usuários";
+            displayToast(errorMessage, "error");
         } finally {
             isLoading = false;
         }
@@ -119,35 +136,49 @@
 
         try {
             const token = await getAuthToken();
-            const response = await fetch(`${apiUrl}/usuarios/atualizar-role/${encodeURIComponent(email)}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+            const response = await fetch(
+                `${apiUrl}/usuarios/atualizar-role/${encodeURIComponent(email)}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ newRole }),
                 },
-                body: JSON.stringify({ newRole })
-            });
+            );
 
             const data = await response.json();
 
             if (!response.ok || !data.success) {
-                throw new Error(data.error || 'Erro ao atualizar papel');
+                throw new Error(data.error || "Erro ao atualizar papel");
             }
 
             // Update local data
-            const userIndex = allUsers.findIndex(u => u.email === email);
+            const userIndex = allUsers.findIndex((u) => u.email === email);
             if (userIndex !== -1) {
-                allUsers[userIndex] = { ...allUsers[userIndex], role: newRole as User['role'] };
+                allUsers[userIndex] = {
+                    ...allUsers[userIndex],
+                    role: newRole as User["role"],
+                };
                 allUsers = [...allUsers]; // Trigger reactivity
             }
 
-            displayToast(`Papel atualizado para ${newRole === 'docente' ? 'Docente' : 'Responsável'}`, 'success');
+            displayToast(
+                `Papel atualizado para ${newRole === "docente" ? "Docente" : "Responsável"}`,
+                "success",
+            );
             showModal = false;
             pendingChange = null;
         } catch (error) {
-            console.error('Erro ao atualizar papel:', error);
-            displayToast(error instanceof Error ? error.message : 'Erro ao atualizar papel', 'error');
-            
+            console.error("Erro ao atualizar papel:", error);
+            displayToast(
+                error instanceof Error
+                    ? error.message
+                    : "Erro ao atualizar papel",
+                "error",
+            );
+
             if (pendingChange?.revert) {
                 pendingChange.revert();
             }
@@ -159,11 +190,27 @@
     }
 
     function formatDate(dateString: string): string {
-        return new Date(dateString).toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
+        return new Date(dateString).toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
         });
+    }
+
+    function openDocenteModal(user: User) {
+        if (user.docente_id) {
+            selectedDocente = {
+                id: user.docente_id,
+                nome: user.nome || user.email,
+                email: user.email,
+            };
+            showDocenteModal = true;
+        }
+    }
+
+    function handleDocenteSave() {
+        displayToast("Dados do docente atualizados com sucesso!", "success");
+        loadUsers();
     }
 
     onMount(() => {
@@ -196,9 +243,9 @@
 <div class="filter-row">
     <div class="form-group full-width">
         <label for="buscar">Buscar usuário</label>
-        <input 
-            type="text" 
-            id="buscar" 
+        <input
+            type="text"
+            id="buscar"
             placeholder="Nome ou email..."
             bind:value={searchTerm}
         />
@@ -221,7 +268,9 @@
     {:else if errorMessage}
         <div class="error-state">{errorMessage}</div>
     {:else if filteredUsers.length === 0}
-        <div class="empty-state">Nenhum usuário encontrado com os filtros selecionados.</div>
+        <div class="empty-state">
+            Nenhum usuário encontrado com os filtros selecionados.
+        </div>
     {:else}
         <table class="table">
             <thead>
@@ -229,6 +278,7 @@
                     <th>Usuário</th>
                     <th>Papel</th>
                     <th>Data de Cadastro</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -236,7 +286,9 @@
                     <tr>
                         <td>
                             <div class="user-info">
-                                <span class="user-name">{user.nome || 'Sem nome'}</span>
+                                <span class="user-name"
+                                    >{user.nome || "Sem nome"}</span
+                                >
                                 <span class="user-email">{user.email}</span>
                             </div>
                         </td>
@@ -245,11 +297,24 @@
                                 email={user.email}
                                 userName={user.nome || user.email}
                                 role={user.role}
-                                disabled={user.role === 'admin'}
+                                disabled={user.role === "admin"}
                                 on:roleChange={handleRoleChange}
                             />
                         </td>
                         <td>{formatDate(user.created_at)}</td>
+                        <td>
+                            {#if user.role === "docente" && user.docente_id}
+                                <button
+                                    class="btn-edit-docente"
+                                    on:click={() => openDocenteModal(user)}
+                                    title="Editar dados do docente"
+                                >
+                                    Editar Dados
+                                </button>
+                            {:else}
+                                <span class="no-actions">-</span>
+                            {/if}
+                        </td>
                     </tr>
                 {/each}
             </tbody>
@@ -261,10 +326,10 @@
 {#if showModal}
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <!-- svelte-ignore a11y_interactive_supports_focus -->
-    <div 
-        class="modal-overlay" 
-        on:click={cancelRoleChange} 
-        on:keydown={(e) => e.key === 'Escape' && cancelRoleChange()}
+    <div
+        class="modal-overlay"
+        on:click={cancelRoleChange}
+        on:keydown={(e) => e.key === "Escape" && cancelRoleChange()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
@@ -274,21 +339,54 @@
         <div class="modal" on:click|stopPropagation>
             <h3 class="modal-title" id="modal-title">Confirmar alteração</h3>
             <p class="modal-message">
-                Deseja alterar o papel de <strong>{pendingChange?.userName}</strong> de 
-                <strong>{pendingChange?.originalRole === 'docente' ? 'Docente' : 'Responsável'}</strong> para 
-                <strong>{pendingChange?.newRole === 'docente' ? 'Docente' : 'Responsável'}</strong>?
+                Deseja alterar o papel de <strong
+                    >{pendingChange?.userName}</strong
+                >
+                de
+                <strong
+                    >{pendingChange?.originalRole === "docente"
+                        ? "Docente"
+                        : "Responsável"}</strong
+                >
+                para
+                <strong
+                    >{pendingChange?.newRole === "docente"
+                        ? "Docente"
+                        : "Responsável"}</strong
+                >?
             </p>
             <div class="modal-buttons">
-                <button type="button" class="modal-btn modal-btn-cancel" on:click={cancelRoleChange} disabled={isSaving}>
+                <button
+                    type="button"
+                    class="modal-btn modal-btn-cancel"
+                    on:click={cancelRoleChange}
+                    disabled={isSaving}
+                >
                     Cancelar
                 </button>
-                <button type="button" class="modal-btn modal-btn-confirm" on:click={confirmRoleChange} disabled={isSaving}>
-                    {isSaving ? 'Salvando...' : 'Confirmar'}
+                <button
+                    type="button"
+                    class="modal-btn modal-btn-confirm"
+                    on:click={confirmRoleChange}
+                    disabled={isSaving}
+                >
+                    {isSaving ? "Salvando..." : "Confirmar"}
                 </button>
             </div>
         </div>
     </div>
 {/if}
+
+<!-- Docente Edit Modal -->
+<DocenteEditModal
+    bind:show={showDocenteModal}
+    docenteId={selectedDocente?.id ?? null}
+    docenteNome={selectedDocente?.nome ?? ""}
+    docenteEmail={selectedDocente?.email ?? ""}
+    {apiUrl}
+    on:save={handleDocenteSave}
+    on:cancel={() => (showDocenteModal = false)}
+/>
 
 <!-- Toast -->
 {#if showToast}
@@ -305,7 +403,7 @@
         align-items: center;
     }
     .stat-item {
-        background: var(--secondary-color, #E2E8F0);
+        background: var(--secondary-color, #e2e8f0);
         padding: 0.75rem 1.25rem;
         border-radius: 8px;
         display: flex;
@@ -313,13 +411,19 @@
         align-items: center;
         min-width: 80px;
     }
-    .stat-item.admin { background: #FED7D7; }
-    .stat-item.docente { background: #BEE3F8; }
-    .stat-item.responsavel { background: #C6F6D5; }
+    .stat-item.admin {
+        background: #fed7d7;
+    }
+    .stat-item.docente {
+        background: #bee3f8;
+    }
+    .stat-item.responsavel {
+        background: #c6f6d5;
+    }
     .stat-value {
         font-size: 1.5rem;
         font-weight: 700;
-        color: var(--text-color, #2D3748);
+        color: var(--text-color, #2d3748);
     }
     .stat-label {
         font-size: 0.8rem;
@@ -334,11 +438,11 @@
         font-size: 1rem;
         font-weight: 600;
         cursor: pointer;
-        background-color: var(--primary-color, #4A5568);
+        background-color: var(--primary-color, #4a5568);
         color: white;
     }
     .btn-refresh:hover {
-        background-color: #2D3748;
+        background-color: #2d3748;
     }
 
     /* Filter Row */
@@ -366,16 +470,16 @@
     .form-group input,
     .form-group select {
         padding: 0.75rem;
-        border: 1px solid var(--border-color, #CBD5E0);
+        border: 1px solid var(--border-color, #cbd5e0);
         border-radius: 6px;
         font-size: 1rem;
-        color: var(--text-color, #2D3748);
-        background-color: #FDFDFD;
+        color: var(--text-color, #2d3748);
+        background-color: #fdfdfd;
     }
     .form-group input:focus,
     .form-group select:focus {
         outline: none;
-        border-color: #3182CE;
+        border-color: #3182ce;
         box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
     }
     .form-group select {
@@ -398,22 +502,22 @@
         background-color: white;
     }
     .table thead {
-        background-color: var(--secondary-color, #E2E8F0);
+        background-color: var(--secondary-color, #e2e8f0);
     }
     .table th {
         text-align: left;
         padding: 1rem;
         font-weight: 600;
-        color: var(--text-color, #2D3748);
-        border-bottom: 2px solid var(--border-color, #CBD5E0);
+        color: var(--text-color, #2d3748);
+        border-bottom: 2px solid var(--border-color, #cbd5e0);
     }
     .table td {
         padding: 1rem;
-        border-bottom: 1px solid var(--border-color, #CBD5E0);
+        border-bottom: 1px solid var(--border-color, #cbd5e0);
         vertical-align: middle;
     }
     .table tbody tr:hover {
-        background-color: #F7FAFC;
+        background-color: #f7fafc;
     }
     .user-info {
         display: flex;
@@ -422,7 +526,7 @@
     }
     .user-name {
         font-weight: 600;
-        color: var(--text-color, #2D3748);
+        color: var(--text-color, #2d3748);
     }
     .user-email {
         font-size: 0.85rem;
@@ -439,7 +543,7 @@
         font-size: 1.1rem;
     }
     .error-state {
-        color: var(--danger-color, #E53E3E);
+        color: var(--danger-color, #e53e3e);
     }
 
     /* Modal */
@@ -467,7 +571,7 @@
         font-size: 1.25rem;
         font-weight: 600;
         margin: 0 0 1rem 0;
-        color: var(--text-color, #2D3748);
+        color: var(--text-color, #2d3748);
     }
     .modal-message {
         color: var(--label-color, #718096);
@@ -475,7 +579,7 @@
         line-height: 1.5;
     }
     .modal-message strong {
-        color: var(--text-color, #2D3748);
+        color: var(--text-color, #2d3748);
     }
     .modal-buttons {
         display: flex;
@@ -496,18 +600,18 @@
         cursor: not-allowed;
     }
     .modal-btn-cancel {
-        background-color: var(--secondary-color, #E2E8F0);
-        color: var(--text-color, #2D3748);
+        background-color: var(--secondary-color, #e2e8f0);
+        color: var(--text-color, #2d3748);
     }
     .modal-btn-cancel:hover:not(:disabled) {
-        background-color: #CBD5E0;
+        background-color: #cbd5e0;
     }
     .modal-btn-confirm {
-        background-color: var(--accent-color, #3182CE);
+        background-color: var(--accent-color, #3182ce);
         color: white;
     }
     .modal-btn-confirm:hover:not(:disabled) {
-        background-color: #2B6CB0;
+        background-color: #2b6cb0;
     }
 
     /* Toast */
@@ -529,10 +633,30 @@
         transform: translateY(0);
     }
     .toast.success {
-        background-color: var(--success-color, #48BB78);
+        background-color: var(--success-color, #48bb78);
     }
     .toast.error {
-        background-color: var(--danger-color, #E53E3E);
+        background-color: var(--danger-color, #e53e3e);
+    }
+
+    /* Action Button */
+    .btn-edit-docente {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        border: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        background-color: #4299e1;
+        color: white;
+        transition: background-color 0.2s;
+    }
+    .btn-edit-docente:hover {
+        background-color: #3182ce;
+    }
+    .no-actions {
+        color: var(--label-color, #718096);
+        font-size: 0.875rem;
     }
 
     @media (max-width: 768px) {

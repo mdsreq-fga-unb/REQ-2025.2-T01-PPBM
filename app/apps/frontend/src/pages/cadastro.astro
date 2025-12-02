@@ -189,10 +189,16 @@ import "../styles/global.css";
         });
 
         // Show/hide password toggle
-        const showPasswordCheckbox = document.getElementById("show-password") as HTMLInputElement;
-        const passwordInput = form.querySelector('input[name="password"]') as HTMLInputElement;
-        const confirmPasswordInput = form.querySelector('input[name="confirmPassword"]') as HTMLInputElement;
-        
+        const showPasswordCheckbox = document.getElementById(
+            "show-password",
+        ) as HTMLInputElement;
+        const passwordInput = form.querySelector(
+            'input[name="password"]',
+        ) as HTMLInputElement;
+        const confirmPasswordInput = form.querySelector(
+            'input[name="confirmPassword"]',
+        ) as HTMLInputElement;
+
         showPasswordCheckbox.addEventListener("change", () => {
             const type = showPasswordCheckbox.checked ? "text" : "password";
             passwordInput.type = type;
@@ -219,7 +225,10 @@ import "../styles/global.css";
             btnSpinner.classList.remove("hidden");
             submitBtn.setAttribute("disabled", "true");
             submitBtn.classList.add("opacity-75", "cursor-not-allowed");
-            submitBtn.classList.remove("hover:scale-[1.02]", "active:scale-[0.98]");
+            submitBtn.classList.remove(
+                "hover:scale-[1.02]",
+                "active:scale-[0.98]",
+            );
 
             try {
                 const result = await register({
@@ -244,8 +253,14 @@ import "../styles/global.css";
                     btnText.classList.remove("hidden");
                     btnSpinner.classList.add("hidden");
                     submitBtn.removeAttribute("disabled");
-                    submitBtn.classList.remove("opacity-75", "cursor-not-allowed");
-                    submitBtn.classList.add("hover:scale-[1.02]", "active:scale-[0.98]");
+                    submitBtn.classList.remove(
+                        "opacity-75",
+                        "cursor-not-allowed",
+                    );
+                    submitBtn.classList.add(
+                        "hover:scale-[1.02]",
+                        "active:scale-[0.98]",
+                    );
                 }
             } catch (error) {
                 errorDiv.textContent = "Erro de conexão com o servidor";
@@ -255,7 +270,10 @@ import "../styles/global.css";
                 btnSpinner.classList.add("hidden");
                 submitBtn.removeAttribute("disabled");
                 submitBtn.classList.remove("opacity-75", "cursor-not-allowed");
-                submitBtn.classList.add("hover:scale-[1.02]", "active:scale-[0.98]");
+                submitBtn.classList.add(
+                    "hover:scale-[1.02]",
+                    "active:scale-[0.98]",
+                );
             }
         });
     }

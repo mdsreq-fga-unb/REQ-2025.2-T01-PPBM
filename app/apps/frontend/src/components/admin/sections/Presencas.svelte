@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Toast from '../../ui/Toast.svelte';
+	import Toast from "../../ui/Toast.svelte";
 
-	let turmaPresenca = '';
+	let turmaPresenca = "";
 	let dataPresenca = new Date().toISOString().slice(0, 10);
 	let totalHoje = 0;
 	let presentesHoje = 0;
@@ -9,55 +9,72 @@
 	let faltasHoje = 0;
 
 	// Toast state
-	let toastMessage = '';
-	let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+	let toastMessage = "";
+	let toastType: "success" | "error" | "warning" | "info" = "info";
 	let showToast = false;
 
-	function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+	function displayToast(
+		message: string,
+		type: "success" | "error" | "warning" | "info" = "info",
+	) {
 		toastMessage = message;
 		toastType = type;
 		showToast = true;
 	}
 
 	function handleSalvarPresencas() {
-		displayToast('Funcionalidade em desenvolvimento. As presenças serão salvas em breve.', 'info');
+		displayToast(
+			"Funcionalidade em desenvolvimento. As presenças serão salvas em breve.",
+			"info",
+		);
 	}
 </script>
 
-	<section id="presencas" class="w-full h-full bg-white p-6 rounded-3xl shadow-lg border border-slate-200 mx-auto transition-all duration-300">
+<section
+	id="presencas"
+	class="w-full h-full bg-white p-6 rounded-3xl shadow-lg border border-slate-200 mx-auto transition-all duration-300"
+>
 	<!-- Layout de duas colunas -->
 	<div class="flex flex-col lg:flex-row gap-6 mb-6">
 		<!-- Coluna esquerda: Título e descrição -->
 		<div class="flex flex-col justify-center lg:w-1/3">
-			<h2 class="text-2xl font-bold text-slate-900 mb-2">Controle de Presenças</h2>
-			<p class="text-slate-500">Registre presença, falta ou atraso por turma</p>
+			<h2 class="text-2xl font-bold text-slate-900 mb-2">
+				Controle de Presenças
+			</h2>
+			<p class="text-slate-500">
+				Registre presença, falta ou atraso por turma
+			</p>
 		</div>
 
 		<!-- Coluna direita: Formulário -->
 		<div class="flex flex-col md:flex-row gap-4 md:items-end lg:w-2/3">
-		<div class="flex flex-col w-full md:w-1/3">
-			<label for="turma" class="text-slate-600 mb-1 font-medium">Turma</label>
-			<select
-				id="turma"
-				bind:value={turmaPresenca}
-				class="border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-[#E11D48] focus:outline-none"
-			>
-				<option value="">Selecione</option>
-				<option value="turma-a">Turma A - Manhã</option>
-				<option value="turma-b">Turma B - Tarde</option>
-				<option value="turma-c">Turma C - Integral</option>
-			</select>
-		</div>
+			<div class="flex flex-col w-full md:w-1/3">
+				<label for="turma" class="text-slate-600 mb-1 font-medium"
+					>Turma</label
+				>
+				<select
+					id="turma"
+					bind:value={turmaPresenca}
+					class="border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-[#E11D48] focus:outline-none"
+				>
+					<option value="">Selecione</option>
+					<option value="turma-a">Turma A - Manhã</option>
+					<option value="turma-b">Turma B - Tarde</option>
+					<option value="turma-c">Turma C - Integral</option>
+				</select>
+			</div>
 
-		<div class="flex flex-col w-full md:w-1/3">
-			<label for="data" class="text-slate-600 mb-1 font-medium">Data</label>
-			<input
-				id="data"
-				type="date"
-				bind:value={dataPresenca}
-				class="border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-[#E11D48] focus:outline-none"
-			/>
-		</div>
+			<div class="flex flex-col w-full md:w-1/3">
+				<label for="data" class="text-slate-600 mb-1 font-medium"
+					>Data</label
+				>
+				<input
+					id="data"
+					type="date"
+					bind:value={dataPresenca}
+					class="border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-[#E11D48] focus:outline-none"
+				/>
+			</div>
 
 			<button
 				on:click={handleSalvarPresencas}
@@ -70,19 +87,27 @@
 
 	<!-- Cards de status -->
 	<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-		<div class="rounded-2xl p-4 text-center text-white font-semibold bg-blue-500 shadow-md">
+		<div
+			class="rounded-2xl p-4 text-center text-white font-semibold bg-blue-500 shadow-md"
+		>
 			<p class="text-2xl">{totalHoje}</p>
 			<p class="text-sm opacity-90">Total Hoje</p>
 		</div>
-		<div class="rounded-2xl p-4 text-center text-white font-semibold bg-green-500 shadow-md">
+		<div
+			class="rounded-2xl p-4 text-center text-white font-semibold bg-green-500 shadow-md"
+		>
 			<p class="text-2xl">{presentesHoje}</p>
 			<p class="text-sm opacity-90">Presentes</p>
 		</div>
-		<div class="rounded-2xl p-4 text-center text-white font-semibold bg-amber-500 shadow-md">
+		<div
+			class="rounded-2xl p-4 text-center text-white font-semibold bg-amber-500 shadow-md"
+		>
 			<p class="text-2xl">{atrasosHoje}</p>
 			<p class="text-sm opacity-90">Atrasos</p>
 		</div>
-		<div class="rounded-2xl p-4 text-center text-white font-semibold bg-red-500 shadow-md">
+		<div
+			class="rounded-2xl p-4 text-center text-white font-semibold bg-red-500 shadow-md"
+		>
 			<p class="text-2xl">{faltasHoje}</p>
 			<p class="text-sm opacity-90">Faltas</p>
 		</div>
@@ -110,11 +135,7 @@
 </section>
 
 <!-- Toast notifications -->
-<Toast 
-	bind:show={showToast} 
-	message={toastMessage} 
-	type={toastType} 
-/>
+<Toast bind:show={showToast} message={toastMessage} type={toastType} />
 
 <style>
 	@media (max-width: 768px) {
@@ -123,4 +144,3 @@
 		}
 	}
 </style>
-

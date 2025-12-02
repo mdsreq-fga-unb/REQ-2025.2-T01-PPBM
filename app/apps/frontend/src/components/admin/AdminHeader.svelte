@@ -88,5 +88,5 @@
 	cancelText="Cancelar"
 	variant="warning"
 	on:confirm={confirmLogout}
-	on:cancel={() => showLogoutDialog = false}
+	on:cancel={() => (showLogoutDialog = false)}
 />

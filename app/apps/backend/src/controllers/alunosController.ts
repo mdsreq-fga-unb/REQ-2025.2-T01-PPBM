@@ -85,7 +85,36 @@ export class AlunosController implements EndpointController {
             // Buscar ou criar responsável
             let responsavel: Responsavel;
 
-            if (cpfResponsavelNormalizado) {
+            // Check if an existing responsável ID was provided
+            if (requestData.responsavel.id_responsavel) {
+                // Use the existing responsável by ID
+                const { data: responsavelExistente, error: errorBuscaResponsavel } = await supabase
+                    .from('responsaveis')
+                    .select('*')
+                    .eq('id_responsavel', requestData.responsavel.id_responsavel)
+                    .maybeSingle();
+
+                if (errorBuscaResponsavel) {
+                    log.error('cadastrarAluno', 'Erro ao buscar responsável por ID:', errorBuscaResponsavel);
+                    return res.status(500).json({
+                        success: false,
+                        message: 'Erro interno do servidor',
+                        error: 'Erro ao buscar responsável'
+                    } as CadastroAlunoResponse);
+                }
+
+                if (responsavelExistente) {
+                    responsavel = responsavelExistente;
+                    log.info('cadastrarAluno', 'Responsável encontrado por ID:', responsavel.id_responsavel);
+                } else {
+                    log.warn('cadastrarAluno', 'Responsável não encontrado pelo ID fornecido:', requestData.responsavel.id_responsavel);
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Responsável não encontrado',
+                        error: 'O responsável selecionado não foi encontrado'
+                    } as CadastroAlunoResponse);
+                }
+            } else if (cpfResponsavelNormalizado) {
                 // Buscar responsável existente pelo CPF
                 const { data: responsavelExistente, error: errorBuscaResponsavel } = await supabase
                     .from('responsaveis')
@@ -143,24 +172,40 @@ export class AlunosController implements EndpointController {
                 } as CadastroAlunoResponse);
             }
 
-            // Criar vínculo entre aluno e responsável
-            const { error: errorVinculo } = await supabase
+            // Criar vínculo entre aluno e responsável (check if it already exists first)
+            const { data: existingLink, error: linkCheckError } = await supabase
                 .from('responsaveis_por_alunos')
-                .insert({
-                    id_aluno: alunoInserido.id_aluno,
-                    id_responsavel: responsavel.id_responsavel
-                });
+                .select('id_responsaveis_por_alunos')
+                .eq('id_aluno', alunoInserido.id_aluno)
+                .eq('id_responsavel', responsavel.id_responsavel)
+                .maybeSingle();
 
-            if (errorVinculo) {
-                log.error('cadastrarAluno', 'Erro ao criar vínculo:', errorVinculo);
-                // Tentar remover o aluno criado para manter consistência
-                await supabase.from('alunos').delete().eq('id_aluno', alunoInserido.id_aluno);
+            if (linkCheckError) {
+                log.error('cadastrarAluno', 'Erro ao verificar vínculo existente:', linkCheckError);
+            }
 
-                return res.status(500).json({
-                    success: false,
-                    message: 'Erro interno do servidor',
-                    error: 'Erro ao vincular aluno ao responsável'
-                } as CadastroAlunoResponse);
+            // Only create link if it doesn't already exist
+            if (!existingLink) {
+                const { error: errorVinculo } = await supabase
+                    .from('responsaveis_por_alunos')
+                    .insert({
+                        id_aluno: alunoInserido.id_aluno,
+                        id_responsavel: responsavel.id_responsavel
+                    });
+
+                if (errorVinculo) {
+                    log.error('cadastrarAluno', 'Erro ao criar vínculo:', errorVinculo);
+                    // Tentar remover o aluno criado para manter consistência
+                    await supabase.from('alunos').delete().eq('id_aluno', alunoInserido.id_aluno);
+
+                    return res.status(500).json({
+                        success: false,
+                        message: 'Erro interno do servidor',
+                        error: 'Erro ao vincular aluno ao responsável'
+                    } as CadastroAlunoResponse);
+                }
+            } else {
+                log.info('cadastrarAluno', 'Vínculo aluno-responsável já existe, pulando criação');
             }
 
             // Criar vínculo entre aluno e turma (se turma_id foi informado)

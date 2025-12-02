@@ -1,5 +1,5 @@
 ---
-import Header from '../../components/Header.astro';
+import Header from '../../components/admin/AdminHeader.svelte';
 import Sidebar from '../../components/Sidebar.astro';
 import UsersTable from '../../components/ui/UsersTable.svelte';
 
@@ -116,7 +116,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000';
     </style>
 </head>
 <body>
-    <Header />
+    <Header client:load />
     
     <main class="main-content">
         <div class="content-wrapper">

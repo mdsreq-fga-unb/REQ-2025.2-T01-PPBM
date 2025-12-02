@@ -5,12 +5,12 @@
 import { createClient } from '@supabase/supabase-js';
 
 // For SSR, we need to check both import.meta.env (build-time) and process.env (runtime)
-const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || 
-    (typeof process !== 'undefined' ? process.env.PUBLIC_SUPABASE_URL : '') || 
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL ||
+    (typeof process !== 'undefined' ? process.env.PUBLIC_SUPABASE_URL : '') ||
     'http://localhost:54321';
 
-const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || 
-    (typeof process !== 'undefined' ? process.env.PUBLIC_SUPABASE_ANON_KEY : '') || 
+const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ||
+    (typeof process !== 'undefined' ? process.env.PUBLIC_SUPABASE_ANON_KEY : '') ||
     '';
 
 // Only create client if we have the required key
@@ -18,7 +18,7 @@ if (!supabaseAnonKey) {
     console.error('WARNING: Supabase anon key is not configured. Auth will not work.');
 }
 
-export const supabase = supabaseAnonKey 
+export const supabase = supabaseAnonKey
     ? createClient(supabaseUrl, supabaseAnonKey, {
         auth: {
             persistSession: true,

@@ -17,8 +17,12 @@ import { alunoController } from './controllers/alunos';
 import { docenteController } from './controllers/docentes';
 import { turmaController } from './controllers/turmas';
 import { presencaController } from './controllers/presencas';
+import { justificativaController } from './controllers/justificativas';
+import { advertenciaController } from './controllers/advertencias';
 import { authController } from './controllers/auth';
 import { notificacaoController } from './controllers/notificacoes';
+import { responsavelController } from './controllers/responsaveis';
+import { acompanhamentoController } from './controllers/acompanhamentos';
 
 
 dotenv.config();
@@ -36,7 +40,11 @@ const controllers: EndpointController[] = [
     docenteController,
     turmaController,
     presencaController,
+    justificativaController,
+    advertenciaController,
     notificacaoController,
+    responsavelController,
+    acompanhamentoController,
     new AlunosController()
 ];
 

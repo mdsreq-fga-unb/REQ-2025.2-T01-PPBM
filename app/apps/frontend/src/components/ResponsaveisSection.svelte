@@ -1,18 +1,29 @@
 <script lang="ts">
-    import ResponsavelForm from './ResponsavelForm.svelte';
-    import Toast from './ui/Toast.svelte';
+    import { onMount } from "svelte";
+    import ResponsavelForm from "./ResponsavelForm.svelte";
+    import Toast from "./ui/Toast.svelte";
 
     export let maxResponsaveis: number = 3;
 
-    let responsaveis = [{ id: 0 }];
+    interface LoadedResponsavel {
+        id_responsavel: number;
+        nome_responsavel: string;
+        email_responsavel?: string;
+        telefone_responsavel?: string;
+    }
+
+    let responsaveis: Array<{ id: number; data?: LoadedResponsavel }> = [{ id: 0 }];
     let nextId = 1;
 
     // Toast state
-    let toastMessage = '';
-    let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+    let toastMessage = "";
+    let toastType: "success" | "error" | "warning" | "info" = "info";
     let showToast = false;
 
-    function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+    function displayToast(
+        message: string,
+        type: "success" | "error" | "warning" | "info" = "info",
+    ) {
         toastMessage = message;
         toastType = type;
         showToast = true;
@@ -20,7 +31,10 @@
 
     function addResponsavel() {
         if (responsaveis.length >= maxResponsaveis) {
-            displayToast(`Máximo de ${maxResponsaveis} responsáveis permitido.`, 'warning');
+            displayToast(
+                `Máximo de ${maxResponsaveis} responsáveis permitido.`,
+                "warning",
+            );
             return;
         }
         responsaveis = [...responsaveis, { id: nextId }];
@@ -30,26 +44,51 @@
     function removeResponsavel(index: number) {
         responsaveis = responsaveis.filter((_, i) => i !== index);
     }
+
+    // Listen for load-responsaveis event from parent page (edit mode)
+    onMount(() => {
+        const handleLoadResponsaveis = (event: CustomEvent<{ responsaveis: LoadedResponsavel[] }>) => {
+            const loadedResponsaveis = event.detail.responsaveis;
+            if (loadedResponsaveis && loadedResponsaveis.length > 0) {
+                responsaveis = loadedResponsaveis.map((resp, index) => ({
+                    id: index,
+                    data: resp
+                }));
+                nextId = loadedResponsaveis.length;
+            }
+        };
+
+        window.addEventListener('load-responsaveis', handleLoadResponsaveis as EventListener);
+
+        return () => {
+            window.removeEventListener('load-responsaveis', handleLoadResponsaveis as EventListener);
+        };
+    });
 </script>
 
 <section class="form-section">
     <h2>👨‍👩‍👧 Responsáveis</h2>
-    
+
     <div class="responsaveis-section">
         <div class="responsaveis-header">
             <h3>Responsáveis do Aluno</h3>
             {#if responsaveis.length < maxResponsaveis}
-                <button type="button" class="btn-add-responsavel" on:click={addResponsavel}>
+                <button
+                    type="button"
+                    class="btn-add-responsavel"
+                    on:click={addResponsavel}
+                >
                     <span>+</span> Adicionar Responsável
                 </button>
             {/if}
         </div>
-        
+
         <div class="responsaveis-list">
             {#each responsaveis as resp, index (resp.id)}
-                <ResponsavelForm 
+                <ResponsavelForm
                     {index}
                     isPrimary={index === 0}
+                    initialData={resp.data || null}
                     onRemove={index > 0 ? () => removeResponsavel(index) : null}
                 />
             {/each}
@@ -58,11 +97,7 @@
 </section>
 
 <!-- Toast notifications -->
-<Toast 
-    bind:show={showToast} 
-    message={toastMessage} 
-    type={toastType} 
-/>
+<Toast bind:show={showToast} message={toastMessage} type={toastType} />
 
 <style>
     .form-section {
@@ -78,7 +113,7 @@
     }
 
     .responsaveis-section {
-        background-color: #F8FAFC;
+        background-color: #f8fafc;
         padding: 1.5rem;
         border-radius: 8px;
         border: 1px solid #cbd5e0;

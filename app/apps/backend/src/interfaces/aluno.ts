@@ -37,6 +37,7 @@ export interface CadastroAlunoRequest {
         turma_id?: number | string;
     };
     responsavel: {
+        id_responsavel?: number;
         nome_responsavel: string;
         telefone_responsavel?: string;
         email_responsavel?: string;

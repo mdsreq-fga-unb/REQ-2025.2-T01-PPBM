@@ -11,6 +11,7 @@ interface UserWithRole {
     nome: string;
     role: 'admin' | 'docente' | 'responsavel';
     created_at: string;
+    docente_id: number | null;
 }
 
 export default class UsuarioController {
@@ -63,18 +64,21 @@ export default class UsuarioController {
                 });
             }
 
-            // Criar sets para verificação rápida
+            // Criar sets e maps para verificação rápida
             const adminEmails = new Set(admins?.map(a => a.email) || []);
             const docenteEmails = new Set(docentes?.map(d => d.email_docente) || []);
+            const docenteIdMap = new Map(docentes?.map(d => [d.email_docente, d.id_docente]) || []);
 
             // Mapear usuários com seus roles
             const usersWithRoles: UserWithRole[] = (responsaveis || []).map(resp => {
                 let role: 'admin' | 'docente' | 'responsavel' = 'responsavel';
-                
+                let docente_id: number | null = null;
+
                 if (adminEmails.has(resp.email_responsavel)) {
                     role = 'admin';
                 } else if (docenteEmails.has(resp.email_responsavel)) {
                     role = 'docente';
+                    docente_id = docenteIdMap.get(resp.email_responsavel) ?? null;
                 }
 
                 return {
@@ -82,7 +86,8 @@ export default class UsuarioController {
                     email: resp.email_responsavel,
                     nome: resp.nome_responsavel,
                     role,
-                    created_at: resp.created_at
+                    created_at: resp.created_at,
+                    docente_id
                 };
             });
 

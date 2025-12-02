@@ -1,6 +1,19 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { authStore } from "../../../stores/auth";
+    import { apiFetch } from "../../../lib/api";
+    import Toast from "../../ui/Toast.svelte";
+
+    // Toast state
+    let toastMessage = "";
+    let toastType: "success" | "error" | "warning" | "info" = "info";
+    let showToast = false;
+
+    function displayToast(message: string, type: typeof toastType = "info") {
+        toastMessage = message;
+        toastType = type;
+        showToast = true;
+    }
 
     // State
     let periodo = "30";
@@ -8,6 +21,7 @@
     let dataInicio = "";
     let dataFim = "";
     let isLoading = false;
+    let isLoadingChildren = true;
 
     // Statistics
     let totalDias = 0;
@@ -19,6 +33,14 @@
     // Child info
     let childName = "";
     let childTurma = "";
+    let selectedChildId: number | null = null;
+
+    // Children list (for responsáveis with multiple children)
+    let children: Array<{
+        id_aluno: number;
+        nome_aluno: string;
+        turma: { nome_turma: string } | null;
+    }> = [];
 
     // Attendance records
     let registros: {
@@ -26,6 +48,11 @@
         data: string;
         status: "presente" | "atraso" | "falta";
         observacoes?: string;
+        justificativa?: {
+            id: number;
+            motivo: string;
+            aprovada: boolean | null;
+        } | null;
     }[] = [];
 
     $: currentUser = $authStore.currentUser;
@@ -35,28 +62,103 @@
         presente: "bg-green-100 text-green-700",
         atraso: "bg-yellow-100 text-yellow-700",
         falta: "bg-red-100 text-red-700",
+        ausente: "bg-red-100 text-red-700",
     };
 
     const statusIcons: Record<string, string> = {
         presente: "✅",
         atraso: "⏰",
         falta: "❌",
+        ausente: "❌",
     };
 
     function handlePeriodoChange() {
         showCustomDates = periodo === "custom";
-        if (!showCustomDates) {
+        if (!showCustomDates && selectedChildId) {
             loadAttendanceData();
         }
     }
 
     function handleCustomDateChange() {
-        if (dataInicio && dataFim) {
+        if (dataInicio && dataFim && selectedChildId) {
             loadAttendanceData();
         }
     }
 
+    function handleChildChange() {
+        if (selectedChildId) {
+            const child = children.find((c) => c.id_aluno === selectedChildId);
+            if (child) {
+                childName = child.nome_aluno;
+                childTurma = child.turma?.nome_turma || "Sem turma";
+            }
+            loadAttendanceData();
+        }
+    }
+
+    async function loadChildren() {
+        if (!currentUser?.email) {
+            isLoadingChildren = false;
+            return;
+        }
+
+        isLoadingChildren = true;
+
+        try {
+            // First get the responsável ID by email
+            const respResponse = await apiFetch<{
+                success: boolean;
+                data: { id_responsavel: number; nome_responsavel: string };
+            }>(
+                `/responsaveis/por-email/${encodeURIComponent(currentUser.email)}`,
+            );
+
+            if (!respResponse.success || !respResponse.data) {
+                displayToast("Responsável não encontrado no sistema", "error");
+                isLoadingChildren = false;
+                return;
+            }
+
+            const responsavelId = (respResponse.data as any).id_responsavel;
+
+            // Now get the children for this responsável
+            const childrenResponse = await apiFetch<{
+                success: boolean;
+                data: Array<{
+                    id_aluno: number;
+                    nome_aluno: string;
+                    turma: { nome_turma: string } | null;
+                }>;
+            }>(`/responsaveis/meus-filhos/${responsavelId}`);
+
+            if (childrenResponse.success && childrenResponse.data) {
+                const responseData = childrenResponse.data as any;
+                children = responseData.data || [];
+
+                if (children.length > 0) {
+                    // Auto-select first child
+                    selectedChildId = children[0].id_aluno;
+                    childName = children[0].nome_aluno;
+                    childTurma = children[0].turma?.nome_turma || "Sem turma";
+                    await loadAttendanceData();
+                } else {
+                    displayToast(
+                        "Nenhum filho vinculado à sua conta",
+                        "warning",
+                    );
+                }
+            }
+        } catch (error) {
+            console.error("Error loading children:", error);
+            displayToast("Erro ao carregar dados dos filhos", "error");
+        } finally {
+            isLoadingChildren = false;
+        }
+    }
+
     async function loadAttendanceData() {
+        if (!selectedChildId) return;
+
         isLoading = true;
 
         // Calculate date range
@@ -74,68 +176,80 @@
             startDate = inicio.toISOString().slice(0, 10);
         }
 
-        // TODO: Replace with actual API call
-        // For now, using mock data
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        try {
+            // Build query params
+            const params = new URLSearchParams();
+            if (startDate) params.append("from", startDate);
+            if (endDate) params.append("to", endDate);
 
-        // Mock data for demonstration
-        childName = "Ana Pereira Silva";
-        childTurma = "Turma A - Manhã";
+            const response = await apiFetch<{
+                success: boolean;
+                aluno: { id_aluno: number; nome_aluno: string; turma: string };
+                estatisticas: {
+                    totalDias: number;
+                    presentes: number;
+                    atrasos: number;
+                    faltas: number;
+                    taxaFrequencia: number;
+                };
+                registros: Array<{
+                    id: string;
+                    data: string;
+                    status: string;
+                    justificativa: {
+                        id: number;
+                        motivo: string;
+                        aprovada: boolean | null;
+                    } | null;
+                }>;
+            }>(
+                `/responsaveis/presencas-filho/${selectedChildId}?${params.toString()}`,
+            );
 
-        // Generate mock attendance records
-        registros = generateMockRecords(startDate, endDate);
+            if (response.success && response.data) {
+                const data = response.data as any;
 
-        // Calculate statistics
-        totalDias = registros.length;
-        presencas = registros.filter((r) => r.status === "presente").length;
-        atrasos = registros.filter((r) => r.status === "atraso").length;
-        faltas = registros.filter((r) => r.status === "falta").length;
-        taxaFrequencia =
-            totalDias > 0 ? Math.round((presencas / totalDias) * 100) : 0;
+                // Update child info
+                if (data.aluno) {
+                    childName = data.aluno.nome_aluno;
+                    childTurma = data.aluno.turma || "Sem turma";
+                }
 
-        isLoading = false;
-    }
+                // Update statistics
+                if (data.estatisticas) {
+                    totalDias = data.estatisticas.totalDias;
+                    presencas = data.estatisticas.presentes;
+                    atrasos = data.estatisticas.atrasos;
+                    faltas = data.estatisticas.faltas;
+                    taxaFrequencia = data.estatisticas.taxaFrequencia;
+                }
 
-    function generateMockRecords(startDate: string, endDate: string) {
-        const records: typeof registros = [];
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-
-        for (let d = new Date(end); d >= start; d.setDate(d.getDate() - 1)) {
-            // Skip weekends
-            if (d.getDay() === 0 || d.getDay() === 6) continue;
-
-            const rand = Math.random();
-            let status: "presente" | "atraso" | "falta";
-            let observacoes = "";
-
-            if (rand > 0.15) {
-                status = "presente";
-            } else if (rand > 0.05) {
-                status = "atraso";
-                observacoes = "Chegou alguns minutos atrasado";
+                // Update records
+                registros = (data.registros || []).map((r: any) => ({
+                    id: r.id,
+                    data: r.data,
+                    status: r.status,
+                    observacoes: r.justificativa?.motivo || "",
+                    justificativa: r.justificativa,
+                }));
             } else {
-                status = "falta";
+                displayToast("Erro ao carregar dados de presença", "error");
             }
-
-            records.push({
-                id: `att-${d.getTime()}`,
-                data: d.toISOString().slice(0, 10),
-                status,
-                observacoes,
-            });
+        } catch (error) {
+            console.error("Error loading attendance:", error);
+            displayToast("Erro ao carregar dados de presença", "error");
+        } finally {
+            isLoading = false;
         }
-
-        return records;
     }
 
     function formatDate(dateStr: string): string {
-        const date = new Date(dateStr + "T00:00:00");
+        const date = new Date(dateStr);
         return date.toLocaleDateString("pt-BR");
     }
 
     onMount(() => {
-        loadAttendanceData();
+        loadChildren();
     });
 </script>
 
@@ -158,6 +272,26 @@
             </p>
         </div>
         <div class="flex flex-col sm:flex-row gap-3">
+            {#if children.length > 1}
+                <div>
+                    <label
+                        for="childSelect"
+                        class="block text-sm font-medium mb-1">Filho(a)</label
+                    >
+                    <select
+                        id="childSelect"
+                        bind:value={selectedChildId}
+                        on:change={handleChildChange}
+                        class="px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
+                    >
+                        {#each children as child}
+                            <option value={child.id_aluno}
+                                >{child.nome_aluno}</option
+                            >
+                        {/each}
+                    </select>
+                </div>
+            {/if}
             <div>
                 <label for="periodo" class="block text-sm font-medium mb-1"
                     >Período</label
@@ -193,94 +327,131 @@
         </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div
-            class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-4 text-white text-center"
-        >
-            <div class="text-2xl font-bold">{totalDias}</div>
-            <div class="text-sm opacity-90">Total de Dias</div>
+    {#if isLoadingChildren}
+        <div class="text-center py-12 text-slate-500">
+            <p>Carregando dados...</p>
         </div>
-        <div
-            class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-4 text-white text-center"
-        >
-            <div class="text-2xl font-bold">{presencas}</div>
-            <div class="text-sm opacity-90">Presenças</div>
+    {:else if children.length === 0}
+        <div class="text-center py-12 text-slate-500">
+            <p>Nenhum filho vinculado à sua conta.</p>
+            <p class="text-sm mt-2">
+                Entre em contato com a administração para vincular seus filhos.
+            </p>
         </div>
-        <div
-            class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl p-4 text-white text-center"
-        >
-            <div class="text-2xl font-bold">{atrasos}</div>
-            <div class="text-sm opacity-90">Atrasos</div>
-        </div>
-        <div
-            class="bg-gradient-to-r from-red-500 to-red-600 rounded-xl p-4 text-white text-center"
-        >
-            <div class="text-2xl font-bold">{faltas}</div>
-            <div class="text-sm opacity-90">Faltas</div>
-        </div>
-    </div>
-
-    <!-- Frequency Bar -->
-    <div class="bg-slate-50 rounded-xl p-4 mb-6">
-        <div class="flex items-center justify-between mb-2">
-            <span class="font-medium">Taxa de Frequência</span>
-            <span class="text-2xl font-bold text-[#E11D48]"
-                >{taxaFrequencia}%</span
-            >
-        </div>
-        <div class="w-full bg-slate-200 rounded-full h-3">
+    {:else}
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div
-                class="bg-gradient-to-r from-[#E11D48] to-[#BE123C] h-3 rounded-full transition-all duration-500"
-                style="width: {taxaFrequencia}%"
-            ></div>
+                class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-4 text-white text-center"
+            >
+                <div class="text-2xl font-bold">{totalDias}</div>
+                <div class="text-sm opacity-90">Total de Dias</div>
+            </div>
+            <div
+                class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-4 text-white text-center"
+            >
+                <div class="text-2xl font-bold">{presencas}</div>
+                <div class="text-sm opacity-90">Presenças</div>
+            </div>
+            <div
+                class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl p-4 text-white text-center"
+            >
+                <div class="text-2xl font-bold">{atrasos}</div>
+                <div class="text-sm opacity-90">Atrasos</div>
+            </div>
+            <div
+                class="bg-gradient-to-r from-red-500 to-red-600 rounded-xl p-4 text-white text-center"
+            >
+                <div class="text-2xl font-bold">{faltas}</div>
+                <div class="text-sm opacity-90">Faltas</div>
+            </div>
         </div>
-    </div>
 
-    <!-- Attendance Table -->
-    <div class="overflow-x-auto">
-        <table
-            class="w-full border border-slate-200 rounded-xl overflow-hidden"
-        >
-            <thead class="bg-slate-50">
-                <tr class="text-left text-sm">
-                    <th class="p-4">Data</th>
-                    <th class="p-4">Status</th>
-                    <th class="p-4">Observações</th>
-                </tr>
-            </thead>
-            <tbody class="text-sm">
-                {#if isLoading}
-                    <tr>
-                        <td colspan="3" class="p-4 text-center text-slate-500"
-                            >Carregando...</td
-                        >
+        <!-- Frequency Bar -->
+        <div class="bg-slate-50 rounded-xl p-4 mb-6">
+            <div class="flex items-center justify-between mb-2">
+                <span class="font-medium">Taxa de Frequência</span>
+                <span class="text-2xl font-bold text-[#E11D48]"
+                    >{taxaFrequencia}%</span
+                >
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-3">
+                <div
+                    class="bg-gradient-to-r from-[#E11D48] to-[#BE123C] h-3 rounded-full transition-all duration-500"
+                    style="width: {taxaFrequencia}%"
+                ></div>
+            </div>
+        </div>
+
+        <!-- Attendance Table -->
+        <div class="overflow-x-auto">
+            <table
+                class="w-full border border-slate-200 rounded-xl overflow-hidden"
+            >
+                <thead class="bg-slate-50">
+                    <tr class="text-left text-sm">
+                        <th class="p-4">Data</th>
+                        <th class="p-4">Status</th>
+                        <th class="p-4">Observações</th>
                     </tr>
-                {:else if registros.length === 0}
-                    <tr>
-                        <td colspan="3" class="p-4 text-center text-slate-500">
-                            Nenhum registro encontrado no período selecionado
-                        </td>
-                    </tr>
-                {:else}
-                    {#each registros as registro}
-                        <tr class="border-t">
-                            <td class="p-4">{formatDate(registro.data)}</td>
-                            <td class="p-4">
-                                <span
-                                    class="px-2 py-1 rounded-full text-xs {statusColors[
-                                        registro.status
-                                    ]}"
-                                >
-                                    {statusIcons[registro.status]}
-                                    {registro.status}
-                                </span>
-                            </td>
-                            <td class="p-4">{registro.observacoes || "-"}</td>
+                </thead>
+                <tbody class="text-sm">
+                    {#if isLoading}
+                        <tr>
+                            <td
+                                colspan="3"
+                                class="p-4 text-center text-slate-500"
+                                >Carregando...</td
+                            >
                         </tr>
-                    {/each}
-                {/if}
-            </tbody>
-        </table>
-    </div>
+                    {:else if registros.length === 0}
+                        <tr>
+                            <td
+                                colspan="3"
+                                class="p-4 text-center text-slate-500"
+                            >
+                                Nenhum registro encontrado no período
+                                selecionado
+                            </td>
+                        </tr>
+                    {:else}
+                        {#each registros as registro}
+                            <tr class="border-t">
+                                <td class="p-4">{formatDate(registro.data)}</td>
+                                <td class="p-4">
+                                    <span
+                                        class="px-2 py-1 rounded-full text-xs {statusColors[
+                                            registro.status
+                                        ] || statusColors['falta']}"
+                                    >
+                                        {statusIcons[registro.status] || "❌"}
+                                        {registro.status}
+                                    </span>
+                                    {#if registro.justificativa}
+                                        <span
+                                            class="ml-2 px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700"
+                                        >
+                                            {registro.justificativa.aprovada ===
+                                            true
+                                                ? "Justificada ✓"
+                                                : registro.justificativa
+                                                        .aprovada === false
+                                                  ? "Justificativa rejeitada"
+                                                  : "Aguardando aprovação"}
+                                        </span>
+                                    {/if}
+                                </td>
+                                <td class="p-4"
+                                    >{registro.observacoes || "-"}</td
+                                >
+                            </tr>
+                        {/each}
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+    {/if}
 </section>
+
+<!-- Toast notifications -->
+<Toast bind:show={showToast} message={toastMessage} type={toastType} />

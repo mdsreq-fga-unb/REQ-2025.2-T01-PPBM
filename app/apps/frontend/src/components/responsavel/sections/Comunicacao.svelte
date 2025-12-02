@@ -1,13 +1,18 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { authStore } from "../../../stores/auth";
+    import { apiFetch } from "../../../lib/api";
     import Toast from "../../ui/Toast.svelte";
 
     // Toast state
-    let toastMessage = '';
-    let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+    let toastMessage = "";
+    let toastType: "success" | "error" | "warning" | "info" = "info";
     let showToast = false;
 
-    function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+    function displayToast(
+        message: string,
+        type: "success" | "error" | "warning" | "info" = "info",
+    ) {
         toastMessage = message;
         toastType = type;
         showToast = true;
@@ -16,6 +21,14 @@
     // State
     let activeTab: "mensagens" | "avisos" | "enviar" = "mensagens";
     let isLoading = false;
+    let responsavelId: number | null = null;
+    let selectedChildId: number | null = null;
+
+    // Children (for context in messages)
+    let children: Array<{
+        id_aluno: number;
+        nome_aluno: string;
+    }> = [];
 
     // Messages
     let mensagens: {
@@ -44,6 +57,8 @@
     let conteudo = "";
     let isSending = false;
 
+    $: currentUser = $authStore.currentUser;
+
     const tipoColors: Record<string, string> = {
         informativo: "bg-blue-100 text-blue-700",
         importante: "bg-yellow-100 text-yellow-700",
@@ -55,68 +70,99 @@
         activeTab = tab;
     }
 
+    async function loadResponsavelData() {
+        if (!currentUser?.email) return;
+
+        try {
+            // Get responsável ID by email
+            const respResponse = await apiFetch<{
+                success: boolean;
+                data: { id_responsavel: number };
+            }>(
+                `/responsaveis/por-email/${encodeURIComponent(currentUser.email)}`,
+            );
+
+            if (respResponse.success && respResponse.data) {
+                responsavelId = (respResponse.data as any).id_responsavel;
+
+                // Get children for this responsável
+                const childrenResponse = await apiFetch<{
+                    success: boolean;
+                    data: Array<{ id_aluno: number; nome_aluno: string }>;
+                }>(`/responsaveis/meus-filhos/${responsavelId}`);
+
+                if (childrenResponse.success && childrenResponse.data) {
+                    const responseData = childrenResponse.data as any;
+                    children = responseData.data || [];
+                    if (children.length > 0) {
+                        selectedChildId = children[0].id_aluno;
+                    }
+                }
+
+                // Load messages and notices
+                await Promise.all([loadMessages(), loadNotices()]);
+            }
+        } catch (error) {
+            console.error("Error loading responsável data:", error);
+            displayToast("Erro ao carregar dados", "error");
+        }
+    }
+
     async function loadMessages() {
+        if (!responsavelId) return;
+
         isLoading = true;
 
-        // TODO: Replace with actual API call
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        try {
+            const response = await apiFetch<{
+                success: boolean;
+                data: Array<{
+                    id: string;
+                    tipo: "recebida" | "enviada";
+                    remetente: string;
+                    assunto: string;
+                    conteudo: string;
+                    timestamp: string;
+                    urgente: boolean;
+                }>;
+            }>(`/responsaveis/mensagens/${responsavelId}`);
 
-        // Mock data
-        mensagens = [
-            {
-                id: "1",
-                tipo: "recebida",
-                remetente: "Coordenação",
-                assunto: "Reunião de Pais - Próxima Sexta",
-                conteudo:
-                    "Prezado responsável, informamos que haverá reunião de pais na próxima sexta-feira às 19h no auditório da escola. Contamos com sua presença!",
-                timestamp: new Date().toISOString(),
-                urgente: false,
-            },
-            {
-                id: "2",
-                tipo: "recebida",
-                remetente: "Professor da Turma",
-                assunto: "Atividade Especial - Visita ao Quartel",
-                conteudo:
-                    "Olá! Na próxima semana teremos uma visita ao Quartel dos Bombeiros. Por favor, envie uma autorização assinada até quinta-feira.",
-                timestamp: new Date(Date.now() - 86400000).toISOString(),
-                urgente: true,
-            },
-        ];
-
-        isLoading = false;
+            if (response.success && response.data) {
+                mensagens = (response.data as any) || [];
+            }
+        } catch (error) {
+            console.error("Error loading messages:", error);
+            displayToast("Erro ao carregar mensagens", "error");
+        } finally {
+            isLoading = false;
+        }
     }
 
     async function loadNotices() {
         isLoading = true;
 
-        // TODO: Replace with actual API call
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        try {
+            const response = await apiFetch<{
+                success: boolean;
+                data: Array<{
+                    id: string;
+                    tipo: "informativo" | "importante" | "urgente" | "evento";
+                    titulo: string;
+                    conteudo: string;
+                    timestamp: string;
+                    ativo: boolean;
+                }>;
+            }>("/responsaveis/avisos");
 
-        // Mock data
-        avisos = [
-            {
-                id: "1",
-                tipo: "importante",
-                titulo: "Atividade Especial - Visita ao Quartel",
-                conteudo:
-                    "Na próxima semana teremos uma visita especial ao Quartel Central dos Bombeiros. As crianças conhecerão os equipamentos e participarão de uma demonstração.",
-                timestamp: new Date().toISOString(),
-                ativo: true,
-            },
-            {
-                id: "2",
-                tipo: "evento",
-                titulo: "Formatura do Programa Bombeiro Mirim",
-                conteudo:
-                    "A cerimônia de formatura será realizada no dia 15 de dezembro, às 19h, no auditório principal. Compareçam com traje social.",
-                timestamp: new Date(Date.now() - 172800000).toISOString(),
-                ativo: true,
-            },
-        ];
-
-        isLoading = false;
+            if (response.success && response.data) {
+                avisos = (response.data as any) || [];
+            }
+        } catch (error) {
+            console.error("Error loading notices:", error);
+            displayToast("Erro ao carregar avisos", "error");
+        } finally {
+            isLoading = false;
+        }
     }
 
     async function handleSendMessage() {
@@ -125,23 +171,48 @@
             return;
         }
 
+        if (!responsavelId) {
+            displayToast("Erro: responsável não identificado", "error");
+            return;
+        }
+
         isSending = true;
 
-        // TODO: Replace with actual API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        try {
+            const response = await apiFetch<{ success: boolean }>(
+                "/responsaveis/enviar-mensagem",
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        id_responsavel: responsavelId,
+                        id_aluno: selectedChildId,
+                        destinatario,
+                        assunto,
+                        conteudo,
+                    }),
+                },
+            );
 
-        // Clear form
-        assunto = "";
-        conteudo = "";
-        destinatario = "coordenacao";
+            if (response.success) {
+                // Clear form
+                assunto = "";
+                conteudo = "";
+                destinatario = "coordenacao";
 
-        isSending = false;
+                displayToast("Mensagem enviada com sucesso!", "success");
 
-        displayToast("Mensagem enviada com sucesso!", "success");
-
-        // Switch to messages tab
-        activeTab = "mensagens";
-        loadMessages();
+                // Switch to messages tab and reload
+                activeTab = "mensagens";
+                await loadMessages();
+            } else {
+                displayToast("Erro ao enviar mensagem", "error");
+            }
+        } catch (error) {
+            console.error("Error sending message:", error);
+            displayToast("Erro ao enviar mensagem", "error");
+        } finally {
+            isSending = false;
+        }
     }
 
     function formatDateTime(timestamp: string): { date: string; time: string } {
@@ -160,8 +231,7 @@
     }
 
     onMount(() => {
-        loadMessages();
-        loadNotices();
+        loadResponsavelData();
     });
 </script>
 
@@ -278,7 +348,7 @@
                             <span
                                 class="px-2 py-1 rounded-full text-xs {tipoColors[
                                     aviso.tipo
-                                ]}"
+                                ] || tipoColors['informativo']}"
                             >
                                 {aviso.tipo}
                             </span>
@@ -317,6 +387,27 @@
                         <option value="administracao">Administração</option>
                     </select>
                 </div>
+
+                {#if children.length > 1}
+                    <div>
+                        <label
+                            for="childSelect"
+                            class="block text-sm font-medium mb-1"
+                            >Referente a</label
+                        >
+                        <select
+                            id="childSelect"
+                            bind:value={selectedChildId}
+                            class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
+                        >
+                            {#each children as child}
+                                <option value={child.id_aluno}
+                                    >{child.nome_aluno}</option
+                                >
+                            {/each}
+                        </select>
+                    </div>
+                {/if}
 
                 <div>
                     <label for="assunto" class="block text-sm font-medium mb-1"
@@ -357,8 +448,4 @@
 </section>
 
 <!-- Toast notifications -->
-<Toast 
-    bind:show={showToast} 
-    message={toastMessage} 
-    type={toastType} 
-/>
+<Toast bind:show={showToast} message={toastMessage} type={toastType} />

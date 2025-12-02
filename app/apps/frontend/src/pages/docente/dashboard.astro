@@ -1,338 +1,96 @@
 ---
-import Header from '../../components/Headerdocente.astro';
-import Sidebar from '../../components/Sidebardocente.astro';
-import PageToast from '../../components/ui/PageToast.astro';
+import Header from "../../components/docente/DocenteHeader.svelte";
+import Sidebar from "../../components/Sidebardocente.astro";
+import DashboardDocente from "../../components/docente/DashboardDocente.svelte";
 ---
 
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Programa Bombeiro Mirim</title>
-    <style>
-        :root {
-            --primary-color: #4A5568;
-            --secondary-color: #E2E8F0;
-            --accent-color: #3182CE;
-            --danger-color: #E53E3E;
-            --bg-color: #F7FAFC;
-            --text-color: #2D3748;
-            --label-color: #718096;
-            --border-color: #CBD5E0;
-            --white: #FFFFFF;
-            --success-color: #48BB78;
-            --warning-color: #ED8936;
-            --info-color: #4299E1;
-            --purple-color: #9F7AEA;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-        }
-        .main-content {
-            padding: 120px 1.5rem 40px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-        }
-        .content-wrapper {
-            width: 100%;
-            max-width: 1280px;
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
-        .container {
-            flex: 1;
-            max-width: 100%;
-            background-color: var(--white);
-            padding: 2.5rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid var(--secondary-color);
-        }
-        .page-header h1 {
-            font-size: 1.8rem;
-            margin: 0;
-            color: var(--text-color);
-        }
-        .btn-update {
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            border: none;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            background-color: var(--primary-color);
-            color: var(--white);
-            white-space: nowrap;
-        }
-        .btn-update:hover {
-            background-color: #2D3748;
-        }
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .metric-card {
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .metric-card.blue {
-            background: linear-gradient(135deg, var(--info-color) 0%, #2B6CB0 100%);
-            color: white;
-        }
-        .metric-card.green {
-            background: linear-gradient(135deg, var(--success-color) 0%, #2F855A 100%);
-            color: white;
-        }
-        .metric-card.orange {
-            background: linear-gradient(135deg, var(--warning-color) 0%, #C05621 100%);
-            color: white;
-        }
-        .metric-card.purple {
-            background: linear-gradient(135deg, var(--purple-color) 0%, #6B46C1 100%);
-            color: white;
-        }
-        .metric-card h3 {
-            font-size: 0.9rem;
-            margin: 0 0 0.5rem 0;
-            font-weight: 500;
-            opacity: 0.9;
-        }
-        .metric-card .value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 0;
-        }
-        .sections-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-        .section-card {
-            background-color: var(--white);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        .section-card h2 {
-            font-size: 1.2rem;
-            margin: 0 0 1.5rem 0;
-            color: var(--text-color);
-            font-weight: 600;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--secondary-color);
-        }
-        .section-content {
-            min-height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--label-color);
-            font-size: 0.95rem;
-        }
-        .empty-message {
-            text-align: center;
-            padding: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 100px 1rem 20px;
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dashboard - Programa Bombeiro Mirim</title>
+        <style>
+            :root {
+                --primary-color: #4a5568;
+                --secondary-color: #e2e8f0;
+                --accent-color: #3182ce;
+                --danger-color: #e53e3e;
+                --bg-color: #f7fafc;
+                --text-color: #2d3748;
+                --label-color: #718096;
+                --border-color: #cbd5e0;
+                --white: #ffffff;
+                --success-color: #48bb78;
+                --warning-color: #ed8936;
+                --info-color: #4299e1;
             }
-
+            body {
+                font-family: "Inter", sans-serif;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                margin: 0;
+                padding: 0;
+            }
+            .main-content {
+                padding: 120px 1.5rem 40px;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+            }
             .content-wrapper {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .container {
-                padding: 1.5rem;
-                border-radius: 1rem;
-            }
-
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .page-header h1 {
-                font-size: 1.5rem;
-            }
-
-            .btn-update {
                 width: 100%;
+                max-width: 1280px;
+                display: flex;
+                gap: 20px;
+                align-items: flex-start;
             }
-
-            .metrics-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-            }
-
-            .sections-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .main-content {
-                padding: 80px 0.5rem 20px;
-            }
-
             .container {
-                padding: 1rem;
-                border-radius: 0.75rem;
+                flex: 1;
+                max-width: 100%;
+                background-color: var(--white);
+                padding: 2.5rem;
+                border-radius: 1.5rem;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             }
 
-            .page-header h1 {
-                font-size: 1.25rem;
+            @media (max-width: 768px) {
+                .main-content {
+                    padding: 100px 1rem 20px;
+                }
+
+                .content-wrapper {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+
+                .container {
+                    padding: 1.5rem;
+                    border-radius: 1rem;
+                }
             }
 
-            .metrics-grid {
-                grid-template-columns: 1fr;
+            @media (max-width: 480px) {
+                .main-content {
+                    padding: 80px 0.5rem 20px;
+                }
+
+                .container {
+                    padding: 1rem;
+                    border-radius: 0.75rem;
+                }
             }
+        </style>
+    </head>
+    <body>
+        <Header client:load />
 
-            .metric-card .value {
-                font-size: 2rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <Header />
-    
-    <main class="main-content">
-        <div class="content-wrapper">
-            <Sidebar />
-            <div class="container">
-                <div class="page-header">
-                    <h1>Dashboard</h1>
-                    <button type="button" class="btn-update" id="btn-update">Atualizar</button>
-                </div>
-
-                <div class="metrics-grid">
-                    <div class="metric-card blue">
-                        <h3>Total de Alunos</h3>
-                        <p class="value" id="total-alunos">3</p>
-                    </div>
-                    <div class="metric-card green">
-                        <h3>Taxa de Presença</h3>
-                        <p class="value" id="taxa-presenca">100%</p>
-                    </div>
-                    <div class="metric-card orange">
-                        <h3>Alertas Médicos</h3>
-                        <p class="value" id="alertas-medicos">1</p>
-                    </div>
-                    <div class="metric-card purple">
-                        <h3>Acompanhamento Especial</h3>
-                        <p class="value" id="acompanhamento-especial">1</p>
-                    </div>
-                </div>
-
-                <div class="sections-grid">
-                    <div class="section-card">
-                        <h2>Resumo por Turma</h2>
-                        <div class="section-content">
-                            <div class="empty-message">
-                                Nenhuma informação disponível no momento.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="section-card">
-                        <h2>Últimas Atividades</h2>
-                        <div class="section-content">
-                            <div class="empty-message">
-                                Nenhuma atividade registrada no momento.
-                            </div>
-                        </div>
-                    </div>
+        <main class="main-content">
+            <div class="content-wrapper">
+                <Sidebar />
+                <div class="container">
+                    <DashboardDocente client:load />
                 </div>
             </div>
-        </div>
-    </main>
-
-    <script>
-        const btnUpdate = document.getElementById('btn-update');
-
-        // Função para atualizar dashboard
-        async function atualizarDashboard() {
-            btnUpdate.disabled = true;
-            btnUpdate.textContent = 'Atualizando...';
-
-            try {
-                // Aqui você fará a chamada à API para atualizar os dados do dashboard
-                // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
-                // const response = await fetch(`${backendUrl}/dashboard`);
-                // const data = await response.json();
-                
-                // Atualizar métricas
-                // document.getElementById('total-alunos').textContent = data.total_alunos || 0;
-                // document.getElementById('taxa-presenca').textContent = `${data.taxa_presenca || 0}%`;
-                // document.getElementById('alertas-medicos').textContent = data.alertas_medicos || 0;
-                // document.getElementById('acompanhamento-especial').textContent = data.acompanhamento_especial || 0;
-
-                // Por enquanto, apenas simular atualização
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                if (typeof window.showPageToast === 'function') {
-                    window.showPageToast('Dashboard atualizado com sucesso!', 'success');
-                }
-            } catch (error) {
-                console.error('Erro ao atualizar dashboard:', error);
-                if (typeof window.showPageToast === 'function') {
-                    window.showPageToast('Erro ao atualizar dashboard. Tente novamente.', 'error');
-                }
-            } finally {
-                btnUpdate.disabled = false;
-                btnUpdate.textContent = 'Atualizar';
-            }
-        }
-
-        // Event listener para o botão de atualizar
-        btnUpdate.addEventListener('click', atualizarDashboard);
-
-        // Carregar dados iniciais do dashboard
-        async function carregarDashboard() {
-            try {
-                // const backendUrl = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
-                // const response = await fetch(`${backendUrl}/dashboard`);
-                // const data = await response.json();
-                
-                // Atualizar métricas com dados da API
-                // document.getElementById('total-alunos').textContent = data.total_alunos || 0;
-                // document.getElementById('taxa-presenca').textContent = `${data.taxa_presenca || 0}%`;
-                // document.getElementById('alertas-medicos').textContent = data.alertas_medicos || 0;
-                // document.getElementById('acompanhamento-especial').textContent = data.acompanhamento_especial || 0;
-            } catch (error) {
-                console.error('Erro ao carregar dashboard:', error);
-            }
-        }
-
-        // Carregar dados ao inicializar
-        // carregarDashboard();
-    </script>
-    <PageToast />
-</body>
+        </main>
+    </body>
 </html>
-
-
-
-

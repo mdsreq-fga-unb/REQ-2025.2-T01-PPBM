@@ -10,7 +10,6 @@ type TurmasListQuery = {
     page?: string;
     pageSize?: string;
     unidade?: string;
-    cidade?: string;
     nome?: string;
 };
 
@@ -51,17 +50,30 @@ async function countAlunosInTurma(turmaId: number): Promise<number | null> {
     return count ?? 0;
 }
 
+async function countDocentesInTurma(turmaId: number): Promise<number | null> {
+    const { count, error } = await SupabaseWrapper.get()
+        .from('docentes_por_turma')
+        .select('id_docente', { count: 'exact', head: true })
+        .eq('id_turma', turmaId);
+
+    if (error) {
+        log.error('countDocentes', 'Erro ao contar docentes na turma', { turmaId, error });
+        return null;
+    }
+
+    return count ?? 0;
+}
+
 export default class TurmaController {
     static async getTurmas(req: Request<unknown, unknown, unknown, TurmasListQuery>, res: Response): Promise<Response | void> {
         try {
             const { page, pageSize } = parsePagination(req.query.page, req.query.pageSize);
-            const { unidade, cidade, nome } = req.query;
+            const { unidade, nome } = req.query;
 
             log.info('getTurmas', 'Listando turmas', {
                 page,
                 pageSize,
                 unidade,
-                cidade,
                 nome
             });
 
@@ -75,18 +87,13 @@ export default class TurmaController {
                     created_at,
                     nome_turma,
                     limite_alunos_turma,
-                    unidade_turma,
-                    cidade_turma
+                    unidade_turma
                 `, { count: 'exact' })
                 .order('created_at', { ascending: false })
                 .range(start, end);
 
             if (unidade) {
                 query = query.ilike('unidade_turma', `%${unidade.trim()}%`);
-            }
-
-            if (cidade) {
-                query = query.ilike('cidade_turma', `%${cidade.trim()}%`);
             }
 
             if (nome) {
@@ -103,9 +110,24 @@ export default class TurmaController {
                 });
             }
 
+            // Add alunos_count and docentes_count for each turma
+            const turmasWithCount = await Promise.all(
+                (data || []).map(async (turma) => {
+                    const [alunosCount, docentesCount] = await Promise.all([
+                        countAlunosInTurma(turma.id_turma),
+                        countDocentesInTurma(turma.id_turma)
+                    ]);
+                    return {
+                        ...turma,
+                        alunos_count: alunosCount ?? 0,
+                        docentes_count: docentesCount ?? 0
+                    };
+                })
+            );
+
             return res.status(200).json({
                 success: true,
-                data: data || [],
+                data: turmasWithCount,
                 total: count ?? data?.length ?? 0,
                 page,
                 pageSize
@@ -137,8 +159,7 @@ export default class TurmaController {
                     created_at,
                     nome_turma,
                     limite_alunos_turma,
-                    unidade_turma,
-                    cidade_turma
+                    unidade_turma
                 `)
                 .eq('id_turma', Number(id))
                 .maybeSingle();
@@ -191,8 +212,7 @@ export default class TurmaController {
             const insertPayload = {
                 nome_turma: payload.nome_turma,
                 limite_alunos_turma: Number(payload.limite_alunos_turma),
-                unidade_turma: payload.unidade_turma,
-                cidade_turma: payload.cidade_turma ?? null
+                unidade_turma: payload.unidade_turma
             };
 
             log.info('createTurma', 'Criando turma', { nome: insertPayload.nome_turma });
@@ -264,10 +284,6 @@ export default class TurmaController {
 
             if (payload.unidade_turma !== undefined) {
                 updates.unidade_turma = payload.unidade_turma;
-            }
-
-            if (payload.cidade_turma !== undefined) {
-                updates.cidade_turma = payload.cidade_turma;
             }
 
             if (payload.limite_alunos_turma !== undefined) {

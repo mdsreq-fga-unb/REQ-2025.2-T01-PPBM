@@ -25,11 +25,15 @@ CREATE TABLE public.alunos (
   cpf_aluno text,
   tipo_sanguineo text,
   nome_guerra text,
-  graduacao text,
+  serie text,
   escola_unidade text,
   cidade text,
   neurodivergente boolean,
   updated_at timestamp with time zone,
+  alergias text,
+  condicoes_medicas text,
+  observacoes_neuro text,
+  sexo text,
   CONSTRAINT alunos_pkey PRIMARY KEY (id_aluno)
 );
 CREATE TABLE public.alunos_por_turma (
@@ -158,6 +162,7 @@ CREATE TABLE public.responsaveis_por_alunos (
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   id_responsavel bigint,
   id_aluno bigint,
+  parentesco text,
   CONSTRAINT responsaveis_por_alunos_pkey PRIMARY KEY (id_responsaveis_por_alunos),
   CONSTRAINT responsaveis_por_aluno_id_responsavel_fkey FOREIGN KEY (id_responsavel) REFERENCES public.responsaveis(id_responsavel),
   CONSTRAINT responsaveis_por_aluno_id_aluno_fkey FOREIGN KEY (id_aluno) REFERENCES public.alunos(id_aluno)

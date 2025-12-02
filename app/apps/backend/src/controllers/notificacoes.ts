@@ -515,6 +515,7 @@ export default class NotificacaoController {
                 .from('responsaveis_por_alunos')
                 .select(`
                     id_responsaveis_por_alunos,
+                    parentesco,
                     responsaveis (
                         id_responsavel,
                         nome_responsavel,
@@ -532,9 +533,12 @@ export default class NotificacaoController {
                 });
             }
 
-            // Flatten the response
+            // Flatten the response and include parentesco
             const responsaveis = (data || [])
-                .map(item => item.responsaveis)
+                .map(item => ({
+                    ...(item.responsaveis as object),
+                    parentesco: item.parentesco
+                }))
                 .filter(Boolean);
 
             return res.status(200).json({

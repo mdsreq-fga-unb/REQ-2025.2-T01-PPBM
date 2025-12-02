@@ -29,36 +29,36 @@
     }
 
     .page-toast.success {
-        background-color: #48BB78;
+        background-color: #48bb78;
         color: white;
     }
 
     .page-toast.error {
-        background-color: #E53E3E;
+        background-color: #e53e3e;
         color: white;
     }
 
     .page-toast.warning {
-        background-color: #ED8936;
+        background-color: #ed8936;
         color: white;
     }
 
     .page-toast.info {
-        background-color: #4299E1;
+        background-color: #4299e1;
         color: white;
     }
 </style>
 
 <script is:inline>
-    window.showPageToast = function(message, type = 'info', duration = 4000) {
-        const toast = document.getElementById('page-toast');
+    window.showPageToast = function (message, type = "info", duration = 4000) {
+        const toast = document.getElementById("page-toast");
         if (!toast) return;
-        
+
         toast.textContent = message;
-        toast.className = 'page-toast ' + type + ' show';
-        
+        toast.className = "page-toast " + type + " show";
+
         setTimeout(() => {
-            toast.classList.remove('show');
+            toast.classList.remove("show");
         }, duration);
     };
 </script>

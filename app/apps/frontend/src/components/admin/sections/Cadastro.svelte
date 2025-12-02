@@ -1,71 +1,89 @@
 <script lang="ts">
-	import Toast from '../../ui/Toast.svelte';
+	import Toast from "../../ui/Toast.svelte";
 
-	let nome = '';
-	let cpf = '';
-	let nascimento = '';
-	let escola = '';
-	let turmaSelect = '';
-	let idInterno = '';
-	let nomeResp = '';
-	let contatoResp = '';
-	let parentesco = '';
-	let condicaoMedica = 'normal';
-	let alergias = '';
-	let obsMedicas = '';
+	let nome = "";
+	let cpf = "";
+	let nascimento = "";
+	let escola = "";
+	let turmaSelect = "";
+	let idInterno = "";
+	let nomeResp = "";
+	let contatoResp = "";
+	let parentesco = "";
+	let condicaoMedica = "normal";
+	let alergias = "";
+	let obsMedicas = "";
 	let acompanhamento = false;
-	let tipoAcompanhamento = '';
-	let obsAcompanhamento = '';
+	let tipoAcompanhamento = "";
+	let obsAcompanhamento = "";
 	let mostrarAlertaMedico = false;
 	let mostrarAcompanhamentoExtra = false;
 
 	// Toast state
-	let toastMessage = '';
-	let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+	let toastMessage = "";
+	let toastType: "success" | "error" | "warning" | "info" = "info";
 	let showToast = false;
 
-	function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+	function displayToast(
+		message: string,
+		type: "success" | "error" | "warning" | "info" = "info",
+	) {
 		toastMessage = message;
 		toastType = type;
 		showToast = true;
 	}
 
 	function handleNovo() {
-		nome = '';
-		cpf = '';
-		nascimento = '';
-		escola = '';
-		turmaSelect = '';
-		idInterno = '';
-		nomeResp = '';
-		contatoResp = '';
-		parentesco = '';
-		condicaoMedica = 'normal';
-		alergias = '';
-		obsMedicas = '';
+		nome = "";
+		cpf = "";
+		nascimento = "";
+		escola = "";
+		turmaSelect = "";
+		idInterno = "";
+		nomeResp = "";
+		contatoResp = "";
+		parentesco = "";
+		condicaoMedica = "normal";
+		alergias = "";
+		obsMedicas = "";
 		acompanhamento = false;
-		tipoAcompanhamento = '';
-		obsAcompanhamento = '';
+		tipoAcompanhamento = "";
+		obsAcompanhamento = "";
 		mostrarAlertaMedico = false;
 		mostrarAcompanhamentoExtra = false;
 	}
 
 	function handleSalvar() {
-		displayToast('Funcionalidade em desenvolvimento. O cadastro será salvo em breve.', 'info');
+		displayToast(
+			"Funcionalidade em desenvolvimento. O cadastro será salvo em breve.",
+			"info",
+		);
 	}
 
 	$: {
-		const condicoesCriticas = ['asma', 'diabetes', 'epilepsia', 'cardiopatia'];
+		const condicoesCriticas = [
+			"asma",
+			"diabetes",
+			"epilepsia",
+			"cardiopatia",
+		];
 		mostrarAlertaMedico = condicoesCriticas.includes(condicaoMedica);
 		mostrarAcompanhamentoExtra = acompanhamento;
 	}
 </script>
 
-<section id="cadastro" class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200">
+<section
+	id="cadastro"
+	class="bg-white rounded-3xl p-6 soft-shadow border border-slate-200"
+>
 	<div class="flex items-center justify-between mb-6">
 		<div>
-			<h2 class="text-2xl font-bold text-slate-900 mb-1">Cadastro de Crianças</h2>
-			<p class="text-slate-500">Gerencie os dados das crianças do programa</p>
+			<h2 class="text-2xl font-bold text-slate-900 mb-1">
+				Cadastro de Crianças
+			</h2>
+			<p class="text-slate-500">
+				Gerencie os dados das crianças do programa
+			</p>
 		</div>
 		<div class="flex gap-2">
 			<button
@@ -91,7 +109,9 @@
 			<h3 class="font-semibold mb-3 text-[#E11D48]">Dados Básicos</h3>
 			<div class="grid md:grid-cols-3 gap-4">
 				<div>
-					<label class="block text-sm font-medium mb-1">Nome completo *</label>
+					<label class="block text-sm font-medium mb-1"
+						>Nome completo *</label
+					>
 					<input
 						bind:value={nome}
 						required
@@ -100,7 +120,9 @@
 					/>
 				</div>
 				<div>
-					<label class="block text-sm font-medium mb-1">CPF da criança *</label>
+					<label class="block text-sm font-medium mb-1"
+						>CPF da criança *</label
+					>
 					<input
 						bind:value={cpf}
 						required
@@ -108,17 +130,23 @@
 						placeholder="000.000.000-00"
 						maxlength="14"
 					/>
-					<div class="text-red-500 text-xs mt-1 hidden">CPF inválido</div>
+					<div class="text-red-500 text-xs mt-1 hidden">
+						CPF inválido
+					</div>
 				</div>
 				<div>
-					<label class="block text-sm font-medium mb-1">Data de nascimento *</label>
+					<label class="block text-sm font-medium mb-1"
+						>Data de nascimento *</label
+					>
 					<input
 						bind:value={nascimento}
 						type="date"
 						required
 						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 					/>
-					<div class="text-red-500 text-xs mt-1 hidden">Criança deve ter entre 7 e 14 anos</div>
+					<div class="text-red-500 text-xs mt-1 hidden">
+						Criança deve ter entre 7 e 14 anos
+					</div>
 				</div>
 				<div>
 					<label class="block text-sm font-medium mb-1">Escola</label>
@@ -129,7 +157,8 @@
 					/>
 				</div>
 				<div>
-					<label class="block text-sm font-medium mb-1">Turma *</label>
+					<label class="block text-sm font-medium mb-1">Turma *</label
+					>
 					<select
 						bind:value={turmaSelect}
 						required
@@ -142,7 +171,9 @@
 					</select>
 				</div>
 				<div>
-					<label class="block text-sm font-medium mb-1">ID interno</label>
+					<label class="block text-sm font-medium mb-1"
+						>ID interno</label
+					>
 					<input
 						bind:value={idInterno}
 						disabled
@@ -155,10 +186,14 @@
 
 		<!-- Responsável Principal -->
 		<div class="md:col-span-2 border-b pb-4 mb-4">
-			<h3 class="font-semibold mb-3 text-[#E11D48]">Responsável Principal</h3>
+			<h3 class="font-semibold mb-3 text-[#E11D48]">
+				Responsável Principal
+			</h3>
 			<div class="grid md:grid-cols-3 gap-4">
 				<div>
-					<label class="block text-sm font-medium mb-1">Nome completo *</label>
+					<label class="block text-sm font-medium mb-1"
+						>Nome completo *</label
+					>
 					<input
 						bind:value={nomeResp}
 						required
@@ -167,17 +202,23 @@
 					/>
 				</div>
 				<div>
-					<label class="block text-sm font-medium mb-1">Contato *</label>
+					<label class="block text-sm font-medium mb-1"
+						>Contato *</label
+					>
 					<input
 						bind:value={contatoResp}
 						required
 						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 						placeholder="(xx) xxxxx-xxxx"
 					/>
-					<div class="text-red-500 text-xs mt-1 hidden">Formato inválido</div>
+					<div class="text-red-500 text-xs mt-1 hidden">
+						Formato inválido
+					</div>
 				</div>
 				<div>
-					<label class="block text-sm font-medium mb-1">Parentesco *</label>
+					<label class="block text-sm font-medium mb-1"
+						>Parentesco *</label
+					>
 					<select
 						bind:value={parentesco}
 						required
@@ -190,7 +231,9 @@
 						<option value="Avó">Avó</option>
 						<option value="Tio">Tio</option>
 						<option value="Tia">Tia</option>
-						<option value="Responsável Legal">Responsável Legal</option>
+						<option value="Responsável Legal"
+							>Responsável Legal</option
+						>
 					</select>
 				</div>
 			</div>
@@ -198,10 +241,14 @@
 
 		<!-- Informações Médicas -->
 		<div class="md:col-span-2 border-b pb-4 mb-4">
-			<h3 class="font-semibold mb-3 text-[#E11D48]">Informações Médicas</h3>
+			<h3 class="font-semibold mb-3 text-[#E11D48]">
+				Informações Médicas
+			</h3>
 			<div class="grid md:grid-cols-2 gap-4">
 				<div>
-					<label class="block text-sm font-medium mb-1">Condição médica</label>
+					<label class="block text-sm font-medium mb-1"
+						>Condição médica</label
+					>
 					<select
 						bind:value={condicaoMedica}
 						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
@@ -215,7 +262,9 @@
 					</select>
 				</div>
 				<div>
-					<label class="block text-sm font-medium mb-1">Alergias</label>
+					<label class="block text-sm font-medium mb-1"
+						>Alergias</label
+					>
 					<input
 						bind:value={alergias}
 						class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
@@ -224,7 +273,9 @@
 				</div>
 			</div>
 			<div class="mt-3">
-				<label class="block text-sm font-medium mb-1">Observações médicas importantes</label>
+				<label class="block text-sm font-medium mb-1"
+					>Observações médicas importantes</label
+				>
 				<textarea
 					bind:value={obsMedicas}
 					rows="2"
@@ -233,9 +284,11 @@
 				></textarea>
 			</div>
 			{#if mostrarAlertaMedico}
-				<div class="mt-3 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 alert-critical">
-					⚠️ <strong>ATENÇÃO:</strong> Esta criança possui condição médica que requer cuidados
-					especiais!
+				<div
+					class="mt-3 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 alert-critical"
+				>
+					⚠️ <strong>ATENÇÃO:</strong> Esta criança possui condição médica
+					que requer cuidados especiais!
 				</div>
 			{/if}
 		</div>
@@ -256,21 +309,29 @@
 			{#if mostrarAcompanhamentoExtra}
 				<div class="grid md:grid-cols-2 gap-4">
 					<div>
-						<label class="block text-sm font-medium mb-1">Tipo de necessidade</label>
+						<label class="block text-sm font-medium mb-1"
+							>Tipo de necessidade</label
+						>
 						<select
 							bind:value={tipoAcompanhamento}
 							class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#E11D48]"
 						>
 							<option value="">Selecione</option>
-							<option value="autismo">Transtorno do Espectro Autista</option>
+							<option value="autismo"
+								>Transtorno do Espectro Autista</option
+							>
 							<option value="tdah">TDAH</option>
 							<option value="dislexia">Dislexia</option>
-							<option value="deficiencia_intelectual">Deficiência Intelectual</option>
+							<option value="deficiencia_intelectual"
+								>Deficiência Intelectual</option
+							>
 							<option value="outros">Outros</option>
 						</select>
 					</div>
 					<div>
-						<label class="block text-sm font-medium mb-1">Observações</label>
+						<label class="block text-sm font-medium mb-1"
+							>Observações</label
+						>
 						<textarea
 							bind:value={obsAcompanhamento}
 							rows="2"
@@ -285,9 +346,4 @@
 </section>
 
 <!-- Toast notifications -->
-<Toast 
-	bind:show={showToast} 
-	message={toastMessage} 
-	type={toastType} 
-/>
-
+<Toast bind:show={showToast} message={toastMessage} type={toastType} />

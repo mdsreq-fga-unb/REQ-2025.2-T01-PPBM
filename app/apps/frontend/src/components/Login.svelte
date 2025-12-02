@@ -164,7 +164,9 @@
 							bind:checked={showPassword}
 							class="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary"
 						/>
-						<span class="ml-2 text-sm text-slate-600">Mostrar senha</span>
+						<span class="ml-2 text-sm text-slate-600"
+							>Mostrar senha</span
+						>
 					</label>
 				</div>
 

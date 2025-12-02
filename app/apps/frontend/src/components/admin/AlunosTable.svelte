@@ -1,11 +1,13 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import DataTable from '../ui/DataTable.svelte';
-    import Toast from '../ui/Toast.svelte';
-    import ConfirmDialog from '../ui/ConfirmDialog.svelte';
-    import type { Column } from '../../interfaces/table';
+    import { onMount } from "svelte";
+    import DataTable from "../ui/DataTable.svelte";
+    import Toast from "../ui/Toast.svelte";
+    import ConfirmDialog from "../ui/ConfirmDialog.svelte";
+    import FormSelect from "../ui/FormSelect.svelte";
+    import AlunoDetailModal from "./AlunoDetailModal.svelte";
+    import type { Column } from "../../interfaces/table";
 
-    export let apiUrl: string = '';
+    export let apiUrl: string = "";
 
     interface Aluno {
         id_aluno: number;
@@ -13,9 +15,10 @@
         cpf_aluno: string;
         data_nascimento_aluno: string;
         escola_unidade: string;
-        cidade: string;
         neurodivergente: boolean;
         turma_id?: number;
+        alunos_por_turma?: { id_turma: number }[];
+        turma_info?: Turma;
     }
 
     interface Turma {
@@ -27,12 +30,23 @@
     let alunosData: Aluno[] = [];
     let turmas: Turma[] = [];
     let loading = true;
-    let errorMessage = '';
+    let errorMessage = "";
 
     // Filter state
-    let searchTerm = '';
-    let turmaFilter = '';
-    let statusFilter = '';
+    let searchTerm = "";
+    let turmaFilter = "";
+    let unidadeFilter = "";
+    let statusFilter = "";
+
+    // Get unique unidades from turmas
+    $: unidades = [
+        ...new Set(turmas.map((t) => t.unidade_turma).filter(Boolean)),
+    ];
+
+    // Filter turmas by selected unidade
+    $: filteredTurmas = unidadeFilter
+        ? turmas.filter((t) => t.unidade_turma === unidadeFilter)
+        : turmas;
 
     // Pagination state
     let currentPage = 1;
@@ -41,18 +55,25 @@
     const pageSize = 20;
 
     // Toast state
-    let toastMessage = '';
-    let toastType: 'success' | 'error' | 'warning' | 'info' = 'info';
+    let toastMessage = "";
+    let toastType: "success" | "error" | "warning" | "info" = "info";
     let showToast = false;
 
     // Confirm dialog state
     let showConfirmDialog = false;
-    let confirmDialogTitle = '';
-    let confirmDialogMessage = '';
+    let confirmDialogTitle = "";
+    let confirmDialogMessage = "";
     let confirmDialogAction: (() => Promise<void>) | null = null;
     let confirmLoading = false;
 
-    function displayToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
+    // Detail modal state
+    let showDetailModal = false;
+    let selectedAlunoId: number | null = null;
+
+    function displayToast(
+        message: string,
+        type: "success" | "error" | "warning" | "info" = "info",
+    ) {
         toastMessage = message;
         toastType = type;
         showToast = true;
@@ -61,149 +82,179 @@
     // Stats
     $: stats = {
         total: totalAlunos,
-        neurodivergente: alunosData.filter(a => a.neurodivergente === true).length
+        neurodivergente: alunosData.filter((a) => a.neurodivergente === true)
+            .length,
     };
 
     function formatCPF(cpf: string | null): string {
-        if (!cpf) return '-';
-        const cleaned = cpf.replace(/\D/g, '');
+        if (!cpf) return "-";
+        const cleaned = cpf.replace(/\D/g, "");
         if (cleaned.length !== 11) return cpf;
-        return cleaned.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        return cleaned.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
 
     // Define table columns
     const columns: Column[] = [
         {
-            key: 'aluno',
-            label: 'Aluno',
+            key: "aluno",
+            label: "Aluno",
             sortable: true,
             render: (row: Aluno) => ({
-                component: 'html',
+                component: "html",
                 props: {
                     html: `
                         <div class="student-info">
-                            <span class="student-name">${row.nome_aluno || '-'}</span>
-                            <span class="student-id">ID: ${row.id_aluno}</span>
+                            <span class="student-name">${row.nome_aluno || "-"}</span>
                         </div>
-                    `
+                    `,
+                },
+            }),
+        },
+        {
+            key: "cpf",
+            label: "CPF",
+            render: (row: Aluno) => formatCPF(row.cpf_aluno),
+        },
+        {
+            key: "unidade",
+            label: "Unidade",
+            sortable: true,
+            render: (row: Aluno) => {
+                // Get unidade from turma_info if available
+                if (row.turma_info?.unidade_turma) {
+                    return row.turma_info.unidade_turma;
                 }
-            })
+                return row.escola_unidade || "-";
+            },
         },
         {
-            key: 'cpf',
-            label: 'CPF',
-            render: (row: Aluno) => formatCPF(row.cpf_aluno)
-        },
-        {
-            key: 'escola',
-            label: 'Escola/Unidade',
-            sortable: true,
-            render: (row: Aluno) => row.escola_unidade || '-'
-        },
-        {
-            key: 'cidade',
-            label: 'Cidade',
-            sortable: true,
-            render: (row: Aluno) => row.cidade || '-'
-        },
-        {
-            key: 'status',
-            label: 'Status',
+            key: "status",
+            label: "Status",
             render: (row: Aluno) => {
                 const isNeurodivergente = row.neurodivergente === true;
                 return {
-                    component: 'badge',
+                    component: "badge",
                     props: {
-                        variant: isNeurodivergente ? 'purple' : 'success',
-                        text: isNeurodivergente ? '📚 Acomp. Especial' : 'Normal'
-                    }
+                        variant: isNeurodivergente ? "purple" : "success",
+                        text: isNeurodivergente
+                            ? "📚 Acomp. Especial"
+                            : "Normal",
+                    },
                 };
-            }
+            },
         },
         {
-            key: 'acoes',
-            label: 'Ações',
-            width: 'min',
+            key: "acoes",
+            label: "Ações",
+            width: "min",
             render: (row: Aluno) => [
                 {
-                    component: 'button',
+                    component: "button",
                     props: {
-                        variant: 'primary',
-                        text: 'Editar',
-                        onClick: () => editarAluno(row.id_aluno)
-                    }
+                        variant: "info",
+                        text: "Detalhes",
+                        onClick: () => verDetalhes(row.id_aluno),
+                    },
                 },
                 {
-                    component: 'button',
+                    component: "button",
                     props: {
-                        variant: 'danger',
-                        text: 'Remover',
-                        onClick: () => removerAluno(row.id_aluno, row.nome_aluno || '')
-                    }
-                }
-            ]
-        }
+                        variant: "primary",
+                        text: "Editar",
+                        onClick: () => editarAluno(row.id_aluno),
+                    },
+                },
+                {
+                    component: "button",
+                    props: {
+                        variant: "danger",
+                        text: "Remover",
+                        onClick: () =>
+                            removerAluno(row.id_aluno, row.nome_aluno || ""),
+                    },
+                },
+            ],
+        },
     ];
 
     // Map rows with id field for the DataTable
-    $: tableRows = alunosData.map(aluno => ({
+    $: tableRows = alunosData.map((aluno) => ({
         ...aluno,
-        id: aluno.id_aluno
+        id: aluno.id_aluno,
     }));
 
     async function getAuthToken(): Promise<string | null> {
-        return localStorage.getItem('bm_token');
+        return localStorage.getItem("bm_token");
     }
 
     async function loadTurmas() {
         try {
             const token = await getAuthToken();
-            const response = await fetch(`${apiUrl}/turmas/listar?pageSize=100`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await fetch(
+                `${apiUrl}/turmas/listar?pageSize=100`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                },
+            );
 
-            if (!response.ok) throw new Error('Erro ao carregar turmas');
+            if (!response.ok) throw new Error("Erro ao carregar turmas");
 
             const data = await response.json();
             turmas = data.data || [];
         } catch (error) {
-            console.error('Erro ao carregar turmas:', error);
+            console.error("Erro ao carregar turmas:", error);
         }
     }
 
     async function loadAlunos() {
         loading = true;
-        errorMessage = '';
+        errorMessage = "";
 
         try {
             const token = await getAuthToken();
             const params = new URLSearchParams();
-            params.append('page', currentPage.toString());
-            params.append('pageSize', pageSize.toString());
+            params.append("page", currentPage.toString());
+            params.append("pageSize", pageSize.toString());
 
-            if (searchTerm) params.append('nome', searchTerm);
-            if (turmaFilter) params.append('turmaId', turmaFilter);
-            if (statusFilter) params.append('neurodivergente', statusFilter);
+            if (searchTerm) params.append("nome", searchTerm);
+            if (turmaFilter) params.append("turmaId", turmaFilter);
+            if (statusFilter) params.append("neurodivergente", statusFilter);
 
             const response = await fetch(`${apiUrl}/alunos/listar?${params}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
             });
 
-            if (!response.ok) throw new Error('Erro ao carregar alunos');
+            if (!response.ok) throw new Error("Erro ao carregar alunos");
 
             const data = await response.json();
-            alunosData = data.data || [];
+            const rawAlunos = data.data || [];
+
+            // Add turma_info to each aluno based on their alunos_por_turma relationship
+            alunosData = rawAlunos.map((aluno: Aluno) => {
+                const turmaId = aluno.alunos_por_turma?.[0]?.id_turma;
+                const turmaInfo = turmaId
+                    ? turmas.find((t) => t.id_turma === turmaId)
+                    : undefined;
+                return {
+                    ...aluno,
+                    turma_info: turmaInfo,
+                };
+            });
+
             totalAlunos = data.total || 0;
             totalPages = Math.ceil(totalAlunos / pageSize);
         } catch (error) {
-            console.error('Erro ao carregar alunos:', error);
-            errorMessage = error instanceof Error ? error.message : 'Erro ao carregar alunos';
+            console.error("Erro ao carregar alunos:", error);
+            errorMessage =
+                error instanceof Error
+                    ? error.message
+                    : "Erro ao carregar alunos";
         } finally {
             loading = false;
         }
@@ -229,36 +280,51 @@
         loadAlunos();
     }
 
+    function handleUnidadeFilterChange() {
+        // Reset turma filter when unidade changes since turmas are filtered
+        turmaFilter = "";
+        currentPage = 1;
+        loadAlunos();
+    }
+
+    function verDetalhes(id: number) {
+        selectedAlunoId = id;
+        showDetailModal = true;
+    }
+
     function editarAluno(id: number) {
         window.location.href = `/admin/cadastrar-alunos?id=${id}`;
     }
 
     async function removerAluno(id: number, nome: string) {
-        confirmDialogTitle = 'Remover Aluno';
+        confirmDialogTitle = "Remover Aluno";
         confirmDialogMessage = `Tem certeza que deseja remover o aluno <strong>"${nome}"</strong>?<br><br>Esta ação não pode ser desfeita.`;
         confirmDialogAction = async () => {
             confirmLoading = true;
             try {
                 const token = await getAuthToken();
                 const response = await fetch(`${apiUrl}/alunos/deletar/${id}`, {
-                    method: 'DELETE',
+                    method: "DELETE",
                     headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
                 });
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.error || 'Erro ao remover aluno');
+                    throw new Error(errorData.error || "Erro ao remover aluno");
                 }
 
                 showConfirmDialog = false;
-                displayToast('Aluno removido com sucesso!', 'success');
+                displayToast("Aluno removido com sucesso!", "success");
                 await loadAlunos();
             } catch (error) {
-                console.error('Erro ao remover aluno:', error);
-                displayToast(`Erro ao remover aluno: ${error instanceof Error ? error.message : 'Erro desconhecido'}`, 'error');
+                console.error("Erro ao remover aluno:", error);
+                displayToast(
+                    `Erro ao remover aluno: ${error instanceof Error ? error.message : "Erro desconhecido"}`,
+                    "error",
+                );
             } finally {
                 confirmLoading = false;
             }
@@ -268,32 +334,39 @@
 
     function exportarLista() {
         if (alunosData.length === 0) {
-            displayToast('Nenhum aluno para exportar', 'warning');
+            displayToast("Nenhum aluno para exportar", "warning");
             return;
         }
 
         const dados = alunosData.map((aluno) => ({
-            Nome: aluno.nome_aluno || '',
+            Nome: aluno.nome_aluno || "",
             ID: aluno.id_aluno,
             CPF: formatCPF(aluno.cpf_aluno),
-            'Data Nascimento': aluno.data_nascimento_aluno || '',
-            'Escola/Unidade': aluno.escola_unidade || '',
-            Cidade: aluno.cidade || '',
-            Neurodivergente: aluno.neurodivergente ? 'Sim' : 'Não'
+            "Data Nascimento": aluno.data_nascimento_aluno || "",
+            Unidade:
+                aluno.turma_info?.unidade_turma || aluno.escola_unidade || "",
+            Neurodivergente: aluno.neurodivergente ? "Sim" : "Não",
         }));
 
         const headers = Object.keys(dados[0]);
         const csvContent = [
-            headers.join(','),
-            ...dados.map((row: any) => headers.map(header => `"${row[header]}"`).join(','))
-        ].join('\n');
+            headers.join(","),
+            ...dados.map((row: any) =>
+                headers.map((header) => `"${row[header]}"`).join(","),
+            ),
+        ].join("\n");
 
-        const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
+        const blob = new Blob(["\ufeff" + csvContent], {
+            type: "text/csv;charset=utf-8;",
+        });
+        const link = document.createElement("a");
         const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', `alunos_${new Date().toISOString().split('T')[0]}.csv`);
-        link.style.visibility = 'hidden';
+        link.setAttribute("href", url);
+        link.setAttribute(
+            "download",
+            `alunos_${new Date().toISOString().split("T")[0]}.csv`,
+        );
+        link.style.visibility = "hidden";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -331,37 +404,56 @@
     <div class="filters-section">
         <div class="filter-group full-width">
             <label for="buscar">Buscar aluno</label>
-            <input 
-                type="text" 
-                id="buscar" 
+            <input
+                type="text"
+                id="buscar"
                 bind:value={searchTerm}
                 on:input={handleSearchInput}
                 placeholder="Nome do aluno..."
-            >
+            />
         </div>
-        <div class="filter-group">
-            <label for="turma">Filtrar por turma</label>
-            <select id="turma" bind:value={turmaFilter} on:change={handleFilterChange}>
-                <option value="">Todas as turmas</option>
-                {#each turmas as turma}
-                    <option value={turma.id_turma}>
-                        {turma.nome_turma} - {turma.unidade_turma || 'Sem unidade'}
-                    </option>
-                {/each}
-            </select>
-        </div>
-        <div class="filter-group">
-            <label for="status">Status especial</label>
-            <select id="status" bind:value={statusFilter} on:change={handleFilterChange}>
-                <option value="">Todos</option>
-                <option value="true">Neurodivergente</option>
-                <option value="false">Sem acompanhamento</option>
-            </select>
-        </div>
+        <FormSelect
+            id="unidade"
+            label="Filtrar por unidade"
+            bind:value={unidadeFilter}
+            on:change={handleUnidadeFilterChange}
+        >
+            <option value="">Todas as unidades</option>
+            {#each unidades as unidade}
+                <option value={unidade}>
+                    {unidade}
+                </option>
+            {/each}
+        </FormSelect>
+        <FormSelect
+            id="turma"
+            label="Filtrar por turma"
+            bind:value={turmaFilter}
+            on:change={handleFilterChange}
+        >
+            <option value="">Todas as turmas</option>
+            {#each filteredTurmas as turma}
+                <option value={turma.id_turma}>
+                    {turma.nome_turma}{unidadeFilter
+                        ? ""
+                        : ` - ${turma.unidade_turma || "Sem unidade"}`}
+                </option>
+            {/each}
+        </FormSelect>
+        <FormSelect
+            id="status"
+            label="Status especial"
+            bind:value={statusFilter}
+            on:change={handleFilterChange}
+        >
+            <option value="">Todos</option>
+            <option value="true">Neurodivergente</option>
+            <option value="false">Sem acompanhamento</option>
+        </FormSelect>
     </div>
 
     <!-- Table -->
-    <DataTable 
+    <DataTable
         {columns}
         rows={tableRows}
         {loading}
@@ -388,7 +480,18 @@
     confirmVariant="danger"
     loading={confirmLoading}
     on:confirm={() => confirmDialogAction && confirmDialogAction()}
-    on:cancel={() => showConfirmDialog = false}
+    on:cancel={() => (showConfirmDialog = false)}
+/>
+
+<!-- Aluno Detail Modal -->
+<AlunoDetailModal
+    bind:show={showDetailModal}
+    alunoId={selectedAlunoId}
+    {apiUrl}
+    on:close={() => {
+        showDetailModal = false;
+        selectedAlunoId = null;
+    }}
 />
 
 <style>
@@ -467,8 +570,7 @@
         font-weight: 500;
     }
 
-    .filter-group input,
-    .filter-group select {
+    .filter-group input {
         padding: 0.75rem;
         border: 1px solid #cbd5e0;
         border-radius: 6px;
@@ -477,8 +579,7 @@
         background-color: #fdfdfd;
     }
 
-    .filter-group input:focus,
-    .filter-group select:focus {
+    .filter-group input:focus {
         outline: none;
         border-color: #3182ce;
         box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);

@@ -26,6 +26,9 @@ const isActive = (path: string) => {
     if (path === "/admin/usuarios") {
         return currentPath === "/admin/usuarios";
     }
+    if (path === "/admin/advertencias") {
+        return currentPath === "/admin/advertencias";
+    }
     if (path === "/admin/comunicacao") {
         return currentPath === "/admin/comunicacao";
     }
@@ -58,6 +61,14 @@ const isActive = (path: string) => {
                 <a href="/admin/gerenciar-turmas" class="nav-link">
                     <span class="nav-icon">📚</span>
                     <span class="nav-text">Gerenciar Turmas</span>
+                </a>
+            </li>
+            <li
+                class={`nav-item ${isActive("/admin/advertencias") ? "active" : ""}`}
+            >
+                <a href="/admin/advertencias" class="nav-link">
+                    <span class="nav-icon">⚠️</span>
+                    <span class="nav-text">Advertências</span>
                 </a>
             </li>
             <li

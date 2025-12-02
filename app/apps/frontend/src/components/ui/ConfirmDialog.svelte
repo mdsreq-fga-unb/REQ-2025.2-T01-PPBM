@@ -1,34 +1,34 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
-    
+    import { createEventDispatcher } from "svelte";
+
     export let show: boolean = false;
-    export let title: string = 'Confirmar';
-    export let message: string = 'Tem certeza que deseja continuar?';
-    export let confirmText: string = 'Confirmar';
-    export let cancelText: string = 'Cancelar';
-    export let confirmVariant: 'primary' | 'danger' | 'warning' = 'primary';
+    export let title: string = "Confirmar";
+    export let message: string = "Tem certeza que deseja continuar?";
+    export let confirmText: string = "Confirmar";
+    export let cancelText: string = "Cancelar";
+    export let confirmVariant: "primary" | "danger" | "warning" = "primary";
     export let loading: boolean = false;
-    
+
     const dispatch = createEventDispatcher<{
         confirm: void;
         cancel: void;
     }>();
-    
+
     function handleConfirm() {
-        dispatch('confirm');
+        dispatch("confirm");
     }
-    
+
     function handleCancel() {
-        dispatch('cancel');
+        dispatch("cancel");
         show = false;
     }
-    
+
     function handleKeydown(e: KeyboardEvent) {
-        if (e.key === 'Escape' && !loading) {
+        if (e.key === "Escape" && !loading) {
             handleCancel();
         }
     }
-    
+
     function handleOverlayClick(e: MouseEvent) {
         if (e.target === e.currentTarget && !loading) {
             handleCancel();
@@ -41,8 +41,8 @@
 {#if show}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div 
-        class="modal-overlay" 
+    <div
+        class="modal-overlay"
         on:click={handleOverlayClick}
         role="dialog"
         aria-modal="true"
@@ -54,18 +54,18 @@
                 {@html message}
             </div>
             <div class="modal-buttons">
-                <button 
-                    type="button" 
-                    class="modal-btn modal-btn-cancel" 
-                    on:click={handleCancel} 
+                <button
+                    type="button"
+                    class="modal-btn modal-btn-cancel"
+                    on:click={handleCancel}
                     disabled={loading}
                 >
                     {cancelText}
                 </button>
-                <button 
-                    type="button" 
-                    class="modal-btn modal-btn-confirm {confirmVariant}" 
-                    on:click={handleConfirm} 
+                <button
+                    type="button"
+                    class="modal-btn modal-btn-confirm {confirmVariant}"
+                    on:click={handleConfirm}
                     disabled={loading}
                 >
                     {#if loading}
@@ -94,12 +94,16 @@
         z-index: 9999;
         animation: fadeIn 0.2s ease-out;
     }
-    
+
     @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
     }
-    
+
     .modal {
         background: white;
         padding: 1.5rem;
@@ -109,7 +113,7 @@
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         animation: scaleIn 0.2s ease-out;
     }
-    
+
     @keyframes scaleIn {
         from {
             transform: scale(0.95);
@@ -120,29 +124,29 @@
             opacity: 1;
         }
     }
-    
+
     .modal-title {
         margin: 0 0 1rem 0;
         font-size: 1.25rem;
-        color: #2D3748;
+        color: #2d3748;
     }
-    
+
     .modal-message {
         margin-bottom: 1.5rem;
-        color: #4A5568;
+        color: #4a5568;
         line-height: 1.5;
     }
-    
+
     .modal-message :global(strong) {
-        color: #2D3748;
+        color: #2d3748;
     }
-    
+
     .modal-buttons {
         display: flex;
         justify-content: flex-end;
         gap: 0.75rem;
     }
-    
+
     .modal-btn {
         padding: 0.625rem 1.25rem;
         border-radius: 6px;
@@ -155,49 +159,49 @@
         align-items: center;
         gap: 0.5rem;
     }
-    
+
     .modal-btn:disabled {
         opacity: 0.6;
         cursor: not-allowed;
     }
-    
+
     .modal-btn-cancel {
-        background: #E2E8F0;
-        color: #4A5568;
+        background: #e2e8f0;
+        color: #4a5568;
     }
-    
+
     .modal-btn-cancel:hover:not(:disabled) {
-        background: #CBD5E0;
+        background: #cbd5e0;
     }
-    
+
     .modal-btn-confirm {
         color: white;
     }
-    
+
     .modal-btn-confirm.primary {
-        background: #3182CE;
+        background: #3182ce;
     }
-    
+
     .modal-btn-confirm.primary:hover:not(:disabled) {
-        background: #2C5282;
+        background: #2c5282;
     }
-    
+
     .modal-btn-confirm.danger {
-        background: #E53E3E;
+        background: #e53e3e;
     }
-    
+
     .modal-btn-confirm.danger:hover:not(:disabled) {
-        background: #C53030;
+        background: #c53030;
     }
-    
+
     .modal-btn-confirm.warning {
-        background: #ED8936;
+        background: #ed8936;
     }
-    
+
     .modal-btn-confirm.warning:hover:not(:disabled) {
-        background: #C05621;
+        background: #c05621;
     }
-    
+
     .spinner {
         width: 14px;
         height: 14px;
@@ -206,8 +210,10 @@
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
     }
-    
+
     @keyframes spin {
-        to { transform: rotate(360deg); }
+        to {
+            transform: rotate(360deg);
+        }
     }
 </style>

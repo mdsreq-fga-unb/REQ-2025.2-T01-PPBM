@@ -1,19 +1,24 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
-    import type { Column, RenderObject, SortDirection, SortState } from '../../interfaces/table';
+    import { createEventDispatcher } from "svelte";
+    import type {
+        Column,
+        RenderObject,
+        SortDirection,
+        SortState,
+    } from "../../interfaces/table";
 
     export let columns: Column[] = [];
     export let rows: any[] = [];
     export let loading: boolean = false;
-    export let emptyMessage: string = 'Nenhum item encontrado.';
-    export let loadingMessage: string = 'Carregando...';
-    export let keyField: string = 'id';
-    
+    export let emptyMessage: string = "Nenhum item encontrado.";
+    export let loadingMessage: string = "Carregando...";
+    export let keyField: string = "id";
+
     // Pagination props
     export let showPagination: boolean = false;
     export let currentPage: number = 1;
     export let totalPages: number = 1;
-    export let pageInfo: string = '';
+    export let pageInfo: string = "";
 
     const dispatch = createEventDispatcher();
 
@@ -21,57 +26,65 @@
 
     // Type guard for RenderObject
     function isRenderObject(obj: any): obj is RenderObject {
-        return obj && typeof obj === 'object' && 'component' in obj && 'props' in obj;
+        return (
+            obj &&
+            typeof obj === "object" &&
+            "component" in obj &&
+            "props" in obj
+        );
     }
 
     function handleSort(column: Column) {
         if (!column.sortable) return;
 
         let newDirection: SortDirection;
-        
+
         if (sortState.column === column.key) {
             // Cycle through: asc -> desc -> null
-            if (sortState.direction === 'asc') {
-                newDirection = 'desc';
-            } else if (sortState.direction === 'desc') {
+            if (sortState.direction === "asc") {
+                newDirection = "desc";
+            } else if (sortState.direction === "desc") {
                 newDirection = null;
             } else {
-                newDirection = 'asc';
+                newDirection = "asc";
             }
         } else {
-            newDirection = 'asc';
+            newDirection = "asc";
         }
 
         sortState = {
             column: newDirection ? column.key : null,
-            direction: newDirection
+            direction: newDirection,
         };
 
-        dispatch('sort', sortState);
+        dispatch("sort", sortState);
     }
 
     function getSortIcon(column: Column): string {
-        if (!column.sortable) return '';
-        if (sortState.column !== column.key) return '↕';
-        return sortState.direction === 'asc' ? '↑' : '↓';
+        if (!column.sortable) return "";
+        if (sortState.column !== column.key) return "↕";
+        return sortState.direction === "asc" ? "↑" : "↓";
     }
 
-    function getAlignClass(align?: 'left' | 'center' | 'right'): string {
+    function getAlignClass(align?: "left" | "center" | "right"): string {
         switch (align) {
-            case 'center': return 'text-center';
-            case 'right': return 'text-right';
-            default: return 'text-left';
+            case "center":
+                return "text-center";
+            case "right":
+                return "text-right";
+            default:
+                return "text-left";
         }
     }
 
     function getCellStyle(column: Column): string {
-        if (column.width === 'min') {
-            return 'width: min-content; white-space: nowrap;';
+        if (column.width === "min") {
+            return "width: min-content; white-space: nowrap;";
         }
         if (column.width) {
             return `width: ${column.width};`;
         }
-        return '';
+        return "";
     }
 
     function handleButtonClick(props: any) {
@@ -83,17 +96,21 @@
     // Sort rows if needed
     $: sortedRows = (() => {
         if (!sortState.column || !sortState.direction) return rows;
-        
+
         return [...rows].sort((a, b) => {
             const aVal = a[sortState.column!];
             const bVal = b[sortState.column!];
-            
+
             if (aVal === bVal) return 0;
             if (aVal === null || aVal === undefined) return 1;
             if (bVal === null || bVal === undefined) return -1;
-            
-            const comparison = String(aVal).localeCompare(String(bVal), 'pt-BR', { numeric: true });
-            return sortState.direction === 'asc' ? comparison : -comparison;
+
+            const comparison = String(aVal).localeCompare(
+                String(bVal),
+                "pt-BR",
+                { numeric: true },
+            );
+            return sortState.direction === "asc" ? comparison : -comparison;
         });
     })();
 </script>
@@ -114,16 +131,22 @@
                 <thead>
                     <tr>
                         {#each columns as column}
-                            <th 
-                                class="{getAlignClass(column.align)} {column.sortable ? 'sortable' : ''}"
+                            <th
+                                class="{getAlignClass(
+                                    column.align,
+                                )} {column.sortable ? 'sortable' : ''}"
                                 style={getCellStyle(column)}
                                 on:click={() => handleSort(column)}
-                                title={column.tooltip || ''}
+                                title={column.tooltip || ""}
                             >
                                 <div class="th-content">
                                     <span>{column.label}</span>
                                     {#if column.sortable}
-                                        <span class="sort-icon" class:active={sortState.column === column.key}>
+                                        <span
+                                            class="sort-icon"
+                                            class:active={sortState.column ===
+                                                column.key}
+                                        >
                                             {getSortIcon(column)}
                                         </span>
                                     {/if}
@@ -136,83 +159,150 @@
                     {#each sortedRows as row (row[keyField])}
                         <tr>
                             {#each columns as column}
-                                <td 
-                                    class="{getAlignClass(column.align)}"
+                                <td
+                                    class={getAlignClass(column.align)}
                                     style={getCellStyle(column)}
                                 >
                                     {#if column.render}
-                                        {@const renderResult = column.render(row)}
+                                        {@const renderResult =
+                                            column.render(row)}
                                         {#if Array.isArray(renderResult)}
                                             <div class="cell-content">
                                                 {#each renderResult as item}
-                                                    {#if typeof item === 'string'}
+                                                    {#if typeof item === "string"}
                                                         {item}
                                                     {:else if isRenderObject(item)}
-                                                        {#if item.component === 'button'}
-                                                            <button 
+                                                        {#if item.component === "button"}
+                                                            <button
                                                                 type="button"
-                                                                class="btn-action btn-{item.props.variant || 'primary'}"
-                                                                title={item.props.title || item.props.text || ''}
-                                                                on:click={() => handleButtonClick(item.props)}
+                                                                class="btn-action btn-{item
+                                                                    .props
+                                                                    .variant ||
+                                                                    'primary'}"
+                                                                title={item
+                                                                    .props
+                                                                    .title ||
+                                                                    item.props
+                                                                        .text ||
+                                                                    ""}
+                                                                on:click={() =>
+                                                                    handleButtonClick(
+                                                                        item.props,
+                                                                    )}
                                                             >
-                                                                {item.props.text || ''}
+                                                                {item.props
+                                                                    .text || ""}
                                                             </button>
-                                                        {:else if item.component === 'a'}
-                                                            <a 
-                                                                href={item.props.href}
-                                                                class="btn-action btn-{item.props.variant || 'primary'}"
-                                                                title={item.props.title || item.props.text || ''}
+                                                        {:else if item.component === "a"}
+                                                            <a
+                                                                href={item.props
+                                                                    .href}
+                                                                class="btn-action btn-{item
+                                                                    .props
+                                                                    .variant ||
+                                                                    'primary'}"
+                                                                title={item
+                                                                    .props
+                                                                    .title ||
+                                                                    item.props
+                                                                        .text ||
+                                                                    ""}
                                                             >
-                                                                {item.props.text || ''}
+                                                                {item.props
+                                                                    .text || ""}
                                                             </a>
-                                                        {:else if item.component === 'badge'}
-                                                            <span class="badge badge-{item.props.variant || 'default'} {item.props.class || ''}">
-                                                                {item.props.text || ''}
+                                                        {:else if item.component === "badge"}
+                                                            <span
+                                                                class="badge badge-{item
+                                                                    .props
+                                                                    .variant ||
+                                                                    'default'} {item
+                                                                    .props
+                                                                    .class ||
+                                                                    ''}"
+                                                            >
+                                                                {item.props
+                                                                    .text || ""}
                                                             </span>
-                                                        {:else if item.component === 'span'}
-                                                            <span class={item.props.class || ''}>
-                                                                {item.props.text || ''}
+                                                        {:else if item.component === "span"}
+                                                            <span
+                                                                class={item
+                                                                    .props
+                                                                    .class ||
+                                                                    ""}
+                                                            >
+                                                                {item.props
+                                                                    .text || ""}
                                                             </span>
-                                                        {:else if item.component === 'html'}
-                                                            {@html item.props.html}
+                                                        {:else if item.component === "html"}
+                                                            {@html item.props
+                                                                .html}
                                                         {/if}
                                                     {/if}
                                                 {/each}
                                             </div>
-                                        {:else if typeof renderResult === 'string'}
+                                        {:else if typeof renderResult === "string"}
                                             {renderResult}
                                         {:else if isRenderObject(renderResult)}
-                                            {#if renderResult.component === 'button'}
-                                                <button 
+                                            {#if renderResult.component === "button"}
+                                                <button
                                                     type="button"
-                                                    class="btn-action btn-{renderResult.props.variant || 'primary'}"
-                                                    title={renderResult.props.title || renderResult.props.text || ''}
-                                                    on:click={() => handleButtonClick(renderResult.props)}
+                                                    class="btn-action btn-{renderResult
+                                                        .props.variant ||
+                                                        'primary'}"
+                                                    title={renderResult.props
+                                                        .title ||
+                                                        renderResult.props
+                                                            .text ||
+                                                        ""}
+                                                    on:click={() =>
+                                                        handleButtonClick(
+                                                            renderResult.props,
+                                                        )}
                                                 >
-                                                    {renderResult.props.text || ''}
+                                                    {renderResult.props.text ||
+                                                        ""}
                                                 </button>
-                                            {:else if renderResult.component === 'a'}
-                                                <a 
-                                                    href={renderResult.props.href}
-                                                    class="btn-action btn-{renderResult.props.variant || 'primary'}"
-                                                    title={renderResult.props.title || renderResult.props.text || ''}
+                                            {:else if renderResult.component === "a"}
+                                                <a
+                                                    href={renderResult.props
+                                                        .href}
+                                                    class="btn-action btn-{renderResult
+                                                        .props.variant ||
+                                                        'primary'}"
+                                                    title={renderResult.props
+                                                        .title ||
+                                                        renderResult.props
+                                                            .text ||
+                                                        ""}
                                                 >
-                                                    {renderResult.props.text || ''}
+                                                    {renderResult.props.text ||
+                                                        ""}
                                                 </a>
-                                            {:else if renderResult.component === 'badge'}
-                                                <span class="badge badge-{renderResult.props.variant || 'default'} {renderResult.props.class || ''}">
-                                                    {renderResult.props.text || ''}
+                                            {:else if renderResult.component === "badge"}
+                                                <span
+                                                    class="badge badge-{renderResult
+                                                        .props.variant ||
+                                                        'default'} {renderResult
+                                                        .props.class || ''}"
+                                                >
+                                                    {renderResult.props.text ||
+                                                        ""}
                                                 </span>
-                                            {:else if renderResult.component === 'span'}
-                                                <span class={renderResult.props.class || ''}>
-                                                    {renderResult.props.text || ''}
+                                            {:else if renderResult.component === "span"}
+                                                <span
+                                                    class={renderResult.props
+                                                        .class || ""}
+                                                >
+                                                    {renderResult.props.text ||
+                                                        ""}
                                                 </span>
-                                            {:else if renderResult.component === 'html'}
+                                            {:else if renderResult.component === "html"}
                                                 {@html renderResult.props.html}
                                             {/if}
                                         {/if}
                                     {:else}
-                                        {row[column.key] ?? '-'}
+                                        {row[column.key] ?? "-"}
                                     {/if}
                                 </td>
                             {/each}
@@ -221,21 +311,24 @@
                 </tbody>
             </table>
         </div>
-        
+
         {#if showPagination && totalPages > 1}
             <div class="pagination">
-                <button 
+                <button
                     type="button"
                     disabled={currentPage <= 1}
-                    on:click={() => dispatch('pageChange', currentPage - 1)}
+                    on:click={() => dispatch("pageChange", currentPage - 1)}
                 >
                     ← Anterior
                 </button>
-                <span class="page-info">{pageInfo || `Página ${currentPage} de ${totalPages}`}</span>
-                <button 
+                <span class="page-info"
+                    >{pageInfo ||
+                        `Página ${currentPage} de ${totalPages}`}</span
+                >
+                <button
                     type="button"
                     disabled={currentPage >= totalPages}
-                    on:click={() => dispatch('pageChange', currentPage + 1)}
+                    on:click={() => dispatch("pageChange", currentPage + 1)}
                 >
                     Próxima →
                 </button>
@@ -395,6 +488,15 @@
 
     .btn-warning:hover {
         background-color: #dd6b20;
+    }
+
+    .btn-info {
+        background-color: #805ad5;
+        color: #ffffff;
+    }
+
+    .btn-info:hover {
+        background-color: #6b46c1;
     }
 
     /* Badge styles */
