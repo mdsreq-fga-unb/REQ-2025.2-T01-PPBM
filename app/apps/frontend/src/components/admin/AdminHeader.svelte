@@ -8,8 +8,8 @@
 		showLogoutDialog = true;
 	}
 
-	function confirmLogout() {
-		authStore.logout();
+	async function confirmLogout() {
+		await authStore.logout();
 		window.location.href = "/login";
 	}
 

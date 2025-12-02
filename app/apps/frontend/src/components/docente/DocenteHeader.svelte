@@ -3,8 +3,8 @@
 
     $: currentUser = $authStore.currentUser;
 
-    function handleLogout() {
-        authStore.logout();
+    async function handleLogout() {
+        await authStore.logout();
         window.location.href = "/login";
     }
 </script>

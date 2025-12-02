@@ -258,13 +258,23 @@ export async function login(email: string, password: string): Promise<LoginRespo
 export async function logout(): Promise<void> {
     try {
         // Sign out from Supabase (this handles session cleanup)
-        await supabase.auth.signOut();
+        if (supabase) {
+            await supabase.auth.signOut({ scope: 'global' });
+        }
     } catch {
         // Ignore errors during logout
     }
 
-    // Clear local tokens regardless
+    // Clear local tokens
     clearAuthTokens();
+
+    // Also clear any Supabase auth storage as fallback
+    if (typeof window !== 'undefined') {
+        const keysToRemove = Object.keys(localStorage).filter(
+            key => key.startsWith('sb-') && key.includes('auth')
+        );
+        keysToRemove.forEach(key => localStorage.removeItem(key));
+    }
 }
 
 /**
