@@ -5,6 +5,16 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Build arguments for environment variables (needed at build time for Astro)
+ARG PUBLIC_SUPABASE_URL
+ARG PUBLIC_SUPABASE_ANON_KEY
+ARG PUBLIC_API_URL
+
+# Set as environment variables for the build process
+ENV PUBLIC_SUPABASE_URL=$PUBLIC_SUPABASE_URL
+ENV PUBLIC_SUPABASE_ANON_KEY=$PUBLIC_SUPABASE_ANON_KEY
+ENV PUBLIC_API_URL=$PUBLIC_API_URL
+
 # Install dependencies first (better caching)
 COPY app/apps/frontend/package*.json ./
 RUN npm install
@@ -12,7 +22,7 @@ RUN npm install
 # Copy source
 COPY app/apps/frontend/ ./
 
-# Build the Astro site
+# Build the Astro site (will use PUBLIC_* env vars)
 RUN npm run build
 
 # Production image
