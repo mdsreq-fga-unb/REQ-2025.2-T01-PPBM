@@ -5,13 +5,60 @@ description: Entregas e apresentações do projeto PPBM - Unidade 3 UC
 
 Esta seção contém as especificações de caso de uso e o diagrama UML do projeto HopeBridge.
 
-## Diagrama de Casos de Uso
+Abaixo, o link dos estudos da unidade 3, juntamente com as imagens.
 
-Abaixo, o diagrama ilustrando as interações entre os atores e o sistema.
-
-> **Visualização:** [Clique aqui para abrir o diagrama no Draw.io](https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&edit=_blank&layers=1&nav=1&title=UML%20-%20HopeBridge.drawio&dark=auto#R%3Cmxfile%3E%3Cdiagram%20name%3D%22Page-1%22%20id%3D%22Y87MRwiWxDU4O8k_i1l3%22%3E5V1bk5vGEv41qnIeVgUM10ftbuKkyj5x7JNzkrwhGEnjAEOGYb32r89cAMHA7mKJQch2lW0x4qbu6a%2B7v26GFbhLH1%2BTMD%2B8xTFMVpYRP67A%2FcqyTD9w2H985LMcsX0gB%2FYExdVOx4EP6AusBo1qtEQxLDo7UowTivLuYISzDEa0MxYSgj91d9vhpHvVPNzD3sCHKEz6o%2F9HMT3IUd8xjuM%2FQ7Q%2F1Fc2jeqbNKx3rgaKQxjjT60h8OMK3BGMqfyUPt7BhAuvlos87qcnvm1ujMCMjjngt6T4y%2FnyF9rQL3%2FmEH%2BB6Offbqz%2BWaoTF%2FRzLQOCyyyG%2FDTGCtx%2BOiAKP%2BRhxL%2F9xLTOxg40TdiWyT7GiDA9IJyx7QKXXAi3O5zRD9X5%2BCnkFR7CpKyuUA1AQuFj6y6qH%2FIa4hRS8pntcmjL2vIr0X46aiaoxV2fJ6i2q%2FlXHxJW82LfnPsoOvahkt5XSBKMkST7ebQrrjBBey6qiB0FCRvgQkBs%2Fm2qL1IUx%2FzwQbl3NTMgVjehlfw7N%2BL%2BU%2BL6i5tCGN2G7WD6%2BaM4T%2F09%2B7Tn%2F39ABYVpyHb5Gefwllkqs5rq5Exa8vxy15NU6fQVyVS19pyOLh3HXFvOPOp0Kn3CuIcPfQXjkkTwmZPZL5gUJvSA9zgLkzcY59XM%2BAgp%2FVwBYlhS3J037B7I5z%2Bq48XGn3xj7dSb94%2FtL%2B8%2FV1sFDQndcGBkAxnOYD32E%2BICqo6IlT3YSOv7ghL8N7zDCWYT9j6Gu7AUMwE%2BIvrH8S7Y1p%2F1Gdnn4w3xjc%2BtjXeQIKY1Pv1b85jd1B7SZ6Rq2sMTi8AkpOihq7bpJ4i78AnSKMPqaGNtfrU%2BTp1rL82jkXq2wEX17C9cz5qUc5w%2F3rnzZ6yenUvq2TUXrudhcG22rsecvYuq2boONZstJV8fYvuXVLEJnOvTsbEGyp%2BrU7p7SaXbY9IvloLn%2FGOZJpuI4na69SbcwuQdLlCVum4xpTgdyMcoVhJeluMmKGPhcE1ADKZi7%2BGu3KMwxiflR24%2FPwLdPPcGdPNcYOnKjNwpMyPnOgJf8zIWFVzUU9rXoufJAqLLqBkYF1XzlM5Sh5o1KaeZPmcFWmNVbF1Sxc7CfeNmv7oDq80mi5CgGMs0zBAVYybhQ1o8ptnUGCqX6WkjE90puSJ34S5zGky8KOfjegvX12ju5lzXOFZdF6Vi3YXj249pTuCexf6Ejb8L2XRBRFce0EM10zAdXXIPJjQTb%2BGwdtkQ8aLUqGcsXM%2BLg8NzqZDq0HcYicJtbduukuSbjfXXJ5Hir45T1N7cyBkzYeFIu4lTlKGCEgm2MyGsGehCWG%2FKooQ5G5X5vGHFYXEQ11Rsd5vg6O%2BTuZKLZlheVVWoupDCbS1go6%2BuZxXd0g3XubCX1YkNIwQW6Et1K1ySOUcF8cud25VzP2Q%2FK8sNU255VWdHewtlUVLGsBncd3b5ut6PQa3UTKaxNizL7phY3V0zHivBs8fj3a6AWhDSHEVEsxOhvOBKeqGbakBDU4FaF9UsTwE1R1cyXP%2BGa5NQQw%2FUDDs4NihNL6RR7WTLE5I6jSxb1zTyvoZTubDHO1bm1obbpAzySM9pUooncoiv85fi2FM7MM51osNY7DjBOjj%2B8d2uHXnjYtjeaX0frAMAAt%2FymaM1Pa878wx3bZnAMoAN2A3UlE59ESkLfYGyd25A0KeNvuOAAFhet%2B9z%2FBzU7%2FKtUfz68rEaAG3ebBRDt3wJ2Wq6PZ2ERmXWy5eQY2mbQ%2F63ISHX1DaHgm9EQtroFH%2FKWneNBdqDy7GhZSewnDaoXM0UP56n3crLnBxz%2Bf32he845jKMmpSqvd%2FTeps95gIDOr1GrNPXcwCulGZRJeS72rzBlFV%2BABblDTplyu%2FRF%2Fjn%2BoJ%2BnfI79gUmsLv5d91zMZ4EulFUrdE3fCPcaeBq8w3fSpHC0FalAN8IqWOa2hh48I2wOqa%2BIgUYRevMvCrAe7gXLRKEDb%2BDZIeSkyQN%2BpI2FUkDVdLaYjkwih2aXdDs9F%2BEnN%2FgPcqmErPflbKvLHEBHKCvMAlGkUwzC%2FoNjhpJf4DkAYnecQ8XbPtW9pEXKOKbE81zR5nnSnRkObrEb48qcs4s%2Fg84QRGiQvwsWYA7IfL7CJ3W5DokcE8ROOgKHGiLA%2BxRafTMAt%2FsWUomxH2Hs6JMKH9s4q2QehCzi0wmdlsRu9NFGtvWNs%2BXuJzObVlEUuolKSZEE6BKuTu5HW3hiT0qD7hgeAJTHqMQ%2FBHSCeX9wqx2tdWw7FFJxczyfoszRLGU9z1MQ4Ys7BPXAierJhO6q7pMhQg1tAl9VJoys9BfQ3YzERJCfw%2BjWfHE01Zfs5eY7rxLwgx%2BFJL%2BhZ%2F%2BAWYyPOT%2F3jpQn9zd7hT3tXH99hKzn01W1jN8Yn%2F5An4H2pIfe4nJTxtK7hh6ozikJQn1iVtJdkxDW1Z%2FXGVzQfLu%2BssCpjnMDizTMfjaHkazUuI0wrdURsXqznXT1JZqOktMNdlkr3xmEoonxG8BQSLP54UQ45eUnY1Ol3aqQYuCNKa%2BRN%2Bbctk5S%2BMz4yf2QZseWHX6oH3fe6FMOdjZ%2FGK5slPclGJYeO3Sq7zM6b3Dfk%2Fd33Ht0rY872lNzd654k%2F5SJ%2FV1%2FSlDRu4fteweb%2F%2FCYb9LTYlWGcatt%2F3v9%2BzYRvPcQazG3YwirJ8oQgaFrl8vHmHHvnsv92xOV6vtLyyQGxEELIfp6zBzL5xXMf04LC6ToiGTM9bO%2F2A6DjarDunEDn6luQOlshW%2Fso2y6KsFyviKcAOCd7M4AHpDkd8KCfMLlAuhkWaUMg0YS1C2WplwEL8tgQWFGVi45%2BSn6KkiNe2OBPKibmc2US4w0Ssxs5Ewf%2Fb1sQ0gWy2wz0bbBiODWDXYwI3UpazxHw1Jb5RiD1uNyJqFn%2FFGiWY3xD%2Fxg%2Fk9flVUYbkwkzipnZJ%2BShvtfpNqIm%2BM7iXIXmE%2BIlOmXXmUBBu9eYcaIbqApC2rvpgFGd7NWY90B%2BhZjmmSlx52taSDJbIzf5K9mHGLE5lCZl1FTnOCmnrD1BM%2FFws6sPskXl0yD%2BGH8tY2PXvR7ttWfzRaPct3obZPGbWVkjjfEBF2dSz0zAPGwtjv1BcrzK3CBYFisNY3J34HmMSw0wc2L9%2FcVTMiytoW6IORJxmrgOvbVDZIlPtAfF8XSlzMIp9vh5LHXC%2FrqMIV6H2gyNWTi%2FeJZLMYmmtQhgILtk%2Fv%2F7n9dFz4h0zsUj4MMzslJZZYyzCFCgJt2EiuDtpXOzSiIaqYbQt%2BSkPnJfbBEkf%2FBDuw9oe2eVJSSvXXLv56WzN6QG36hdNQx92jyLDr8fcxjhGx1Pl2xC00y9jbiyR%2FX7f9YH8V8iVOoOIhYm1KUFewK%2FG92yYW1HNm1dW1IlA466HfFXmFKVQesOQezlc%2FFCf%2BpGdGq2q7LBDAdceVTpmaZgUp3wtqJb%2FgxEqzvJ6g0GqukgUUB9Yt7Qtw2caWjLPaeyqsY9niho3psqr24E%2Bq1piD0b9Lq0DqF%2Bj9fudYcqXcg216zZv3joeUA%2Fm6gDbqzeWc0NgXuwmD%2BnhhuKbDMfyVuo3f%2FE5rr4FrD56Ww9sqFzSsslu%2BQ03V90ejzNay99X5yBPnvUeFhHphqdPn5hJJGXiPvr8tqvlTp0gkUQLXIlwJlrlsg7ccJBBmXDomTgmrpNxDjwCTe7EwWmOC%2BW%2BWOgfpiw6kFF8PyhnSTImrbWM%2Bdgrbj5cs%2BGWoD1WE%2FIf1s%2FIqDfS1e5JRM8AmgWqgao1X0dbu45pjMoJl4tmc2LZEvttBrHMkjP%2BuU7hGTDNuTZMCznCKPQii2UgeRAilKjGEw6OPmkLUmQ2VLTE%2FYDL6ABJEwexOZDCjKpM4U%2Fswhnfadvqm58XkfyBxFd55EEhqExHWyOyaYxKe5cLR3PikbnEjGUQj4DEo%2FEPjuhHJ3GnV4BOPz6irQypVpKdrNEmYQFVWMMLaZpaWQwks7RHlIrtV1Kw%2B7KKvaJEegGWP4ZFHY6xeZBBeoyFzkYVd7CepTAo%2FVUw9QGLOaq%2FarnAYs8JLNa1AIstgWW4v3sGEAkmBZEX38yiK%2FDBVbZGcAJrSKmKJPUmyopSAooIZ1ac%2FynoMTETOzVk7DE4KqbDFH8QU3r1Sts9rhQ7B7BcOR3kzgksS%2BwpGAQWpwGWUQ2w%2BqGGLyIxJdR0l%2B6fFljucJqjRAQnFbdT4C0RuMHSnVhkQliWeEU8WDdjSLa6jDlxLRCQH5LLB0rEMdNhiTlgGWp44vZRRJ9laOl7mA9F%2FDlRZIltDIMo4koUefkBYv344Y6Fj%2FlTnIGmrqTKFPv5ipFKGK4aQkQqdMBFjmhTiBIvfDrWhAV%2FU2dQB0ya60yHJsFAXAK6UYnv94rFOuFES3PGfHByXGpoDjxZYqvFIJ54Ek96T8brh4%2FRic5l4KNdg9qhhIpI4uQuFDa%2BDQsYxsdkpoAcaHJRENQchahtEEaPJQGetrYj09TSZzIjcszJwA49SrBM5PD71W1ltYcZCkKjKddFxCCFxAf5iG%2B7%2BSzkumLpFakx5YneTwIjFu5RUqrgEuG0bBM7E9KuYF2Td53ERmlktLx%2BMOL4a%2FuZNYfPNJQrJ0nMOelX62pYkqBGFXXltRnAxD8bTP6LJfHwqoUqdyuVhuUj7VfKij04e%2FLD1Bi0KSnTHM8HFbwQaFLAfUnCajGNFhzJhr2V5GR3fBEI%2FvxhE%2FQQ3hzIApwJedhgIGhR%2B9BtXw1abH290ua4d8IsGF7mJGHHvR5mAfBiGhJeXloyaYY6DzgbbGau7fyvfqhlEEsGn3JBGeeiZE8ezuK6zNNqsVv1q8296jJmsyDk3cOS3hIXQ5hMWAUa0Zk%2FwNxqfHugOe51QguGnznZ23FvFloC%2FFQdwSNWtJoBgc7nb2dGoP5zfRKAEizv474QoU4DQmkeZodux%2B5DGKGsewKOLBU3w7FJluKqApLyqO9EeOMMcLtqtOP3oh2WTdWFYQ0mdOUcjTUnuzvu3TVLwJuqa3dgJbcZysvm2fjSTpKMd1UZZmpUueOkLCVNJMMfOqTHWOb4XP1E1j%2FUrm%2Brs7lv%2Fcba1Wb94Mo72WbtkR33XqYlWD%2Fot7J11xdcUo%2FJZUFgwx8O4tGCaAoRnr9YVW2sLFepnvqdCAFamUMbBCx1UgcqCPA2NNdo%2FljapviVc6uztraOexfPEvDAHiI%2Fnlz%2FcgZwOL8ErLXprAcKyoPSnaecq26%2BNscLCcHFhB3wzqgOeLvHVJywxiXbJJgrpvnuNZt3h7dMhXyPfwE%3D%3C%2Fdiagram%3E%3C%2Fmxfile%3E)
+> **Visualização:** [Clique aqui para abrir o diagrama no Draw.io](https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&edit=_blank&layers=1&nav=1&title=Entregas%20Unidade%203.drawio&dark=auto#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D1jpx_nsImgBB8MFV65lZSPCYJ6LNRjNSn%26export%3Ddownload)
 
 ---
+
+## PBB CulturaViva
+
+![pbb1](./imagens/pbb1.png)
+![pbb2](./imagens/pbb2.png)
+![pbb3](./imagens/pbb3.png)
+![pbb4](./imagens/pbb4.png)
+![pbb5](./imagens/pbb5.png)
+![pbb6](./imagens/pbb6.png)
+![pbb7](./imagens/pbb7.png)
+![pbb8](./imagens/pbb8.png)
+![pbb9](./imagens/pbb9.png)
+![pbb10](./imagens/pbb10.png)
+![pbb11](./imagens/pbb11.png)
+![pbb12](./imagens/pbb12.png)
+![pbb13](./imagens/pbb13.png)
+![pbb14](./imagens/pbb14.png)
+![pbb15](./imagens/pbb15.png)
+![pbb16](./imagens/pbb16.png)
+![pbb17](./imagens/pbb17.png)
+![pbb18](./imagens/pbb18.png)
+![pbb19](./imagens/pbb19.png)
+![pbb20](./imagens/pbb20.png)
+![pbb21](./imagens/pbb21.png)
+
+---
+
+## UseCase HopeBridge
+
+![uc1](./imagens/uc1.png)
+![uc2](./imagens/uc2.png)
+![uc3](./imagens/uc3.png)
+![uc4](./imagens/uc4.png)
+
+---
+
+## USM HealthConnect
+
+![usm1](./imagens/usm1.png)
+![usm2](./imagens/usm2.png)
+![usm3](./imagens/usm3.png)
+![usm4](./imagens/usm4.png)
+![usm5](./imagens/usm5.png)
+![usm6](./imagens/usm6.png)
+![usm7](./imagens/usm7.png)
+
+---
+
+## Diagrama de Casos de Uso
 
 ### UC 01 - Registrar Perfil
 Permitir que o refugiado crie um perfil no HopeBridge com seus dados pessoais básicos, situação atual e necessidades prioritárias, para que possa receber recomendações e acessar serviços adequados.​
